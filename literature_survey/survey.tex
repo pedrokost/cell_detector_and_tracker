@@ -1,0 +1,108 @@
+\documentclass[12pt,a4paper,openany]{book}
+
+%Uporabljeni paketi
+\usepackage[utf8]{inputenc}
+\usepackage{cmap}
+\usepackage{type1ec}
+\usepackage[T1]{fontenc}
+\usepackage{fancyhdr}
+\usepackage{graphicx,epsfig}
+\usepackage[english]{babel}
+\usepackage{cite}
+
+\usepackage[pdftex,colorlinks,citecolor=black,filecolor=black,linkcolor=black,urlcolor=black,pagebackref]{hyperref}
+\usepackage{tikz}
+
+%Velikost strani - dvostransko
+\oddsidemargin 1.4cm
+\evensidemargin 0.35cm
+\textwidth 14cm
+\topmargin 0.26cm
+\headheight 0.6cm
+\headsep 1.5cm
+\textheight 20cm
+
+%Nastavitev glave in repa strani
+\pagestyle{fancy}
+\fancyhead{}
+\renewcommand{\chaptermark}[1]{\markboth{\textsf{Poglavje \thechapter:\ #1}}{}}
+\renewcommand{\sectionmark}[1]{\markright{\textsf{\thesection\  #1}}{}}
+\fancyhead[RE]{\leftmark}
+\fancyhead[LO]{\rightmark}
+\fancyhead[LE,RO]{\thepage}
+\fancyfoot{}
+\renewcommand{\headrulewidth}{0.0pt}
+\renewcommand{\footrulewidth}{0.0pt}
+
+\newcommand{\gnuplot}{\textbf{gnuplot}}
+\newcommand{\pgfname}{\textsc{pgf}}
+\newcommand{\tikzname}{Ti\emph{k}Z}
+
+\input{cc}
+
+%********************************************
+
+\begin{document}
+
+% stran 1 med uvodnimi listi
+\thispagestyle{empty} 
+
+\begin{center}
+{\large 
+IMPERIAL COLLEGE LONDON
+DEPARTMENT OF COMPUTING\\
+}
+
+\vspace{3cm}
+{\LARGE Pedro Kostelec}\\
+
+\vspace{2cm}
+\textsc{\textbf{\LARGE 
+Cell Tracking methods 
+}}
+
+\vspace{2cm}
+{ LITERATURE SURVEY }
+
+\vspace{2cm} 
+{\Large Supervisor: Ben Glocker}
+
+\vfill
+{\Large London, 2014}
+\end{center}
+
+
+%********************************************
+
+% stran 2 med uvodnimi listi
+\thispagestyle{empty}
+
+\newpage
+
+
+%********************************************
+
+
+\renewcommand\thepage{} 
+\tableofcontents 
+\renewcommand\thepage{\arabic{page}}
+
+\thispagestyle{empty}
+
+
+
+%********************************************
+
+\newpage
+
+\bibliographystyle{slplainurl}
+\addcontentsline{toc}{chapter}{Bibliography}
+\label{page_bibliography}
+\bibliography{survey} 
+
+
+\end{document}
+
+
+
+
