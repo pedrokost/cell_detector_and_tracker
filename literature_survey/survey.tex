@@ -89,6 +89,53 @@ Cell Tracking methods
 
 \thispagestyle{empty}
 
+\chapter{Introduction}
+This document is report describing the background research that has been completed in preparation for the work on the project entitled ``Automatic Cell Tracking and Categorisation for Microscopic Image Analysis''.
+
+Quantitative analysis of cell populations using time-lapse microscopy is important for understanding cell behaviour. This analysis requires tracking a large number of cells in often low quality image sequences of varying contrast. Often then most effective way to do this is to manually annotate each cell in every frame of the sequence. However, this is slow and tedious, thus limiting the amount of data that we are able to analyse. Several computer vision algorithms have been developed to reduce the amount of manual work required for the analysis of large time-lapse sequences. Ideally, we would like to develop a general algorithm that is able to track any type of cells in image sequences, regardless of the imaging technique used to capture them. However, the current state-of-the-art in computer vision is unable to perform this task accurately and automatically. For this reason, several algorithms have been developed to handle specific cases, relying on heuristics to improve their performance.
+
+The main emphasis of this project is to track leukocytes in low quality image sequences acquired with fluorescent reporter technology and light microscopy. Additionally, the behaviour of these cells with be quantified to allow for further studies of leukocytes.
+
+This is a joint project with Dr. Leo Carlin from the Leukocyte Biology Section at the National Heart and Lung Institute (NHLI) and is supervised by Dr. Ben Glocker.
+
+The remaining of the report is divided into two chapters. In the Chapter \ref{chap:methodoverview} summarize the essential material related to the subject of the project. In the Chapter \ref{chap:workplan} we present an informative work plan that will guide the development of the software. 
+
+
+
+\chapter{Cell tracking methods}
+\label{chap:methodoverview}
+
+This chapter is an overview of the background research that has been completed in preparation for the work on the project. The chapter is divided into four section. Section \ref{sec:detection} describes methods to perform cell detection on images or sequences of cell images. Section \ref{sec:mitosis} describes the importance of mitosis detection and algorithms that perform it. Section \ref{sec:tracking} presents methods used to track cells in a sequence of images. Finally, in Section \ref{sec:conclusionmethods} we describe which methods seem most promising and discuss reasons why the use of automated cell tracking methods is not as widespread as we would be led to believe, given the wide range of research that has been done on the subject.
+
+
+\section{Cell detection}
+\label{sec:detection}
+\section{Mitosis detection}
+\label{sec:mitosis}
+\section{Cell tracking}
+\label{sec:tracking}
+\section{Conclusion}
+\label{sec:conclusionmethods}
+
+\chapter{Work plan}
+\label{chap:workplan}
+
+In order to complete the project in due time, a work plan is outlined to guide the development of the software.
+
+The first phase of the project was background literature research and an overview of the learned methods and techniques is outlined in the previous chapter.
+
+Developing methods to accurately track cells in image sequences is highly data dependent. Before deciding which algorithms we will use in the final project, we will need to review a broad set of sample images in order to analyse their quality. Unfortunately, few have been available to date, and for this reason a broader aspect of methods has been studied than was required. Sample data will also permit further specialization of the study area, which means that more relevant papers will be studied. Dr. Leo Carlin has recently made available a sample image sequence, which has allowed us to estimate the image quality of expected image sequences. He will also send us more data when it is available.
+
+The following is a rough outline of the work plan. This is a preliminary plan, which will be adjusted as work progresses.
+
+\begin{enumerate}
+  \item [May] Focus will be on developing cell detection algorithms. For this purpose a basic annotation program may also be written, which should ease annotating image sequences by clicking on cells.
+  \item [June] A basic tracking system that will track cells over time. Additionally, a module to compute interesting statistics of cell tracks will be developed.
+  \item[July] Improving the cell detection and tracking algorithms. 
+  \item [August] Writing a GUI for the software, testing and writing the final report.
+\end{enumerate}
+
+The software will be written in MATLAB.
 
 
 %********************************************
