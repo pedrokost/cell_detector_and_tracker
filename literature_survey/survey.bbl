@@ -1,3 +1,82 @@
-\begin{thebibliography}{}
+\begin{thebibliography}{10}
+
+\bibitem{chen99}
+Y.~Chen, K.~Biddell, A.~Sun, P.~Relue, and J.~Johnson, ``An automatic cell
+  counting method for optical images,'' in {\em [Engineering in Medicine and
+  Biology, 1999. 21st Annual Conference and the 1999 Annual Fall Meetring of
+  the Biomedical Engineering Society] BMES/EMBS Conference, 1999. Proceedings
+  of the First Joint}, vol.~2, pp.~819 vol.2--, Oct 1999.
+
+\bibitem{otsu79}
+N.~Otsu, ``A threshold selection method from gray-level histograms,'' {\em
+  Systems, Man and Cybernetics, IEEE Transactions on}, vol.~9, pp.~62--66, Jan
+  1979.
+
+\bibitem{serra83}
+J.~Serra, {\em Image Analysis and Mathematical Morphology}.
+\newblock Orlando, FL, USA: Academic Press, Inc., 1983.
+
+\bibitem{beucher79}
+S.~Beucher and C.~Lantuéjoul, ``Use of watersheds in contour detection.''
+  workshop published, Sept. 1979.
+
+\bibitem{chen06}
+X.~Chen, X.~Zhou, and S.-C. Wong, ``Automated segmentation, classification, and
+  tracking of cancer cell nuclei in time-lapse microscopy,'' {\em Biomedical
+  Engineering, IEEE Transactions on}, vol.~53, pp.~762--766, April 2006.
+
+\bibitem{vincent93}
+L.~Vincent, ``Morphological grayscale reconstruction in image analysis:
+  applications and efficient algorithms,'' {\em Image Processing, IEEE
+  Transactions on}, vol.~2, pp.~176--201, Apr 1993.
+
+\bibitem{mukherjee04}
+D.~Mukherjee, N.~Ray, and S.~Acton, ``Level set analysis for leukocyte
+  detection and tracking,'' {\em Image Processing, IEEE Transactions on},
+  vol.~13, pp.~562--572, April 2004.
+
+\bibitem{Tang??}
+C.~Tang, Y.~Wang, and Y.~Cui, ``Tracking of active cells based on kalman filter
+  in time lapse of image sequences of neuron stem cells.''
+
+\bibitem{xu10}
+D.~Xu and L.~Ma., ``Segmentation of image sequences of neuron stem cells based
+  on level-set algorithm combined with local gray threshold.,'' Master's
+  thesis, Harbin Engineering University, 2010.
+
+\bibitem{arteta12}
+C.~Arteta, V.~Lempitsky, J.~A. Noble, and A.~Zisserman, ``Learning to detect
+  cells using non-overlapping extremal regions,'' in {\em Proceedings of the
+  15th International Conference on Medical Image Computing and
+  Computer-Assisted Intervention - Volume Part I}, MICCAI'12, (Berlin,
+  Heidelberg), pp.~348--356, Springer-Verlag, 2012.
+
+\bibitem{arteta13}
+C.~Arteta, V.~S. Lempitsky, J.~A. Noble, and A.~Zisserman, ``Learning to detect
+  partially overlapping instances.,'' in {\em CVPR}, pp.~3230--3237, IEEE,
+  2013.
+
+\bibitem{matas02}
+J.~Matas, O.~Chum, M.~Urban, and T.~Pajdla, ``Robust wide baseline stereo from
+  maximally stable extremal regions,'' in {\em Proceedings of the British
+  Machine Vision Conference}, pp.~36.1--36.10, BMVA Press, 2002.
+\newblock doi:10.5244/C.16.36.
+
+\bibitem{joachims09}
+T.~Joachims, T.~Finley, and C.-N.~J. Yu, ``Cutting-plane training of structural
+  svms,'' {\em Mach. Learn.}, vol.~77, pp.~27--59, Oct. 2009.
+
+\bibitem{bise11}
+R.~Bise, T.~Kanade, Z.~Yin, and S.~il~Huh, ``Automatic cell tracking applied to
+  analysis of cell migration in wound healing assay,'' in {\em Engineering in
+  Medicine and Biology Society,EMBC, 2011 Annual International Conference of
+  the IEEE}, pp.~6174--6179, Aug 2011.
+
+\bibitem{huh13}
+S.~Huh, {\em Toward an Automated System for the Analysis of Cell Behavior:
+  Cellular Event Detection and Cell Tracking in Time-lapse Live Cell
+  Microscopy}.
+\newblock PhD thesis, Robotics Institute, Carnegie Mellon University,
+  Pittsburgh, PA, March 2013.
 
 \end{thebibliography}

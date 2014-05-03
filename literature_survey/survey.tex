@@ -12,6 +12,7 @@
 
 \usepackage[pdftex,colorlinks,citecolor=black,filecolor=black,linkcolor=black,urlcolor=black,pagebackref]{hyperref}
 \usepackage{tikz}
+\bibliographystyle{ieeetr}
 
 %Velikost strani - dvostransko
 \oddsidemargin 1.4cm
@@ -25,7 +26,7 @@
 %Nastavitev glave in repa strani
 \pagestyle{fancy}
 \fancyhead{}
-\renewcommand{\chaptermark}[1]{\markboth{\textsf{Poglavje \thechapter:\ #1}}{}}
+\renewcommand{\chaptermark}[1]{\markboth{\textsf{Chapter \thechapter:\ #1}}{}}
 \renewcommand{\sectionmark}[1]{\markright{\textsf{\thesection\  #1}}{}}
 \fancyhead[RE]{\leftmark}
 \fancyhead[LO]{\rightmark}
@@ -110,6 +111,61 @@ This chapter is an overview of the background research that has been completed i
 
 \section{Cell detection}
 \label{sec:detection}
+
+TODO: overview of types
+
+- watershed
+- improved wateshed + merging over fragmented cells
+- level sets
+- fast level sets
+- image restoration, then thresholding
+- active contours
+- morphological rolling-ball filtering and bayesian classifier
+- adaptive thresholding, filtering heuristics
+- detection with extremal regions
+
+\subsection{Cell segmentation using the Watershed technique}
+
+A basic cell detection method relies in binarizing an image to separate the background from the cells, followed by a segmentation step to extract the cells. \cite{chen99} approach is as follows:
+
+\begin{enumerate}
+  \item Apply a spatial adaptive filter to the image to minimize the effect of noise.
+  \item Locate the pixels with minimum intensities in a small sliding window.
+  \item For each minimum point we proceed to the progressive flooding of its neighbouring points
+  \item Post-processing step to discard false regions.
+\end{enumerate}
+
+A more modern, yet similar, approach would perform binarization with Otsu's method \cite{otsu79}, followed by some morphological operations \cite{serra83} to fill holes and eliminate patches that are too small to correspond to cells, and finally the Watershed algorithm \cite{beucher79} to segment the binary image into individual cells. The disadvantage of this method is that the number of pixels belonging to either cells or background should be approximately the same, and that the signal-to-noise ratio is low.
+
+Chen et al \cite{chen06} have used an improved Watershed algorithm \cite{vincent93} to separate cell nuclei after using Otsu's thresholding method to segment nuclei from the background. Additionally they developed a nuclei-fragment merging method based on he shapes and sizes of the nuclei to deal with the problem of over-segmentation caused by the Watershed algorithm.
+
+
+\subsection{Cell segmentation using level sets}
+
+Another interesting technique to segment cells is a contour evolution method that makes use of the general appearance of cells to segment them using level sets. Mukherjee \cite{mukherjee04} makes the observation that leukocyte shapes and nearly circular cells and that at least a significant part of the border of the cell, the intensity profile is different from the cell cytoplasm and from the background. Using this observation, identification of a leukocyte is formulated as a minimization of an energy function incorporating image gradient and intensity homogeneity within the closed contour encompassing the cell. The benefit of this method is that it can be adjusted to perform well in images with significant clutter and poor contrast by increasing the importance of the homogeneity, or for images with good contrast, where the gradient magnitude term is given more importance. The disadvantage of this method is that cells cannot overlap, which is obtained by adding an additional term to the energy function. The energy function can be minimized with the gradient descent method.
+
+To reduce the solution space for the energy function, only the boundaries of connected components within the image-levels sets. Only the connected components satisfying the size and shape constraints of the cells are extracted. The remaining components are eliminated using area morphology operations. This level-set analysis provides a more efficient solution that is linear in the number of intensity levels in the image in contrast to the much higher complexity of a curve evolution method.
+
+The level set method is contour evolution approach which has good results in segmentation. Tang et al \cite{Tang??} have successfully level-sets combined with local grey thresholding \cite{xu10} for neuron stem cells images which have been obtained by confocal microscopy.
+
+\subsection{Cell detection by model learning}
+
+The previous methods perform efficiently in cells with sufficiently good contrast. In images where the cell borders are unclear, images are of varying intensity, cell density is high, or cells can be of different shapes, these methods would not perform as well. In such cases machine learning methods can perform better by learning a model of a cell based on a large number of annotated examples.
+
+Arteta et al \cite{arteta12}\cite{arteta13},  propose an algorithm that uses a highly-efficient MSER region detector \cite{matas02} to find a broad number of candidate regions that are then scored depending on the similarity to the cell type of interest by a machine learning algorithm . 
+
+The authors organized the extremal regions into trees, so that each tree corresponds to a set of overlapping extremal regions. The non-overlapping regions which achieve high scores can then be selected using dynamic programming of the trees. Two learning strategies are tested: a binary classifier using Support Vector Machines (SVM) and structured learning (structured SVM \cite{joachims09}) which is able to take into account the non-overlap constraint, and achieves better performance.
+
+The feature vector for each regions is composed of several concatenated histograms: a histogram of intensities within the region, two histograms of differences in intensities betwenen the region border and a dilation of it for two different dilation radii, a shape descriptor and the area of the region. The downside of this approach is that extracting the feature vector from the image is slow, especially because it needs to be extracted for each image in the sequence.
+
+The advantage of this approach is the tolerance to changes in image intensities, cell densities and sizes. The major downside is the non-overlap constraint. Fortunately the authors have also developed an algorithm to detect partially overlapping cells \cite{arteta13}. 
+
+The idea is to learn to detect overlapping cells, and the number of cells in the region. The algorithm starts by generating a set of nested regions. Each region is then scored using a set of classifiers that evaluate the similarity of the region to each of the possible classes, where each class corresponds to the number of cells that the region contains. An inference procedure then selects the non-overlapping subset of regions, and assigns each a class label indicating the number of cells that the model believes lie in the region. 
+
+\subsection{Cell detection by image restoration}
+
+Another approach is to use an image restoration technique followed by thresholding \cite{bise11} \cite{huh13}. Bise et al \cite{bise11} apply this technique on phase-contrast microscopy images . The technique utilizes the optophysical principle of image formation by phase-contrast microscope to transform the image into an artefact free image by minimizing a regularized quadratic cost function. After this, a simple image thresholding technique can be used for segmentation.
+
 \section{Mitosis detection}
 \label{sec:mitosis}
 \section{Cell tracking}
@@ -142,10 +198,11 @@ The software will be written in MATLAB.
 
 \newpage
 
-\bibliographystyle{slplainurl}
+
 \addcontentsline{toc}{chapter}{Bibliography}
 \label{page_bibliography}
 \bibliography{survey} 
+
 
 
 \end{document}

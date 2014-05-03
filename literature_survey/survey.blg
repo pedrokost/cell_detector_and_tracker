@@ -1,52 +1,50 @@
 This is BibTeX, Version 0.99d (TeX Live 2013/Debian)
 Capacity: max_strings=35307, hash_size=35307, hash_prime=30011
 The top-level auxiliary file: survey.aux
-The style file: slplainurl.bst
-I found no \citation commands---while reading file survey.aux
-Reallocated singl_function (elt_size=4) to 100 items from 50.
-Reallocated glb_str_ptr (elt_size=4) to 20 items from 10.
-Reallocated global_strs (elt_size=20001) to 20 items from 10.
-Reallocated glb_str_end (elt_size=4) to 20 items from 10.
+The style file: ieeetr.bst
 Database file #1: survey.bib
-You've used 0 entries,
-            2791 wiz_defined-function locations,
-            606 strings with 5014 characters,
-and the built_in function-call counts, 37 in all, are:
-= -- 0
-> -- 0
+A bad cross reference---entry "arteta13"
+refers to entry "conf/cvpr/2013", which doesn't exist
+Warning--I didn't find a database entry for "conf/cvpr/2013"
+You've used 15 entries,
+            1876 wiz_defined-function locations,
+            579 strings with 6389 characters,
+and the built_in function-call counts, 4376 in all, are:
+= -- 439
+> -- 149
 < -- 0
-+ -- 0
-- -- 0
-* -- 2
-:= -- 26
-add.period$ -- 0
-call.type$ -- 0
-change.case$ -- 0
++ -- 56
+- -- 41
+* -- 299
+:= -- 590
+add.period$ -- 17
+call.type$ -- 15
+change.case$ -- 13
 chr.to.int$ -- 0
-cite$ -- 0
-duplicate$ -- 0
-empty$ -- 1
-format.name$ -- 0
-if$ -- 1
+cite$ -- 15
+duplicate$ -- 228
+empty$ -- 417
+format.name$ -- 41
+if$ -- 1091
 int.to.chr$ -- 0
-int.to.str$ -- 0
-missing$ -- 0
-newline$ -- 3
-num.names$ -- 0
-pop$ -- 0
+int.to.str$ -- 15
+missing$ -- 12
+newline$ -- 51
+num.names$ -- 15
+pop$ -- 52
 preamble$ -- 1
 purify$ -- 0
 quote$ -- 0
-skip$ -- 1
+skip$ -- 191
 stack$ -- 0
-substring$ -- 0
-swap$ -- 0
+substring$ -- 320
+swap$ -- 106
 text.length$ -- 0
 text.prefix$ -- 0
 top$ -- 0
 type$ -- 0
 warning$ -- 0
-while$ -- 0
-width$ -- 0
-write$ -- 2
+while$ -- 37
+width$ -- 17
+write$ -- 148
 (There was 1 error message)
