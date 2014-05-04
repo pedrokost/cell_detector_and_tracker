@@ -2,49 +2,54 @@ This is BibTeX, Version 0.99d (TeX Live 2013/Debian)
 Capacity: max_strings=35307, hash_size=35307, hash_prime=30011
 The top-level auxiliary file: survey.aux
 The style file: ieeetr.bst
+Case mismatch error between cite keys tang?? and Tang??
+---line 86 of file survey.aux
+ : \citation{tang??
+ :                 }
+I'm skipping whatever remains of this command
 Database file #1: survey.bib
 A bad cross reference---entry "arteta13"
 refers to entry "conf/cvpr/2013", which doesn't exist
 Warning--I didn't find a database entry for "conf/cvpr/2013"
-You've used 15 entries,
+You've used 20 entries,
             1876 wiz_defined-function locations,
-            579 strings with 6389 characters,
-and the built_in function-call counts, 4376 in all, are:
-= -- 439
-> -- 149
+            606 strings with 7628 characters,
+and the built_in function-call counts, 5982 in all, are:
+= -- 578
+> -- 216
 < -- 0
-+ -- 56
-- -- 41
-* -- 299
-:= -- 590
-add.period$ -- 17
-call.type$ -- 15
-change.case$ -- 13
++ -- 80
+- -- 60
+* -- 415
+:= -- 799
+add.period$ -- 22
+call.type$ -- 20
+change.case$ -- 18
 chr.to.int$ -- 0
-cite$ -- 15
-duplicate$ -- 228
-empty$ -- 417
-format.name$ -- 41
-if$ -- 1091
+cite$ -- 20
+duplicate$ -- 323
+empty$ -- 586
+format.name$ -- 60
+if$ -- 1493
 int.to.chr$ -- 0
-int.to.str$ -- 15
-missing$ -- 12
-newline$ -- 51
-num.names$ -- 15
-pop$ -- 52
+int.to.str$ -- 20
+missing$ -- 17
+newline$ -- 66
+num.names$ -- 20
+pop$ -- 88
 preamble$ -- 1
 purify$ -- 0
 quote$ -- 0
-skip$ -- 191
+skip$ -- 251
 stack$ -- 0
-substring$ -- 320
-swap$ -- 106
+substring$ -- 424
+swap$ -- 141
 text.length$ -- 0
 text.prefix$ -- 0
 top$ -- 0
 type$ -- 0
 warning$ -- 0
-while$ -- 37
-width$ -- 17
-write$ -- 148
-(There was 1 error message)
+while$ -- 50
+width$ -- 22
+write$ -- 192
+(There were 2 error messages)
