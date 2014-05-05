@@ -2,18 +2,14 @@ This is BibTeX, Version 0.99d (TeX Live 2013/Debian)
 Capacity: max_strings=35307, hash_size=35307, hash_prime=30011
 The top-level auxiliary file: survey.aux
 The style file: ieeetr.bst
-Case mismatch error between cite keys tang?? and Tang??
----line 86 of file survey.aux
- : \citation{tang??
- :                 }
-I'm skipping whatever remains of this command
 Database file #1: survey.bib
 A bad cross reference---entry "arteta13"
 refers to entry "conf/cvpr/2013", which doesn't exist
+Warning--I didn't find a database entry for "Tang??"
 Warning--I didn't find a database entry for "conf/cvpr/2013"
 You've used 20 entries,
             1876 wiz_defined-function locations,
-            606 strings with 7628 characters,
+            607 strings with 7631 characters,
 and the built_in function-call counts, 5982 in all, are:
 = -- 578
 > -- 216
@@ -52,4 +48,4 @@ warning$ -- 0
 while$ -- 50
 width$ -- 22
 write$ -- 192
-(There were 2 error messages)
+(There was 1 error message)

@@ -35,10 +35,6 @@ D.~Mukherjee, N.~Ray, and S.~Acton, ``Level set analysis for leukocyte
   detection and tracking,'' {\em Image Processing, IEEE Transactions on},
   vol.~13, pp.~562--572, April 2004.
 
-\bibitem{Tang??}
-C.~Tang, Y.~Wang, and Y.~Cui, ``Tracking of active cells based on kalman filter
-  in time lapse of image sequences of neuron stem cells.''
-
 \bibitem{xu10}
 D.~Xu and L.~Ma., ``Segmentation of image sequences of neuron stem cells based
   on level-set algorithm combined with local gray threshold.,'' Master's
@@ -46,7 +42,7 @@ D.~Xu and L.~Ma., ``Segmentation of image sequences of neuron stem cells based
 
 \bibitem{arteta12}
 C.~Arteta, V.~Lempitsky, J.~A. Noble, and A.~Zisserman, ``Learning to detect
-  cells using non- extremal regions,'' in {\em Proceedings of the 15th
+  cells using non-extremal regions,'' in {\em Proceedings of the 15th
   International Conference on Medical Image Computing and Computer-Assisted
   Intervention - Volume Part I}, MICCAI'12, (Berlin, Heidelberg), pp.~348--356,
   Springer-Verlag, 2012.
@@ -95,6 +91,10 @@ D.~House, M.~Walker, Z.~Wu, J.~Wong, and M.~Betke, ``Tracking of cell
 B.~Xu, M.~Lu, P.~Zhu, Q.~Chen, and X.~Wang, ``Multiple cell tracking using ant
   estimator,'' in {\em Control, Automation and Information Sciences (ICCAIS),
   2012 International Conference on}, pp.~13--17, Nov 2012.
+
+\bibitem{tang}
+C.~Tang, Y.~Wang, and Y.~Cui, ``Tracking of active cells based on kalman filter
+  in time lapse of image sequences of neuron stem cells.''
 
 \bibitem{li07}
 K.~Li and T.~Kanade, ``Cell population tracking and lineage construction using

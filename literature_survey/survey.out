@@ -9,7 +9,10 @@
 \BOOKMARK [2][-]{subsection.2.2.1}{Tracking by model evolution}{section.2.2}% 9
 \BOOKMARK [2][-]{subsection.2.2.2}{Tracking by data association}{section.2.2}% 10
 \BOOKMARK [2][-]{subsection.2.2.3}{Tracking with a dynamics filter}{section.2.2}% 11
-\BOOKMARK [2][-]{subsection.2.2.4}{Cell tracking as a network flow problem6}{section.2.2}% 12
+\BOOKMARK [2][-]{subsection.2.2.4}{Cell tracking as a network flow problem}{section.2.2}% 12
 \BOOKMARK [1][-]{section.2.3}{Conclusion}{chapter.2}% 13
 \BOOKMARK [0][-]{chapter.3}{Work plan}{}% 14
-\BOOKMARK [0][-]{chapter.3}{Bibliography}{}% 15
+\BOOKMARK [1][-]{section.3.1}{Architecture}{chapter.3}% 15
+\BOOKMARK [1][-]{section.3.2}{Image sequences}{chapter.3}% 16
+\BOOKMARK [1][-]{section.3.3}{Development schedule}{chapter.3}% 17
+\BOOKMARK [0][-]{section.3.3}{Bibliography}{}% 18
