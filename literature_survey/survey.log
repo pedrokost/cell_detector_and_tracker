@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-2.5-1.40.14 (TeX Live 2013/Debian) (format=pdflatex 2014.4.21)  5 MAY 2014 10:31
+This is pdfTeX, Version 3.1415926-2.5-1.40.14 (TeX Live 2013/Debian) (format=pdflatex 2014.4.21)  5 MAY 2014 11:23
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -807,21 +807,17 @@ File: t1cmss.fd 1999/05/25 v2.5h Standard LaTeX font definitions
 Chapter 2.
 [5
 
-]
-
-LaTeX Warning: Citation `Tang??' on page 6 undefined on input line 141.
-
-[6] [7] [8] [9] [10] [11] [12] [13]
+] [6] [7] [8] [9] [10] [11] [12] [13]
 Chapter 3.
 [14
 
-] <frame1.png, id=234, 509.905pt x 347.2975pt>
+] <frame1.png, id=235, 509.905pt x 347.2975pt>
 File: frame1.png Graphic file (type png)
  <use frame1.png>
 Package pdftex.def Info: frame1.png used on input line 258.
 (pdftex.def)             Requested size: 195.18808pt x 132.94418pt.
 
-<frame2.png, id=236, 510.90875pt x 349.305pt>
+<frame2.png, id=237, 510.90875pt x 349.305pt>
 File: frame2.png Graphic file (type png)
  <use frame2.png>
 Package pdftex.def Info: frame2.png used on input line 262.
@@ -842,22 +838,24 @@ Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 292.
 Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 292.
 Package rerunfilecheck Info: File `survey.out' has not changed.
 (rerunfilecheck)             Checksum: 2200ED60909B10780B85D87E05A176EC;1262.
-Package rerunfilecheck Info: File `survey.brf' has not changed.
-(rerunfilecheck)             Checksum: FDE98655C9A5DE69736F46EA3AFCB6E4;1401.
 
 
-LaTeX Warning: There were undefined references.
+Package rerunfilecheck Warning: File `survey.brf' has changed.
+(rerunfilecheck)                Rerun to get bibliographical references right.
 
+Package rerunfilecheck Info: Checksums for `survey.brf':
+(rerunfilecheck)             Before: FDE98655C9A5DE69736F46EA3AFCB6E4;1401
+(rerunfilecheck)             After:  ABFE9CDF8F78ECB6C8C020458D710278;1399.
 Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 292.
  ) 
 Here is how much of TeX's memory you used:
- 15838 strings out of 495028
- 279267 string characters out of 6181497
+ 15836 strings out of 495028
+ 279246 string characters out of 6181497
  347226 words of memory out of 5000000
- 18649 multiletter control sequences out of 15000+600000
+ 18647 multiletter control sequences out of 15000+600000
  16832 words of font info for 37 fonts, out of 8000000 for 9000
  14 hyphenation exceptions out of 8191
- 56i,12n,55p,1339b,454s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 56i,12n,55p,1327b,454s stack positions out of 5000i,500n,10000p,200000b,80000s
 {/usr/share/texmf/fonts/enc/dvips/cm-super/cm-super-t1.enc}</usr/share/texmf/
 fonts/type1/public/cm-super/sfbx1200.pfb></usr/share/texmf/fonts/type1/public/c
 m-super/sfbx1440.pfb></usr/share/texmf/fonts/type1/public/cm-super/sfbx1728.pfb
@@ -867,10 +865,10 @@ onts/type1/public/cm-super/sfrm1200.pfb></usr/share/texmf/fonts/type1/public/cm
 </usr/share/texmf/fonts/type1/public/cm-super/sfrm2074.pfb></usr/share/texmf/fo
 nts/type1/public/cm-super/sfss1200.pfb></usr/share/texmf/fonts/type1/public/cm-
 super/sfti1200.pfb></usr/share/texmf/fonts/type1/public/cm-super/sfxc2074.pfb>
-Output written on survey.pdf (19 pages, 456075 bytes).
+Output written on survey.pdf (19 pages, 455563 bytes).
 PDF statistics:
- 347 PDF objects out of 1000 (max. 8388607)
- 302 compressed objects within 4 object streams
+ 348 PDF objects out of 1000 (max. 8388607)
+ 303 compressed objects within 4 object streams
  68 named destinations out of 1000 (max. 500000)
  187 words of extra memory for PDF output out of 10000 (max. 10000000)
 
