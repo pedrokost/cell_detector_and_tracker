@@ -253,21 +253,16 @@ The program will be developed in MATLAB and will include an executable GUI that 
 
 Up to date, only one sample of an image sequence was made available. The data is provided by Dr. Leo Carlin from the Leukocyte Biology Section at the National Heart and Lung Institute (NHLI). He has promised to provide more data as soon as it is obtained.
 
-TODO add border in between
 \begin{figure}
-\centering
-\begin{subfigure}{.5\textwidth}
-  \centering
-  \includegraphics[width=\textwidth]{frame1.png}
-  \caption{}
-\end{subfigure}%
-\begin{subfigure}{.5\textwidth}
-  \centering
-  \includegraphics[width=\textwidth]{frame2.png}
-  \caption{}
-\end{subfigure}
-\caption{Two example frames of cell images that the tracker will need to successfully process and track the individual cells. The colour of the images has been enhanced for this display.}
-\label{fig:sampleframes}
+	\begin{subfigure}{.49\textwidth}
+	  \includegraphics[width=\textwidth]{frame1.png}
+	\end{subfigure}%
+	\hfill
+	\begin{subfigure}{.49\textwidth}
+	  \includegraphics[width=\textwidth]{frame2.png}
+	\end{subfigure}
+	\caption{Two example frames of cell images that the tracker will need to successfully process and track the individual cells. The colour of the images has been enhanced for this display.}
+	\label{fig:sampleframes}
 \end{figure}
 
 Figure \ref{fig:sampleframes} displays two sample frames from the provided image sequence. The images are low quality, and the cell borders have low contrast. Obtaining more sample data is crucial to be able to shortlist which algorithms are appropriate for accurate cell detection and tracking.
