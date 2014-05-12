@@ -1,8 +1,15 @@
- ☐ Install dependencies for Arteta code
- ☐ Test arteta code in given samples to learn how to use it
+ ✔ Install dependencies for Arteta code @done (10-05-11 19:03)
+ ✔ Test arteta code in given samples to learn how to use it @done (14-05-11 19:03)
+ ✔ Annotate the Lung dataseth @done (14-05-12 22:47)
+     ✔ Split video sequence into 2 channels @done (14-05-12 22:47)
+     ✔ for each channel create a new folder @done (14-05-12 22:47)
+     ✔ split the video into individual frames and save them to the folders @done (14-05-12 22:47)
+ ☐ Write down how annotation is performed
+ ☐ Write a function to convert the points to the required matalb format and save
  ☐ Test arteta code in my images
+ ☐ DO NOT BUILD AN ANNOTATION TOOL UNTIL YOU KNOW YOU ACTUALLY USE IT
+ ☐ play around with feature extraction to learn a classifier (like the ones used for the SVMstruct)
  ☐ play around with the MSFT detector
- ☐ play around with feature extraction to learn a classifier (like the ones usede for the SVMstruct)
  ☐ read paper on SVMstruct
  ☐ Try some preprocessing steps for the segmenation maybe? O figure out new feauter for the classifier with FIJI
 
