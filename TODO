@@ -1,5 +1,13 @@
- ☐ Test arteta code in my images
- ☐ DO NOT BUILD AN ANNOTATION TOOL UNTIL YOU KNOW YOU ACTUALLY USE IT
+ ✔ Train a classifier using the demo data, to see how long it takes (P1) @done (14-05-15 21:37)
+ ☐ Train a new classifier using my annotated images (P2)
+ ☐ Test arteta code in train images (P3)
+ ☐ Define a testing set, and run algorithm on it to see how well it generalizes
+ ☐ Run the profiler without the concurrency features, which prevent efficient profiling
+ ☐ Write down the list of features used in the classifier (P4)
+ ☐ Explore how these features are implemented
+ ☐ Modify the code so that these feature can be removed one by one
+ ☐ Remove one useless feature
+ ☐ Try other feature (SIFT, ... ) 
  ☐ play around with feature extraction to learn a classifier (like the ones used for the SVMstruct)
  ☐ play around with the MSFT detector
  ☐ read paper on SVMstruct

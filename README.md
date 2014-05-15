@@ -11,4 +11,6 @@ Supervisor: Benjamin Glocker
 
 Rough paper notes are available [in this Google Document](https://docs.google.com/document/d/1KqB5j8V7w5Uy5E0Us5tTD5N76Y7J6eYJCwInA0OH_uA/edit?usp=sharing)
 
-Progress notes are available [in this WriteLatex document](https://www.writelatex.com/1069176jbdjmg)
+Progress thesis is available [in this WriteLatex document](https://www.writelatex.com/1069176jbdjmg)
+
+Progress of analysing Arteta's code is available [in this Google Document](https://docs.google.com/document/d/1nTW8_QWZoDeh8RpXsDSVcWdKAtrsMsJbyx2A9oYlwvQ/edit?usp=sharing)
