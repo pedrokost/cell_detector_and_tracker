@@ -1,6 +1,9 @@
  ✔ Train a classifier using the demo data, to see how long it takes (P1) @done (14-05-15 21:37)
- ☐ Train a new classifier using my annotated images (P2)
- ☐ Test arteta code in train images (P3)
+ ✔ Train a new classifier using my annotated images (P2) @done (14-05-16 14:29)
+ ✔ Test arteta code in train images (P3) @done (14-05-16 14:40)
+ ☐ Prepare kidney images
+ ☐ Annotate subset of kidney images
+ ☐ Test arteta code in kidney images
  ☐ Define a testing set, and run algorithm on it to see how well it generalizes
  ☐ Run the profiler without the concurrency features, which prevent efficient profiling
  ☐ Write down the list of features used in the classifier (P4)
