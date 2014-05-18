@@ -38,3 +38,17 @@ Problems:
 
  * When testing: Attempted to access nodesMapping(12); index out of bounds because numel(nodesMapping)=11.
  * Training: too long... something must be wrong
+
+
+Red Kidney Data set
+=================
+Dimensions: 512x512 pixels
+Train: frames 1-40 (40 frames)
+Test:  frames 40-66 (26 frames)
+
+
+Green Kidney Data set
+=================
+Dimensions: 512x512 pixels
+Train: first 35 frames
+Test:  about last 25 frames
