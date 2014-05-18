@@ -57,3 +57,7 @@ Green Kidney Data set
 Dimensions: 512x512 pixels
 Train: first 35 frames
 Test:  about last 25 frames
+
+Over 27 testing images, I get these results:
+Mean Precision: 0.68597
+Mean Recall: 0.94002
