@@ -46,6 +46,11 @@ Dimensions: 512x512 pixels
 Train: frames 1-40 (40 frames)
 Test:  frames 40-66 (26 frames)
 
+Problems:
+
+* On several images 25/26 and >35 I get errors about 0 subscript, so I just deleted them from the trainin set.
+
+
 
 Green Kidney Data set
 =================
