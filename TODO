@@ -5,6 +5,7 @@
  ☐ Remove one useless feature
  ☐ Try other feature (SIFT, ... ) 
  ☐ read paper on SVMstruct
+ ☐ Train a compound model (learned on mixed datasets) and evaluate its performance
 ＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿
 Archive:
  ✔ Train a classifier using the demo data, to see how long it takes (P1) @done (14-05-15 21:37)
