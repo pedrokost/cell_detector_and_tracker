@@ -75,4 +75,30 @@ Code structure
 ================
 Hungarian.m: A function for finding a minimum edge weight matching given a MxN Edge weight matrix WEIGHTS using the Hungarian Algorithm.
 
-PylonInference: Picks the best subset of extremal regions in 'r' using the pylon inference
+PylonInference.m: Picks the best subset of extremal regions in 'r' using the pylon inference
+
+buildPylonMSER.m: Builds the different trees that are formed when running MSER on the cell
+
+count_unique.m: Determines unique values, and counts occurrences
+
+cpdh.m: Invariant Contour Points Distribution Histogram
+
+demo.m: The main function to test/train models
+
+encodeImage.m: Collects the MSERs in an image and encodes individually with the selected features.
+
+encodeMSER.m: Encodes a single MSER with the selected features.
+
+evalDetect.m: Evaluation script to match detections based on the hungarian algorithm.
+
+loadDatasetInfo.m: This is used to setup (and load) the parameters of the dataset.
+
+p_see_annotations.m: Plots an image with its annotations
+
+plotDotsSequence.m: Given a cell of dots arrays, it plots them in a spatial view
+
+setFeatures.m: To set the features and control for training/testing.
+
+testCellDetect.m: Detect cells in an image given the W vector
+
+trainCellDetect.m: Learn a structured output SVM classifier to detect cells based on non-overlapping extremal regions
