@@ -1,4 +1,4 @@
- ☐ Run the profiler without the concurrency features, which prevent efficient profiling
+ ✔ Run the profiler without the concurrency features, which prevent efficient profiling @done (14-05-20 09:09)
  ☐ Write down the list of features used in the classifier (P4)
  ☐ Explore how these features are implemented
  ☐ Modify the code so that these feature can be removed one by one
