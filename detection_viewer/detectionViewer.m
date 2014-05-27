@@ -1,57 +1,65 @@
 function detectionViewer
     %FUNCTION DETECTIONVIEWER Displays the cell detection results
     
+    addpath('relativepath');
+
+    
     %  Create and then hide the GUI as it is being constructed.
     f = figure('Visible','off','Position',[0,0,825,500]);
 
     % =====================================================================
     % ------------FUNCTION GLOBALS-----------------------------------------
     % =====================================================================
-    matfiles = '';
-    imgfiles = '';
+    matfileNames = '';
+    imgfileNames = '';
     curIdx = 1;
-    folderName = '';
+    imgFolderName = '';
+    images = cell(1,1); % cache of images
+    annotations = cell(1,1); % cache of annotation
+    matFolderName = '';
     numImages = 0;
     % =====================================================================
     % ------------SETUP COMPONENTS-----------------------------------------
     % =====================================================================
     hbrowse = uicontrol('Style','pushbutton',...
-           'String','Choose image',...
-           'Position', [25 425 175 50],...
+           'String','Choose image folder',...
+           'Position', [25 450 175 25],...
            'Callback',{@hbrowse_callback});
+    hbrowsemat = uicontrol('Style','pushbutton',...
+           'String','Choose annotation folder',...
+           'Position', [25 425 175 25],...
+           'Enable', 'off',...
+           'Callback', {@hbrowsemat_callback});
+    hchecksame = uicontrol('Style', 'checkbox', ...
+                           'String', 'Includes annotations', ...
+                           'Position', [200 450 175 25],...
+                           'Value', 1,...
+                           'Callback', {@hchecksame_callback});
     hfilepath = uicontrol('Style','text', ...
            'String','Browse for directory with detection results',...
-           'Position', [200,425,600,50], ...
-           'HorizontalAlignment', 'left');
-    hcurimg = uicontrol('Style','text', ...
-           'String',' 0/0',...
-           'Position', [625,45,75,12], ...
-           'HorizontalAlignment', 'center',...
-           'Visible','off');
+           'Position', [400,450,400,25], ...
+           'HorizontalAlignment', 'right',...
+           'Visible', 'off');
+    hfilepathmat = uicontrol('Style','text', ...
+           'String','Browse for directory with annotation results',...
+           'Position', [400,425,400,25], ...
+           'HorizontalAlignment', 'right', ...
+           'Visible', 'off');
     hviewerraw = axes('Units','Pixels',...
             'Position', [25, 100, 375,300],...
             'Visible','off'); 
     hviewerdetection = axes('Units','Pixels', ...
             'Position', [425,100,375,300],...
             'Visible','off');
-    hnext = uicontrol('Style','pushbutton',...
-            'String','Next image',...
-            'Position', [700,25,100,50], ...
-            'Callback', {@hnext_callback},...
-            'Visible','off');
-    hprev = uicontrol('Style','pushbutton',...
-            'String','Previous image',...
-            'Position', [525,25,100,50], ...
-            'Callback', {@hprev_callback},...
-            'Visible','off');
     hslider = uicontrol('Style', 'slider', ...
                         'Min', 1,...
                         'Max', 2,...
                         'SliderStep', [1 1],...
                         'Value', 1,...
-                        'Position', [25,25,475,50],...
+                        'Position', [25,25,775,50],...
                         'Callback', @hslider_callback,...
                         'Visible','off');
+                    
     hsliderListener = addlistener(hslider,'Value','PostSet',@hslider_callback);
 %     inspect(hslider)
 
@@ -60,7 +68,8 @@ function detectionViewer
     % =====================================================================
     % Initialize the GUI.
     % Change units to normalized so components resize automatically.
-    set([f,hbrowse,hfilepath,hviewerraw,hviewerdetection,hnext, hprev, hcurimg, hslider],...
+    set([f,hbrowse,hfilepath,hviewerraw,hviewerdetection, ...
+        hslider, hchecksame, hbrowsemat, hfilepathmat],...
         'Units','normalized');
 
     % Generate the data to plot.
@@ -75,53 +84,52 @@ function detectionViewer
     set(f,'Visible','on');
     % =====================================================================
     % -----------CALLBACKS-------------------------------------------------
-    % ========================================================
+    % =====================================================================
     function hbrowse_callback(source, eventdata)
-       [fileName,folderName,~] = uigetfile({'*.*'}, 'Select an image');
-       if folderName == 0
-          warning('Select the folder with images and annotation mat files')
-          hideUIElements()
+       [filen,foldn,~] = uigetfile({'*.*'}, 'Select an image');
+       if foldn == 0
+          warning('Select the folder with images')
+          if numImages ==0;
+              hideUIElements();
+          end
           return
+       else
+           fileName = filen;
+           imgFolderName = foldn;
        end
-% TODO: call the GUI, do not shortcut here
-%        fileName='im01.pgm';
-%        folderName = '/home/pedro/Dropbox/Imperial/project/detection_viewer/kidney/trainKidneyRed/';
        imgformat = strsplit(fileName, '.');
        imgformat = imgformat{end};
-       imgfiles = dir(fullfile(folderName, strcat('*.', imgformat)));
-       numImages = numel(imgfiles);
+       imgfileNames = dir(fullfile(imgFolderName, strcat('*.', imgformat)));
+       numImages = numel(imgfileNames);
+       images = cell(numImages, 1);
        
-       matfiles = cell(numImages);
-%      load only corresponding mat files
-       for i=1:numImages
-           img = imgfiles(i);
-           base = basename(img.name);
-           matfiles{i} = strcat(base, '.mat');
-           if ~exist(fullfile(folderName, matfiles{i}), 'file') 
-              error('The file %s does not exist', matfiles{i}) 
-           end
+       if get(hchecksame, 'Value')
+           matFolderName = imgFolderName;
        end
-       matfiles = struct('name', matfiles);
+       loadMatFiles();
        
-       
-       set(hfilepath, 'String', folderName);
+       set(hfilepath, 'String', imgFolderName);
        set(hslider, 'Max', numImages);
        set(hslider, 'SliderStep', [1 5] / (numImages - 1));
        
        displayImage(curIdx, numImages);
+       updateFolderPaths()
        displayUIElements()
     end
 
-    function hnext_callback(source, eventdata)
-        curIdx = curIdx + 1;
-        curIdx = min(curIdx, numImages);
-        displayImage(curIdx, numImages);
+    function hbrowsemat_callback(source, eventdata)
+      foldn = uigetdir(imgFolderName, 'Select folder with annotations');
+       if foldn == 0
+          warning('Select the folder with annotations')
+          return
+       else
+           matFolderName = foldn;
+       end
+       loadMatFiles();
+       updateFolderPaths()
+       displayAnnotations(curIdx);
     end
-    function hprev_callback(source, eventdata)
-        curIdx = curIdx - 1;
-        curIdx = max(curIdx, 1);
-        displayImage(curIdx, numImages);
-    end
+
     function hslider_callback(source, eventdata)
         value = round(get(hslider, 'Value'));
         if value == curIdx; return; end
@@ -130,40 +138,129 @@ function detectionViewer
         displayImage(curIdx, numImages);
     end
 
-    function displayImage(index, numImages)
-        %% DISPLAYIMAGE Displays the current image in the sequence
+    function hchecksame_callback(source, eventdata)
+       % Manages toggling the use-same-folder-for-annotations checkbox
+       value = get(hchecksame, 'Value');
+       if value == 1
+            set(hbrowsemat, 'Enable', 'off');
+            matFolderName = imgFolderName;
+            loadMatFiles()
+       else
+           set(hbrowsemat, 'Enable', 'on');
+           matFolderName = '';
+           displayImage(curIdx, numImages)
+       end
+       updateFolderPaths()
+       displayImage(curIdx, numImages);
+    end
+    % =====================================================================
+    % -----------OTHER FUNCTIONS-------------------------------------------
+    % =====================================================================
+    function updateFolderPaths()
+        if ~isempty(imgFolderName)
+           set(hfilepath, 'String', relativepath(imgFolderName)); 
+        else
+            set(hfilepath, 'String', ''); 
+        end
         
-        I = imread(fullfile(folderName, imgfiles(index).name));
-        data = load(fullfile(folderName, matfiles(index).name), 'gl');
-        gl = data.gl;
+        if ~isempty(matFolderName)
+           set(hfilepathmat, 'String', relativepath(matFolderName)); 
+        else
+            set(hfilepathmat, 'String', ''); 
+        end
+    end
 
+    function loadMatFiles
+        % Loads annotation files
+        if isempty(matFolderName)
+            warning('Select a mat folder')
+            return
+        end
+        matfileNames = cell(numImages);
+        for i=1:numImages
+           img = imgfileNames(i);
+           base = basename(img.name);
+           matfileNames{i} = strcat(base, '.mat');
+           if ~exist(fullfile(matFolderName, matfileNames{i}), 'file') 
+              error('The file %s does not exist', matfileNames{i}) 
+           end
+        end
+        matfileNames = struct('name', matfileNames); 
+        annotations = cell(numImages, 1);
+    end
+
+    function I = getImage(index)
+        % Returns the requested image of the sequence
+        if isempty(images{index})
+            I = imread(fullfile(imgFolderName, imgfileNames(index).name));
+            images{index} = I;
+        else
+            I = images{index};
+        end
+    end
+    function dots = getAnnotations(index)
+        % Returns the requested image annotations
+        if isempty(annotations{index})
+            data = load(fullfile(matFolderName, matfileNames(index).name));
+            if isfield(data, 'dots')
+                dots = data.dots;
+            else
+                dots = data.gl;
+            end
+            annotations{index} = dots;
+        else
+            dots = annotations{index};
+        end
+    end
+
+    function displayImage(index, numImages)
+        % Loads and displays the current image
+        if isempty(imgFolderName)
+            return
+        end
+        
+        I = getImage(index);
+        cla(hviewerraw);
+        cla(hviewerdetection);
         imshow(I, 'Parent', hviewerraw);
         imshow(I, 'Parent', hviewerdetection);
-        hold(hviewerdetection, 'on');
-        plot(gl(:, 1), gl(:, 2), 'r+', 'Parent', hviewerdetection);
-        drawnow;
-        
-        progress = sprintf('%2d/%d', index, numImages);
-        set(hcurimg, 'String', progress);
+        tit = sprintf('Original image %2d/%d', index, numImages);
+        title(tit, 'Parent', hviewerraw)
+        title(tit, 'Parent', hviewerdetection)
         set(hslider, 'Value', index);
+        
+        displayAnnotations(index);
+    end
+
+    function displayAnnotations(index)
+        % Loads and displays the current annotations
+        if isempty(matFolderName)
+            return
+        end
+        
+        dots = getAnnotations(index);
+
+        hold(hviewerdetection, 'on');
+        plot(dots(:, 1), dots(:, 2), 'r+', 'Parent', hviewerdetection);
+        
+        tit = sprintf('Annotated image %2d/%d', index, numImages);
+        title(tit, 'Parent', hviewerdetection)
     end
 
     function displayUIElements
-      set(hcurimg, 'Visible', 'on');
-      set(hviewerraw, 'Visible', 'on');
-      set(hviewerdetection, 'Visible', 'on');
-      set(hnext, 'Visible', 'on');
-      set(hprev, 'Visible', 'on');
+      set(hviewerraw, 'Visible', 'off');
+      set(hviewerdetection, 'Visible', 'off');
       set(hslider, 'Visible', 'on');
+      set(hfilepath, 'Visible', 'on');
+      set(hfilepathmat, 'Visible', 'on');
     end
 
     function hideUIElements
-      set(hcurimg, 'Visible', 'off');
       set(hviewerraw, 'Visible', 'off');
       set(hviewerdetection, 'Visible', 'off');
-      set(hnext, 'Visible', 'off');
-      set(hprev, 'Visible', 'off');
       set(hslider, 'Visible', 'off');
+      set(hfilepath, 'Visible', 'off');
+      set(hfilepathmat, 'Visible', 'off');
     end
 
     function base = basename(filename)
