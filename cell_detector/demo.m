@@ -22,8 +22,8 @@ end
 
 %---------------------------------------------------------------------Setup
 %Choose parameters for the training/testing
-datasetTrain = 1;%Identifier of the training data as set in loadDatasetInfo
-datasetTest = 2;%Identifier of the testing data as set in loadDatasetInfo
+datasetTrain = 9;%Identifier of the training data as set in loadDatasetInfo
+datasetTest = 10;%Identifier of the testing data as set in loadDatasetInfo
 train = 0;%---->Do train
 test = 1;%----->Do test
 
@@ -52,10 +52,9 @@ else
 end
 
 %----------------------------------------------------------------------Test
-t = cputime;
-
 if test
     [files, imExt, dataFolder, outFolder,~,tol] = loadDatasetInfo(datasetTest);
+%     files = files(1:10);
     for imNum = 1:numel(files)
 
         disp(['Testing on Image ' num2str(imNum) '/' num2str(numel(files))]);
@@ -83,8 +82,6 @@ if test
     end
 end
 
-elapsedTime = cputime-t;
-
 if test && isSequence
     plotDotsSequence(outFolder);
 end
@@ -95,12 +92,6 @@ if exist('prec','var')
     disp(['Mean Precision: ' num2str(mean(prec)) ]);
     disp(['Mean Recall: ' num2str(mean(rec)) ]);
     disp(' ');
-
-    prec = mean(prec);
-    rec = mean(rec);
-
-    fprintf('Completed in %2.3f CPU time units with precision %3.2f and recall %3.2f\n', ...
-                                                    elapsedTime, prec, rec);
 end
 
 %--------------------------------------------------------------------Finish
