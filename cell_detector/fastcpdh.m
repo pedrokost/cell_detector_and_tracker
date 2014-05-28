@@ -37,7 +37,9 @@ if numel(stats) > 1
     stats = stats(maxIndx);
 end
 
-object = imrotate(object,-stats.Orientation);
+% imrotate cannot use logical for hardware acceleration
+object = imrotate(uint8(object),-stats.Orientation);
+object = logical(object);
 stats = fastregionprops(object, 'BoundingBox', 'Area', 'PixelIdxList');
 if numel(stats) > 1
     maxIndx = 1;
