@@ -18,12 +18,13 @@ end
 %---------------------------------------------------------------------Setup
 %Choose parameters for the training/testing
 % done: 3:4, 9:10
-datasetTrain = 7;%Identifier of the training data as set in loadDatasetInfo
-datasetTest = 8;%Identifier of the testing data as set in loadDatasetInfo
+datasetTrain = 1;%Identifier of the training data as set in loadDatasetInfo
+datasetTest = 2;%Identifier of the testing data as set in loadDatasetInfo
 numFeatures = 7; % number of all possible features
-runPar = 0; % Run with additonal parallel workers
+runPar = 1; % Run with additonal parallel workers
 profilerOn = 0;
 inspectResults = 0;
+skipFeatureSetsShorterThan = 4;  % 0 for no skip
 
 if runPar %start parallel workers
     if ~(matlabpool('size') > 0)
@@ -55,7 +56,7 @@ if exist(resultsFile, 'file')
 	fprintf('Continuing from iteration #%d\n\n', iter);
 else
 	results = [X, zeros(size(X, 1),3)];
-	iter = 1;
+	iter = 1;  % FIXME, start from 1
 end
 
 
@@ -63,6 +64,13 @@ startIter = iter;
 for iter=startIter:size(X, 1);
 
 	features = X(iter, :);
+
+    if sum(features(1:(numFeatures-1))) < skipFeatureSetsShorterThan
+        iter = iter + 1;
+        fprintf('Skipping feature-set %s\n', num2str(features));
+        continue
+    end
+
 	fprintf('=================================================================\n');
 	fprintf('Running training set %2d/%d with feature-set %s\n', iter,...
 													size(X, 1), num2str(features));
