@@ -2,3 +2,6 @@
 *.sublime-*
 *~
 cell_tracking_papers/code/arteta12_tests/CellDetect_v1.0/*/out*
+cell_detector/*/out*
+cell_detector/*/train*/feats_*.mat
+cell_detector/*/out*/mask_*.tif
