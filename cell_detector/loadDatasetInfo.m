@@ -56,6 +56,10 @@ switch dataset
         maxPixels = 100;
         Delta = 2;
         tol = 8; %Tolerance (pixels) for evaluation only
+        %      features: [1 0 1 1 1 1 0]
+        %  timePerImage: 1.6950
+        % meanPrecision: 0.8907
+        %    meanRecall: 0.9082
     case 4 %LungGreen
         %-TESTING DATA SET-%
         dataFolder = 'lung/testLungGreen';
@@ -92,6 +96,11 @@ switch dataset
         maxPixels = 1000;
         Delta = 2;
         tol = 8; %Tolerance (pixels) for evaluation only
+        %      features: [1 1 0 0 0 0 0]
+        %  timePerImage: 0.5353
+        % meanPrecision: 0.6833
+        %    meanRecall: 0.9600
+
     case 8 %KidneyGreen
         %-TESTING DATA SET-%
         dataFolder = 'kidney/testKidneyGreen';
@@ -111,6 +120,11 @@ switch dataset
         Delta = 5;
         MaxVariation = 0.5;
         tol = 8; %Tolerance (pixels) for evaluation only
+        %      features: [1 0 0 1 1 0 1]
+        %  timePerImage: 0.8688
+        % meanPrecision: 0.6920
+        %    meanRecall: 0.9577
+
     case 10 %KidneyRed
         %-TESTING DATA SET-%
         dataFolder = 'kidney/testKidneyRed';
