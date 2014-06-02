@@ -25,7 +25,7 @@ end
 datasetTrain = 9;%Identifier of the training data as set in loadDatasetInfo
 datasetTest = 10;%Identifier of the testing data as set in loadDatasetInfo
 train = 0;%---->Do train
-test = 0;%----->Do test
+test = 1;%----->Do test
 
 inspectResults = 0; %1: Shows detected cells. 
 %2:A view on the results: MSERs found and selected
@@ -56,6 +56,7 @@ t = cputime;
 
 if test
     [files, imExt, dataFolder, outFolder,~,tol] = loadDatasetInfo(datasetTest);
+    files = files(1:5);
     for imNum = 1:numel(files)
 
         disp(['Testing on Image ' num2str(imNum) '/' num2str(numel(files))]);

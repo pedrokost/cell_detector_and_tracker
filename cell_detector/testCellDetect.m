@@ -44,6 +44,8 @@ biasedPrediction = prediction  + ctrl.bias;
 mask = logical(mask);
 
 %---------------------------------------------------------------Get Centres
+
+% TODO this could be elimintaed? Why can centroid be used for centers?
 regions = regionprops(mask, 'Centroid','PixelList');
 nRegions = numel(regions);
 centers = zeros(size(mask), 'uint8');

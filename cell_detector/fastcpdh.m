@@ -1,4 +1,4 @@
-function [count,angle] = cpdh(object, angBins, radBins)
+function [count,angle] = fastcpdh(object, angBins, radBins)
 %Rotationally Invariant Contour Points Distribution Histogram
 %function count = cpdh(object, angBins, radBins)
 %
@@ -20,8 +20,17 @@ function [count,angle] = cpdh(object, angBins, radBins)
 %       [biggest,idx] = max(numPixels);
 %       BW(CC.PixelIdxList{idx}) = 0;
 
+showit = 0;
+if showit;
+    subplot(1,2,1); imshow(object); axis tight; axis equal;
+end
+
+% object = imdilate(object,strel('square',3)); %# dilation
+object = fastimfill(object,'holes');             %# fill inside silhouette
+% object = imerode(object,strel('square',3));  %# erode
+
 %Get the object perimeter only
-object4 = fastbwmorph(object,'perim8');
+object = fastbwmorph(object,'perim8');
 
 stats = fastregionprops(object, 'Area','Orientation','PixelIdxList', 'BoundingBox');
 
@@ -30,6 +39,8 @@ if numel(stats) > 1
     [~, maxIndx] = max([stats.Area]);
     stats = stats(maxIndx);
 end
+
+angle = stats.Orientation;
 
 % It is not necessary to crop: the descriptor first substrct the centroid from each pixel.
 % But it may affect the performance of rotation and sursuquent regionprops
@@ -45,10 +56,10 @@ if numel(stats) > 1
     stats = stats(maxIndx);
 end
 
-
-% stats = fastregionprops(object,'Centroid','PixelList', 'Orientation');
-angle = stats.Orientation;
-
+if showit
+    subplot(1,2,2); imshow(logical(object)); axis tight; axis equal;
+    pause
+end
 
 if ~isempty(stats) && numel(stats.PixelList) > 2
     %Translate into polar coordinates
