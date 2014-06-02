@@ -20,9 +20,8 @@ function [count,angle] = cpdh(object, angBins, radBins)
 %       [biggest,idx] = max(numPixels);
 %       BW(CC.PixelIdxList{idx}) = 0;
 
-%Get the object boundary only
-object = fastbwmorph(object, 'remove');
-% object = fastbwmorph(object, 'clean');
+%Get the object perimeter only
+object4 = fastbwmorph(object,'perim8');
 
 stats = fastregionprops(object, 'Area','Orientation','PixelIdxList', 'BoundingBox');
 
@@ -40,7 +39,7 @@ end
 % imrotate cannot use logical for hardware acceleration
 object = imrotate(uint8(object),-stats.Orientation);
 object = logical(object);
-stats = fastregionprops(object, 'BoundingBox', 'Area', 'PixelIdxList');
+stats = fastregionprops(object, 'Area', 'PixelIdxList','Centroid','PixelList', 'Orientation');
 if numel(stats) > 1
     maxIndx = 1;
     for i = 2:numel(stats)
@@ -49,17 +48,13 @@ if numel(stats) > 1
         end
     end
     stats = stats(maxIndx);
-    object = logical(zeros(size(object)));
-    object(stats.PixelIdxList) = 1;
-else
-    object = logical(object);
 end
 
-% Get the object Only inside the image
-object = object(ceil(stats.BoundingBox(2)):floor(stats.BoundingBox(2)+stats.BoundingBox(4)), ...
-                ceil(stats.BoundingBox(1)):floor(stats.BoundingBox(1)+stats.BoundingBox(3)));
+% It is not necessary to crop, the descriptor first substrct the centroid from each pixel
+% object = object(ceil(stats.BoundingBox(2)):floor(stats.BoundingBox(2)+stats.BoundingBox(4)), ...
+                % ceil(stats.BoundingBox(1)):floor(stats.BoundingBox(1)+stats.BoundingBox(3)));
 
-stats = fastregionprops(object,'Centroid','PixelList', 'Orientation');
+% stats = fastregionprops(object,'Centroid','PixelList', 'Orientation');
 angle = stats.Orientation;
 
 
@@ -88,5 +83,3 @@ if ~isempty(stats) && numel(stats.PixelList) > 2
 else
     count = zeros(radBins*angBins, 1);
 end
-
-
