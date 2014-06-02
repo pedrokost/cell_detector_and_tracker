@@ -113,8 +113,8 @@ if withGT %Ground Truth available = train image
     
     %Number of GT points contained within the MSER
     gtInMSER = uint8(zeros(length(r), 1 + 8*parms.jitter));
-    
-    parfor k = 1:length(r) %Lets check every MSER
+    % parfor
+    for k = 1:length(r) %Lets check every MSER
         %clf ;
         mask = uint8(zeros(size(img,1), size(img,2)));
         
@@ -215,8 +215,8 @@ if withGT %Ground Truth available = train image
 else %No ground Truth = test image
     gtInMSER = 0;
     Y = 0;
-    
-    parfor k = 1:size(r,1) %Lets check every MSER
+    % parfor
+    for k = 1:size(r,1) %Lets check every MSER
         
         sel = vl_erfill(img,r(k)) ;
         
