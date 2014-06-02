@@ -27,32 +27,24 @@ stats = fastregionprops(object, 'Area','Orientation','PixelIdxList', 'BoundingBo
 
 % keyboard
 if numel(stats) > 1
-    maxIndx = 1;
-    for i = 2:numel(stats)
-        if stats(i).Area > stats(i-1).Area  
-            maxIndx = i;
-        end
-    end
+    [~, maxIndx] = max([stats.Area]);
     stats = stats(maxIndx);
 end
+
+% It is not necessary to crop: the descriptor first substrct the centroid from each pixel.
+% But it may affect the performance of rotation and sursuquent regionprops
+object = object(ceil(stats.BoundingBox(2)):floor(stats.BoundingBox(2)+stats.BoundingBox(4)), ...
+                ceil(stats.BoundingBox(1)):floor(stats.BoundingBox(1)+stats.BoundingBox(3)));
 
 % imrotate cannot use logical for hardware acceleration
 object = imrotate(uint8(object),-stats.Orientation);
 object = logical(object);
 stats = fastregionprops(object, 'Area', 'PixelIdxList','Centroid','PixelList', 'Orientation');
 if numel(stats) > 1
-    maxIndx = 1;
-    for i = 2:numel(stats)
-        if stats(i).Area > stats(i-1).Area  
-            maxIndx = i;
-        end
-    end
+    [~, maxIndx] = max([stats.Area]);
     stats = stats(maxIndx);
 end
 
-% It is not necessary to crop, the descriptor first substrct the centroid from each pixel
-% object = object(ceil(stats.BoundingBox(2)):floor(stats.BoundingBox(2)+stats.BoundingBox(4)), ...
-                % ceil(stats.BoundingBox(1)):floor(stats.BoundingBox(1)+stats.BoundingBox(3)));
 
 % stats = fastregionprops(object,'Centroid','PixelList', 'Orientation');
 angle = stats.Orientation;
