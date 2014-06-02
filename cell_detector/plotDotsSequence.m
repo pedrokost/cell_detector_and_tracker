@@ -11,8 +11,12 @@ function plotDotsSequence( directory )
     i = 1;
     for f=files'
         fullname = fullfile(directory, f.name);
-        load(fullname);
-        dotsSequence{i} = dots;
+        data = load(fullname);
+        if isfield(data, 'dots')
+            dotsSequence{i} = data.dots;
+        else
+            dotsSequence{i} = data.gl;
+        end
         i = i + 1;
     end
 

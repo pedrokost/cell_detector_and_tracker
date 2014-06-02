@@ -16,7 +16,7 @@ function feats = featurePopularity( outFolder, featureNames )
 %     - featurePopularity('kidney/outKidneyGreen');
 %     - featurePopularity('kidney/outKidneyGreen', {'area'...
 %                   'intensityHistogram' 'position' 'differenceHistogram'...
-%                   'shape''orientation' 'edges'});
+%                   'shape' 'orientation' 'edges'});
 % Example output:
 %                            timeScore    recallScore    precisionScore    totalScore    rank
 %                            _________    ___________    ______________    __________    ____
