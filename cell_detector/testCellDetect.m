@@ -44,19 +44,21 @@ biasedPrediction = prediction  + ctrl.bias;
 mask = logical(mask);
 
 %---------------------------------------------------------------Get Centres
-
-% TODO this could be elimintaed? Why can centroid be used for centers?
-regions = regionprops(mask, 'Centroid','PixelList');
+regions = regionprops(mask, 'Centroid');
 nRegions = numel(regions);
-centers = zeros(size(mask), 'uint8');
-
+dots = zeros(nRegions, 2);
 for i = 1:nRegions
-    dots = round(regions(i).Centroid);
-    centers(dots(2), dots(1)) = 255;
+    dots(i, :) = round(regions(i).Centroid);
 end
 
-[a b] = find(centers > 0);
-dots = [b a];
+if ctrl.saveMasks
+    centers = zeros(size(mask), 'uint8');
+    for i = 1:nRegions
+        centers(dots(i, 2), dots(i, 1)) = 255;
+    end
+else
+    centers = [];
+end
 
 %------------------------------------------------Post processing the masks?
 %mask = fastbwmorph(mask, 'close');

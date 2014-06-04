@@ -33,7 +33,7 @@ inspectResults = 0; %1: Shows detected cells.
 isSequence = 0; % The testing images are a video sequences
 
 %-Features and control parameters-%
-[parameters,ctrl] = setFeatures([1 0 0 1 1 0 1]); %Modify to select features and other parameters
+[parameters,ctrl] = setFeatures([1 1 0 1 0 0 1]); %Modify to select features and other parameters
 
 if ctrl.runPar %start parallel workers
     if ~(matlabpool('size') > 0)
@@ -62,8 +62,10 @@ if test
         disp(['Testing on Image ' num2str(imNum) '/' num2str(numel(files))]);
         [centers, mask, dots, prediction, img, sizeMSER, r, gt, nFeatures] =...
             testCellDetect(w,datasetTest,imNum,parameters,ctrl,inspectResults);
-        imwrite(mask, [outFolder '/mask_' files{imNum} '.tif'],'tif');
-        save([outFolder '/' files{imNum} '.mat'],'dots');      
+        if ctrl.saveMasks
+            imwrite(mask, [outFolder '/mask_' files{imNum} '.tif'],'tif');
+        end
+        save([outFolder '/' files{imNum} '.mat'],'dots');
         
         if ~isempty(gt)
             if imNum == 1
