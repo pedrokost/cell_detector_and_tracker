@@ -63,7 +63,7 @@ if parms.addIntHist
     end
 end
 
-if parms.addDiffHist
+if parms.addDiffHist || parms.addShape || parms.addOrientation
     x1 = round(max([1 st(1).BoundingBox(1)-(parms.nDilationScales*parms.nDilations+2)]));
     y1 = round(max([1 st(1).BoundingBox(2)-(parms.nDilationScales*parms.nDilations+2)]));
     x2 = round(min([size(mask,2) st(1).BoundingBox(1)+st(1).BoundingBox(3)+...
@@ -72,8 +72,13 @@ if parms.addDiffHist
         parms.nDilationScales*parms.nDilations+2]));
 
     maskROI = mask(y1:y2,x1:x2);
+end
+
+if parms.addDiffHist
+    imgROI = img(y1:y2,x1:x2);
 
     boundary = fastbwmorph(maskROI, 'remove');
+    keyboard
     for i = 1:parms.nDilationScales
         border = boundary;
         dilatedMask = fastbwmorph(maskROI, 'dilate', i*parms.nDilations);
