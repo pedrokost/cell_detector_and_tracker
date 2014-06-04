@@ -78,7 +78,6 @@ if parms.addDiffHist
     imgROI = img(y1:y2,x1:x2);
 
     boundary = fastbwmorph(maskROI, 'remove');
-    keyboard
     for i = 1:parms.nDilationScales
         border = boundary;
         dilatedMask = fastbwmorph(maskROI, 'dilate', i*parms.nDilations);

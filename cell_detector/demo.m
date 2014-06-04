@@ -3,6 +3,7 @@
 %Learning to Detect Cells Using Non-overlapping Extremal Regions
 %
 %
+addpath(fullfile('dependencies'));
 
 clc;
 disp(' ')%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
