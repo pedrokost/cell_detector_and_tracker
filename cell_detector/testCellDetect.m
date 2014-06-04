@@ -31,6 +31,12 @@ if exist([outFolder '/feats_' files{imNum} '_test.mat'],'file') == 0
         encodeImage(dataFolder, files{imNum}, imExt, withGT, parms, mserParms);
     %save([outFolder '/feats_' files{imNum} '_test.mat']...
     %    ,'img', 'gt', 'X', 'r', 'ell', 'sizeMSER', 'MSERtree', 'nFeatures');
+
+    if ctrl.saveCellDescriptor
+        nCells = length(r);
+        save([outFolder '/feats_' files{imNum} '_cells.mat']...
+            ,'X', 'nCells', 'nFeatures');
+    end
 else
     load([outFolder '/feats_' files{imNum} '_test.mat']);
 end
