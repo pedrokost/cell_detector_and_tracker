@@ -15,22 +15,23 @@ x = zeros(1,parms.nFeatures);
 pos = 1;
 
 %get ROI
-% st = fastregionprops(logical(mask), 'BoundingBox');
-st = fastregionprops(logical(mask), 'BoundingBox', 'Centroid');
-centroid = round(st.Centroid);
+if parms.addDiffHist && parms.addPos
+    st = fastregionprops(logical(mask), 'BoundingBox', 'Centroid');
+    centroid = round(st.Centroid);
+elseif parms.addDiffHist
+    st = fastregionprops(logical(mask), 'BoundingBox');
+    x1 = round(max([1 st(1).BoundingBox(1)-(parms.nDilationScales*parms.nDilations+2)]));
+    y1 = round(max([1 st(1).BoundingBox(2)-(parms.nDilationScales*parms.nDilations+2)]));
+    x2 = round(min([size(mask,2) st(1).BoundingBox(1)+st(1).BoundingBox(3)+...
+        parms.nDilationScales*parms.nDilations+2]));
+    y2 = round(min([size(mask,1) st(1).BoundingBox(2)+st(1).BoundingBox(4)+...
+        parms.nDilationScales*parms.nDilations+2]));
 
-x1 = round(max([1 st(1).BoundingBox(1)-(parms.nDilationScales*parms.nDilations+2)]));
-y1 = round(max([1 st(1).BoundingBox(2)-(parms.nDilationScales*parms.nDilations+2)]));
-x2 = round(min([size(mask,2) st(1).BoundingBox(1)+st(1).BoundingBox(3)+...
-    parms.nDilationScales*parms.nDilations+2]));
-y2 = round(min([size(mask,1) st(1).BoundingBox(2)+st(1).BoundingBox(4)+...
-    parms.nDilationScales*parms.nDilations+2]));
-maskROI = mask(y1:y2,x1:x2);
-
-if parms.addDiffHist
-    imgROI = img(y1:y2,x1:x2);
+    maskROI = mask(y1:y2,x1:x2);
+elseif parms.addPos
+    st = fastregionprops(logical(mask), 'Centroid');
+    centroid = round(st.Centroid);
 end
-
 %--feature computation
 
 if parms.addArea
