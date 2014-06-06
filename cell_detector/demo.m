@@ -4,6 +4,7 @@
 %
 %
 addpath(fullfile('dependencies'));
+addpath(fullfile('dependencies', 'matlab'));
 
 clc;
 disp(' ')%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
