@@ -33,7 +33,7 @@ if [[ $INSTALL_EKFUKF = true ]]; then
 	unzip -q ekfukf_1_3.zip -dekfukf
 	rm -r ${MATLAB_LIBS_DIR}ekfukf
 	
-	mv -f ekfukf $MATLAB_LIBS_DIR
+	mv -f ekfukf/ekfukf $MATLAB_LIBS_DIR
 	rm ekfukf_1_3.zip
 
 	add_once "addpath('~/src/ekfukf')" $startup_file
