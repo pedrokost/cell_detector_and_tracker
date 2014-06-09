@@ -21,7 +21,7 @@ positions = 2*ones(round(length(r)), 1);
 
 %Lets arrange the regions in descending area
 [areas, index] = sort(areas,'descend');
-mask = uint16(zeros(size(img,1), size(img,2))); %asd = mask;
+mask = zeros(size(img,1), size(img,2), 'uint16'); %asd = mask;
 newSector = 1;
 %Now lets check every region and build the trees
 for k=1:length(r)
