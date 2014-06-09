@@ -34,7 +34,7 @@ if exist([outFolder '/feats_' files{imNum} '_test.mat'],'file') == 0
 
     if ctrl.saveCellDescriptor
         nCells = length(r);
-        save([outFolder '/feats_' files{imNum} '_cells.mat']...
+        save([outFolder '/' files{imNum} '_cells.mat']...
             ,'X', 'nCells', 'nFeatures');
     end
 else

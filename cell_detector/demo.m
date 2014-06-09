@@ -26,7 +26,7 @@ end
 %Choose parameters for the training/testing
 datasetTrain = 9;%Identifier of the training data as set in loadDatasetInfo
 datasetTest = 10;%Identifier of the testing data as set in loadDatasetInfo
-train = 0;%---->Do train
+train = 1;%---->Do train
 test = 1;%----->Do test
 
 inspectResults = 0; %1: Shows detected cells. 
@@ -35,7 +35,7 @@ inspectResults = 0; %1: Shows detected cells.
 isSequence = 0; % The testing images are a video sequences
 
 %-Features and control parameters-%
-[parameters,ctrl] = setFeatures([1 1 0 1 0 0 1]); %Modify to select features and other parameters
+[parameters,ctrl] = setFeatures([1 0 0 1 1 0 1]); %Modify to select features and other parameters
 
 if ctrl.runPar %start parallel workers
     if ~(matlabpool('size') > 0)
@@ -58,7 +58,6 @@ t = cputime;
 
 if test
     [files, imExt, dataFolder, outFolder,~,tol] = loadDatasetInfo(datasetTest);
-    files = files(1:5);
     for imNum = 1:numel(files)
 
         disp(['Testing on Image ' num2str(imNum) '/' num2str(numel(files))]);
