@@ -61,12 +61,25 @@ if test
     for imNum = 1:numel(files)
 
         disp(['Testing on Image ' num2str(imNum) '/' num2str(numel(files))]);
-        [centers, mask, dots, prediction, img, sizeMSER, r, gt, nFeatures] =...
+        [centers, mask, dots, prediction, img, sizeMSER, r, gt, nFeatures, X] =...
             testCellDetect(w,datasetTest,imNum,parameters,ctrl,inspectResults);
+
+        %----------------------------------------------------------------Save masks
         if ctrl.saveMasks
+            centers = zeros(size(mask), 'uint8');
+            centers(dots(:, 2), dots(:, 1)) = 255;
             imwrite(mask, [outFolder '/mask_' files{imNum} '.tif'],'tif');
         end
-        save([outFolder '/' files{imNum} '.mat'],'dots');
+        %-----------------------------------------------------Save cell descriptors
+        if ctrl.saveCellDescriptor
+            nCells = size(dots, 1);
+            save([outFolder '/' files{imNum} '.mat']...
+                ,'X', 'dots','nFeatures');
+        else
+            save([outFolder '/' files{imNum} '.mat'],'dots');
+        end
+
+        %--------------------------------------------------------Save masks to file
         
         if ~isempty(gt)
             if imNum == 1
