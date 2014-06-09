@@ -61,7 +61,7 @@ for k = 1:numel(MSERtree.forest)
         
         [response,winner] = max(treeInfo(:,2));
         if response >= svmTH
-            auxMask = uint8(zeros(size(img,1), size(img,2)));
+            auxMask = zeros(size(img,1), size(img,2), 'uint8');
             sel = vl_erfill(img,treeInfo(winner,1)) ;
             auxMask(sel) = 1;
             auxMask = fastbwmorph(auxMask, 'close');
@@ -86,7 +86,7 @@ for k = 1:numel(MSERtree.forest)
             
             if mappedLabels(i)
                 if treeInfo(i,1) ~= 0
-                    auxMask = uint8(zeros(size(img,1), size(img,2)));
+                    auxMask = zeros(size(img,1), size(img,2), 'uint8');
                     sel = vl_erfill(img,treeInfo(i,1)) ;
                     auxMask(sel) = 1;
                     auxMask = fastbwmorph(auxMask, 'close');
