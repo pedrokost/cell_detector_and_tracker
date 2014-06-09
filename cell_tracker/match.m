@@ -1,10 +1,24 @@
-% This receives all the feature vectors of all cells in a image
-% and computes the feature Plink probablisties
-
-normalizeFeatures = 1;
-comparesDistance = 1;
-symmetricMatching = 1;
-
+function [symm right left selected] = match(XA, XB, dotsA, dotsB, options)
+% MATCH find the best matches between detected cells
+% INPUTS:
+% 	- XA: matrix nCellsAxnFeatures containing feature of cells
+% 		detected in image A
+% 	- XB: matrix nCellsAxnFeatures containing feature of cells
+% 		detected in image B
+% 	- dotsA: coordinates of cells in image A
+% 	- dotsB: coordinates of cells in image B
+%	- options: an optinal struct containing these options
+%		- normalizeFeatures[true]
+%		- compareLocations[true]
+% OUTPUTS:
+% 	- symm: a vector containing the corresponding robust matches.
+% 		symm(i) = 0 when that cell does not have a best match
+% 	- right: a vector containing the best matches for cells
+% 		in A to cells in B 
+% 	- left: a vector containing the best matches for cells
+% 		in B to cells in A
+%	- selected: a logical vectors containing 1 for cells 
+%		that have a symmetric pair in the first image
 
 % ## Some ideas for faster matching
 % Only compute distances between nearby cells (not all)
@@ -13,67 +27,43 @@ symmetricMatching = 1;
 % ## Some ideas for more robust matching
 % Use a sigmoid error function instread of euclidean
 
-figure(1);
+%---------------------------------------------------Options
 
-folderFeatures = fullfile('..', 'cell_detector', 'kidney', 'outKidneyRed');
-featuresfileA = fullfile(folderFeatures, 'im40.mat');
-featuresfileB = fullfile(folderFeatures, 'im41.mat');
-imfileA = fullfile('..', 'cell_detector', 'kidney', 'testKidneyRed', 'im40.pgm');
-imfileB = fullfile('..', 'cell_detector', 'kidney', 'testKidneyRed', 'im41.pgm');
-IA = imread(imfileA);
-IB = imread(imfileB);
+% Defaults
+normalizeFeatures = 1;
+compareLocations = 1;
 
-% Show the images side by side
-[h w] = size(IA);
-I = cat(2, IA, IB);
-imshow(I); hold on;
+if nargin < 5
+	options = struct;
+end
 
-% Show the cell centroids side by side
-load(featuresfileA);
-XA = X; dotsA = dots;
-load(featuresfileB);
-XB = X; dotsB = dots;
+if isfield(options, 'normalizeFeatures')
+	normalizeFeatures = options.normalizeFeatures;
+end
 
-plot(dotsA(:, 1), dotsA(:, 2), 'r+');
-dotsBdisp = [dotsB(:, 1) + w, dotsB(:, 2)];
-plot(dotsBdisp(:, 1), dotsBdisp(:, 2), 'b+');
+if isfield(options, 'compareLocations')
+	compareLocations = options.compareLocations;
+end
 
-
-% Add the locations to the feature vector
-if comparesDistance
+%----------------------------Add location to feature vector
+if compareLocations
 	XA = cat(2, XA, dotsA);
 	XB = cat(2, XB, dotsB);
 end
-
-% Normalize the ranges of feature vectors
-% figure(3); clf;
+%----------------------------------------Normalize features
+% Normalizes the ranges of each column to 0-1
 if normalizeFeatures
-	diffs = max(XA, [], 1) - min(XA, [], 1);
-	for i=1:nFeatures
-		if diffs(i) == 0
-			XA(:, i) = 1;
-		else
-			XA(:, i) = XA(:, i) / diffs(i);
-		end
-	end
-	diffs = max(XB, [], 1) - min(XB, [], 1);
-	for i=1:nFeatures
-		if diffs(i) == 0
-			XB(:, i) = 1;
-		else
-			XB(:, i) = XB(:, i) / diffs(i);
-		end
-	end
+	XA = normalizeRange(XA);
+	XB = normalizeRange(XB);
 end
-% imagesc(X)
 
-
-% Compute the feature distances
+%-----------------------------------------Compute distances
 nCellsA = size(dotsA, 1);
 nCellsB = size(dotsB, 1);
 
 dists = zeros(nCellsA, nCellsB);
 
+% TODO: cuold I use direct multiplication or something?
 for i=1:nCellsA  % rows
 	for j=1:nCellsB  % cols
 		% get the corresponding feature vectors
@@ -84,44 +74,30 @@ for i=1:nCellsA  % rows
 	end
 end
 
-figure(2)
-imagesc(dists); colormap jet;
+%------------------------------------Find symmetric matches
+[~, right] = min(dists, [], 2);  % A --> B
+[~, left] = min(dists, [], 1);   % A <-- B
 
-% Matching
-figure(1);
+% Find symmetric matches
+% Use idxA to index into idxB
+idx = left(right);
+% Then select only the matches where that indexed version == 1:nCells
+selected = idx == 1:nCellsA;
 
-% Find the best matches
-[~, idxA] = min(dists, [], 2);  % find closest cell imag cols (IB)
-% A -> B
-for i=1:nCellsA
-	cellA = dotsA(i, :);
-	cellB = dotsBdisp(idxA(i), :);
-	line([cellB(1), cellA(1)], [cellB(2), cellA(2)], 'Color', 'r');
-end
-
-% Display the connections in the plot
-if symmetricMatching
-	[~, idxB] = min(dists, [], 1);  % find closest cell imag rows (IA)
-	% B -> A
-	% Display the connections in the plot
-	for i=1:nCellsB
-		cellB = dotsBdisp(i, :);
-		cellA = dotsA(idxB(i), :);
-		line([cellB(1), cellA(1)], [cellB(2), cellA(2)], 'Color', 'b');
-	end
-
-	% Find symmetric matches
-	% Use idxA to index into idxB
-	idx = idxB(idxA);
-	% The select only the matches where that indexed version == 1:nCells
-	selected = idx == 1:nCellsA
-
-	for i=1:nCellsA
-		if ~selected(i); continue; end
-		cellA = dotsA(i, :);
-		cellB = dotsBdisp(idxA(i), :);
-		line([cellB(1), cellA(1)], [cellB(2), cellA(2)], 'Color', 'w');
-	end
+%----------------------------------------Set bad matches to 0
+symm = right;
+symm(~selected) = 0;
 
 end
 
+function X = normalizeRange(X)
+	nFeatures = size(X, 2);
+	diffs = max(X, [], 1) - min(X, [], 1);
+	for i=1:nFeatures
+		if diffs(i) == 0
+			X(:, i) = 1;
+		else
+			X(:, i) = X(:, i) / diffs(i);
+		end
+	end
+end
