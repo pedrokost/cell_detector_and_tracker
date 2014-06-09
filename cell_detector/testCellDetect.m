@@ -1,4 +1,4 @@
-function [centers, mask, dots, prediction, img, sizeMSER, r, gt, nFeatures]...
+function [centers, mask, dots, prediction, img, sizeMSER, r, gt, nFeatures, X]...
     = testCellDetect(w,dataset,imNum,parms,ctrl,verbosity)
 %Detect cells in an image given the W vector
 %OUTPUT
@@ -10,6 +10,7 @@ function [centers, mask, dots, prediction, img, sizeMSER, r, gt, nFeatures]...
 %   sizeMSER = size (in pixels) of each MSER in r
 %   gt = vector with the gt annotations
 %   nFeatures = total number of features used
+%   X = feature vectors of detected cells
 %INPUT
 %   w = vector learned with the structural-SVM
 %   dataset = dataset identifier
@@ -44,26 +45,8 @@ biasedPrediction = prediction  + ctrl.bias;
     sizeMSER, r, additionalU, MSERtree);
 mask = logical(mask);
 
-%--------------------------------------------------------Save masks to file
 dots = dots(labels, :);
-if ctrl.saveMasks
-    nRegions = sum(labels == 1);
-    centers = zeros(size(mask), 'uint8');
-    for i = 1:nRegions
-        centers(dots(i, 2), dots(i, 1)) = 255;
-    end
-else
-    centers = [];
-end
-
-
-%-----------------------------------------------------Save cell descriptors
-if ctrl.saveCellDescriptor
-    nCells = sum(labels == 1);
-    X = X(labels, :);
-    save([outFolder '/' files{imNum} '_cells.mat']...
-        ,'X', 'dots', 'nCells', 'nFeatures');
-end
+X = X(labels, :);
 
 %------------------------------------------------Post processing the masks?
 %mask = fastbwmorph(mask, 'close');
