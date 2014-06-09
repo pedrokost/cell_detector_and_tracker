@@ -32,11 +32,6 @@ if exist([outFolder '/feats_' files{imNum} '_test.mat'],'file') == 0
     %save([outFolder '/feats_' files{imNum} '_test.mat']...
     %    ,'img', 'gt', 'X', 'r', 'ell', 'sizeMSER', 'MSERtree', 'nFeatures');
 
-    if ctrl.saveCellDescriptor
-        nCells = length(r);
-        save([outFolder '/' files{imNum} '_cells.mat']...
-            ,'X', 'nCells', 'nFeatures');
-    end
 else
     load([outFolder '/feats_' files{imNum} '_test.mat']);
 end
@@ -45,25 +40,29 @@ end
 prediction = w'*X';
 biasedPrediction = prediction  + ctrl.bias;
 %-----------------------------------------------------------------Inference
-[mask, labels] = PylonInference(img, biasedPrediction',...
+[mask, labels, dots] = PylonInference(img, biasedPrediction',...
     sizeMSER, r, additionalU, MSERtree);
 mask = logical(mask);
 
-%---------------------------------------------------------------Get Centres
-regions = regionprops(mask, 'Centroid');
-nRegions = numel(regions);
-dots = zeros(nRegions, 2);
-for i = 1:nRegions
-    dots(i, :) = round(regions(i).Centroid);
-end
-
+%--------------------------------------------------------Save masks to file
+dots = dots(labels, :);
 if ctrl.saveMasks
+    nRegions = sum(labels == 1);
     centers = zeros(size(mask), 'uint8');
     for i = 1:nRegions
         centers(dots(i, 2), dots(i, 1)) = 255;
     end
 else
     centers = [];
+end
+
+
+%-----------------------------------------------------Save cell descriptors
+if ctrl.saveCellDescriptor
+    nCells = sum(labels == 1);
+    X = X(labels, :);
+    save([outFolder '/' files{imNum} '_cells.mat']...
+        ,'X', 'dots', 'nCells', 'nFeatures');
 end
 
 %------------------------------------------------Post processing the masks?
@@ -140,22 +139,21 @@ end
 %     set(f1,'Position', [0 0 screen_size(3) screen_size(4)]);
 %     imshow(orImg);
 %     hold on;
-% 
+%
 %     [B,L,N,A] = bwboundaries(mask);
-% 
+%
 %     for i=1:numel(B)
 %         line(B{i}(:,2),B{i}(:,1),'Color','g','LineWidth',4, 'LineStyle','-');
 %     end
 %     for i=1:numel(B)
 %         line(B{i}(:,2),B{i}(:,1),'Color','r','LineWidth',3, 'LineStyle','--');
 %     end
-% 
+%
 %     if ~isempty(gt)
 %         plot(gt(:,1), gt(:,2),'or','LineWidth',5,'MarkerSize',3)
 %     end
 %     plot(dots(:,1), dots(:,2),'xb','LineWidth',5,'MarkerSize',5)
 %     hold off;
-% 
+%
 %     export_fig([outFolder '/' files{imNum}],'-transparent','-q100','-m1.5','-a2','-png');
-
 end
