@@ -1,4 +1,4 @@
-function [mask,labels, MSERtree, idMask] =...
+function [mask,labels, dots, MSERtree, idMask] =...
     PylonInference(img, prediction, sizeMSER, r, additionalU, MSERtree)
 %Picks the best subset of extremal regions in 'r' using the pylon inference
 %code.
@@ -6,6 +6,8 @@ function [mask,labels, MSERtree, idMask] =...
 %   mask = logical mask of regions labeled as 1
 %   labels = labels of the regions in r; labels(i) = 1 if r(i) has been picked,
 %       and 0 otherwise
+%   dots = centers of regions in mask; dots(i) = [x y] if r(i) has
+%       been picked.
 %   MSERtree = tree structure containing of the MSERs in r
 %   idMask = similar to mask, but contains indexes for many classes (if
 %       available)
@@ -33,6 +35,7 @@ end
 %hold on; plot(gt(:,1), gt(:,2),'*b','LineWidth',2)
 
 labels = logical(false(size(r)));
+dots = zeros(length(r), 2);
 for k = 1:numel(MSERtree.forest)
     treeInfo =  MSERtree.references{k};
     treeInfo = [treeInfo largeVal*ones(size(treeInfo,1),1)];
@@ -63,8 +66,10 @@ for k = 1:numel(MSERtree.forest)
             auxMask(sel) = 1;
             auxMask = fastbwmorph(auxMask, 'close');
             sel = find(auxMask == 1);
+            [I, J] = ind2sub(size(img), sel);
             mask(sel) = 1;
             correspondance = find(r == treeInfo(winner,1));
+            dots(correspondance, :) = round([mean(J) mean(I)]);
             labels(correspondance) = 1;
             idMask(sel) = 1*correspondance;
         end
@@ -86,15 +91,17 @@ for k = 1:numel(MSERtree.forest)
                     auxMask(sel) = 1;
                     auxMask = fastbwmorph(auxMask, 'close');
                     sel = find(auxMask == 1);
+                    [I, J] = ind2sub(size(img), sel);
                     mask(sel) = 1;
-                    %figure, imagesc(mask)
                     correspondance = find(r == treeInfo(i,1));
+                    dots(correspondance, :) = round([mean(J) mean(I)]);
                     labels(correspondance) = 1;
                     idMask(sel) = 1*correspondance;
                 end
             end
         end
     end
+
     % figure, imagesc(mask)
 end
 
