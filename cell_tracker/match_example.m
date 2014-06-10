@@ -56,6 +56,7 @@ for i=1:nCellsA
 	line([cellB(1), cellA(1)], [cellB(2), cellA(2)], 'Color', 'w');
 end
 
-
-% export_fig matches.png -painters
+fprintf('Press any key to save the figure')
+pause
+export_fig matches.png -painters
 
