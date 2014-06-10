@@ -8,7 +8,7 @@ function [symm right left selected] = match(XA, XB, dotsA, dotsB, options)
 % 	- dotsA: coordinates of cells in image A
 % 	- dotsB: coordinates of cells in image B
 %	- options: an optinal struct containing these options
-%		- normalizeFeatures[true]
+%		- normalizeFeatures[false]
 %		- compareLocations[true]
 % 		- locationWeight[32]
 % OUTPUTS:
@@ -31,7 +31,7 @@ function [symm right left selected] = match(XA, XB, dotsA, dotsB, options)
 %---------------------------------------------------Options
 
 % Defaults
-normalizeFeatures = 1;
+normalizeFeatures = 0;
 compareLocations = 1;
 locationWeight = 20;  % Add more importance to location
 
@@ -79,6 +79,8 @@ nCellsB = size(dotsB, 1);
 
 dists = zeros(nCellsA, nCellsB);
 
+sigma = 2; % FIXME: Is this the std of the data? what data?
+
 % TODO: cuold I use direct multiplication or something?
 for i=1:nCellsA  % rows
 	for j=1:nCellsB  % cols
@@ -89,12 +91,12 @@ for i=1:nCellsA  % rows
 		dists(i, j) = dist;
 	end
 end
-
+dists = exp(-dists/sigma);
 % figure(3);
 % imagesc(dists)
 %------------------------------------Find symmetric matches
-[~, right] = min(dists, [], 2);  % A --> B
-[~, left] = min(dists, [], 1);   % A <-- B
+[~, right] = max(dists, [], 2);  % A --> B
+[~, left] = max(dists, [], 1);   % A <-- B
 
 % Find symmetric matches
 % Use idxA to index into idxB
