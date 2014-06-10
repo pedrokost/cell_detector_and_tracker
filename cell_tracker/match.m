@@ -60,40 +60,21 @@ end
 % Normalizes the ranges of each column to 0-1
 
 if normalizeFeatures
-	% figure(2);
-	% subplot(2,2,1); imagesc(XA)
 	[XA mini maxi] = normalizeRange(XA);
-	% subplot(2,2,3); imagesc(XB)
 	XB = normalizeRange(XB);
 
 	% Make displacement for prominent
 	XA(:, end-1:end) = XA(:, end-1:end) * locationWeight;
 	XB(:, end-1:end) = XB(:, end-1:end) * locationWeight;
-	% subplot(2,2,2); imagesc(XA)
-	% subplot(2,2,4); imagesc(XB)
 end
 
 %-----------------------------------------Compute distances
 nCellsA = size(dotsA, 1);
-nCellsB = size(dotsB, 1);
-
-dists = zeros(nCellsA, nCellsB);
 
 sigma = 2; % FIXME: Is this the std of the data? what data?
-
-% TODO: cuold I use direct multiplication or something?
-for i=1:nCellsA  % rows
-	for j=1:nCellsB  % cols
-		% get the corresponding feature vectors
-		vectI = XA(i, :);
-		vectJ = XB(j, :);
-		dist = sum((vectI - vectJ) .^ 2);
-		dists(i, j) = dist;
-	end
-end
+dists = pdist2(XA, XB);
 dists = exp(-dists/sigma);
-% figure(3);
-% imagesc(dists)
+
 %------------------------------------Find symmetric matches
 [~, right] = max(dists, [], 2);  % A --> B
 [~, left] = max(dists, [], 1);   % A <-- B
