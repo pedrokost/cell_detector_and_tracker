@@ -10,6 +10,7 @@ function [symm right left selected] = match(XA, XB, dotsA, dotsB, options)
 %	- options: an optinal struct containing these options
 %		- normalizeFeatures[true]
 %		- compareLocations[true]
+% 		- locationWeight[32]
 % OUTPUTS:
 % 	- symm: a vector containing the corresponding robust matches.
 % 		symm(i) = 0 when that cell does not have a best match
@@ -32,6 +33,7 @@ function [symm right left selected] = match(XA, XB, dotsA, dotsB, options)
 % Defaults
 normalizeFeatures = 1;
 compareLocations = 1;
+locationWeight = 20;  % Add more importance to location
 
 if nargin < 5
 	options = struct;
@@ -45,6 +47,10 @@ if isfield(options, 'compareLocations')
 	compareLocations = options.compareLocations;
 end
 
+if isfield(options, 'locationWeight')
+	locationWeight = options.locationWeight;
+end
+
 %----------------------------Add location to feature vector
 if compareLocations
 	XA = cat(2, XA, dotsA);
@@ -52,9 +58,19 @@ if compareLocations
 end
 %----------------------------------------Normalize features
 % Normalizes the ranges of each column to 0-1
+
 if normalizeFeatures
-	XA = normalizeRange(XA);
+	% figure(2);
+	% subplot(2,2,1); imagesc(XA)
+	[XA mini maxi] = normalizeRange(XA);
+	% subplot(2,2,3); imagesc(XB)
 	XB = normalizeRange(XB);
+
+	% Make displacement for prominent
+	XA(:, end-1:end) = XA(:, end-1:end) * locationWeight;
+	XB(:, end-1:end) = XB(:, end-1:end) * locationWeight;
+	% subplot(2,2,2); imagesc(XA)
+	% subplot(2,2,4); imagesc(XB)
 end
 
 %-----------------------------------------Compute distances
@@ -74,6 +90,8 @@ for i=1:nCellsA  % rows
 	end
 end
 
+% figure(3);
+% imagesc(dists)
 %------------------------------------Find symmetric matches
 [~, right] = min(dists, [], 2);  % A --> B
 [~, left] = min(dists, [], 1);   % A <-- B
@@ -90,14 +108,13 @@ symm(~selected) = 0;
 
 end
 
-function X = normalizeRange(X)
-	nFeatures = size(X, 2);
-	diffs = max(X, [], 1) - min(X, [], 1);
-	for i=1:nFeatures
-		if diffs(i) == 0
-			X(:, i) = 1;
-		else
-			X(:, i) = X(:, i) / diffs(i);
-		end
+function [X minimum maximum] = normalizeRange(X, minimum, maximum)
+	if nargin < 3
+		minimum = min(X, [], 1);
+		maximum = max(X, [], 1);
 	end
+	diffs = maximum - minimum;
+	X = bsxfun(@minus, X, minimum);
+	X = bsxfun(@rdivide, X, diffs);
+	X(:, diffs < 1e-4) = 1;
 end

@@ -1,9 +1,10 @@
 % This receives all the feature vectors of all cells in a image
 % and computes the feature Plink probablisties
+addpath('export_fig')
 
 % set(gcf,'renderer','painters')
 % set(gcf,'renderer','zbuffer')
-set(gcf,'renderer','opengl')
+% set(gcf,'renderer','opengl')
 
 figure(1); clf;
 
@@ -28,7 +29,7 @@ XB = X; dotsB = dots;
 
 
 [symm right left selected] = match(XA, XB, dotsA, dotsB);
-
+figure(1);
 plot(dotsA(:, 1), dotsA(:, 2), 'r+');
 dotsBdisp = [dotsB(:, 1) + w, dotsB(:, 2)];
 plot(dotsBdisp(:, 1), dotsBdisp(:, 2), 'b+');
@@ -55,4 +56,6 @@ for i=1:nCellsA
 	line([cellB(1), cellA(1)], [cellB(2), cellA(2)], 'Color', 'w');
 end
 
+
+% export_fig matches.png -painters
 
