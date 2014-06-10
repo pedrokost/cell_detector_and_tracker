@@ -31,7 +31,7 @@ function [symm right left selected] = match(XA, XB, dotsA, dotsB, options)
 %---------------------------------------------------Options
 
 % Defaults
-normalizeFeatures = 0;
+normalizeFeatures = 1;
 compareLocations = 1;
 locationWeight = 20;  % Add more importance to location
 
