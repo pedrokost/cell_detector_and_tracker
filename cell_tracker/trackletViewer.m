@@ -42,6 +42,10 @@ function trackletViewer(tracklets, options)
 		y = y(zs);
 
 		plot3(x,y,z,'.-', 'Color', colors(t, :));
+		% light('Position',[0 -2 1])
+		% lightangle(-45,30)
+		grid on;
+		
 		hold on;
 		xlabel('x')
 		ylabel('y')

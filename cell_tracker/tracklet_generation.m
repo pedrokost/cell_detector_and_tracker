@@ -70,8 +70,6 @@ for f=1:nFrames-1
 	% 	[symm right left selectedRight selectedLeft] = match(XA, XB, dotsA, dotsB);
 	% end
 	
-	size(XA)
-	size(dotsA)
 	[symm right left selectedRight selectedLeft] = match(XA, XB, dotsA, dotsB);
 
 		
@@ -111,4 +109,4 @@ end
 
 % display tracklets matrix
 
-trackletViewer(tracklets, struct('animate', true, 'animationSpeed', 5))
+trackletViewer(tracklets, struct('animate', false, 'animationSpeed', 5))
