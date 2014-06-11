@@ -3,7 +3,7 @@ rng(1234)
 
 test = false;
 
-folder = fullfile('..', 'cell_detector', 'kidney', 'outKidneyRed');
+folder = fullfile('..', 'cell_detector', 'kidney', 'outKidneyGreen');
 
 
 matfiles = dir(fullfile(folder, 'im*.mat'));
