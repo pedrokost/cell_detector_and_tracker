@@ -4,24 +4,30 @@ function trackletViewer(tracklets, options)
 	%-----------------------------------------------------------------Defaults
 	animate = true;
 	animationSpeed = 100; % pause is 1/animationSpeed
+	showLabel = true;
 	%------------------------------------------------------------------Options
 	if nargin < 2; options = struct; end
 
-	if isfield(options, 'animate'); animate = options.animate; end;
+	if isfield(options, 'animate'); animate = options.animate; end
+	if isfield(options, 'showLabel'); showLabel = options.showLabel; end
 	if isfield(options, 'animationSpeed');
 		animationSpeed = options.animationSpeed;
-	end;
-
+	end
 
 	timeDim = 2;
 	trackletDim = 1;
 	framesDim = 2;
 	xDim = 1;
 	yDim = 2;
+
+	% Eliminate zero rows from tracklets
+	tracklets = tracklets((any(any(tracklets, 3), 2) == 1), :, :);
+
 	nTracklets = size(tracklets, trackletDim);
 	nFrames = size(tracklets, framesDim);
 
 	colors = hsv(nTracklets);
+	colors = colors(randperm(nTracklets), :);
 
 	for t=1:nTracklets
 		time = 1:size(tracklets, timeDim);
@@ -35,14 +41,16 @@ function trackletViewer(tracklets, options)
 		x = x(zs);
 		y = y(zs);
 
-		plot3(x,y,z,'-', 'Color', colors(t, :));
+		plot3(x,y,z,'.-', 'Color', colors(t, :));
 		hold on;
 		xlabel('x')
 		ylabel('y')
 		zlabel('time')
 
+		if showLabel
+			text(x(1), y(1), z(1) - 1, num2str(t))
+		end
 		% color=1:length(x);
-
 		% surface([x;x],[y;y],[z;z],[color;color], 'facecol','no','edgecol','interp');
 	end
 	axis tight;
