@@ -17,9 +17,9 @@ for t=1:nTracklets
 
 	for f=initialFrame:finalFrame
 		tracklets(t, f, :) = loc;
-		loc = loc + rand * disturbance - disturbance / 2;
+		loc = loc + rand(1,2) * disturbance - disturbance / 2;
 	end
 end
 
 
-tracklet_viewer(tracklets);
+trackletViewer(tracklets);
