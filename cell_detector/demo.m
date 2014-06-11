@@ -59,8 +59,7 @@ t = cputime;
 if test
     [files, imExt, dataFolder, outFolder,~,tol] = loadDatasetInfo(datasetTest);
     for imNum = 1:numel(files)
-
-        disp(['Testing on Image ' num2str(imNum) '/' num2str(numel(files))]);
+        disp(sprintf('Testing on image %d/%d (%s)', imNum, numel(files), files{imNum}))
         [centers, mask, dots, prediction, img, sizeMSER, r, gt, nFeatures, X] =...
             testCellDetect(w,datasetTest,imNum,parameters,ctrl,inspectResults);
 
@@ -73,8 +72,7 @@ if test
         %-----------------------------------------------------Save cell descriptors
         if ctrl.saveCellDescriptor
             nCells = size(dots, 1);
-            save([outFolder '/' files{imNum} '.mat']...
-                ,'X', 'dots','nFeatures');
+            save([outFolder '/' files{imNum} '.mat'],'X', 'dots');
         else
             save([outFolder '/' files{imNum} '.mat'],'dots');
         end
