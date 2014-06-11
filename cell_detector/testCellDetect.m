@@ -48,6 +48,17 @@ mask = logical(mask);
 dots = dots(labels, :);
 X = X(labels, :);
 
+centers = zeros(size(img));
+for d=dots'
+    centers(d(2), d(1)) = 255;  % TODO: check if position correct
+end
+
+% dots
+% imshow(centers)
+% hold on;
+% plot(dots(:,1), dots(:,2), 'ro')
+% pause
+
 %------------------------------------------------Post processing the masks?
 %mask = fastbwmorph(mask, 'close');
 %---------------------------------------------------------------Plot Result
