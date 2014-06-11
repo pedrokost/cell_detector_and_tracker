@@ -1,4 +1,4 @@
-function [symm right left selected] = match(XA, XB, dotsA, dotsB, options)
+function [symm right left selectedRight selectedLeft] = match(XA, XB, dotsA, dotsB, options)
 % MATCH find the best matches between detected cells
 % INPUTS:
 % 	- XA: matrix nCellsAxnFeatures containing feature of cells
@@ -18,8 +18,10 @@ function [symm right left selected] = match(XA, XB, dotsA, dotsB, options)
 % 		in A to cells in B 
 % 	- left: a vector containing the best matches for cells
 % 		in B to cells in A
-%	- selected: a logical vectors containing 1 for cells 
-%		that have a symmetric pair in the first image
+%	- selectedRight: a logical vectors containing 1 for cells in the first
+%		image that have a symmetric pair
+%	- selectedLeft: a logical vectors containing 1 for cells in the second
+%		image that have a symmetric pair 
 
 % ## Some ideas for faster matching
 % Only compute distances between nearby cells (not all)
@@ -70,6 +72,7 @@ end
 
 %-----------------------------------------Compute distances
 nCellsA = size(dotsA, 1);
+nCellsB = size(dotsB, 1);
 
 sigma = 2; % FIXME: Is this the std of the data? what data?
 dists = pdist2(XA, XB);
@@ -83,12 +86,13 @@ dists = exp(-dists/sigma);
 % Use idxA to index into idxB
 idx = left(right);
 % Then select only the matches where that indexed version == 1:nCells
-selected = idx == 1:nCellsA;
+selectedRight = idx == 1:nCellsA;
 
+% SelectedLeft indicates the cells in B that have a symmetric match in A
+selectedLeft = right(left)' == 1:nCellsB;
 %----------------------------------------Set bad matches to 0
 symm = right;
-symm(~selected) = 0;
-
+symm(~selectedRight) = 0;
 end
 
 function [X minimum maximum] = normalizeRange(X, minimum, maximum)
