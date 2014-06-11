@@ -7,7 +7,6 @@ folder = fullfile('..', 'cell_detector', 'kidney', 'outKidneyRed');
 
 
 matfiles = dir(fullfile(folder, 'im*.mat'));
-matfiles = matfiles(1:20);
 if test
 	nFrames = 4;
 	nTracklets = 5; % estimate
@@ -56,22 +55,25 @@ for f=1:nFrames-1
 	end
 	fprintf('Processing frame %d (%s)\n', f, matfileB.name);
 	%-----------------------------------------------------Find matches A <-> B
-	if test
-		if f==1
-			symm = [2; 3];
-			selectedLeft = [0;1;1];
-		elseif f==2
-			symm = [0;2;1];
-			selectedLeft = [1;1];
-		elseif f==3
-			symm = [1;3];
-			selectedLeft = [1;0;1];
-		end
-	else
-		[symm right left selectedRight selectedLeft] = match(XA, XB, dotsA, dotsB);
-	end
+	% if test
+	% 	if f==1
+	% 		symm = [2; 3];
+	% 		selectedLeft = [0;1;1];
+	% 	elseif f==2
+	% 		symm = [0;2;1];
+	% 		selectedLeft = [1;1];
+	% 	elseif f==3
+	% 		symm = [1;3];
+	% 		selectedLeft = [1;0;1];
+	% 	end
+	% else
+	% 	[symm right left selectedRight selectedLeft] = match(XA, XB, dotsA, dotsB);
+	% end
 	
+	size(XA)
+	size(dotsA)
 	[symm right left selectedRight selectedLeft] = match(XA, XB, dotsA, dotsB);
+
 		
 	%---------------------------------------------------Update existing tracks
 	Tcurr = zeros(nCellsA, 2);
@@ -91,7 +93,7 @@ for f=1:nFrames-1
 	% Place the data into tracklets
 	for i=1:size(Tcurr, 1)
 		if any(Tcurr(i, :)==0); continue; end
-		fprintf('Take [%d, %d] and update tracklet %d\n', dotsB(Tcurr(i, 2), :), Tcurr(i, 1))
+		% fprintf('Take [%d, %d] and update tracklet %d\n', dotsB(Tcurr(i, 2), :), Tcurr(i, 1))
 		tracklets(Tcurr(i, 1), f+1, :) = dotsB(Tcurr(i, 2), :);
 	end
 	%-----------------------------------------------------------Add new tracks

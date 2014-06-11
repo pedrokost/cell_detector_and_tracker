@@ -1,8 +1,7 @@
-function [centers, mask, dots, prediction, img, sizeMSER, r, gt, nFeatures, X]...
+function [mask, dots, prediction, img, sizeMSER, r, gt, nFeatures, X]...
     = testCellDetect(w,dataset,imNum,parms,ctrl,verbosity)
 %Detect cells in an image given the W vector
 %OUTPUT
-%   centers = logical image with centroids of the regions selected
 %   mask = logical image with the regions selected
 %   dots = vector with the centroids of the regions selected
 %   prediction = score of each MSER in r obtained as <w,X>
@@ -47,17 +46,6 @@ mask = logical(mask);
 
 dots = dots(labels, :);
 X = X(labels, :);
-
-centers = zeros(size(img));
-for d=dots'
-    centers(d(2), d(1)) = 255;  % TODO: check if position correct
-end
-
-% dots
-% imshow(centers)
-% hold on;
-% plot(dots(:,1), dots(:,2), 'ro')
-% pause
 
 %------------------------------------------------Post processing the masks?
 %mask = fastbwmorph(mask, 'close');
