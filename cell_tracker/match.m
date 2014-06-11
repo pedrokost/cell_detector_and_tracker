@@ -81,15 +81,17 @@ dists = exp(-dists/sigma);
 %------------------------------------Find symmetric matches
 [~, right] = max(dists, [], 2);  % A --> B
 [~, left] = max(dists, [], 1);   % A <-- B
+right = right';
 
 % Find symmetric matches
 % Use idxA to index into idxB
 idx = left(right);
 % Then select only the matches where that indexed version == 1:nCells
+% idx
 selectedRight = idx == 1:nCellsA;
 
 % SelectedLeft indicates the cells in B that have a symmetric match in A
-selectedLeft = right(left)' == 1:nCellsB;
+selectedLeft = right(left) == 1:nCellsB;
 %----------------------------------------Set bad matches to 0
 symm = right;
 symm(~selectedRight) = 0;
