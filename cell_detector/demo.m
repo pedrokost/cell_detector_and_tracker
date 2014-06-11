@@ -24,8 +24,7 @@ end
 
 %---------------------------------------------------------------------Setup
 %Choose parameters for the training/testing
-datasetTrain = 7;%Identifier of the training data as set in loadDatasetInfo
-datasetTest = 8;%Identifier of the testing data as set in loadDatasetInfo
+dataset = 9;  %Identifier of the training/testing data as set in loadDatasetInfo
 train = 0;%---->Do train
 test = 1;%----->Do test
 
