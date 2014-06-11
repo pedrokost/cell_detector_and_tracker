@@ -60,18 +60,18 @@ if test
     [files, imExt, dataFolder, outFolder,~,tol] = loadDatasetInfo(datasetTest);
     for imNum = 1:numel(files)
         disp(sprintf('Testing on image %d/%d (%s)', imNum, numel(files), files{imNum}))
-        [centers, mask, dots, prediction, img, sizeMSER, r, gt, nFeatures, X] =...
+        [mask, dots, prediction, img, sizeMSER, r, gt, nFeatures, X] =...
             testCellDetect(w,datasetTest,imNum,parameters,ctrl,inspectResults);
 
         %----------------------------------------------------------------Save masks
         if ctrl.saveMasks
+            % centers = logical image with centroids of the regions selected
             centers = zeros(size(mask), 'uint8');
             centers(dots(:, 2), dots(:, 1)) = 255;
             imwrite(mask, [outFolder '/mask_' files{imNum} '.tif'],'tif');
         end
         %-----------------------------------------------------Save cell descriptors
         if ctrl.saveCellDescriptor
-            nCells = size(dots, 1);
             save([outFolder '/' files{imNum} '.mat'],'X', 'dots');
         else
             save([outFolder '/' files{imNum} '.mat'],'dots');
@@ -111,11 +111,7 @@ if exist('prec','var')
     disp(['Mean Recall: ' num2str(mean(rec)) ]);
     disp(' ');
 
-    prec = mean(prec);
-    rec = mean(rec);
-
-    fprintf('Completed in %2.3f CPU time units with precision %3.2f and recall %3.2f\n', ...
-                                                    elapsedTime, prec, rec);
+    fprintf('Completed in %2.3f CPU time units\n', elapsedTime);
 end
 
 %--------------------------------------------------------------------Finish
