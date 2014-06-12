@@ -16,7 +16,7 @@ ctrl.alpha = 0;%Controls the precision/recall from within the optimization
 %(penalization cost of regions with no dot inside is 1-alpha)
 ctrl.ssvm = 1;
 ctrl.maxOuterIter = 2;
-ctrl.saveMasks = 0;
+ctrl.saveMasks = 1;
 ctrl.saveCellDescriptor = 1;
 
 %------------------------------------------------------------------Features
