@@ -2,8 +2,6 @@
 *.sublime-*
 *~
 cell_tracking_papers/code/arteta12_tests/CellDetect_v1.0/*/out*
-data/*/out*
-data/*/*Out
-data/*/*In/feats_*.mat
-data/*/out*/mask_*.tif
-data/*/*Out/mask_*.tif
+data/*Out
+data/*In/feats_*.mat
+data/*Out/mask_*.tif
