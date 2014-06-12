@@ -1,8 +1,15 @@
- ☐ Try other feature (SIFT, ... ) 
- ☐ read paper on SVMstruct
- ☐ Train a compound model (learned on mixed datasets) and evaluate its performance
+ ☐ Use function to access data
+ ☐ Functionalize tracklet generation
+ ☐ Find robust tracklets only
+ ☐ Find effective matching features
+ ☐ annotation GUI
+ ☐ compute the remaining probabilities
+ ☐ skip bad frames (leave an annotation to take into account in the algorithm)
+ ☐ Train a compound model
 ＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿
 Archive:
+ ✔ Try other feature (SIFT, ... ) @done (14-06-12 09:12)
+ ✔ read paper on SVMstruct @done (14-06-12 09:12)
  ✔ Write down the list of features used in the classifier (P4) @done (14-05-28 11:31)
  ✔ Remove one useless feature @done (14-05-28 11:31)
  ✔ Modify the code so that these feature can be removed one by one @done (14-05-28 11:31)

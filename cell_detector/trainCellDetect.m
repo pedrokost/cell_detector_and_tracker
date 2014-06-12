@@ -13,13 +13,13 @@ done = 0;
 additionalU = 0;
 outerIter = 0;
 
-[files, imExt, dataFolder, outFolder, mserParms] = loadDatasetInfo(dataset);
+[trainFiles, testFiles, imExt, dataFolder, outFolder, mserParms] = loadDatasetInfo(dataset);
 
 while ~done
     
     patterns = {} ;
     labels = {} ;
-    p = numel(files); %nImages
+    p = numel(trainFiles); %nImages
     
     %-----------------------------------------------------Select Classifier
     
@@ -51,18 +51,18 @@ while ~done
     %--------------------------------------------Collect trainning examples
     withGT = 1;
     
-    for d = 1:numel(files)
-        fprintf('Processing image %d/%d (%s)\n',  d, numel(files), files{d})
+    for d = 1:numel(trainFiles)
+        fprintf('Processing image %d/%d (%s)\n',  d, numel(trainFiles), trainFiles{d})
         
         clear img gt X Y r sizeMSER gtInMSER nFeatures MSERtree
         
-        if exist([dataFolder '/feats_' files{d} '.mat'],'file') == 0
+        if exist([dataFolder '/feats_' trainFiles{d} '.mat'],'file') == 0
             [img, gt, X, Y, r, ell, MSERtree, gtInMSER, sizeMSER, nFeatures] = ...
-                encodeImage(dataFolder, files{d}, imExt, withGT, parameters, mserParms);
-            save([dataFolder '/feats_' files{d} '.mat']...
+                encodeImage(dataFolder, trainFiles{d}, imExt, withGT, parameters, mserParms);
+            save([dataFolder '/feats_' trainFiles{d} '.mat']...
                 ,'img', 'gt', 'X', 'Y', 'r', 'ell', 'gtInMSER', 'sizeMSER', 'MSERtree', 'nFeatures');
         else
-            load([dataFolder '/feats_' files{d} '.mat']);
+            load([dataFolder '/feats_' trainFiles{d} '.mat']);
         end
         
         %         imshow(img); hold on, plot(gt(:,1), gt(:,2), '*r');
@@ -90,7 +90,7 @@ while ~done
             else
                 [mask,Y, MSERtree] = PylonInference(img, prediction',...
                     sizeMSER, r, additionalU);
-                save([dataFolder '/feats_' files{d} '.mat'],'MSERtree', '-append');
+                save([dataFolder '/feats_' trainFiles{d} '.mat'],'MSERtree', '-append');
             end
             
             patterns{p} = [X p*ones(size(X,1),1)]; 
@@ -169,9 +169,9 @@ end
 
 %---------------------------------------------------------------------Clean
 disp('Cleaning...');
-for d = 1:numel(files)
-    if ~exist([dataFolder '/feats_' files{d} '.mat'],'file') == 0
-        delete([dataFolder '/feats_' files{d} '.mat']);
+for d = 1:numel(trainFiles)
+    if ~exist([dataFolder '/feats_' trainFiles{d} '.mat'],'file') == 0
+        delete([dataFolder '/feats_' trainFiles{d} '.mat']);
     end
 end
 

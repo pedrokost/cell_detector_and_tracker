@@ -24,9 +24,9 @@ end
 
 %---------------------------------------------------------------------Setup
 %Choose parameters for the training/testing
-dataset = 9;  %Identifier of the training/testing data as set in loadDatasetInfo
-train = 0;%---->Do train
-test = 1;%----->Do test
+dataset = 5;  %Identifier of the training/testing data as set in loadDatasetInfo
+train = 1;%---->Do train
+test = 0;%----->Do test
 
 inspectResults = 0; %1: Shows detected cells. 
 %2:A view on the results: MSERs found and selected
@@ -44,9 +44,9 @@ end
 
 %---------------------------------------------------------------------Train
 if train
-    w = trainCellDetect(datasetTrain,ctrl,parameters);
+    w = trainCellDetect(dataset,ctrl,parameters);
 else
-    [~, ~, ~, outFolder] = loadDatasetInfo(datasetTrain);
+    [~, ~, ~, ~, outFolder] = loadDatasetInfo(dataset);
     model = load([outFolder '/wStruct_alpha_' num2str(ctrl.alpha) '.mat']);
     w = model.w;
     disp('Model Loaded');
@@ -56,32 +56,32 @@ end
 t = cputime;
 
 if test
-    [files, imExt, dataFolder, outFolder,~,tol] = loadDatasetInfo(datasetTest);
-    for imNum = 1:numel(files)
-        disp(sprintf('Testing on image %d/%d (%s)', imNum, numel(files), files{imNum}))
+    [trainFiles, testFiles, imExt, dataFolder, outFolder,~,tol] = loadDatasetInfo(dataset);
+    for imNum = 1:numel(testFiles)
+        disp(sprintf('Testing on image %d/%d (%s)', imNum, numel(testFiles), testFiles{imNum}))
         [mask, dots, prediction, img, sizeMSER, r, gt, nFeatures, X] =...
-            testCellDetect(w,datasetTest,imNum,parameters,ctrl,inspectResults);
+            testCellDetect(w,dataset,imNum,parameters,ctrl,inspectResults);
 
         %----------------------------------------------------------------Save masks
         if ctrl.saveMasks
             % centers = logical image with centroids of the regions selected
             centers = zeros(size(mask), 'uint8');
             centers(dots(:, 2), dots(:, 1)) = 255;
-            imwrite(mask, [outFolder '/mask_' files{imNum} '.tif'],'tif');
+            imwrite(mask, [outFolder '/mask_' testFiles{imNum} '.tif'],'tif');
         end
         %-----------------------------------------------------Save cell descriptors
         if ctrl.saveCellDescriptor
-            save([outFolder '/' files{imNum} '.mat'],'X', 'dots');
+            save([outFolder '/' testFiles{imNum} '.mat'],'X', 'dots');
         else
-            save([outFolder '/' files{imNum} '.mat'],'dots');
+            save([outFolder '/' testFiles{imNum} '.mat'],'dots');
         end
 
         %--------------------------------------------------------Save masks to file
         
         if ~isempty(gt)
             if imNum == 1
-                prec = zeros(numel(files),1);
-                rec = zeros(numel(files),1);
+                prec = zeros(numel(testFiles),1);
+                rec = zeros(numel(testFiles),1);
             end
             [prec(imNum), rec(imNum)] = evalDetect(dots(:,2),dots(:,1),...
                 gt(:,2), gt(:,1), ones(size(img)),tol);
