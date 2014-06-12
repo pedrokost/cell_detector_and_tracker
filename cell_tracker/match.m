@@ -74,6 +74,14 @@ end
 nCellsA = size(dotsA, 1);
 nCellsB = size(dotsB, 1);
 
+if nCellsA == 0 || nCellsB == 0
+	symm = zeros(nCellsA, 0);
+	right = []; left = [];
+	selectedRight = zeros(nCellsA, 1);
+	selectedLeft = zeros(nCellsB, 1);
+	return
+end
+
 sigma = 2; % FIXME: Is this the std of the data? what data?
 dists = pdist2(XA, XB);
 dists = exp(-dists/sigma);
@@ -83,15 +91,23 @@ dists = exp(-dists/sigma);
 [~, left] = max(dists, [], 1);   % A <-- B
 right = right';
 
+
 % Find symmetric matches
 % Use idxA to index into idxB
 idx = left(right);
 % Then select only the matches where that indexed version == 1:nCells
 % idx
+
+% if isempty(idx); selectedRight = [];
+% else
 selectedRight = idx == 1:nCellsA;
+% end
 
 % SelectedLeft indicates the cells in B that have a symmetric match in A
-selectedLeft = right(left) == 1:nCellsB;
+% if isempty(right(left)); selectedLeft = [];
+% else
+	selectedLeft = right(left) == 1:nCellsB;
+% end
 %----------------------------------------Set bad matches to 0
 symm = right;
 symm(~selectedRight) = 0;

@@ -1,11 +1,13 @@
- ☐ Use function to access data
- ☐ Functionalize tracklet generation
- ☐ Find robust tracklets only
+ ✔ Use function to access data @done (14-06-12 09:40)
+ ✔ Functionalize tracklet generation @done (14-06-12 10:42)
+ ☐ Load best feature vector automatically
  ☐ Find effective matching features
+ ☐ Find robust tracklets only
  ☐ annotation GUI
  ☐ compute the remaining probabilities
  ☐ skip bad frames (leave an annotation to take into account in the algorithm)
  ☐ Train a compound model
+ ☐ Read Pylon stuff
 ＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿
 Archive:
  ✔ Try other feature (SIFT, ... ) @done (14-06-12 09:12)
