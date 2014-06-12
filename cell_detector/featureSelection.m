@@ -18,8 +18,7 @@ end
 %---------------------------------------------------------------------Setup
 %Choose parameters for the training/testing
 % done: 3:4, 9:10
-datasetTrain = 1;%Identifier of the training data as set in loadDatasetInfo
-datasetTest = 2;%Identifier of the testing data as set in loadDatasetInfo
+dataset = 1;%Identifier of the training/testing data as set in loadDatasetInfo
 numFeatures = 7; % number of all possible features
 runPar = 1; % Run with additonal parallel workers
 profilerOn = 0;
@@ -47,7 +46,7 @@ if profilerOn
 end
 
 fprintf('Loading dataset info\n');
-[files, imExt, dataFolder, outFolder,~,tol] = loadDatasetInfo(datasetTest);
+[trainFiles, testFiles, imExt, dataFolder, outFolder,~,tol] = loadDatasetInfo(datasetTest);
 resultsFile = fullfile(outFolder, 'batchResults.mat');
 
 fprintf('Initializing iteration loop\n');
@@ -81,22 +80,22 @@ for iter=startIter:size(X, 1);
 
 
 	%---------------------------------------------------------------------Train
-	w = trainCellDetect(datasetTrain,ctrl,parameters);
+	w = trainCellDetect(dataset,ctrl,parameters);
 
 	% %----------------------------------------------------------------------Test
     t = cputime;
-    for imNum = 1:numel(files)
+    for imNum = 1:numel(testFiles)
 
-        disp(['		Testing on Image ' num2str(imNum) '/' num2str(numel(files))]);
+        disp(['		Testing on Image ' num2str(imNum) '/' num2str(numel(testFiles))]);
         [centers, mask, dots, prediction, img, sizeMSER, r, gt, nFeatures] =...
             testCellDetect(w,datasetTest,imNum,parameters,ctrl,inspectResults);
-        imwrite(mask, [outFolder '/mask_' files{imNum} '.tif'],'tif');
-        save([outFolder '/' files{imNum} '.mat'],'dots');      
+        imwrite(mask, [outFolder '/mask_' testFiles{imNum} '.tif'],'tif');
+        save([outFolder '/' testFiles{imNum} '.mat'],'dots');      
         
         if ~isempty(gt)
             if imNum == 1
-                prec = zeros(numel(files),1);
-                rec = zeros(numel(files),1);
+                prec = zeros(numel(testFiles),1);
+                rec = zeros(numel(testFiles),1);
             end
             [prec(imNum), rec(imNum)] = evalDetect(dots(:,2),dots(:,1),...
                 gt(:,2), gt(:,1), ones(size(img)),tol);

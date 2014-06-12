@@ -1,20 +1,26 @@
-function [files, imExt, dataFolder, outFolder, mserParms, tol] = loadDatasetInfo(dataset)
+function [trainFiles, testFiles, imExt, dataFolder, outFolder, mserParms, tol] = loadDatasetInfo(dataset, options)
 %This is used to setup (and load) the parameters of the dataset; use as
 %template for new datasets.
 %
 %INPUT
 %   dataSet = identifier of the data set as set in the switch-case
+%   options = a struct with options to override defaults
 %OUTPUT
-%   files = file names (must be the same for the images and annotations)
+%   trainFiles = file names used for training (must be the same for the images
+%        and annotations)
+%   testFiles = file names used for testing (must be the same for the images
+%        and annotations)
 %   imExt = image extension
 %   dataFolder = folder that contains the data (if training data, it must
 %       contain the both the images and the annotations)
-%   outFolder = folder to save results and intermediary data 
+%   outFolder = folder to save results and intermediary data
 %
 %minPixels, maxPixels, BoD(bright on dark) and DoB(dark on bright) are
 %parameters of VL_feat's MSER detector. The default should cover
 %all cases, but simple changes (spcially choosing BoD or DoB) can
 %considerably speed up the code for a specific dataset.
+
+% NOTE: It is recommended to use rng to always load the same datasets
 
 
 %Defaults
@@ -25,33 +31,25 @@ maxPixels = [];
 Delta = 1;
 MaxVariation = 1;
 MinDiversity = 0.1;
+imExt = 'pgm';
+trainsplit = 0.7;  % percentage of data to be used for training 
+
+rootFolder = fullfile('..', 'data');
 
 switch dataset
     case 1 %PhaseContrast
         %-TRAINING DATA SET-%
-        dataFolder = 'phasecontrast/trainPhasecontrast';
-        outFolder = 'phasecontrast/outPhasecontrast';
-        imExt = 'pgm';
+        dataFolder = fullfile(rootFolder, 'phasecontrastIN');
+        outFolder = fullfile(rootFolder, 'phasecontrastOUT');
         minPixels =  10;
         maxPixels = 10000;
         BoD = 0;
         DoB = 1;
         tol = 8; %Tolerance (pixels) for evaluation only
-    case 2 %PhaseContrast
-        %-TESTING DATA SET-%
-        dataFolder = 'phasecontrast/testPhasecontrast';
-        outFolder = 'phasecontrast/outPhasecontrast';
-        imExt = 'pgm';
-        minPixels =  10;
-        maxPixels = 10000;
-        BoD = 0;
-        DoB = 1;
-        tol = 8; %Tolerance (pixels) for evaluation only
-    case 3 %LungGreen
+    case 2 %LungGreen
         %-TRAINING DATA SET-%
-        dataFolder = 'lung/trainLungGreen';
-        outFolder = 'lung/outLungGreen';
-        imExt = 'pgm';
+        dataFolder = fullfile(rootFolder, 'lunggreenIN');
+        outFolder = fullfile(rootFolder, 'lunggreenOUT');
         minPixels = 10;
         maxPixels = 100;
         Delta = 2;
@@ -60,38 +58,18 @@ switch dataset
         %  timePerImage: 1.6950
         % meanPrecision: 0.8907
         %    meanRecall: 0.9082
-    case 4 %LungGreen
-        %-TESTING DATA SET-%
-        dataFolder = 'lung/testLungGreen';
-        outFolder = 'lung/outLungGreen';
-        imExt = 'pgm';
-        minPixels = 10;
-        maxPixels = 100;
-        Delta = 2;
-        tol = 8; %Tolerance (pixels) for evaluation only
-    case 5 %LungRed
+    case 3 %LungRed
         %-TRAINING DATA SET-%
-        dataFolder = 'lung/trainLungRed';
-        outFolder = 'lung/outLungRed';
-        imExt = 'pgm';
+        dataFolder = fullfile(rootFolder, 'lungredIN');
+        outFolder = fullfile(rootFolder, 'lungredOUT');
         minPixels = 10;
         maxPixels = 100;
         Delta = 2;
         tol = 8; %Tolerance (pixels) for evaluation only
-    case 6 %LungRed
-        %-TESTING DATA SET-%
-        dataFolder = 'lung/testLungRed';
-        outFolder = 'lung/outLungRed';
-        imExt = 'pgm';
-        minPixels = 10;
-        maxPixels = 100;
-        Delta = 2;
-        tol = 8; %Tolerance (pixels) for evaluation only
-    case 7 %KidneyGreen
+    case 4 %KidneyGreen
         %-TRAINING DATA SET-%
-        dataFolder = 'kidney/trainKidneyGreen';
-        outFolder = 'kidney/outKidneyGreen';
-        imExt = 'pgm';
+        dataFolder = fullfile(rootFolder, 'kidneygreenIN');
+        outFolder = fullfile(rootFolder, 'kidneygreenOUT');
         minPixels = 100;
         maxPixels = 1000;
         Delta = 2;
@@ -100,21 +78,10 @@ switch dataset
         %  timePerImage: 0.5353
         % meanPrecision: 0.6833
         %    meanRecall: 0.9600
-
-    case 8 %KidneyGreen
-        %-TESTING DATA SET-%
-        dataFolder = 'kidney/testKidneyGreen';
-        outFolder = 'kidney/outKidneyGreen';
-        imExt = 'pgm';
-        minPixels = 100;
-        maxPixels = 1000;
-        Delta = 2;
-        tol = 8; %Tolerance (pixels) for evaluation only
-    case 9 %KidneyRed
+    case 5 %KidneyRed
         %-TRAINING DATA SET-%
-        dataFolder = 'kidney/trainKidneyRed';
-        outFolder = 'kidney/outKidneyRed';
-        imExt = 'pgm';
+        dataFolder = fullfile(rootFolder, 'kidneyredIN');
+        outFolder = fullfile(rootFolder, 'kidneyredOUT');
         minPixels = 100;
         maxPixels = 500;
         Delta = 5;
@@ -124,17 +91,6 @@ switch dataset
         %  timePerImage: 0.8688
         % meanPrecision: 0.6920
         %    meanRecall: 0.9577
-
-    case 10 %KidneyRed
-        %-TESTING DATA SET-%
-        dataFolder = 'kidney/testKidneyRed';
-        outFolder = 'kidney/outKidneyRed';
-        imExt = 'pgm';
-        minPixels = 100;
-        maxPixels = 500;
-        Delta = 5;
-        MaxVariation = 0.5;
-        tol = 8; %Tolerance (pixels) for evaluation only
 end
 
 if exist(dataFolder,'dir') ~= 7
@@ -145,8 +101,19 @@ if exist(outFolder,'dir') ~= 7
     error('Output folder not found')
 end
 
+
+
 files = dir(fullfile(dataFolder,['*.' imExt]));
 [~,files] = cellfun(@fileparts, {files.name}, 'UniformOutput',false);
+
+
+trainFiles = datasample(files, ...
+    round(trainsplit * numel(files)),...
+    'Replace', false);
+trainFiles = sort(trainFiles);
+testFiles = setdiff(files, trainFiles);
+
+
 mserParms.bod = BoD;
 mserParms.dob = DoB;
 mserParms.minPix = minPixels;

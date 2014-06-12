@@ -5,7 +5,6 @@ test = false;
 
 folder = fullfile('..', 'cell_detector', 'kidney', 'outKidneyGreen');
 
-
 matfiles = dir(fullfile(folder, 'im*.mat'));
 if test
 	nFrames = 4;

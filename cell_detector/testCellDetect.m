@@ -23,17 +23,17 @@ function [mask, dots, prediction, img, sizeMSER, r, gt, nFeatures, X]...
 withGT = 0;
 additionalU = 0;
 
-[files, imExt, dataFolder, outFolder, mserParms] = loadDatasetInfo(dataset);
+[trainFiles, testFiles, imExt, dataFolder, outFolder, mserParms] = loadDatasetInfo(dataset);
 
-if exist([outFolder '/feats_' files{imNum} '_test.mat'],'file') == 0
+if exist([outFolder '/feats_' testFiles{imNum} '_test.mat'],'file') == 0
     
     [img, gt, X, ~, r, ell, MSERtree, ~, sizeMSER, nFeatures] =...
-        encodeImage(dataFolder, files{imNum}, imExt, withGT, parms, mserParms);
-    %save([outFolder '/feats_' files{imNum} '_test.mat']...
+        encodeImage(dataFolder, testFiles{imNum}, imExt, withGT, parms, mserParms);
+    %save([outFolder '/feats_' testFiles{imNum} '_test.mat']...
     %    ,'img', 'gt', 'X', 'r', 'ell', 'sizeMSER', 'MSERtree', 'nFeatures');
 
 else
-    load([outFolder '/feats_' files{imNum} '_test.mat']);
+    load([outFolder '/feats_' testFiles{imNum} '_test.mat']);
 end
 
 %-------------------------------------------------------Evaluate Hypotheses
@@ -53,12 +53,12 @@ X = X(labels, :);
 
 if verbosity > 0
     
-    orImg = imread([dataFolder '/' files{imNum} '.' imExt] ,imExt);
+    orImg = imread([dataFolder '/' testFiles{imNum} '.' imExt] ,imExt);
     
-    if exist([dataFolder '/' files{imNum} '.mat'],'file') == 0
+    if exist([dataFolder '/' testFiles{imNum} '.mat'],'file') == 0
         gt = [];
     else
-        gt = load([dataFolder '/' files{imNum} '.mat']);
+        gt = load([dataFolder '/' testFiles{imNum} '.mat']);
         inGT = fieldnames(gt);
         gt = gt.(inGT{1});
     end
@@ -137,5 +137,5 @@ end
 %     plot(dots(:,1), dots(:,2),'xb','LineWidth',5,'MarkerSize',5)
 %     hold off;
 %
-%     export_fig([outFolder '/' files{imNum}],'-transparent','-q100','-m1.5','-a2','-png');
+%     export_fig([outFolder '/' testFiles{imNum}],'-transparent','-q100','-m1.5','-a2','-png');
 end
