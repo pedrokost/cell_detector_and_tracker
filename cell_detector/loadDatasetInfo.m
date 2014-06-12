@@ -1,4 +1,5 @@
-function [trainFiles, testFiles, imExt, dataFolder, outFolder, mserParms, tol] = loadDatasetInfo(dataset, options)
+function [trainFiles, testFiles, imExt, dataFolder, outFolder, mserParms, tol, features] = ...
+    loadDatasetInfo(dataset, options)
 %This is used to setup (and load) the parameters of the dataset; use as
 %template for new datasets.
 %
@@ -33,7 +34,7 @@ MaxVariation = 1;
 MinDiversity = 0.1;
 imExt = 'pgm';
 trainsplit = 0.7;  % percentage of data to be used for training 
-
+features = []; % Use default from setFeatures
 rootFolder = fullfile('..', 'data');
 
 switch dataset
@@ -54,6 +55,7 @@ switch dataset
         maxPixels = 100;
         Delta = 2;
         tol = 8; %Tolerance (pixels) for evaluation only
+        features = [1 0 1 1 1 1 0];
         %      features: [1 0 1 1 1 1 0]
         %  timePerImage: 1.6950
         % meanPrecision: 0.8907
@@ -74,6 +76,7 @@ switch dataset
         maxPixels = 1000;
         Delta = 2;
         tol = 8; %Tolerance (pixels) for evaluation only
+        features = [1 1 0 0 0 0 0];
         %      features: [1 1 0 0 0 0 0]
         %  timePerImage: 0.5353
         % meanPrecision: 0.6833
@@ -87,6 +90,7 @@ switch dataset
         Delta = 5;
         MaxVariation = 0.5;
         tol = 8; %Tolerance (pixels) for evaluation only
+        features =  [1 0 0 1 1 0 1];
         %      features: [1 0 0 1 1 0 1]
         %  timePerImage: 0.8688
         % meanPrecision: 0.6920

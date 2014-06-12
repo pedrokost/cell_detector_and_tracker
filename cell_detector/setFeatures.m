@@ -16,7 +16,7 @@ ctrl.alpha = 0;%Controls the precision/recall from within the optimization
 %(penalization cost of regions with no dot inside is 1-alpha)
 ctrl.ssvm = 1;
 ctrl.maxOuterIter = 2;
-ctrl.saveMasks = 1;
+ctrl.saveMasks = 0;
 ctrl.saveCellDescriptor = 1;
 
 %------------------------------------------------------------------Features
@@ -50,13 +50,17 @@ jitterSize = 3; %Size (in pixels) of the jitter introduced to the annotations
 %------------------------------------------------------------------Overrides
 if nargin > 0
 	feats = varargin{1};
-	addArea        = feats(1);
-	addIntHist     = feats(2);
-	addPos         = feats(3);
-	addDiffHist    = feats(4);
-	addShape       = feats(5);
-	addOrientation = feats(6);
-	addEdges       = feats(7);
+	if numel(feats) < 7; 
+		fprintf('Using default set of features.\n');
+	else
+		addArea        = feats(1);
+		addIntHist     = feats(2);
+		addPos         = feats(3);
+		addDiffHist    = feats(4);
+		addShape       = feats(5);
+		addOrientation = feats(6);
+		addEdges       = feats(7);
+	end
 end
 
 
