@@ -1,9 +1,11 @@
  ✔ Use function to access data @done (14-06-12 09:40)
  ✔ Functionalize tracklet generation @done (14-06-12 10:42)
  ✔ Load best feature vector automatically @done (14-06-12 11:08)
+ ☐ annotation GUI
+     ☐ Space: next image
+     ☐ Other shortcuts for display
  ☐ Find effective matching features
  ☐ Find robust tracklets only
- ☐ annotation GUI
  ☐ compute the remaining probabilities
  ☐ skip bad frames (leave an annotation to take into account in the algorithm)
  ☐ Train a compound model
