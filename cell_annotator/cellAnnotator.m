@@ -28,6 +28,7 @@ function cellAnnotator
     padding = 10;
     
     colormaps = 'gray|jet|hsv|hot|cool';
+    disableFilters = false;
     
     testing = 1;
     
@@ -291,6 +292,10 @@ function cellAnnotator
             nextImage();
         elseif strcmp(eventdata.Key, 'leftarrow')
             prevImage();
+        elseif strcmp(eventdata.Key, 't')
+            disableFilters = ~disableFilters;
+            displayImage(curIdx, numImages);
+            displayAnnotations(curIdx, numImages);
         end
     end
 
@@ -348,25 +353,6 @@ function cellAnnotator
             return
         end
         
-        % Check filters to apply
-        applyConstrast = get(hfiltercontrast, 'Value');
-        applyMedianFilter = get(hfiltermedian, 'Value');
-        applyAdaptiveFilter = get(hfilterwiener, 'Value');
-        applyHisteq = get(hfilterhisteq, 'Value');
-        applyadapthisteq = get(hfilteradapthisteq, 'Value');  
-        applyDecorrstretch = get(hfilterdecorrstretch, 'Value');
-        applySharpen = get(hfilterapplysharpen, 'Value');
-        applyEdge = get(hfilteredge, 'Value');
-        colorMap = get(hfiltercolor, 'Value');
-        colorMaps = strsplit(colormaps, '|');
-        applyAverage = get(hfilteraverage, 'Value');
-        applyDisk = get(hfilterdisk, 'Value');
-        applyLaplacian = get(hfilterlaplacian, 'Value');
-        applyLog = get(hfilterlog, 'Value');
-        applyPrewitt = get(hfilterprewitt, 'Value');
-        applySobel = get(hfiltersobel, 'Value');
-        applyUnsharp = get(hfilterunsharp, 'Value');
-
         ind = index;
         if ind < 2
             ind = ind + 1; 
@@ -383,112 +369,137 @@ function cellAnnotator
         cla(hviewer);
         % assume all images same dimensions
         
-        % Apply filters
-        if applyConstrast; 
-            I0 = imadjust(I0);
-            I1 = imadjust(I1);
-            I2 = imadjust(I2);
-        end
-        if applyHisteq; 
-            I0 = histeq(I0);
-            I1 = histeq(I1);
-            I2 = histeq(I2);
-        end
-        if applyMedianFilter;
-            v = str2num(getCurrentPopupString(hfiltermediansz));
-            sz = [v v];
-            I0 = medfilt2(I0,sz);
-            I1 = medfilt2(I1,sz);
-            I2 = medfilt2(I2,sz);
-        end
-        if applySharpen;
-            v = str2num(getCurrentPopupString(hfilterapplysharpensz));
-            I0 = imsharpen(I0, 'Amount', v);
-            I1 = imsharpen(I1, 'Amount', v);
-            I2 = imsharpen(I2, 'Amount', v);
-        end
-        if applyAdaptiveFilter;
-            v = str2num(getCurrentPopupString(hfilterwienersz));
-            sz = [v v];
-            I0 = wiener2(I0, sz);
-            I1 = wiener2(I1, sz);
-            I2 = wiener2(I2, sz);
-        end
-        if applyadapthisteq; 
-            I0 = adapthisteq(I0);
-            I1 = adapthisteq(I1);
-            I2 = adapthisteq(I2);
-        end
-        if applyDecorrstretch; 
-            v = str2num(getCurrentPopupString(hfilterdecorrstretchsz));
-            I0 = decorrstretch(I0,'Tol',v);
-            I1 = decorrstretch(I1,'Tol',v);
-            I2 = decorrstretch(I2,'Tol',v);
-        end
-        if applyEdge; 
-            method = strtrim(getCurrentPopupString(hfilteredgemeth));
-            thr = getCurrentPopupString(hfilteredgethr);
-            if thr == 'auto'
-                thr = [];
-            else
-                thr = str2double(thr);
+        if ~disableFilters
+            % Check filters to apply
+            applyConstrast = get(hfiltercontrast, 'Value');
+            applyMedianFilter = get(hfiltermedian, 'Value');
+            applyAdaptiveFilter = get(hfilterwiener, 'Value');
+            applyHisteq = get(hfilterhisteq, 'Value');
+            applyadapthisteq = get(hfilteradapthisteq, 'Value');  
+            applyDecorrstretch = get(hfilterdecorrstretch, 'Value');
+            applySharpen = get(hfilterapplysharpen, 'Value');
+            applyEdge = get(hfilteredge, 'Value');
+            colorMap = get(hfiltercolor, 'Value');
+            colorMaps = strsplit(colormaps, '|');
+            applyAverage = get(hfilteraverage, 'Value');
+            applyDisk = get(hfilterdisk, 'Value');
+            applyLaplacian = get(hfilterlaplacian, 'Value');
+            applyLog = get(hfilterlog, 'Value');
+            applyPrewitt = get(hfilterprewitt, 'Value');
+            applySobel = get(hfiltersobel, 'Value');
+            applyUnsharp = get(hfilterunsharp, 'Value');
+        
+        
+            % Apply filters
+            if applyConstrast; 
+                I0 = imadjust(I0);
+                I1 = imadjust(I1);
+                I2 = imadjust(I2);
             end
-            I0 = edge(I0, method, thr);
-            I1 = edge(I1, method, thr);
-            I2 = edge(I2, method, thr);
-        end
+            if applyHisteq; 
+                I0 = histeq(I0);
+                I1 = histeq(I1);
+                I2 = histeq(I2);
+            end
+            if applyMedianFilter;
+                v = str2num(getCurrentPopupString(hfiltermediansz));
+                sz = [v v];
+                I0 = medfilt2(I0,sz);
+                I1 = medfilt2(I1,sz);
+                I2 = medfilt2(I2,sz);
+            end
+            if applySharpen;
+                v = str2num(getCurrentPopupString(hfilterapplysharpensz));
+                I0 = imsharpen(I0, 'Amount', v);
+                I1 = imsharpen(I1, 'Amount', v);
+                I2 = imsharpen(I2, 'Amount', v);
+            end
+            if applyAdaptiveFilter;
+                v = str2num(getCurrentPopupString(hfilterwienersz));
+                sz = [v v];
+                I0 = wiener2(I0, sz);
+                I1 = wiener2(I1, sz);
+                I2 = wiener2(I2, sz);
+            end
+            if applyadapthisteq; 
+                I0 = adapthisteq(I0);
+                I1 = adapthisteq(I1);
+                I2 = adapthisteq(I2);
+            end
+            if applyDecorrstretch; 
+                v = str2num(getCurrentPopupString(hfilterdecorrstretchsz));
+                I0 = decorrstretch(I0,'Tol',v);
+                I1 = decorrstretch(I1,'Tol',v);
+                I2 = decorrstretch(I2,'Tol',v);
+            end
+            if applyEdge; 
+                method = strtrim(getCurrentPopupString(hfilteredgemeth));
+                thr = getCurrentPopupString(hfilteredgethr);
+                if thr == 'auto'
+                    thr = [];
+                else
+                    thr = str2double(thr);
+                end
+                I0 = edge(I0, method, thr);
+                I1 = edge(I1, method, thr);
+                I2 = edge(I2, method, thr);
+            end
 
-        if applyAverage;
-            v = str2num(getCurrentPopupString(hfilteraveragesz));
-            h = fspecial('average', v);
-            I0 = imfilter(I0, h);
-            I1 = imfilter(I1, h);
-            I2 = imfilter(I2, h);
-        end
-        if applyDisk;
-            v = str2num(getCurrentPopupString(hfilterdisksz));
-            h = fspecial('disk', v);
-            I0 = imfilter(I0, h);
-            I1 = imfilter(I1, h);
-            I2 = imfilter(I2, h);
-        end
-        if applyLaplacian;
-            v = str2double(getCurrentPopupString(hfilterlaplaciansz));
-            h = fspecial('laplacian', v);
-            I0 = imfilter(I0, h);
-            I1 = imfilter(I1, h);
-            I2 = imfilter(I2, h);
-        end
-        if applyLog;
-            v = str2num(getCurrentPopupString(hfilterlogsz));
-            h = fspecial('log', v);
-            I0 = imfilter(I0, h);
-            I1 = imfilter(I1, h);
-            I2 = imfilter(I2, h);
-        end
-        if applyPrewitt;
-            h = fspecial('prewitt');
-            I0 = imfilter(I0, h);
-            I1 = imfilter(I1, h);
-            I2 = imfilter(I2, h);
-        end
-        if applySobel;
-            h = fspecial('sobel');
-            I0 = imfilter(I0, h);
-            I1 = imfilter(I1, h);
-            I2 = imfilter(I2, h);
-        end
-        if applyUnsharp;
-            h = fspecial('unsharp');
-            I0 = imfilter(I0, h);
-            I1 = imfilter(I1, h);
-            I2 = imfilter(I2, h);
+            if applyAverage;
+                v = str2num(getCurrentPopupString(hfilteraveragesz));
+                h = fspecial('average', v);
+                I0 = imfilter(I0, h);
+                I1 = imfilter(I1, h);
+                I2 = imfilter(I2, h);
+            end
+            if applyDisk;
+                v = str2num(getCurrentPopupString(hfilterdisksz));
+                h = fspecial('disk', v);
+                I0 = imfilter(I0, h);
+                I1 = imfilter(I1, h);
+                I2 = imfilter(I2, h);
+            end
+            if applyLaplacian;
+                v = str2double(getCurrentPopupString(hfilterlaplaciansz));
+                h = fspecial('laplacian', v);
+                I0 = imfilter(I0, h);
+                I1 = imfilter(I1, h);
+                I2 = imfilter(I2, h);
+            end
+            if applyLog;
+                v = str2num(getCurrentPopupString(hfilterlogsz));
+                h = fspecial('log', v);
+                I0 = imfilter(I0, h);
+                I1 = imfilter(I1, h);
+                I2 = imfilter(I2, h);
+            end
+            if applyPrewitt;
+                h = fspecial('prewitt');
+                I0 = imfilter(I0, h);
+                I1 = imfilter(I1, h);
+                I2 = imfilter(I2, h);
+            end
+            if applySobel;
+                h = fspecial('sobel');
+                I0 = imfilter(I0, h);
+                I1 = imfilter(I1, h);
+                I2 = imfilter(I2, h);
+            end
+            if applyUnsharp;
+                h = fspecial('unsharp');
+                I0 = imfilter(I0, h);
+                I1 = imfilter(I1, h);
+                I2 = imfilter(I2, h);
+            end
+            colormap(colorMaps{colorMap});
+        else
+            colormap gray;
         end
 
         I = cat(2, I0, gap, I1,gap, I2);
         
         imagesc(I, 'Parent', hviewer); axis equal; axis tight;
-        colormap(colorMaps{colorMap});
+        
         set(hviewer,'XTick',[],'YTIck',[]);
         tit = sprintf('%2d/%d', index, numImages);
         title(tit, 'Parent', hviewer)
@@ -536,5 +547,3 @@ function cellAnnotator
         [~, base, ~] = fileparts(filename);
     end
 end
-
-
