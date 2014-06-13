@@ -4,6 +4,7 @@ function cellAnnotator
     error(javachk('swing',mfilename)) % ensure that Swing components are available
 
     addpath('relativepath');
+    addpath('vl_feat');
     % =====================================================================
     % ------------FUNCTION GLOBALS-----------------------------------------
     % =====================================================================
@@ -13,7 +14,7 @@ function cellAnnotator
     imgFolderName = '';
     detMatFolderName = '';
     images = cell(1,1); % cache of images
-    usrAnnotations = cell(1,1); % cache of annotation
+    usrAnnotations = struct('dirty', false, 'dots', zeros(0, 2)); % cache of annotation
     detAnnotations = cell(1,1);
     curIdx = 1;
     numImages = 0;
@@ -49,14 +50,21 @@ function cellAnnotator
     pix2chars=size_pixels(3:4)./size_characters(3:4);
 
     halfWidth = figWidth/2 - padding*1.5;
+    quarterWidth = halfWidth / 2 - padding * 1.5;
+
     hbrowse = uicontrol('Style','pushbutton',...
            'String','Choose image folder',...
            'Position', [padding figHeight-30 halfWidth 25],...
            'Callback',{@hbrowse_callback});
     hbrowsedet = uicontrol('Style','pushbutton',...
            'String','Choose detections folder',...
-           'Position', [halfWidth + 2*padding figHeight-30 halfWidth 25],...
+           'Position', [halfWidth + 2*padding figHeight-30 quarterWidth 25],...
            'Callback', {@hbrowsemat_callback});
+    hsave = uicontrol('Style','pushbutton',...
+           'String','Save',...
+           'Position', [halfWidth + quarterWidth + 3.5*padding figHeight-30 quarterWidth 25],...
+           'Callback', {@save_callback},...
+           'Visible', 'off');
     hviewer = axes('Units','Pixels',...
             'Position', [padding 40 figWidth-2*padding 350],...
             'Visible','off'); 
@@ -195,7 +203,7 @@ function cellAnnotator
     % =====================================================================
     % Initialize the GUI.
     % Change units to normalized so components resize automatically.
-    set([f,hbrowse,hviewer, hslider, hbrowsedet, hfilters],...
+    set([f,hbrowse,hviewer, hslider, hbrowsedet, hfilters, hsave],...
         'Units','normalized');
 
     % Assign the GUI a name to appear in the window title.
@@ -230,7 +238,10 @@ function cellAnnotator
 
         numImages = numel(imgfileNames);
         images = cell(numImages, 1);
-        usrAnnotations = cell(numImages, 1);
+        usrAnnotations.dots = cell(numImages, 1);
+        usrAnnotations.dirty = cell(numImages, 1);
+        [usrAnnotations.dirty{:}] = deal(0);  % Initialize to false
+
         usrMatfileNames = cell(numImages, 1);
         for i=1:numImages
             img = imgfileNames(i);
@@ -299,6 +310,32 @@ function cellAnnotator
         end
     end
 
+    function save_callback(~, ~)
+        % Overwrite old mat files with new ones
+        % Assumes the mat files contain only `dots`.
+        
+        % Find dirty annotations
+        I = find([usrAnnotations.dirty{:}]);
+        oldColor = get(hsave, 'Background');
+        set(hsave, 'Background', 'y');
+        set(hsave, 'String', 'Saving');
+        
+        for i=1:numel(I)
+            % Find corresponding filenames
+            dots = usrAnnotations.dots{I(i)};
+            filename = fullfile(imgFolderName, usrMatfileNames(I(i)).name);
+            % Save the new dots
+            save(filename, 'dots');
+            fprintf('Saved annotations for image %d to file %s\n', I(i), filename);
+        end
+
+        set(hsave, 'Background', 'g');
+        set(hsave, 'String', 'Saved');
+        pause(2);
+        set(hsave, 'Background', oldColor);
+        set(hsave, 'String', 'Save');
+    end
+
     % =====================================================================
     % -----------OTHER FUNCTIONS-------------------------------------------
     % =====================================================================
@@ -328,7 +365,7 @@ function cellAnnotator
 
     function dots = getAnnotations(index)
         % Returns the requested image annotations
-        if isempty(usrAnnotations{index})
+        if isempty(usrAnnotations.dots{index})
             filename = fullfile(imgFolderName, usrMatfileNames(index).name);
             if exist(filename, 'file')==2
                 data = load(filename);
@@ -341,9 +378,9 @@ function cellAnnotator
             else
                 dots = data.gl;
             end
-            usrAnnotations{index} = dots;
+            usrAnnotations.dots{index} = dots;
         else
-            dots = usrAnnotations{index};
+            dots = usrAnnotations.dots{index};
         end
     end
 
@@ -490,7 +527,7 @@ function cellAnnotator
                 I0 = imfilter(I0, h);
                 I1 = imfilter(I1, h);
                 I2 = imfilter(I2, h);
-            end
+            end 
             colormap(colorMaps{colorMap});
         else
             colormap gray;
@@ -535,12 +572,16 @@ function cellAnnotator
       set(hviewer, 'Visible', 'on');
       set(hslider, 'Visible', 'on');
       set(hfilters, 'Visible', 'on');
+      set(hsave, 'Visible', 'on');
+      set(hsave, 'Enable', 'on');
+      
     end
 
     function hideUIElements
       set(hviewer, 'Visible', 'off');
       set(hslider, 'Visible', 'off');
       set(hfilters, 'Visible', 'off');
+      set(hsave, 'Enable', 'off');
     end
 
     function base = basename(filename)
