@@ -1,6 +1,8 @@
 function cellAnnotator
     %cellAnnotator GUI tool for cell and cell sequence annotation
     
+    error(javachk('swing',mfilename)) % ensure that Swing components are available
+
     addpath('relativepath');
     % =====================================================================
     % ------------FUNCTION GLOBALS-----------------------------------------
@@ -25,6 +27,8 @@ function cellAnnotator
     figHeight = 500;
     padding = 10;
     
+    colormaps = 'gray|jet|hsv|hot|cool';
+    
     testing = 1;
     
     % =====================================================================
@@ -36,6 +40,13 @@ function cellAnnotator
     % Hide toolbar
     set(f, 'Menu','none', 'Toolbar','none')
     
+    % Get the factor to convert pixels to characters
+    size_pixels=get(gcf,'Position');
+    set(gcf,'Units','characters');
+    size_characters=get(gcf,'Position');
+    set(gcf,'Units','pixels');
+    pix2chars=size_pixels(3:4)./size_characters(3:4);
+
     halfWidth = figWidth/2 - padding*1.5;
     hbrowse = uicontrol('Style','pushbutton',...
            'String','Choose image folder',...
@@ -58,62 +69,132 @@ function cellAnnotator
                         'Visible','off');
     hfilters = uibuttongroup('Visible','off',...
         'Units', 'Pixels',...
-        'Position', [padding 425 figWidth-2*padding 25]);
+        'Position', [padding 415 figWidth-2*padding 45]);
     
-    % FIMX: use relative units here
-    hfiltercontrast = uicontrol('Style','checkbox',...
-        'String','Contrast',...
-        'pos',[2 2 200 20],...
-        'Parent',hfilters, ...
-        'HandleVisibility','off',...
-        'Callback', @requestRedraw);
-    hfilterdenoise = uicontrol('Style','checkbox',...
-        'String','Remove Noise',...
-        'pos',[200+padding 2 200 20],...
-        'Parent',hfilters, ...
-        'HandleVisibility','off',...
-        'Callback', @requestRedraw);
-    hfilterhisteq = uicontrol('Style','checkbox',...
-        'String','Histgram equalization',...
-        'pos',[400+2*padding 2 200 20],...
-        'Parent',hfilters, ...
-        'HandleVisibility','off',...
-        'Callback', @requestRedraw);
+    filterNames = { 'Col' 'Contrast' 'Histeq'...
+        'Adaptive Histeq' 'Median Filter' 'M' 'Wiener filter' 'W'...
+        'Sharpen' 'S' 'Decorrelation stretch' 'Dec' 'Edge' 'Me' 'Th' 'Average' 'A'...
+        'Disk' 'D' 'Laplacian' 'L' 'Log' 'L' 'Prewitt' 'Sobel'...
+        'Unsharp'};
     
-    hfilteradapthisteq = uicontrol('Style','checkbox',...
-        'String','Adaptive Histgram equalization',...
-        'pos',[600+3*padding 2 200 20],...
-        'Parent',hfilters, ...
-        'HandleVisibility','off',...
-        'Callback', @requestRedraw);
-    
-    hfilterdecorrstretch = uicontrol('Style','checkbox',...
-        'String','Decorrelation stretch',...
-        'pos',[800+4*padding 2 200 20],...
-        'Parent',hfilters, ...
-        'HandleVisibility','off',...
-        'Callback', @requestRedraw);
+    hfiltercolor = uicontrol('Style','popupmenu', 'String', '1');
+    hfiltercontrast = uicontrol('Style','checkbox');
+    hfilterhisteq = uicontrol('Style','checkbox');
+    hfilteradapthisteq = uicontrol('Style','checkbox');
+    hfiltermedian = uicontrol('Style','checkbox');
+    hfilterwiener = uicontrol('Style','checkbox');
+    hfilterapplysharpen = uicontrol('Style','checkbox');
+    hfilterdecorrstretch = uicontrol('Style','checkbox');
+    hfilteredge = uicontrol('Style','checkbox');
+    hfilteraverage = uicontrol('Style', 'checkbox');
+    hfilterdisk = uicontrol('Style', 'checkbox');
+    hfilterlaplacian = uicontrol('Style', 'checkbox');
+    hfilterlog = uicontrol('Style', 'checkbox');
+    hfilterprewitt = uicontrol('Style', 'checkbox');
+    hfiltersobel = uicontrol('Style', 'checkbox');
+    hfilterunsharp = uicontrol('Style', 'checkbox');
 
-    hfilterwiener = uicontrol('Style','checkbox',...
-        'String','Wiener filter',...
-        'pos',[1000+4*padding 2 200 20],...
-        'Parent',hfilters, ...
-        'HandleVisibility','off',...
-        'Callback', @requestRedraw);
+    hfiltermediansz = uicontrol('Style', 'popupmenu', 'String', '1');
+    hfilterapplysharpensz = uicontrol('Style', 'popupmenu', 'String', '1');
+    hfilterwienersz = uicontrol('Style', 'popupmenu', 'String', '1');
+    hfilterdecorrstretchsz = uicontrol('Style', 'popupmenu', 'String', '1');
+    hfilteredgemeth = uicontrol('Style', 'popupmenu', 'String', '1');
+    hfilteredgethr = uicontrol('Style', 'popupmenu', 'String', '1');
+    hfilteraveragesz = uicontrol('Style', 'popupmenu', 'String', '1');
+    hfilterdisksz = uicontrol('Style', 'popupmenu', 'String', '1');
+    hfilterlaplaciansz = uicontrol('Style', 'popupmenu', 'String', '1');
+    hfilterlogsz = uicontrol('Style', 'popupmenu', 'String', '1');
+    
+    filters = {hfiltercolor hfiltercontrast hfilterhisteq hfilteradapthisteq ...
+        hfiltermedian hfiltermediansz hfilterwiener hfilterwienersz hfilterapplysharpen hfilterapplysharpensz...
+        hfilterdecorrstretch hfilterdecorrstretchsz hfilteredge hfilteredgemeth hfilteredgethr hfilteraverage hfilteraveragesz...
+        hfilterdisk hfilterdisksz hfilterlaplacian hfilterlaplaciansz hfilterlog hfilterlogsz...
+        hfilterprewitt hfiltersobel hfilterunsharp};
+    filterStyle = get([hfiltercolor hfiltercontrast hfilterhisteq hfilteradapthisteq ...
+        hfiltermedian hfiltermediansz hfilterwiener hfilterwienersz hfilterapplysharpen hfilterapplysharpensz...
+        hfilterdecorrstretch hfilterdecorrstretchsz hfilteredge hfilteredgemeth hfilteredgethr hfilteraverage hfilteraveragesz...
+        hfilterdisk hfilterdisksz hfilterlaplacian hfilterlaplaciansz hfilterlog hfilterlogsz...
+        hfilterprewitt hfiltersobel hfilterunsharp], 'Style');
 
+    filtersPopup = {hfiltercolor hfiltermediansz hfilterapplysharpensz...
+      hfilterwienersz hfilterdecorrstretchsz hfilteredgemeth hfilteredgethr...
+      hfilteraveragesz hfilterdisksz hfilterlaplaciansz...
+      hfilterlogsz};
     
+    filterpad = 2;
+    filterwidths = cellfun(@(el) length(el) + 5, filterNames);
+    filteroffs = cumsum(filterwidths + filterpad);  % If all fit in line
     
+    % Determine how many characters fit in hfilters
+    charsPerLine = get(hfilters, 'Position');
+    charsPerLine = charsPerLine(3) / pix2chars(1);
     
+    % Place filter in separate rows, so they don't go overboard
+    filterrows = zeros(size(filteroffs));
+    for j=1:numel(filteroffs)
+        row = floor(mod(charsPerLine, filteroffs(j)) / charsPerLine);
+        filterrows(j) = row;
+    end
+    
+    filterhscale = 1.5;
+    filterrows = filterrows * filterhscale;
+    
+    % Recompute the filter offset based on the line
+    filteroffs = [];
+    for j=unique(filterrows)
+        idx = filterrows==j;
+        pad = ones(1, sum(idx));
+        
+        topad = cellfun(@(el) strcmp(el, 'popupmenu'), filterStyle(idx), ...
+            'UniformOutput', false);
+        pad(cell2mat(topad)) = filterpad;
+        ws = cumsum(filterwidths(idx) + pad);
+        cs = [0 ws(1:end-1)];
+        filteroffs = [filteroffs  cs];
+    end
+    
+    for j=1:numel(filters)
+       fi = filters{j};
+       set(fi, ...
+            'String',filterNames{j},...
+            'Units', 'Characters',...
+            'Parent',hfilters, ...
+            'HandleVisibility','off',...
+            'pos', [filteroffs(j) filterhscale-filterrows(j) filterwidths(j) 1], ...
+            'Callback', @requestRedraw);
+    end
+
+    for j=1:numel(filtersPopup)
+       fi = filtersPopup{j};
+       pos = get(fi, 'pos');
+       set(fi, ...
+            'FontSize', 8,...
+            'pos', [pos(1) pos(2)+0.3 pos(3) pos(4)]);
+    end
+    
+%     set(0,'HideUndocumented','off'); 
+%     inspect(hfilteredgemeth)
+    
+    set(hfiltercolor, 'String', colormaps);
+    set(hfiltermediansz, 'String', '3|5|7|9|11|13|15');
+    set(hfilterapplysharpensz, 'String', '0.5|1|1.5|2', 'Value', 2);
+    set(hfilterwienersz, 'String', '3|5|7|9|11|13|15');
+    set(hfilterdecorrstretchsz, 'String', '0.1|0.2|0.3|0.4');
+    set(hfilteredgemeth, 'String', 'sobel|prewitt|roberts|log|canny');
+    set(hfilteredgethr, 'String', 'auto|0.03|0.06|0.1|0.3|0.6|0.9');
+    set(hfilteraveragesz, 'String', '3|5|7|9|11|13|15');
+    set(hfilterdisksz, 'String', '3|5|7|9|11|13|15');
+    set(hfilterlaplaciansz, 'String', '0.2|0.4|0.6|0.8|1');
+    set(hfilterlogsz, 'String', '3|5|7|9|11|13|15');
+
     hsliderListener = addlistener(hslider,'Value','PostSet',@hslider_callback);
-%     inspect(hslider)
-
-%     inspect(hfilters)
+    set(f, 'KeyReleaseFcn', @keyUpListener);
     % =====================================================================
     % ------------INTITIALIZE THE GUI--------------------------------------
     % =====================================================================
     % Initialize the GUI.
     % Change units to normalized so components resize automatically.
-    set([f,hbrowse,hviewer, hslider, hbrowsedet, hfilters, hfiltercontrast],...
+    set([f,hbrowse,hviewer, hslider, hbrowsedet, hfilters],...
         'Units','normalized');
 
     % Assign the GUI a name to appear in the window title.
@@ -166,7 +247,7 @@ function cellAnnotator
         displayUIElements()
     end
 
-    function requestRedraw(source, eventdata)
+    function requestRedraw(source, eventdata) %#ok<INUSD>
         displayImage(curIdx, numImages);        
         displayAnnotations(curIdx, numImages);
     end
@@ -191,6 +272,26 @@ function cellAnnotator
         curIdx = value;
         displayImage(curIdx, numImages);
         displayAnnotations(curIdx, numImages);
+    end
+    
+    function nextImage()
+        curIdx = min(curIdx + 1, numImages);
+        displayImage(curIdx, numImages);
+        displayAnnotations(curIdx, numImages);
+    end
+
+    function prevImage()
+        curIdx = max(0, curIdx - 1);
+        displayImage(curIdx, numImages);
+        displayAnnotations(curIdx, numImages);
+    end
+
+    function keyUpListener(~, eventdata)
+        if strcmp(eventdata.Key, 'space') || strcmp(eventdata.Key, 'rightarrow')
+            nextImage();
+        elseif strcmp(eventdata.Key, 'leftarrow')
+            prevImage();
+        end
     end
 
     % =====================================================================
@@ -253,8 +354,19 @@ function cellAnnotator
         applyAdaptiveFilter = get(hfilterwiener, 'Value');
         applyHisteq = get(hfilterhisteq, 'Value');
         applyadapthisteq = get(hfilteradapthisteq, 'Value');  
-        applydecorrstretch = get(hfilterdecorrstretch, 'Value');
-        
+        applyDecorrstretch = get(hfilterdecorrstretch, 'Value');
+        applySharpen = get(hfilterapplysharpen, 'Value');
+        applyEdge = get(hfilteredge, 'Value');
+        colorMap = get(hfiltercolor, 'Value');
+        colorMaps = strsplit(colormaps, '|');
+        applyAverage = get(hfilteraverage, 'Value');
+        applyDisk = get(hfilterdisk, 'Value');
+        applyLaplacian = get(hfilterlaplacian, 'Value');
+        applyLog = get(hfilterlog, 'Value');
+        applyPrewitt = get(hfilterprewitt, 'Value');
+        applySobel = get(hfiltersobel, 'Value');
+        applyUnsharp = get(hfilterunsharp, 'Value');
+
         ind = index;
         if ind < 2
             ind = ind + 1; 
@@ -270,38 +382,113 @@ function cellAnnotator
         
         cla(hviewer);
         % assume all images same dimensions
-        I = cat(2, I0, gap, I1,gap, I2);
-        
         
         % Apply filters
-        if applyConstrast
-           I = imadjust(I);
+        if applyConstrast; 
+            I0 = imadjust(I0);
+            I1 = imadjust(I1);
+            I2 = imadjust(I2);
         end
-        
-        if applyHisteq
-           I = histeq(I); 
+        if applyHisteq; 
+            I0 = histeq(I0);
+            I1 = histeq(I1);
+            I2 = histeq(I2);
         end
-        if applyMedianFilter
-            I = medfilt2(I,[3 3]);
+        if applyMedianFilter;
+            v = str2num(getCurrentPopupString(hfiltermediansz));
+            sz = [v v];
+            I0 = medfilt2(I0,sz);
+            I1 = medfilt2(I1,sz);
+            I2 = medfilt2(I2,sz);
+        end
+        if applySharpen;
+            v = str2num(getCurrentPopupString(hfilterapplysharpensz));
+            I0 = imsharpen(I0, 'Amount', v);
+            I1 = imsharpen(I1, 'Amount', v);
+            I2 = imsharpen(I2, 'Amount', v);
+        end
+        if applyAdaptiveFilter;
+            v = str2num(getCurrentPopupString(hfilterwienersz));
+            sz = [v v];
+            I0 = wiener2(I0, sz);
+            I1 = wiener2(I1, sz);
+            I2 = wiener2(I2, sz);
+        end
+        if applyadapthisteq; 
+            I0 = adapthisteq(I0);
+            I1 = adapthisteq(I1);
+            I2 = adapthisteq(I2);
+        end
+        if applyDecorrstretch; 
+            v = str2num(getCurrentPopupString(hfilterdecorrstretchsz));
+            I0 = decorrstretch(I0,'Tol',v);
+            I1 = decorrstretch(I1,'Tol',v);
+            I2 = decorrstretch(I2,'Tol',v);
+        end
+        if applyEdge; 
+            method = strtrim(getCurrentPopupString(hfilteredgemeth));
+            thr = getCurrentPopupString(hfilteredgethr);
+            if thr == 'auto'
+                thr = [];
+            else
+                thr = str2double(thr);
+            end
+            I0 = edge(I0, method, thr);
+            I1 = edge(I1, method, thr);
+            I2 = edge(I2, method, thr);
         end
 
-        if applyMedianFilter
-            I = medfilt2(I,[3 3]);
+        if applyAverage;
+            v = str2num(getCurrentPopupString(hfilteraveragesz));
+            h = fspecial('average', v);
+            I0 = imfilter(I0, h);
+            I1 = imfilter(I1, h);
+            I2 = imfilter(I2, h);
+        end
+        if applyDisk;
+            v = str2num(getCurrentPopupString(hfilterdisksz));
+            h = fspecial('disk', v);
+            I0 = imfilter(I0, h);
+            I1 = imfilter(I1, h);
+            I2 = imfilter(I2, h);
+        end
+        if applyLaplacian;
+            v = str2double(getCurrentPopupString(hfilterlaplaciansz));
+            h = fspecial('laplacian', v);
+            I0 = imfilter(I0, h);
+            I1 = imfilter(I1, h);
+            I2 = imfilter(I2, h);
+        end
+        if applyLog;
+            v = str2num(getCurrentPopupString(hfilterlogsz));
+            h = fspecial('log', v);
+            I0 = imfilter(I0, h);
+            I1 = imfilter(I1, h);
+            I2 = imfilter(I2, h);
+        end
+        if applyPrewitt;
+            h = fspecial('prewitt');
+            I0 = imfilter(I0, h);
+            I1 = imfilter(I1, h);
+            I2 = imfilter(I2, h);
+        end
+        if applySobel;
+            h = fspecial('sobel');
+            I0 = imfilter(I0, h);
+            I1 = imfilter(I1, h);
+            I2 = imfilter(I2, h);
+        end
+        if applyUnsharp;
+            h = fspecial('unsharp');
+            I0 = imfilter(I0, h);
+            I1 = imfilter(I1, h);
+            I2 = imfilter(I2, h);
         end
 
-        if applyAdaptiveFilter
-            I = wiener2(I, [5 5]);
-        end
+        I = cat(2, I0, gap, I1,gap, I2);
         
-        if applyadapthisteq
-           I = adapthisteq(I);
-        end
-        
-        if applydecorrstretch
-           I = decorrstretch(I); % ,'Tol',0.01
-        end
-        
-        imshow(I, 'Parent', hviewer);
+        imagesc(I, 'Parent', hviewer); axis equal; axis tight;
+        colormap(colorMaps{colorMap});
         set(hviewer,'XTick',[],'YTIck',[]);
         tit = sprintf('%2d/%d', index, numImages);
         title(tit, 'Parent', hviewer)

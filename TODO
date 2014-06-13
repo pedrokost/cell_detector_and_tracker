@@ -7,6 +7,7 @@
  ☐ Find effective matching features
  ☐ Find robust tracklets only
  ☐ compute the remaining probabilities
+ ☐ If any detector NaN, in the end don't show average NaN.
  ☐ skip bad frames (leave an annotation to take into account in the algorithm)
  ☐ Train a compound model
  ☐ Read Pylon stuff
