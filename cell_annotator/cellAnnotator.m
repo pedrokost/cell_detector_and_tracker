@@ -1,8 +1,8 @@
 function cellAnnotator
     %cellAnnotator GUI tool for cell and cell sequence annotation
     
-    error(javachk('swing',mfilename)) % ensure that Swing components are available
-
+    set(0,'DefaultFigureCloseRequestFcn',@close_callback)
+    
     addpath('relativepath');
     addpath('vl_feat');
     % =====================================================================
@@ -14,7 +14,7 @@ function cellAnnotator
     imgFolderName = '';
     detMatFolderName = '';
     images = cell(1,1); % cache of images
-    usrAnnotations = struct('dirty', false, 'dots', zeros(0, 2)); % cache of annotation
+    usrAnnotations = struct('dots', zeros(0, 2)); % cache of annotation
     detAnnotations = cell(1,1);
     curIdx = 1;
     numImages = 0;
@@ -38,6 +38,7 @@ function cellAnnotator
     ACTION_DEL = 3;
     ACTION_ADDLINK = 4;
     ACTION_DELLINK = 5;
+    ACTION_STOP = 6; % stop the loop
 
     action = ACTION_OFF;
     
@@ -259,6 +260,32 @@ function cellAnnotator
     % =====================================================================
     % -----------CALLBACKS-------------------------------------------------
     % =====================================================================
+    function close_callback(src,evnt)
+        % User-defined close request function 
+        % to display a question dialog box
+
+        if testing
+            usrAnnotations.dirty{1} = 1;
+            usrAnnotations.dirty{7} = 1;
+        end
+        % Determine if there are dirty changes
+        if isfield(usrAnnotations, 'dirty')
+            I = find([usrAnnotations.dirty{:}]);
+            if sum(I) > 0
+                % If there are dirty changes, ask the user to save first
+                selection = questdlg('Discard unsaved changes?',...
+                    'Discard changes?',...
+                    'Yes','No','Yes'); 
+                if ~strcmp(selection, 'Yes'); return; end
+            end
+        end
+
+        % If still closing, remove the listeners
+        delete(hsliderListener)
+        action = ACTION_STOP;  % Stops the main loop
+        delete(gcf)
+    end
+
     function hbrowse_callback(source, eventdata) %#ok<INUSD>
         
         if testing
@@ -411,10 +438,12 @@ function cellAnnotator
                     'addlink'
                 case ACTION_DELLINK
                     'dellink'
-                otherwise
+                case ACTION_OFF
                     'off'
+                case ACTION_STOP
+                    break
             end
-            pause(1)
+            pause(2)
         end
     end
 
