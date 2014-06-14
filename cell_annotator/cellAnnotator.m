@@ -264,10 +264,10 @@ function cellAnnotator
         % User-defined close request function 
         % to display a question dialog box
 
-        if testing
-            usrAnnotations.dirty{1} = 1;
-            usrAnnotations.dirty{7} = 1;
-        end
+        % if testing
+        %     usrAnnotations.dirty{1} = 1;
+        %     usrAnnotations.dirty{7} = 1;
+        % end
         % Determine if there are dirty changes
         if isfield(usrAnnotations, 'dirty')
             I = find([usrAnnotations.dirty{:}]);
@@ -378,6 +378,9 @@ function cellAnnotator
             disableFilters = ~disableFilters;
             displayImage(curIdx, numImages);
             displayAnnotations(curIdx, numImages);
+        elseif strcmp(eventdata.Key, 'escape')
+            action = ACTION_OFF;
+            set(hactions, 'SelectedObject', hoff);
         end
     end
 
