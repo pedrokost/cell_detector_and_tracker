@@ -32,6 +32,14 @@ function cellAnnotator
     disableFilters = false;
     
     testing = 1;
+
+    ACTION_OFF = 1;
+    ACTION_ADD = 2;
+    ACTION_DEL = 3;
+    ACTION_ADDLINK = 4;
+    ACTION_DELLINK = 5;
+
+    action = ACTION_OFF;
     
     % =====================================================================
     % ------------SETUP COMPONENTS-----------------------------------------
@@ -51,6 +59,7 @@ function cellAnnotator
 
     halfWidth = figWidth/2 - padding*1.5;
     quarterWidth = halfWidth / 2 - padding * 1.5;
+    buttonWidth = 40;
 
     hbrowse = uicontrol('Style','pushbutton',...
            'String','Choose image folder',...
@@ -65,6 +74,39 @@ function cellAnnotator
            'Position', [halfWidth + quarterWidth + 3.5*padding figHeight-30 quarterWidth 25],...
            'Callback', {@save_callback},...
            'Visible', 'off');
+
+    hactions = uibuttongroup('Visible','off',...
+        'Units', 'Pixels',...
+        'Position', [padding figHeight-115 buttonWidth*5+padding*4 + 10 30],...
+        'SelectionChangeFcn', {@changedAction_callback});
+    hoff = uicontrol('Style','togglebutton',...
+           'String','off',...
+           'Position', [4 1 buttonWidth 25],...
+           'Parent', hactions, ...
+           'HandleVisibility','off');
+    hadd = uicontrol('Style','togglebutton',...
+           'String','+',...
+           'Position', [4+padding+buttonWidth 1 buttonWidth 25],...
+           'Parent', hactions, ...
+           'HandleVisibility','off');
+    hdel = uicontrol('Style','togglebutton',...
+           'String','-',...
+           'Position', [4+2*padding+2*buttonWidth 1 buttonWidth 25],...
+           'HandleVisibility','off',...
+           'Parent', hactions);
+    haddlink = uicontrol('Style','togglebutton',...
+           'String','+ link',...
+           'Position', [4+3*padding+3*buttonWidth 1 buttonWidth 25],...
+           'HandleVisibility','off',...
+           'Parent', hactions);
+    hdellink = uicontrol('Style','togglebutton',...
+           'String','- link',...
+           'Position', [4+4*padding+4*buttonWidth 1 buttonWidth 25],...
+           'HandleVisibility','off',...
+           'Parent', hactions);
+
+    % Add uibuttongroup with togglebutton
+
     hviewer = axes('Units','Pixels',...
             'Position', [padding 40 figWidth-2*padding 350],...
             'Visible','off'); 
@@ -203,7 +245,7 @@ function cellAnnotator
     % =====================================================================
     % Initialize the GUI.
     % Change units to normalized so components resize automatically.
-    set([f,hbrowse,hviewer, hslider, hbrowsedet, hfilters, hsave],...
+    set([f,hbrowse,hviewer, hslider, hbrowsedet, hfilters, hsave, hactions, hadd, hdel, haddlink, hdellink, hoff],...
         'Units','normalized');
 
     % Assign the GUI a name to appear in the window title.
@@ -257,6 +299,8 @@ function cellAnnotator
         displayAnnotations(curIdx, numImages);
 
         displayUIElements()
+
+        performAction()
     end
 
     function requestRedraw(source, eventdata) %#ok<INUSD>
@@ -336,9 +380,44 @@ function cellAnnotator
         set(hsave, 'String', 'Save');
     end
 
+    function changedAction_callback(~, eventdata)
+        switch eventdata.NewValue
+            case hadd
+                action = ACTION_ADD;
+            case hdel
+                action = ACTION_DEL;
+            case haddlink
+                action = ACTION_ADDLINK;
+            case hdellink
+                action = ACTION_DELLINK;
+            otherwise
+                action = ACTION_OFF;
+        end
+    end
+
+
     % =====================================================================
     % -----------OTHER FUNCTIONS-------------------------------------------
     % =====================================================================
+
+    function performAction()
+        while true
+            switch action
+                case ACTION_ADD
+                    'add'
+                case ACTION_DEL
+                    'dell'
+                case ACTION_ADDLINK
+                    'addlink'
+                case ACTION_DELLINK
+                    'dellink'
+                otherwise
+                    'off'
+            end
+            pause(1)
+        end
+    end
+
     function updateFolderPaths()
         if ~isempty(imgFolderName)
            set(hbrowse, 'String', ['Images: ' relativepath(imgFolderName) ]);
@@ -569,19 +648,21 @@ function cellAnnotator
     end
 
     function displayUIElements
-      set(hviewer, 'Visible', 'on');
-      set(hslider, 'Visible', 'on');
-      set(hfilters, 'Visible', 'on');
-      set(hsave, 'Visible', 'on');
-      set(hsave, 'Enable', 'on');
+        set(hviewer, 'Visible', 'on');
+        set(hslider, 'Visible', 'on');
+        set(hfilters, 'Visible', 'on');
+        set(hsave, 'Visible', 'on');
+        set(hsave, 'Enable', 'on');
+        set(hactions, 'Visible', 'on');
       
     end
 
     function hideUIElements
-      set(hviewer, 'Visible', 'off');
-      set(hslider, 'Visible', 'off');
-      set(hfilters, 'Visible', 'off');
-      set(hsave, 'Enable', 'off');
+        set(hviewer, 'Visible', 'off');
+        set(hslider, 'Visible', 'off');
+        set(hfilters, 'Visible', 'off');
+        set(hsave, 'Enable', 'off');
+        set(hactions, 'Visible', 'off');
     end
 
     function base = basename(filename)
