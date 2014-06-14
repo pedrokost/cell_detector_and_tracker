@@ -4,7 +4,7 @@ function cellAnnotator
     set(0,'DefaultFigureCloseRequestFcn',@close_callback)
     
     addpath('relativepath');
-    addpath('vl_feat');
+    addpath('ginput2');
     % =====================================================================
     % ------------FUNCTION GLOBALS-----------------------------------------
     % =====================================================================
@@ -281,7 +281,9 @@ function cellAnnotator
         end
 
         % If still closing, remove the listeners
-        delete(hsliderListener)
+        try
+            delete(hsliderListener);
+        end
         action = ACTION_STOP;  % Stops the main loop
         delete(gcf)
     end
@@ -455,16 +457,49 @@ function cellAnnotator
                 case ACTION_DELLINK
                     performActionDellink()
                 case ACTION_OFF
-                    'off'
+                    % 'Do nothings'
                 case ACTION_STOP
                     break
             end
-            pause(1)
+            pause(0.1)
         end
     end
 
     function performActionAdd()
-        'Add'
+        ALLOWED_BUTTONS = [3];  % only right click
+        [X, Y, button] = ginput2(1, 'KeepZoom');
+        P = round([X Y]);
+        if ~ismember(button,ALLOWED_BUTTONS); return; end
+        % Compute the clicked image
+        displays = 3;
+        % assume all images same width
+
+        if numel(P) == 2
+            curDisp = -1;
+            while P(1) > imgWidth
+                P(1) = P(1)-imgWidth-imgGap;
+                curDisp = curDisp + 1;
+            end
+
+            % Discard click on the gap
+            if any(P < 0); return; end
+
+            curIdx;
+            clickedImg = curIdx + curDisp;
+            if curIdx <= floor(displays/2)
+                clickedImg = clickedImg + 1;
+            elseif curIdx > numImages - floor(displays/2)
+                clickedImg = clickedImg - 1;
+            end
+                
+            fprintf('Click on image %d (%d) at pos [%d %d]\n', curDisp, clickedImg, P(1), P(2));
+
+            usrAnnotations.dirty{clickedImg} = 1;
+            dots = usrAnnotations.dots{clickedImg};
+            usrAnnotations.dots{clickedImg} = [dots; P];
+
+            displayAnnotations(curIdx, numImages);
+        end
     end
     function performActionDell()
         'Dell'
@@ -686,6 +721,9 @@ function cellAnnotator
             return
         end
         
+        % TODO: clear any previous annotation
+        % Then draw new ones
+
         ind = index;
         if ind < 2
             ind = ind + 1; 
