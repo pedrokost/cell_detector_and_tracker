@@ -370,17 +370,30 @@ function cellAnnotator
     end
 
     function keyUpListener(~, eventdata)
-        if strcmp(eventdata.Key, 'space') || strcmp(eventdata.Key, 'rightarrow')
-            nextImage();
-        elseif strcmp(eventdata.Key, 'leftarrow')
-            prevImage();
-        elseif strcmp(eventdata.Key, 't')
-            disableFilters = ~disableFilters;
-            displayImage(curIdx, numImages);
-            displayAnnotations(curIdx, numImages);
-        elseif strcmp(eventdata.Key, 'escape')
-            action = ACTION_OFF;
-            set(hactions, 'SelectedObject', hoff);
+        switch eventdata.Key
+            case {'space' 'rightarrow'}
+                nextImage();
+            case 'leftarrow'
+                prevImage();
+            case 't'
+                disableFilters = ~disableFilters;
+                displayImage(curIdx, numImages);
+                displayAnnotations(curIdx, numImages);
+            case {'1' 'escape' }
+                action = ACTION_OFF;
+                set(hactions, 'SelectedObject', hoff);
+            case '2'
+                action = ACTION_ADD;
+                set(hactions, 'SelectedObject', hadd);
+            case '3'
+                action = ACTION_DEL;
+                set(hactions, 'SelectedObject', hdel);
+            case '4'
+                action = ACTION_ADDLINK;
+                set(hactions, 'SelectedObject', haddlink);
+            case '5'
+                action = ACTION_DELLINK;
+                set(hactions, 'SelectedObject', hdellink);
         end
     end
 
@@ -434,20 +447,33 @@ function cellAnnotator
         while true
             switch action
                 case ACTION_ADD
-                    'add'
+                    performActionAdd()
                 case ACTION_DEL
-                    'dell'
+                    performActionDell()
                 case ACTION_ADDLINK
-                    'addlink'
+                    performActionAddlink()
                 case ACTION_DELLINK
-                    'dellink'
+                    performActionDellink()
                 case ACTION_OFF
                     'off'
                 case ACTION_STOP
                     break
             end
-            pause(2)
+            pause(1)
         end
+    end
+
+    function performActionAdd()
+        'Add'
+    end
+    function performActionDell()
+        'Dell'
+    end
+    function performActionAddlink()
+        'Addlink'
+    end
+    function performActionDellink()
+        'Dellink'
     end
 
     function updateFolderPaths()
