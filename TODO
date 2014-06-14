@@ -2,8 +2,11 @@
  ✔ Functionalize tracklet generation @done (14-06-12 10:42)
  ✔ Load best feature vector automatically @done (14-06-12 11:08)
  ☐ annotation GUI
-     ☐ Space: next image
-     ☐ Other shortcuts for display
+     ✔ 4 buttons: +, -, + link, - link @done (14-06-14 22:51)
+     ✔ add detection @done (14-06-14 22:51)
+     ☐ delete detection
+     ☐ add link
+     ☐ delete link
  ☐ Find effective matching features
  ☐ Find robust tracklets only
  ☐ compute the remaining probabilities
@@ -11,6 +14,8 @@
  ☐ skip bad frames (leave an annotation to take into account in the algorithm)
  ☐ Train a compound model
  ☐ Read Pylon stuff
+ ☐ New features to try:
+     ☐ Histeq + Laplacian(0.2) creates empty places in maximums, noise everywhere else
 ＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿
 Archive:
  ✔ Try other feature (SIFT, ... ) @done (14-06-12 09:12)
