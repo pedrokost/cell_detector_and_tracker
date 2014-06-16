@@ -470,47 +470,8 @@ function cellAnnotator
         end
     end
 
-    function [P, clickedImg] = doClick(nDisplays)
-        % Performs a click, and returns its coordinate together with the image
-        % that was clicked on
-        P = []; clickedImg = [];
-
-        ALLOWED_BUTTONS = [3];  % only right click
-
-        try
-            [X, Y, button] = ginput2(1, 'KeepZoom');
-        catch
-            X = []; Y = []; button = [];
-        end
-        P = round([X Y]);
-        if ~ismember(button, ALLOWED_BUTTONS); return; end
-        if nargin < 1; nDisplays = 3; end;
-        % Compute the clicked image
-        % assume all images same width
-
-        if numel(P) == 2
-            curDisp = -1;
-            while P(1) > imgWidth
-                P(1) = P(1)-imgWidth-imgGap;
-                curDisp = curDisp + 1;
-            end
-
-            % Discard click on the gap
-            if any(P < 0); return; end
-
-            clickedImg = curIdx + curDisp;
-            if curIdx <= floor(nDisplays/2)
-                clickedImg = clickedImg + 1;
-            elseif curIdx > numImages - floor(nDisplays/2)
-                clickedImg = clickedImg - 1;
-            end
-                
-            fprintf('Click on image %d (%d) at pos [%d %d]\n', clickedImg, curDisp, P(1), P(2));
-        end
-    end
-
     function performActionAdd()
-        [P clickedImg] = doClick();
+        [P clickedImg] = doClick(curIdx, imgWidth, imgGap);
 
         if ~isempty(P)
             usrAnnotations.dirty{clickedImg} = 1;
@@ -523,7 +484,7 @@ function cellAnnotator
     function performActionDell()
         SNAP_DISTANCE = 0.03 * imgWidth;
 
-        [P clickedImg] = doClick();
+        [P clickedImg] = doClick(curIdx, imgWidth, imgGap);
 
         if ~isempty(P)
             usrAnnotations.dirty{clickedImg} = 1;
@@ -540,6 +501,17 @@ function cellAnnotator
     end
     function performActionAddlink()
         'Addlink'
+
+        % Click on 1 annotation
+        % Find the nearest cell
+
+        % add listener to draw line to mouse position
+        % wait for second click
+
+        % remove the listener
+
+        % store the connection
+        % display the connection
     end
     function performActionDellink()
         'Dellink'
@@ -782,9 +754,6 @@ function cellAnnotator
         dots2(:, 1) = dots2(:, 1) + 2*imgWidth + 2*imgGap;
     
         dots = cat(1, dots0, dots1, dots2);
-
-        dots
-
         
         hold(hviewer, 'on');
         annotationHandle = plot(dots(:, 1), dots(:, 2), 'r+', 'Parent', hviewer);
