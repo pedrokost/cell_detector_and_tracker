@@ -575,8 +575,11 @@ function cellAnnotator
 
             if isfield(data, 'links')
                 links = data.links;
+
+                % TODO: check that the links format is OK
             else
-                links = zeros(0, 1);
+                numDots = size(dots, 1);
+                links = zeros(numDots, 1);
                 usrAnnotations.dirty{index} = 1;
             end
 
