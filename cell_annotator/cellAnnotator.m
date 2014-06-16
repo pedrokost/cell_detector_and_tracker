@@ -418,6 +418,9 @@ function cellAnnotator
             fprintf('Saved annotations for image %d to file %s\n', I(i), filename);
         end
 
+        usrAnnotations.dirty = cell(numImages, 1);
+        [usrAnnotations.dirty{:}] = deal(0);  % Initialize to false
+
         set(hsave, 'Background', 'g');
         set(hsave, 'String', 'Saved');
         pause(2);
