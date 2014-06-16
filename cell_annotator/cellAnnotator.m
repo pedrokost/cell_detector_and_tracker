@@ -18,6 +18,8 @@ function cellAnnotator
     detAnnotations = cell(1,1);
     curIdx = 1;
     numImages = 0;
+
+    annotationHandle = []; % Holds a list of annotation handlers
     
     imgFormat = 'pgm';
     imgPrefix = 'im';
@@ -519,7 +521,22 @@ function cellAnnotator
         end
     end
     function performActionDell()
-        'Dell'
+        SNAP_DISTANCE = 0.03 * imgWidth;
+
+        [P clickedImg] = doClick();
+
+        if ~isempty(P)
+            usrAnnotations.dirty{clickedImg} = 1;
+            dots = usrAnnotations.dots{clickedImg};
+            D = pdist2(double(dots), double(P));
+            [D, I] = min(D, [], 1);
+            if D < SNAP_DISTANCE
+                fprintf('Deleted point %d %d from image %d.', dots(I, 1), dots(I, 2), clickedImg );
+                dots(I, :) = [];
+                usrAnnotations.dots{clickedImg} = dots;
+                displayAnnotations(curIdx, numImages);
+            end
+        end
     end
     function performActionAddlink()
         'Addlink'
@@ -554,7 +571,10 @@ function cellAnnotator
 
     function dots = getAnnotations(index)
         % Returns the requested image annotations
-        if isempty(usrAnnotations.dots{index})
+
+        % Only reload from disk if not dirty. I may be empty otherwise if we
+        % had delete all the annotations
+        if isempty(usrAnnotations.dots{index}) && ~usrAnnotations.dirty{index}
             filename = fullfile(imgFolderName, usrMatfileNames(index).name);
             if exist(filename, 'file')==2
                 data = load(filename);
@@ -568,6 +588,7 @@ function cellAnnotator
                 dots = data.gl;
             end
             usrAnnotations.dots{index} = dots;
+            fprintf('Loaded annotation for image %d from disk', index);
         else
             dots = usrAnnotations.dots{index};
         end
@@ -738,9 +759,15 @@ function cellAnnotator
             return
         end
         
-        % TODO: clear any previous annotation
-        % Then draw new ones
+        % clear any previous annotation
+        if annotationHandle
+            try
+                delete(annotationHandle);
+            end
+            annotationHandle = [];
+        end
 
+        % Then draw new ones
         ind = index;
         if ind < 2
             ind = ind + 1; 
@@ -755,9 +782,12 @@ function cellAnnotator
         dots2(:, 1) = dots2(:, 1) + 2*imgWidth + 2*imgGap;
     
         dots = cat(1, dots0, dots1, dots2);
+
+        dots
+
         
         hold(hviewer, 'on');
-        plot(dots(:, 1), dots(:, 2), 'r+', 'Parent', hviewer);
+        annotationHandle = plot(dots(:, 1), dots(:, 2), 'r+', 'Parent', hviewer);
     end
 
     function displayUIElements
