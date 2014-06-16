@@ -259,9 +259,11 @@ function cellAnnotator
 
     % Make the GUI visible.
     set(f,'Visible','on');
+
     % =====================================================================
     % -----------CALLBACKS-------------------------------------------------
     % =====================================================================
+
     function close_callback(src,evnt)
         % User-defined close request function 
         % to display a question dialog box
@@ -334,11 +336,6 @@ function cellAnnotator
         performAction()
     end
 
-    function requestRedraw(source, eventdata) %#ok<INUSD>
-        displayImage(curIdx, numImages);        
-        displayAnnotations(curIdx, numImages);
-    end
-
     function hbrowsemat_callback(source, eventdata) %#ok<INUSD>
        foldn = uigetdir(imgFolderName, 'Select folder with annotations');
        if foldn == 0
@@ -359,46 +356,6 @@ function cellAnnotator
         curIdx = value;
         displayImage(curIdx, numImages);
         displayAnnotations(curIdx, numImages);
-    end
-    
-    function nextImage()
-        curIdx = min(curIdx + 1, numImages);
-        displayImage(curIdx, numImages);
-        displayAnnotations(curIdx, numImages);
-    end
-
-    function prevImage()
-        curIdx = max(0, curIdx - 1);
-        displayImage(curIdx, numImages);
-        displayAnnotations(curIdx, numImages);
-    end
-
-    function keyUpListener(~, eventdata)
-        switch eventdata.Key
-            case {'space' 'rightarrow'}
-                nextImage();
-            case 'leftarrow'
-                prevImage();
-            case 't'
-                disableFilters = ~disableFilters;
-                displayImage(curIdx, numImages);
-                displayAnnotations(curIdx, numImages);
-            case {'1' 'escape' }
-                action = ACTION_OFF;
-                set(hactions, 'SelectedObject', hoff);
-            case '2'
-                action = ACTION_ADD;
-                set(hactions, 'SelectedObject', hadd);
-            case '3'
-                action = ACTION_DEL;
-                set(hactions, 'SelectedObject', hdel);
-            case '4'
-                action = ACTION_ADDLINK;
-                set(hactions, 'SelectedObject', haddlink);
-            case '5'
-                action = ACTION_DELLINK;
-                set(hactions, 'SelectedObject', hdellink);
-        end
     end
 
     function save_callback(~, ~)
@@ -444,11 +401,58 @@ function cellAnnotator
                 action = ACTION_OFF;
         end
     end
+    % =====================================================================
+    % -----------LISTENERS-------------------------------------------------
+    % =====================================================================
 
+    function keyUpListener(~, eventdata)
+        switch eventdata.Key
+            case {'space' 'rightarrow'}
+                nextImage();
+            case 'leftarrow'
+                prevImage();
+            case 't'
+                disableFilters = ~disableFilters;
+                displayImage(curIdx, numImages);
+                displayAnnotations(curIdx, numImages);
+            case {'1' 'escape' }
+                action = ACTION_OFF;
+                set(hactions, 'SelectedObject', hoff);
+            case '2'
+                action = ACTION_ADD;
+                set(hactions, 'SelectedObject', hadd);
+            case '3'
+                action = ACTION_DEL;
+                set(hactions, 'SelectedObject', hdel);
+            case '4'
+                action = ACTION_ADDLINK;
+                set(hactions, 'SelectedObject', haddlink);
+            case '5'
+                action = ACTION_DELLINK;
+                set(hactions, 'SelectedObject', hdellink);
+        end
+    end
 
     % =====================================================================
     % -----------OTHER FUNCTIONS-------------------------------------------
     % =====================================================================
+
+    function nextImage()
+        curIdx = min(curIdx + 1, numImages);
+        displayImage(curIdx, numImages);
+        displayAnnotations(curIdx, numImages);
+    end
+
+    function prevImage()
+        curIdx = max(0, curIdx - 1);
+        displayImage(curIdx, numImages);
+        displayAnnotations(curIdx, numImages);
+    end
+
+    function requestRedraw(source, eventdata) %#ok<INUSD>
+        displayImage(curIdx, numImages);        
+        displayAnnotations(curIdx, numImages);
+    end
 
     function performAction()
         while true
@@ -471,9 +475,9 @@ function cellAnnotator
     end
 
     function performActionAdd()
-        [P clickedImg] = doClick(curIdx, imgWidth, imgGap);
-
-        if ~isempty(P)
+        [P clickedImg] = doClick(curIdx, numImages, imgWidth, imgGap);
+        % clickeImd == [] when I switch the tool
+        if ~isempty(P) && ~isempty(clickedImg)
             usrAnnotations.dirty{clickedImg} = 1;
             dots = usrAnnotations.dots{clickedImg};
             usrAnnotations.dots{clickedImg} = [dots; P];
@@ -481,12 +485,13 @@ function cellAnnotator
             displayAnnotations(curIdx, numImages);
         end
     end
+
     function performActionDell()
         SNAP_DISTANCE = 0.03 * imgWidth;
 
-        [P clickedImg] = doClick(curIdx, imgWidth, imgGap);
+        [P clickedImg] = doClick(curIdx, numImages, imgWidth, imgGap);
 
-        if ~isempty(P)
+        if ~isempty(P) && ~isempty(clickedImg)
             usrAnnotations.dirty{clickedImg} = 1;
             dots = usrAnnotations.dots{clickedImg};
             D = pdist2(double(dots), double(P));
@@ -499,6 +504,7 @@ function cellAnnotator
             end
         end
     end
+
     function performActionAddlink()
         'Addlink'
 
@@ -513,6 +519,7 @@ function cellAnnotator
         % store the connection
         % display the connection
     end
+
     function performActionDellink()
         'Dellink'
     end

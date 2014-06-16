@@ -1,4 +1,4 @@
-function [P, clickedImg] = doClick(curImageShown, imgWidth, imgGap, varargin)
+function [P, clickedImg] = doClick(curImageShown, numImages, imgWidth, imgGap, varargin)
     % DOCLICK: Performs a click, and returns its coordinate together with the
     % image that was clicked on
 
@@ -8,12 +8,13 @@ function [P, clickedImg] = doClick(curImageShown, imgWidth, imgGap, varargin)
     nDisplays = 3;    % number of images
     ALLOWED_BUTTONS = [3];  % only accepts right clicks as 'click'
     % curImageShown = index of the currenly displayed image
+    % numImages = total number of images
     % imgWidth = the width of a single image in pixels (assumes all images
     %    same width)
     % imgGap = gap width between images
 
     %-----------------------------------------------------------Overwrites
-    for i=4:2:nargin
+    for i=5:2:nargin
         switch varargin{i}
             case 'nDisplays'
                 nDisplays = varargin{i+1};
@@ -51,6 +52,6 @@ function [P, clickedImg] = doClick(curImageShown, imgWidth, imgGap, varargin)
             clickedImg = clickedImg - 1;
         end
             
-        fprintf('Click on image %d (%d) at pos [%d %d]\n', clickedImg, curDisp, P(1), P(2));
+        fprintf('Clicked on image %d (%d) at [%d %d]\n', clickedImg, curDisp, P(1), P(2));
     end
 end
