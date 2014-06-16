@@ -14,7 +14,7 @@ function cellAnnotator
     imgFolderName = '';
     detMatFolderName = '';
     images = cell(1,1); % cache of images
-    usrAnnotations = struct('dots', zeros(0, 2)); % cache of annotation
+    usrAnnotations = struct('dots', zeros(0, 2), 'links', zeros(0, 1)); % cache of annotation
     detAnnotations = cell(1,1);
     curIdx = 1;
     numImages = 0;
@@ -313,9 +313,12 @@ function cellAnnotator
 
         numImages = numel(imgfileNames);
         images = cell(numImages, 1);
+
         usrAnnotations.dots = cell(numImages, 1);
         usrAnnotations.dirty = cell(numImages, 1);
         [usrAnnotations.dirty{:}] = deal(0);  % Initialize to false
+        usrAnnotations.links = cell(numImages, 1);
+
 
         usrMatfileNames = cell(numImages, 1);
         for i=1:numImages
@@ -481,7 +484,7 @@ function cellAnnotator
             usrAnnotations.dirty{clickedImg} = 1;
             dots = usrAnnotations.dots{clickedImg};
             usrAnnotations.dots{clickedImg} = [dots; P];
-
+            usrAnnotations.dots{clickedImg}
             displayAnnotations(curIdx, numImages);
         end
     end
@@ -548,28 +551,41 @@ function cellAnnotator
         end
     end
 
-    function dots = getAnnotations(index)
+    function [dots, links] = getAnnotations(index)
         % Returns the requested image annotations
 
         % Only reload from disk if not dirty. I may be empty otherwise if we
         % had delete all the annotations
-        if isempty(usrAnnotations.dots{index}) && ~usrAnnotations.dirty{index}
+        noDots = isempty(usrAnnotations.dots{index}) && ~usrAnnotations.dirty{index};
+        noLinks = isempty(usrAnnotations.links{index}) && ~usrAnnotations.dirty{index};
+        if noDots || noLinks
             filename = fullfile(imgFolderName, usrMatfileNames(index).name);
             if exist(filename, 'file')==2
                 data = load(filename);
-            else
-                data = struct('dots', zeros(0,2));
             end
             
             if isfield(data, 'dots')
                 dots = data.dots;
-            else
+            elseif isfield(data, 'gl')
                 dots = data.gl;
+            else
+                dots = zeros(0, 2);
+                usrAnnotations.dirty{index} = 1;
             end
+
+            if isfield(data, 'links')
+                links = data.links;
+            else
+                links = zeros(0, 1);
+                usrAnnotations.dirty{index} = 1;
+            end
+
             usrAnnotations.dots{index} = dots;
-            fprintf('Loaded annotation for image %d from disk\n', index);
+            usrAnnotations.links{index} = links;
+            fprintf('Loaded annotations for image %d from disk\n', index);
         else
             dots = usrAnnotations.dots{index};
+            links = usrAnnotations.links{index};
         end
     end
 
