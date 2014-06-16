@@ -468,13 +468,22 @@ function cellAnnotator
         end
     end
 
-    function performActionAdd()
+    function [P, clickedImg] = doClick(nDisplays)
+        % Performs a click, and returns its coordinate together with the image
+        % that was clicked on
+        P = []; clickedImg = [];
+
         ALLOWED_BUTTONS = [3];  % only right click
-        [X, Y, button] = ginput2(1, 'KeepZoom');
+
+        try
+            [X, Y, button] = ginput2(1, 'KeepZoom');
+        catch
+            X = []; Y = []; button = [];
+        end
         P = round([X Y]);
-        if ~ismember(button,ALLOWED_BUTTONS); return; end
+        if ~ismember(button, ALLOWED_BUTTONS); return; end
+        if nargin < 1; nDisplays = 3; end;
         % Compute the clicked image
-        displays = 3;
         % assume all images same width
 
         if numel(P) == 2
@@ -487,16 +496,21 @@ function cellAnnotator
             % Discard click on the gap
             if any(P < 0); return; end
 
-            curIdx;
             clickedImg = curIdx + curDisp;
-            if curIdx <= floor(displays/2)
+            if curIdx <= floor(nDisplays/2)
                 clickedImg = clickedImg + 1;
-            elseif curIdx > numImages - floor(displays/2)
+            elseif curIdx > numImages - floor(nDisplays/2)
                 clickedImg = clickedImg - 1;
             end
                 
-            fprintf('Click on image %d (%d) at pos [%d %d]\n', curDisp, clickedImg, P(1), P(2));
+            fprintf('Click on image %d (%d) at pos [%d %d]\n', clickedImg, curDisp, P(1), P(2));
+        end
+    end
 
+    function performActionAdd()
+        [P clickedImg] = doClick();
+
+        if ~isempty(P)
             usrAnnotations.dirty{clickedImg} = 1;
             dots = usrAnnotations.dots{clickedImg};
             usrAnnotations.dots{clickedImg} = [dots; P];
