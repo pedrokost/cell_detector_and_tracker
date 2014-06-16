@@ -243,6 +243,7 @@ function cellAnnotator
 
     hsliderListener = addlistener(hslider,'Value','PostSet',@hslider_callback);
     set(f, 'KeyReleaseFcn', @keyUpListener);
+    
     % =====================================================================
     % ------------INTITIALIZE THE GUI--------------------------------------
     % =====================================================================
@@ -373,10 +374,10 @@ function cellAnnotator
         
         for i=1:numel(I)
             % Find corresponding filenames
-            dots = usrAnnotations.dots{I(i)};
+            [dots, links] = getAnnotations(I(i));
             filename = fullfile(imgFolderName, usrMatfileNames(I(i)).name);
             % Save the new dots
-            save(filename, 'dots');
+            save(filename, 'dots', 'links');
             fprintf('Saved annotations for image %d to file %s\n', I(i), filename);
         end
 
