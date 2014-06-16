@@ -492,7 +492,7 @@ function cellAnnotator
             D = pdist2(double(dots), double(P));
             [D, I] = min(D, [], 1);
             if D < SNAP_DISTANCE
-                fprintf('Deleted point %d %d from image %d.', dots(I, 1), dots(I, 2), clickedImg );
+                fprintf('Deleted point %d %d from image %d.\n', dots(I, 1), dots(I, 2), clickedImg );
                 dots(I, :) = [];
                 usrAnnotations.dots{clickedImg} = dots;
                 displayAnnotations(curIdx, numImages);
@@ -560,7 +560,7 @@ function cellAnnotator
                 dots = data.gl;
             end
             usrAnnotations.dots{index} = dots;
-            fprintf('Loaded annotation for image %d from disk', index);
+            fprintf('Loaded annotation for image %d from disk\n', index);
         else
             dots = usrAnnotations.dots{index};
         end
@@ -766,7 +766,6 @@ function cellAnnotator
         set(hsave, 'Visible', 'on');
         set(hsave, 'Enable', 'on');
         set(hactions, 'Visible', 'on');
-      
     end
 
     function hideUIElements
@@ -775,9 +774,5 @@ function cellAnnotator
         set(hfilters, 'Visible', 'off');
         set(hsave, 'Enable', 'off');
         set(hactions, 'Visible', 'off');
-    end
-
-    function base = basename(filename)
-        [~, base, ~] = fileparts(filename);
     end
 end
