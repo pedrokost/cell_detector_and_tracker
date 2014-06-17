@@ -246,6 +246,7 @@ function cellAnnotator
 
     hsliderListener = addlistener(hslider,'Value','PostSet',@hslider_callback);
     set(f, 'KeyReleaseFcn', @keyUpListener);
+    set(f, 'WindowScrollWheelFcn', @wheel_callback);
 
     % =====================================================================
     % ------------INTITIALIZE THE GUI--------------------------------------
@@ -293,6 +294,8 @@ function cellAnnotator
             delete(hsliderListener);
         end
         action = ACTION_STOP;  % Stops the main loop
+        resetDirtiness();  % So I don't get asked again after new window opens
+
         delete(gcf)
     end
 
@@ -354,6 +357,15 @@ function cellAnnotator
        loadMatFiles();
        updateFolderPaths()
        displayAnnotations(curIdx);
+    end
+
+    function wheel_callback(~, eventdata)
+        switch eventdata.VerticalScrollCount
+            case 1
+                nextImage();
+            case -1
+                prevImage();
+        end
     end
 
     function hslider_callback(source, eventdata) %#ok<INUSD>
@@ -921,7 +933,6 @@ function cellAnnotator
                 h = line(X, Y, 'Parent', hviewer, 'Color', [1 1 1], 'LineStyle', '--');
                 annotationHandles = [annotationHandles; h]; %#ok<AGROW>
             end
-
 
             tmp_i = tmp_i + 1;
         end
