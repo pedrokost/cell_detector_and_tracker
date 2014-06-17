@@ -268,7 +268,7 @@ function cellAnnotator
     % -----------CALLBACKS-------------------------------------------------
     % =====================================================================
 
-    function close_callback(src,evnt)
+    function close_callback(~,~)
         % User-defined close request function 
         % to display a question dialog box
 
@@ -349,7 +349,7 @@ function cellAnnotator
           warning('Select the folder with annotations')
           return
        else
-           usrMatFolderName = foldn;
+           usrMatFolderName = foldn; %#ok<NASGU>
        end
        loadMatFiles();
        updateFolderPaths()
@@ -377,7 +377,7 @@ function cellAnnotator
         
         for i=1:numel(I)
             % Find corresponding filenames
-            [dots, links] = getAnnotations(I(i));
+            [dots, links] = getAnnotations(I(i)); %#ok<ASGLU,NASGU>
             filename = fullfile(imgFolderName, usrMatfileNames(I(i)).name);
             % Save the new dots
             save(filename, 'dots', 'links');
@@ -484,7 +484,7 @@ function cellAnnotator
     end
 
     function performActionAdd()
-        [P clickedImg] = doClick(numImages, imgWidth, imgGap);
+        [P, clickedImg] = doClick(numImages, imgWidth, imgGap);
         % clickeImd == [] when I switch the tool
 
         if ~isempty(P) && ~isempty(clickedImg)
@@ -497,7 +497,7 @@ function cellAnnotator
     function performActionDell()
         SNAP_DISTANCE = SNAP_PERCENTAGE * imgWidth;
 
-        [P clickedImg] = doClick(numImages, imgWidth, imgGap);
+        [P, clickedImg] = doClick(numImages, imgWidth, imgGap);
 
         if ~isempty(P) && ~isempty(clickedImg)
             [dots, links] = getAnnotations(clickedImg);
@@ -511,9 +511,8 @@ function cellAnnotator
                 if clickedImg > 1
                     % Check if there is a link on the left side
                     % If there is, also delete it
-                    [dots0, links0] = getAnnotations(clickedImg-1)
-                    J = find(links0 == I);
-                    links0(J) = 0;
+                    [dots0, links0] = getAnnotations(clickedImg-1);
+                    links0(links0 == I) = 0;
 
                     % I also need to correct the points of the other annotations
                     J = find(links0 > I);
@@ -534,13 +533,13 @@ function cellAnnotator
 
     function performActionAddlink()
         SNAP_DISTANCE = SNAP_PERCENTAGE * imgWidth;
-        [P clickedImgs] = doClick(numImages, imgWidth, imgGap, 'N', 2);
+        [P, clickedImgs] = doClick(numImages, imgWidth, imgGap, 'N', 2);
         
         if ~isempty(P) && ~isempty(clickedImgs) && numel(clickedImgs) == 2
             % Compute minimum distances to points
             % store the connection in the lefty image
-            dots1 = usrAnnotations.dots{clickedImgs(1)};
-            dots2 = usrAnnotations.dots{clickedImgs(2)};
+            [dots1, links1] = getAnnotations(clickedImgs(1));
+            [dots2, ~] = getAnnotations(clickedImgs(2));
 
             D1 = pdist2(double(dots1), double(P(1, :)));
             D2 = pdist2(double(dots2), double(P(2, :)));
@@ -549,13 +548,12 @@ function cellAnnotator
             [D2, I2] = min(D2, [], 1);
 
             if all([D1 D2] < SNAP_DISTANCE)
-                usrAnnotations.dirty{clickedImgs(1)} = 1;
 
                 fprintf('Added links from %d %d (image %d) to %d %d (image %d).\n', dots1(I1,:), clickedImgs(1), dots2(I2, :), clickedImgs(2));
 
-                links = usrAnnotations.links{clickedImgs(1)};
-                links(I1) = I2;
-                usrAnnotations.links{clickedImgs(1)} = links;
+                links1(I1) = I2;
+
+                setAnnotations(clickedImgs(1), dots1, links1);
                 displayAnnotations(curIdx, numImages);
             end
         end
@@ -563,13 +561,12 @@ function cellAnnotator
 
     function performActionDellink()
         SNAP_DISTANCE = SNAP_PERCENTAGE * imgWidth;
-        [P clickedImg, relClickedImg] = doClick(numImages, imgWidth, imgGap);
+        [P, clickedImg, relClickedImg] = doClick(numImages, imgWidth, imgGap);
         nDisplays = 3;
 
         if ~isempty(P) && ~isempty(clickedImg)
 
             dists = [];
-            nPrev = 0; nNext = 0;
 
             thereIsPrevImage = relClickedImg > -floor(nDisplays/2);
             thereIsNextImage = relClickedImg < floor(nDisplays/2);
@@ -595,9 +592,6 @@ function cellAnnotator
                 dsts = distancePointEdge(P, ...
                     double([dots0(I, :), dots1(links0(I), :)]));
                 dists = [dists dsts];
-                nNext = numel(I);
-            else
-                nNext = 0;
             end
 
             [D, I] = min(dists);
@@ -607,16 +601,14 @@ function cellAnnotator
                     [dots0, links0] = getAnnotations(clickedImg-1);
                     Iorig = find(links0 ~= 0);
                     links0(Iorig(I)) = 0;
-                    usrAnnotations.links{clickedImg-1} = links0;
-                    usrAnnotations.dirty{clickedImg-1} = 1;
+                    setAnnotations(clickedImg-1, dots0, links0);
                     fprintf('Removed link between images %d and %d.\n', ...
                         clickedImg-1, clickedImg);
                 else              % Link to right image
                     [dots0, links0] = getAnnotations(clickedImg);
-                    usrAnnotations.dirty{clickedImg} = 1;
                     Iorig = find(links0 ~= 0);
                     links0(Iorig(I-nPrev)) = 0;
-                    usrAnnotations.links{clickedImg} = links0;
+                    setAnnotations(clickedImg, dots0, links0);
                     fprintf('Removed link between images %d and %d.\n', ...
                         clickedImg, clickedImg+1);
                 end
@@ -655,7 +647,7 @@ function cellAnnotator
     end
 
     function I = getDirtyIndices()
-        I = find([usrAnnotations.dirty{:}]==1)
+        I = find([usrAnnotations.dirty{:}]==1);
     end
 
     function setAnnotations(index, dots, links)
@@ -877,10 +869,8 @@ function cellAnnotator
         if any(ishandle(annotationHandles))
             annotationHandles = annotationHandles(ishandle(annotationHandles));
             
-            try
-                for i=1:numel(annotationHandles)
-                    delete(annotationHandles(i));
-                end
+            for i=1:numel(annotationHandles)
+                delete(annotationHandles(i));
             end
             annotationHandles = [];
         end
@@ -929,7 +919,7 @@ function cellAnnotator
                 X = [c0(l, 1) c1(l, 1)];
                 Y = [c0(l, 2) c1(l, 2)];
                 h = line(X, Y, 'Parent', hviewer, 'Color', [1 1 1], 'LineStyle', '--');
-                annotationHandles = [annotationHandles; h];
+                annotationHandles = [annotationHandles; h]; %#ok<AGROW>
             end
 
 
