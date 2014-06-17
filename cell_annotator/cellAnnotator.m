@@ -278,7 +278,7 @@ function cellAnnotator
         % end
         % Determine if there are dirty changes
         if isfield(usrAnnotations, 'dirty')
-            I = find([usrAnnotations.dirty{:}]);
+            I = getDirtyIndices();
             if sum(I) > 0
                 % If there are dirty changes, ask the user to save first
                 selection = questdlg('Discard unsaved changes?',...
@@ -320,8 +320,8 @@ function cellAnnotator
 
         usrAnnotations.dots = cell(numImages, 1);
         usrAnnotations.dirty = cell(numImages, 1);
-        [usrAnnotations.dirty{:}] = deal(0);  % Initialize to false
         usrAnnotations.links = cell(numImages, 1);
+        resetDirtiness()
 
 
         usrMatfileNames = cell(numImages, 1);
@@ -370,7 +370,7 @@ function cellAnnotator
         % Assumes the mat files contain only `dots`.
         
         % Find dirty annotations
-        I = find([usrAnnotations.dirty{:}]);
+        I = getDirtyIndices();
         oldColor = get(hsave, 'Background');
         set(hsave, 'Background', 'y');
         set(hsave, 'String', 'Saving');
@@ -385,13 +385,15 @@ function cellAnnotator
         end
 
         usrAnnotations.dirty = cell(numImages, 1);
-        [usrAnnotations.dirty{:}] = deal(0);  % Initialize to false
+        resetDirtiness();
 
         set(hsave, 'Background', 'g');
         set(hsave, 'String', 'Saved');
         pause(2);
-        set(hsave, 'Background', oldColor);
-        set(hsave, 'String', 'Save');
+        if ishandle(hsave)
+            set(hsave, 'Background', oldColor);
+            set(hsave, 'String', 'Save');
+        end
     end
 
     function changedAction_callback(~, eventdata)
@@ -486,10 +488,8 @@ function cellAnnotator
         % clickeImd == [] when I switch the tool
 
         if ~isempty(P) && ~isempty(clickedImg)
-            usrAnnotations.dirty{clickedImg} = 1;
             [dots, links] = getAnnotations(clickedImg);
-            usrAnnotations.dots{clickedImg} = [dots; P];
-            usrAnnotations.links{clickedImg} = [links; 0];
+            setAnnotations(clickedImg, [dots; P], [links; 0]);
             displayAnnotations(curIdx, numImages);
         end
     end
@@ -500,7 +500,6 @@ function cellAnnotator
         [P clickedImg] = doClick(numImages, imgWidth, imgGap);
 
         if ~isempty(P) && ~isempty(clickedImg)
-            usrAnnotations.dirty{clickedImg} = 1;
             [dots, links] = getAnnotations(clickedImg);
             D = pdist2(double(dots), double(P));
             [D, I] = min(D, [], 1);
@@ -520,17 +519,12 @@ function cellAnnotator
                     J = find(links0 > I);
                     links0(J) = links0(J) - 1;
 
-
-                    usrAnnotations.links{clickedImg-1} = links0;
-                    usrAnnotations.dirty{clickedImg-1} = 1;
-
+                    setAnnotations(clickedImg - 1, dots0, links0);
                 end
 
                 links(I) = [];
 
-                usrAnnotations.dots{clickedImg} = dots;
-                usrAnnotations.links{clickedImg} = links;
-                usrAnnotations.dirty{clickedImg} = 1;
+                setAnnotations(clickedImg, dots, links);
 
                 displayImage(curIdx, numImages);
                 displayAnnotations(curIdx, numImages);
@@ -542,7 +536,7 @@ function cellAnnotator
         SNAP_DISTANCE = SNAP_PERCENTAGE * imgWidth;
         [P clickedImgs] = doClick(numImages, imgWidth, imgGap, 'N', 2);
         
-        if ~isempty(P) && ~isempty(clickedImgs)
+        if ~isempty(P) && ~isempty(clickedImgs) && numel(clickedImgs) == 2
             % Compute minimum distances to points
             % store the connection in the lefty image
             dots1 = usrAnnotations.dots{clickedImgs(1)};
@@ -656,11 +650,26 @@ function cellAnnotator
         end
     end
 
+    function resetDirtiness()
+        [usrAnnotations.dirty{:}] = deal(0);
+    end
+
+    function I = getDirtyIndices()
+        I = find([usrAnnotations.dirty{:}]==1)
+    end
+
+    function setAnnotations(index, dots, links)
+        usrAnnotations.dots{index} = dots;
+        usrAnnotations.links{index} = links;
+        usrAnnotations.dirty{index} = 1;
+    end
+
     function [dots, links] = getAnnotations(index)
         % Returns the requested image annotations
 
         % Only reload from disk if not dirty. I may be empty otherwise if we
         % had delete all the annotations
+
         noDots = isempty(usrAnnotations.dots{index}) && ~usrAnnotations.dirty{index};
         noLinks = isempty(usrAnnotations.links{index}) && ~usrAnnotations.dirty{index};
         if noDots || noLinks
@@ -865,7 +874,9 @@ function cellAnnotator
         nDisplays = 3;
         
         % clear any previous annotation
-        if ~isempty(annotationHandles)
+        if any(ishandle(annotationHandles))
+            annotationHandles = annotationHandles(ishandle(annotationHandles));
+            
             try
                 for i=1:numel(annotationHandles)
                     delete(annotationHandles(i));
