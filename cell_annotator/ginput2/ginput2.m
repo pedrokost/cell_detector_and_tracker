@@ -607,10 +607,10 @@ while cont<N     % Principal loop
    end
    
    % Centers the selected point if ZOOM-IN: 29 SEP,2008
-   if all((lim~=zlim))
-    lim = [x+diff(lim(1:2))/2*[-1 1] y+diff(lim(3:4))/2*[-1 1]];
-    axis(lim)
-   end
+   % if all((lim~=zlim))
+   %  lim = [x+diff(lim(1:2))/2*[-1 1] y+diff(lim(3:4))/2*[-1 1]];
+   %  axis(lim)
+   % end
    
    % Saves the result:
    X      = [X;      x];
@@ -647,7 +647,7 @@ if yesdraw && any(ishandle(hpoints))
  delete(hpoints(ishandle(hpoints)))
 end
 
-% Returns original limits.
+% % Returns original limits.
 if ~strcmp(UnZoom,'KeepZoom') && ~isempty(alim.ha)
  alim.ha(~ishandle(alim.ha)) = [];
  for k = 1:length(alim.ha)
