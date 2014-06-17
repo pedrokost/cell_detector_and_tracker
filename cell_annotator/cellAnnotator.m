@@ -19,8 +19,8 @@ function cellAnnotator
     curIdx = 1;
     numImages = 0;
 
-    SNAP_PERCENTAGE = 0.04;  % percentage of image width that you can miss
-    % an annotation and still select it
+    SNAP_PERCENTAGE = 0.10;  % percentage of image width that you can miss
+    % an annotation and still select it (for hdel)
 
     annotationHandles = []; % Holds a list of annotation handlers
     
@@ -487,9 +487,9 @@ function cellAnnotator
 
         if ~isempty(P) && ~isempty(clickedImg)
             usrAnnotations.dirty{clickedImg} = 1;
-            dots = usrAnnotations.dots{clickedImg};
+            [dots, links] = getAnnotations(clickedImg);
             usrAnnotations.dots{clickedImg} = [dots; P];
-            usrAnnotations.dots{clickedImg}
+            usrAnnotations.links{clickedImg} = [links; 0];
             displayAnnotations(curIdx, numImages);
         end
     end
@@ -501,13 +501,38 @@ function cellAnnotator
 
         if ~isempty(P) && ~isempty(clickedImg)
             usrAnnotations.dirty{clickedImg} = 1;
-            dots = usrAnnotations.dots{clickedImg};
+            [dots, links] = getAnnotations(clickedImg);
             D = pdist2(double(dots), double(P));
             [D, I] = min(D, [], 1);
             if D < SNAP_DISTANCE
-                fprintf('Deleted point %d %d from image %d.\n', dots(I, 1), dots(I, 2), clickedImg );
+                fprintf('Deleted point %d %d from image %d.\n', dots(I, :), clickedImg );
+
                 dots(I, :) = [];
+
+                if clickedImg > 1
+                    % Check if there is a link on the left side
+                    % If there is, also delete it
+                    [dots0, links0] = getAnnotations(clickedImg-1)
+                    J = find(links0 == I);
+                    links0(J) = 0;
+
+                    % I also need to correct the points of the other annotations
+                    J = find(links0 > I);
+                    links0(J) = links0(J) - 1;
+
+
+                    usrAnnotations.links{clickedImg-1} = links0;
+                    usrAnnotations.dirty{clickedImg-1} = 1;
+
+                end
+
+                links(I) = [];
+
                 usrAnnotations.dots{clickedImg} = dots;
+                usrAnnotations.links{clickedImg} = links;
+                usrAnnotations.dirty{clickedImg} = 1;
+
+                displayImage(curIdx, numImages);
                 displayAnnotations(curIdx, numImages);
             end
         end
@@ -519,7 +544,6 @@ function cellAnnotator
         
         if ~isempty(P) && ~isempty(clickedImgs)
             % Compute minimum distances to points
-            usrAnnotations.dirty{clickedImgs(1)} = 1;
             % store the connection in the lefty image
             dots1 = usrAnnotations.dots{clickedImgs(1)};
             dots2 = usrAnnotations.dots{clickedImgs(2)};
@@ -531,6 +555,8 @@ function cellAnnotator
             [D2, I2] = min(D2, [], 1);
 
             if all([D1 D2] < SNAP_DISTANCE)
+                usrAnnotations.dirty{clickedImgs(1)} = 1;
+
                 fprintf('Added links from %d %d (image %d) to %d %d (image %d).\n', dots1(I1,:), clickedImgs(1), dots2(I2, :), clickedImgs(2));
 
                 links = usrAnnotations.links{clickedImgs(1)};
@@ -542,7 +568,68 @@ function cellAnnotator
     end
 
     function performActionDellink()
-        'Dellink'
+        SNAP_DISTANCE = SNAP_PERCENTAGE * imgWidth;
+        [P clickedImg, relClickedImg] = doClick(numImages, imgWidth, imgGap);
+        nDisplays = 3;
+
+        if ~isempty(P) && ~isempty(clickedImg)
+
+            dists = [];
+            nPrev = 0; nNext = 0;
+
+            thereIsPrevImage = relClickedImg > -floor(nDisplays/2);
+            thereIsNextImage = relClickedImg < floor(nDisplays/2);
+
+            if thereIsPrevImage
+                [dots0, links0] = getAnnotations(clickedImg-1);
+                dots0(:, 1) = dots0(:, 1) - (imgWidth + imgGap);
+                [dots1, ~] = getAnnotations(clickedImg);
+                I = find(links0 ~= 0);
+                dsts = distancePointEdge(P, ...
+                    double([dots0(I, :), dots1(links0(I), :)]));
+                dists = [dists dsts];
+                nPrev = numel(I);
+            else
+                nPrev = 0;
+            end
+                
+            if thereIsNextImage
+                [dots0, links0] = getAnnotations(clickedImg);
+                [dots1, ~] = getAnnotations(clickedImg+1);
+                dots1(:, 1) = dots1(:, 1) + (imgWidth + imgGap);
+                I = find(links0 ~= 0);
+                dsts = distancePointEdge(P, ...
+                    double([dots0(I, :), dots1(links0(I), :)]));
+                dists = [dists dsts];
+                nNext = numel(I);
+            else
+                nNext = 0;
+            end
+
+            [D, I] = min(dists);
+
+            if D <= SNAP_DISTANCE
+                if I <= nPrev     % Link to left image
+                    [dots0, links0] = getAnnotations(clickedImg-1);
+                    Iorig = find(links0 ~= 0);
+                    links0(Iorig(I)) = 0;
+                    usrAnnotations.links{clickedImg-1} = links0;
+                    usrAnnotations.dirty{clickedImg-1} = 1;
+                    fprintf('Removed link between images %d and %d.\n', ...
+                        clickedImg-1, clickedImg);
+                else              % Link to right image
+                    [dots0, links0] = getAnnotations(clickedImg);
+                    usrAnnotations.dirty{clickedImg} = 1;
+                    Iorig = find(links0 ~= 0);
+                    links0(Iorig(I-nPrev)) = 0;
+                    usrAnnotations.links{clickedImg} = links0;
+                    fprintf('Removed link between images %d and %d.\n', ...
+                        clickedImg, clickedImg+1);
+                end
+                displayAnnotations(curIdx, numImages);
+            end
+        end
+        % Get the click, find the closest line
     end
 
     function updateFolderPaths()

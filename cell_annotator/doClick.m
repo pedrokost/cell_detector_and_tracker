@@ -1,10 +1,11 @@
-function [P, clickedImgs] = doClick(numImages, imgWidth, imgGap, varargin)
+function [P, clickedImgs, relClickedImags] = doClick(numImages, imgWidth, imgGap, varargin)
     % DOCLICK: Performs a click, and returns its coordinate together with the
     % image that was clicked on
 
     %-------------------------------------------------------------Defaults
     P = [];           % don't touch: click coordinate
     clickedImgs = [];  % don't touch: the indeci of the clicked image. Always sorted.
+    relClickedImags = []; % -1 for left, 0 for middle, 1 for right, etc
     nDisplays = 3;    % number of images
     ALLOWED_BUTTONS = [3];  % only accepts right clicks as 'click'
     N = 1;            % number of cliks
@@ -44,6 +45,7 @@ function [P, clickedImgs] = doClick(numImages, imgWidth, imgGap, varargin)
     % assume all images same width
 
     clickedImgs = zeros(numel(X), 1);
+    relClickedImags = zeros(numel(X), 1);
 
     for p=1:numel(X)
 
@@ -51,7 +53,9 @@ function [P, clickedImgs] = doClick(numImages, imgWidth, imgGap, varargin)
         while P(p, 1) > imgWidth
             P(p, 1) = P(p, 1)-imgWidth-imgGap;
             curDisp = curDisp + 1;
-        end 
+        end
+
+        relClickedImags(p) = curDisp;
 
         % I need to get the current Image index as late as possible, because
         % otherwise the value is 'cached' and too old if the use scrolls while
