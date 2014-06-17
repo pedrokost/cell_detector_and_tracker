@@ -209,7 +209,7 @@ function cellAnnotator
         cs = [0 ws(1:end-1)];
         filteroffs = [filteroffs  cs];
     end
-    
+
     for j=1:numel(filters)
        fi = filters{j};
        set(fi, ...
@@ -774,6 +774,8 @@ function cellAnnotator
         if isempty(imgFolderName)
             return
         end
+
+        nDisplays = 3;
         
         % clear any previous annotation
         if ~isempty(annotationHandles)
@@ -789,48 +791,52 @@ function cellAnnotator
         % This is for the fact that the first image and last images don't
         % result in the viewer change.
         ind = index;
-        if ind < 2
+        if ind < ceil(nDisplays / 2)
             ind = ind + 1; 
         elseif ind >= numImages
-            ind = ind - 1;
+            ind = ind - 1; % FIXME
         end
         
-        % nDisplays = 3;
+        dotsCell = cell(nDisplays, 1);
+        linksCell = cell(nDisplays, 1);
+        dots = [];
+        tmp_i = 1;
+        for i=-floor(nDisplays/2):1:floor(nDisplays/2)
+            [d, l] = getAnnotations(ind+i);
+            d(:, 1) = d(:, 1) + (tmp_i-1)*(imgWidth + imgGap);
+            dotsCell{tmp_i} = d;
+            linksCell{tmp_i} = l;
+            tmp_i = tmp_i + 1;
+            dots = vertcat(dots, d);
+        end
 
-        % for i=1:nDisplays
-            
-        % end
 
-        [dots0, links0] = getAnnotations(ind-1);
-        [dots1, links1] = getAnnotations(ind);
-        dots2 = getAnnotations(ind+1);
-        dots1(:, 1) = dots1(:, 1) + imgWidth + imgGap;
-        dots2(:, 1) = dots2(:, 1) + 2*imgWidth + 2*imgGap;
-    
-        dots = cat(1, dots0, dots1, dots2);
-        
         hold(hviewer, 'on');
         h = plot(dots(:, 1), dots(:, 2), 'r+', 'Parent', hviewer);
         annotationHandles = [annotationHandles; h];
+       
+
+        % Plot links
         % Select nonzeros
-        I = find(links0 ~= 0);
-        c00 = dots0(I, :);
-        c01 = dots1(links0(I), :);
+        tmp_i = 1;
+        for i=-floor(nDisplays/2):1:floor(nDisplays/2)-1
+            links = linksCell{tmp_i};
+            dots0 = dotsCell{tmp_i};
+            dots1 = dotsCell{tmp_i+1};
+            I = find(links ~= 0);
+            c0 = dots0(I, :);
+            c1 = dots1(links(I), :);
 
-        X = [c00(:, 1) c01(:, 1)];
-        Y = [c00(:, 2) c01(:, 2)];
-        h = line(X, Y, 'Parent', hviewer, 'Color', [1 1 1], 'LineStyle', '--');
-        annotationHandles = [annotationHandles; h];
+            for l=1:numel(I)
+                X = [c0(l, 1) c1(l, 1)];
+                Y = [c0(l, 2) c1(l, 2)];
+                h = line(X, Y, 'Parent', hviewer, 'Color', [1 1 1], 'LineStyle', '--');
+                annotationHandles = [annotationHandles; h];
+            end
 
-        I = find(links1 ~= 0);
-        c10 = dots1(I, :);
-        c11 = dots2(links1(I), :);
-        X = [c10(:, 1) c11(:, 1)];
-        Y = [ c10(:, 2) c11(:, 2)];
 
-        % plot them lines
-        h = line(X, Y, 'Parent', hviewer, 'Color', [1 1 1], 'LineStyle', '--');
-        annotationHandles = [annotationHandles; h];
+            tmp_i = tmp_i + 1;
+        end
     end
 
     function displayUIElements
