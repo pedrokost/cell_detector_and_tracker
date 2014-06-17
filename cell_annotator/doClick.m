@@ -15,7 +15,7 @@ function [P, clickedImgs] = doClick(numImages, imgWidth, imgGap, varargin)
 
 
     %-----------------------------------------------------------Overwrites
-    for i=1:2:(nargin-4)
+    for i=1:2:(nargin-3)
         switch varargin{i}
             case 'nDisplays'
                 nDisplays = varargin{i+1};
@@ -56,7 +56,7 @@ function [P, clickedImgs] = doClick(numImages, imgWidth, imgGap, varargin)
         % I need to get the current Image index as late as possible, because
         % otherwise the value is 'cached' and too old if the use scrolls while
         % this function is waiting
-        curImageShown = evalin('caller', 'curIdx')
+        curImageShown = evalin('caller', 'curIdx');
         clickedImgs(p) = curImageShown + curDisp;
         if curImageShown <= floor(nDisplays/2)
             clickedImgs(p) = clickedImgs(p) + 1;

@@ -482,7 +482,7 @@ function cellAnnotator
     end
 
     function performActionAdd()
-        [P clickedImg] = doClick(curIdx, numImages, imgWidth, imgGap);
+        [P clickedImg] = doClick(numImages, imgWidth, imgGap);
         % clickeImd == [] when I switch the tool
 
         if ~isempty(P) && ~isempty(clickedImg)
@@ -497,7 +497,7 @@ function cellAnnotator
     function performActionDell()
         SNAP_DISTANCE = SNAP_PERCENTAGE * imgWidth;
 
-        [P clickedImg] = doClick(curIdx, numImages, imgWidth, imgGap);
+        [P clickedImg] = doClick(numImages, imgWidth, imgGap);
 
         if ~isempty(P) && ~isempty(clickedImg)
             usrAnnotations.dirty{clickedImg} = 1;
@@ -515,7 +515,7 @@ function cellAnnotator
 
     function performActionAddlink()
         SNAP_DISTANCE = SNAP_PERCENTAGE * imgWidth;
-        [P clickedImgs] = doClick(curIdx, numImages, imgWidth, imgGap, 'N', 2);
+        [P clickedImgs] = doClick(numImages, imgWidth, imgGap, 'N', 2);
         
         if ~isempty(P) && ~isempty(clickedImgs)
             % Compute minimum distances to points
