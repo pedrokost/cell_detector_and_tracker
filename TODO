@@ -1,4 +1,6 @@
  Today:
+ ☐ setAnnotation()
+     
  ☐ Ask for confirm if reloading images and dirtynees exists
  ✔ Delete cell fixes the links matrix also @done (14-06-17 15:37)
  ✔ Add cell fixes the link matrix also @done (14-06-17 15:18)
@@ -12,9 +14,7 @@
          ✔ Correct format of links @done (14-06-16 15:09)
          ☐ check that the links format is OK
 
-         ☐ Load detections as well
-         
-     ☐ delete link
+  ☐ Load detections as well
   ☐ Toggles: show detections, show links
   ☐ Fix new window when click close after save (due to background change)
 TODO:
