@@ -19,7 +19,10 @@ function cellAnnotator
     curIdx = 1;
     numImages = 0;
 
-    annotationHandle = []; % Holds a list of annotation handlers
+    SNAP_PERCENTAGE = 0.04;  % percentage of image width that you can miss
+    % an annotation and still select it
+
+    annotationHandles = []; % Holds a list of annotation handlers
     
     imgFormat = 'pgm';
     imgPrefix = 'im';
@@ -243,7 +246,7 @@ function cellAnnotator
 
     hsliderListener = addlistener(hslider,'Value','PostSet',@hslider_callback);
     set(f, 'KeyReleaseFcn', @keyUpListener);
-    
+
     % =====================================================================
     % ------------INTITIALIZE THE GUI--------------------------------------
     % =====================================================================
@@ -481,6 +484,7 @@ function cellAnnotator
     function performActionAdd()
         [P clickedImg] = doClick(curIdx, numImages, imgWidth, imgGap);
         % clickeImd == [] when I switch the tool
+
         if ~isempty(P) && ~isempty(clickedImg)
             usrAnnotations.dirty{clickedImg} = 1;
             dots = usrAnnotations.dots{clickedImg};
@@ -491,7 +495,7 @@ function cellAnnotator
     end
 
     function performActionDell()
-        SNAP_DISTANCE = 0.03 * imgWidth;
+        SNAP_DISTANCE = SNAP_PERCENTAGE * imgWidth;
 
         [P clickedImg] = doClick(curIdx, numImages, imgWidth, imgGap);
 
@@ -510,18 +514,31 @@ function cellAnnotator
     end
 
     function performActionAddlink()
-        'Addlink'
+        SNAP_DISTANCE = SNAP_PERCENTAGE * imgWidth;
+        [P clickedImgs] = doClick(curIdx, numImages, imgWidth, imgGap, 'N', 2);
+        
+        if ~isempty(P) && ~isempty(clickedImgs)
+            % Compute minimum distances to points
+            usrAnnotations.dirty{clickedImgs(1)} = 1;
+            % store the connection in the lefty image
+            dots1 = usrAnnotations.dots{clickedImgs(1)};
+            dots2 = usrAnnotations.dots{clickedImgs(2)};
 
-        % Click on 1 annotation
-        % Find the nearest cell
+            D1 = pdist2(double(dots1), double(P(1, :)));
+            D2 = pdist2(double(dots2), double(P(2, :)));
 
-        % add listener to draw line to mouse position
-        % wait for second click
+            [D1, I1] = min(D1, [], 1);
+            [D2, I2] = min(D2, [], 1);
 
-        % remove the listener
+            if all([D1 D2] < SNAP_DISTANCE)
+                fprintf('Added links from %d %d (image %d) to %d %d (image %d).\n', dots1(I1,:), clickedImgs(1), dots2(I2, :), clickedImgs(2));
 
-        % store the connection
-        % display the connection
+                links = usrAnnotations.links{clickedImgs(1)};
+                links(I1) = I2;
+                usrAnnotations.links{clickedImgs(1)} = links;
+                displayAnnotations(curIdx, numImages);
+            end
+        end
     end
 
     function performActionDellink()
@@ -759,14 +776,18 @@ function cellAnnotator
         end
         
         % clear any previous annotation
-        if annotationHandle
+        if ~isempty(annotationHandles)
             try
-                delete(annotationHandle);
+                for i=1:numel(annotationHandles)
+                    delete(annotationHandles(i));
+                end
             end
-            annotationHandle = [];
+            annotationHandles = [];
         end
 
         % Then draw new ones
+        % This is for the fact that the first image and last images don't
+        % result in the viewer change.
         ind = index;
         if ind < 2
             ind = ind + 1; 
@@ -774,8 +795,14 @@ function cellAnnotator
             ind = ind - 1;
         end
         
-        dots0 = getAnnotations(ind-1);
-        dots1 = getAnnotations(ind);
+        % nDisplays = 3;
+
+        % for i=1:nDisplays
+            
+        % end
+
+        [dots0, links0] = getAnnotations(ind-1);
+        [dots1, links1] = getAnnotations(ind);
         dots2 = getAnnotations(ind+1);
         dots1(:, 1) = dots1(:, 1) + imgWidth + imgGap;
         dots2(:, 1) = dots2(:, 1) + 2*imgWidth + 2*imgGap;
@@ -783,7 +810,27 @@ function cellAnnotator
         dots = cat(1, dots0, dots1, dots2);
         
         hold(hviewer, 'on');
-        annotationHandle = plot(dots(:, 1), dots(:, 2), 'r+', 'Parent', hviewer);
+        h = plot(dots(:, 1), dots(:, 2), 'r+', 'Parent', hviewer);
+        annotationHandles = [annotationHandles; h];
+        % Select nonzeros
+        I = find(links0 ~= 0);
+        c00 = dots0(I, :);
+        c01 = dots1(links0(I), :);
+
+        X = [c00(:, 1) c01(:, 1)];
+        Y = [c00(:, 2) c01(:, 2)];
+        h = line(X, Y, 'Parent', hviewer, 'Color', [1 1 1], 'LineStyle', '--');
+        annotationHandles = [annotationHandles; h];
+
+        I = find(links1 ~= 0);
+        c10 = dots1(I, :);
+        c11 = dots2(links1(I), :);
+        X = [c10(:, 1) c11(:, 1)];
+        Y = [ c10(:, 2) c11(:, 2)];
+
+        % plot them lines
+        h = line(X, Y, 'Parent', hviewer, 'Color', [1 1 1], 'LineStyle', '--');
+        annotationHandles = [annotationHandles; h];
     end
 
     function displayUIElements
