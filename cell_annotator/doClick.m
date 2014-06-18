@@ -1,4 +1,4 @@
-function [P, clickedImgs, relClickedImags] = doClick(numImages, imgWidth, imgGap, varargin)
+function [P, clickedImgs, relClickedImags] = doClick(numImages, imgWidth, imgGap, nDisplays, varargin)
     % DOCLICK: Performs a click, and returns its coordinate together with the
     % image that was clicked on
 
@@ -6,7 +6,7 @@ function [P, clickedImgs, relClickedImags] = doClick(numImages, imgWidth, imgGap
     P = [];           % don't touch: click coordinate
     clickedImgs = [];  % don't touch: the indeci of the clicked image. Always sorted.
     relClickedImags = []; % -1 for left, 0 for middle, 1 for right, etc
-    nDisplays = 3;    % number of images
+    % nDisplays = 3;    % number of images
     ALLOWED_BUTTONS = [3];  % only accepts right clicks as 'click'
     N = 1;            % number of cliks
     % numImages = total number of images
@@ -16,10 +16,8 @@ function [P, clickedImgs, relClickedImags] = doClick(numImages, imgWidth, imgGap
 
 
     %-----------------------------------------------------------Overwrites
-    for i=1:2:(nargin-3)
+    for i=1:2:(nargin-4)
         switch varargin{i}
-            case 'nDisplays'
-                nDisplays = varargin{i+1};
             case 'N'
                 N = varargin{i+1};
             otherwise
@@ -27,7 +25,6 @@ function [P, clickedImgs, relClickedImags] = doClick(numImages, imgWidth, imgGap
         end
     end
     %-----------------------------------------------------------Overwrites
-
 
     try
         if N > 1
@@ -48,8 +45,7 @@ function [P, clickedImgs, relClickedImags] = doClick(numImages, imgWidth, imgGap
     relClickedImags = zeros(numel(X), 1);
 
     for p=1:numel(X)
-
-        curDisp = -1;
+        curDisp = -ceil(nDisplays/2)+1;
         while P(p, 1) > imgWidth
             P(p, 1) = P(p, 1)-imgWidth-imgGap;
             curDisp = curDisp + 1;
@@ -61,11 +57,13 @@ function [P, clickedImgs, relClickedImags] = doClick(numImages, imgWidth, imgGap
         % otherwise the value is 'cached' and too old if the use scrolls while
         % this function is waiting
         curImageShown = evalin('caller', 'curIdx');
+
         clickedImgs(p) = curImageShown + curDisp;
+        
         if curImageShown <= floor(nDisplays/2)
-            clickedImgs(p) = clickedImgs(p) + 1;
+            clickedImgs(p) = curDisp + ceil(nDisplays/2);
         elseif curImageShown > numImages - floor(nDisplays/2)
-            clickedImgs(p) = clickedImgs(p) - 1;
+            clickedImgs(p) = numImages - floor(nDisplays/2) + curDisp;
         end
         
         fprintf('Clicked on image %d (%d) at [%d %d]\n', clickedImgs(p), curDisp, P(p, 1), P(p, 2));

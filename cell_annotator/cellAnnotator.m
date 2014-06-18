@@ -19,6 +19,8 @@ function cellAnnotator
     curIdx = 1;
     numImages = 0;
 
+    nDisplays = 4;
+
     SNAP_PERCENTAGE = 0.10;  % percentage of image width that you can miss
     % an annotation and still select it (for hdel)
 
@@ -33,6 +35,7 @@ function cellAnnotator
     figHeight = 500;
     padding = 10;
     topFigOffset = 0;
+    actionsPanelHeight = 120;
     
     colormaps = 'gray|jet|hsv|hot|cool';
     disableFilters = false;
@@ -48,14 +51,9 @@ function cellAnnotator
 
     action = ACTION_OFF;
     
-    FG_COLOR = [0 0 0];
-    BG_COLOR = [0.9 0.9 0.9];
-
-
     BG_COLOR = [236, 240, 241] / 255;
     FG_COLOR = [44, 62, 80] / 255;
 
-    actionsPanelHeight = 120;
     % =====================================================================
     % ------------SETUP COMPONENTS-----------------------------------------
     % =====================================================================
@@ -124,6 +122,26 @@ function cellAnnotator
         'HorizontalAlignment', 'right', ...
         'Units', 'norm',...
         'Position', [0.89 0.25 0.1 0.5]);
+    % hndisplays = uicontrol('')
+
+    hnumDisps = uicontrol('Style', 'text', ...
+        'String', '# displays:',...
+        'Parent', hpactions3,...
+        'BackgroundColor', BG_COLOR,...
+        'ForegroundColor', FG_COLOR,...
+        'HorizontalAlignment', 'center', ...
+        'Units', 'norm',...
+        'Position', [0.58 .25 0.08 0.5]);
+
+    jModel = javax.swing.SpinnerNumberModel(nDisplays,1,10,1);
+    jSpinner = com.mathworks.mwswing.MJSpinner(jModel);
+    [jhSpinner, jhContainer] = javacomponent(jSpinner, ...
+        [0.5 0 0.1 1], ...
+        hpactions3);
+    set(jhContainer, 'Units','norm',...
+        'Position', [0.66 .15 0.05 .7]);
+    set(jhSpinner,'StateChangedCallback', @jhspinner_callback)
+
 
     hshowDots = uicontrol('Style', 'checkbox', ...
         'String', 'Show cells', ...
@@ -385,6 +403,10 @@ function cellAnnotator
     % -----------CALLBACKS-------------------------------------------------
     % =====================================================================
 
+    function jhspinner_callback(source, eventdata)
+        nDisplays = get(jhSpinner, 'Value');
+        requestRedraw();
+    end
     function close_callback(~,~)
         % User-defined close request function 
         % to display a question dialog box
@@ -614,7 +636,8 @@ function cellAnnotator
     end
 
     function performActionAdd()
-        [P, clickedImg] = doClick(numImages, imgWidth, imgGap);
+        [P, clickedImg] = doClick(numImages, imgWidth, imgGap, nDisplays);
+
         % clickeImd == [] when I switch the tool
 
         if ~isempty(P) && ~isempty(clickedImg)
@@ -627,7 +650,7 @@ function cellAnnotator
     function performActionDell()
         SNAP_DISTANCE = SNAP_PERCENTAGE * imgWidth;
 
-        [P, clickedImg] = doClick(numImages, imgWidth, imgGap);
+        [P, clickedImg] = doClick(numImages, imgWidth, imgGap, nDisplays);
 
         if ~isempty(P) && ~isempty(clickedImg)
             [dots, links] = getAnnotations(clickedImg);
@@ -663,7 +686,7 @@ function cellAnnotator
 
     function performActionAddlink()
         SNAP_DISTANCE = SNAP_PERCENTAGE * imgWidth;
-        [P, clickedImgs] = doClick(numImages, imgWidth, imgGap, 'N', 2);
+        [P, clickedImgs] = doClick(numImages, imgWidth, imgGap, nDisplays, 'N', 2);
         
         if ~isempty(P) && ~isempty(clickedImgs) && numel(clickedImgs) == 2
             % Compute minimum distances to points
@@ -691,8 +714,7 @@ function cellAnnotator
 
     function performActionDellink()
         SNAP_DISTANCE = SNAP_PERCENTAGE * imgWidth;
-        [P, clickedImg, relClickedImg] = doClick(numImages, imgWidth, imgGap);
-        nDisplays = 3;
+        [P, clickedImg, relClickedImg] = doClick(numImages, imgWidth, imgGap, nDisplays);
 
         if ~isempty(P) && ~isempty(clickedImg)
 
@@ -828,25 +850,31 @@ function cellAnnotator
         end
     end
 
+
+
     function displayImage(index, numImages)
         % Loads and displays the current image
         if isempty(imgFolderName)
             return
         end
         
-        ind = index;
-        if ind < 2
-            ind = ind + 1; 
-        elseif ind >= numImages
-            ind = ind - 1;
-        end
-        
-        I0 = getImage(ind-1);
-        I1 = getImage(ind);
-        I2 = getImage(ind+1);
 
-        gap = zeros(size(I0, 1), imgGap);
-        imgWidth = size(I0, 2);
+
+        ind = private_correctIndex(index, numImages, nDisplays);
+        
+        Is = cell(nDisplays, 1);
+            
+        tmp_i = 1;
+        for i=-ceil(nDisplays/2)+1:1:floor(nDisplays/2)
+            ind
+            i
+            ind + i
+            Is{tmp_i} = getImage(ind + i); 
+            tmp_i = tmp_i + 1;
+        end
+
+        gap = zeros(size(Is{1}, 1), imgGap);
+        imgWidth = size(Is{1}, 2);
         
         cla(hviewer);
         % assume all images same dimensions
@@ -873,46 +901,47 @@ function cellAnnotator
         
         
             % Apply filters
-            if applyConstrast; 
-                I0 = imadjust(I0);
-                I1 = imadjust(I1);
-                I2 = imadjust(I2);
+            if applyConstrast;
+                for i=1:nDisplays
+                    Is{i} = imadjust(Is{i});
+                end
             end
-            if applyHisteq; 
-                I0 = histeq(I0);
-                I1 = histeq(I1);
-                I2 = histeq(I2);
+            if applyHisteq;
+                for i=1:nDisplays
+                    Is{i} = histeq(Is{i});
+                end
             end
             if applyMedianFilter;
                 v = str2num(getCurrentPopupString(hfiltermediansz));
                 sz = [v v];
-                I0 = medfilt2(I0,sz);
-                I1 = medfilt2(I1,sz);
-                I2 = medfilt2(I2,sz);
+
+                for i=1:nDisplays
+                    Is{i} = medfilt2(Is{i}, sz);
+                end
             end
             if applySharpen;
                 v = str2num(getCurrentPopupString(hfilterapplysharpensz));
-                I0 = imsharpen(I0, 'Amount', v);
-                I1 = imsharpen(I1, 'Amount', v);
-                I2 = imsharpen(I2, 'Amount', v);
+                for i=1:nDisplays
+                    Is{i} = imsharpen(Is{i}, 'Amount', v);
+                end
             end
             if applyAdaptiveFilter;
                 v = str2num(getCurrentPopupString(hfilterwienersz));
                 sz = [v v];
-                I0 = wiener2(I0, sz);
-                I1 = wiener2(I1, sz);
-                I2 = wiener2(I2, sz);
+                for i=1:nDisplays
+                    Is{i} = wiener2(Is{i}, sz);
+                end
             end
             if applyadapthisteq; 
-                I0 = adapthisteq(I0);
-                I1 = adapthisteq(I1);
-                I2 = adapthisteq(I2);
+                for i=1:nDisplays
+                    Is{i} = adapthisteq(Is{i});
+                end
             end
             if applyDecorrstretch; 
                 v = str2num(getCurrentPopupString(hfilterdecorrstretchsz));
-                I0 = decorrstretch(I0,'Tol',v);
-                I1 = decorrstretch(I1,'Tol',v);
-                I2 = decorrstretch(I2,'Tol',v);
+                for i=1:nDisplays
+                    Is{i} = decorrstretch(Is{i}, 'Tol',v);
+                end
             end
             if applyEdge; 
                 method = strtrim(getCurrentPopupString(hfilteredgemeth));
@@ -922,63 +951,71 @@ function cellAnnotator
                 else
                     thr = str2double(thr);
                 end
-                I0 = edge(I0, method, thr);
-                I1 = edge(I1, method, thr);
-                I2 = edge(I2, method, thr);
+                for i=1:nDisplays
+                    Is{i} = edge(Is{i}, method, thr);
+                end
             end
 
             if applyAverage;
                 v = str2num(getCurrentPopupString(hfilteraveragesz));
                 h = fspecial('average', v);
-                I0 = imfilter(I0, h);
-                I1 = imfilter(I1, h);
-                I2 = imfilter(I2, h);
+                for i=1:nDisplays
+                    Is{i} = imfilter(Is{i}, h);
+                end
             end
             if applyDisk;
                 v = str2num(getCurrentPopupString(hfilterdisksz));
                 h = fspecial('disk', v);
-                I0 = imfilter(I0, h);
-                I1 = imfilter(I1, h);
-                I2 = imfilter(I2, h);
+                for i=1:nDisplays
+                    Is{i} = imfilter(Is{i}, h);
+                end
             end
             if applyLaplacian;
                 v = str2double(getCurrentPopupString(hfilterlaplaciansz));
                 h = fspecial('laplacian', v);
-                I0 = imfilter(I0, h);
-                I1 = imfilter(I1, h);
-                I2 = imfilter(I2, h);
+
+                for i=1:nDisplays
+                    Is{i} = imfilter(Is{i}, h);
+                end
             end
             if applyLog;
                 v = str2num(getCurrentPopupString(hfilterlogsz));
                 h = fspecial('log', v);
-                I0 = imfilter(I0, h);
-                I1 = imfilter(I1, h);
-                I2 = imfilter(I2, h);
+                for i=1:nDisplays
+                    Is{i} = imfilter(Is{i}, h);
+                end
             end
             if applyPrewitt;
                 h = fspecial('prewitt');
-                I0 = imfilter(I0, h);
-                I1 = imfilter(I1, h);
-                I2 = imfilter(I2, h);
+                for i=1:nDisplays
+                    Is{i} = imfilter(Is{i}, h);
+                end
             end
             if applySobel;
                 h = fspecial('sobel');
-                I0 = imfilter(I0, h);
-                I1 = imfilter(I1, h);
-                I2 = imfilter(I2, h);
+                for i=1:nDisplays
+                    Is{i} = imfilter(Is{i}, h);
+                end
             end
             if applyUnsharp;
                 h = fspecial('unsharp');
-                I0 = imfilter(I0, h);
-                I1 = imfilter(I1, h);
-                I2 = imfilter(I2, h);
+                for i=1:nDisplays
+                    Is{i} = imfilter(Is{i}, h);
+                end
             end 
             colormap(colorMaps{colorMap});
         else
             colormap gray;
         end
 
-        I = cat(2, I0, gap, I1,gap, I2);
+        I = [];
+        for i=1:nDisplays
+            if i == nDisplays
+                I = horzcat(I, Is{i});
+            else
+                I = horzcat(I, Is{i}, gap);
+            end
+        end
         
         pl = imagesc(I, 'Parent', hviewer); axis equal; axis tight;
         
@@ -994,8 +1031,6 @@ function cellAnnotator
         if isempty(imgFolderName)
             return
         end
-
-        nDisplays = 3;
         
         % clear any previous annotation
         if any(ishandle(annotationHandles))
@@ -1010,12 +1045,8 @@ function cellAnnotator
         % Then draw new ones
         % This is for the fact that the first image and last images don't
         % result in the viewer change.
-        ind = index;
-        if ind < ceil(nDisplays / 2)
-            ind = ind + 1; 
-        elseif ind >= numImages
-            ind = ind - 1; % FIXME
-        end
+        ind = private_correctIndex(index, numImages, nDisplays);
+
         hold(hviewer, 'on');
         
         dotsCell = cell(nDisplays, 1);
@@ -1023,7 +1054,7 @@ function cellAnnotator
         
         dots = [];
         tmp_i = 1;
-        for i=-floor(nDisplays/2):1:floor(nDisplays/2)
+        for i=-ceil(nDisplays/2)+1:1:floor(nDisplays/2)
             [d, l] = getAnnotations(ind+i);
             d(:, 1) = d(:, 1) + (tmp_i-1)*(imgWidth + imgGap);
             dotsCell{tmp_i} = d;
@@ -1045,7 +1076,7 @@ function cellAnnotator
             % Plot links
             % Select nonzeros
             tmp_i = 1;
-            for i=-floor(nDisplays/2):1:floor(nDisplays/2)-1
+            for i=-ceil(nDisplays/2)+1:1:floor(nDisplays/2)-1
                 links = linksCell{tmp_i};
                 dots0 = dotsCell{tmp_i};
                 dots1 = dotsCell{tmp_i+1};
