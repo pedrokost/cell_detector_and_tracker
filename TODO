@@ -1,22 +1,8 @@
  Today:
- ☐ setAnnotation()
-     
  ☐ Ask for confirm if reloading images and dirtynees exists
- ✔ Delete cell fixes the links matrix also @done (14-06-17 15:37)
- ✔ Add cell fixes the link matrix also @done (14-06-17 15:18)
  ☐ Prevent dupes
- ☐ annotation GUI
-     ☐ add link
-         ✔ Load usrSymmAnnotations @done (14-06-16 14:35)
-         ✔ Cache usrSymmAnnotation @done (14-06-16 14:35)
-         ✔ Create ureSymmAnnotations if nonex @done (14-06-16 14:36)
-         ✔ save links @done (14-06-16 15:09)
-         ✔ Correct format of links @done (14-06-16 15:09)
-         ☐ check that the links format is OK
-
-  ☐ Load detections as well
-  ☐ Toggles: show detections, show links
-  ☐ Fix new window when click close after save (due to background change)
+ ☐ Load detections as well
+ ☐ Toggles: show detections, show links
 TODO:
  ☐ Create 2 feature vectors per candidate cell, one for detection one for matching, each with a different subset of features.
      ☐ Include position
@@ -34,6 +20,17 @@ TODO:
      ☐ Histeq + Laplacian(0.2) creates empty places in maximums, noise everywhere else
 ＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿
 Archive:
+ ✔ annotation GUI @done (14-06-18 10:02)
+ ✔ add link @done (14-06-18 10:02) @project(Today)
+ ✔ check that the links format is OK @done (14-06-18 10:02) @project(Today)
+ ✔ Fix new window when click close after save (due to background change) @done (14-06-18 10:02) @project(Today)
+ ✔ Delete cell fixes the links matrix also @done (14-06-17 15:37)
+ ✔ Add cell fixes the link matrix also @done (14-06-17 15:18)
+ ✔ save links @done (14-06-16 15:09) @project(Today)
+ ✔ Correct format of links @done (14-06-16 15:09) @project(Today)
+ ✔ Create ureSymmAnnotations if nonex @done (14-06-16 14:36) @project(Today)
+ ✔ Load usrSymmAnnotations @done (14-06-16 14:35) @project(Today)
+ ✔ Cache usrSymmAnnotation @done (14-06-16 14:35) @project(Today)
  ✔ See if some methods can be taken out @done (14-06-16 12:19)
  ✔ delete detection @done (14-06-16 10:37) @project(Today)
  ✔ Save should remove all the dirty flags @done (14-06-16 09:29)
