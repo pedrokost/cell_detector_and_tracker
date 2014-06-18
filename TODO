@@ -1,4 +1,6 @@
  Today:
+ next: need to fix annotations display (do like images)
+
  ☐ Ask for confirm if reloading images and dirtynees exists
  ☐ Prevent dupes
  ☐ Load detections as well
