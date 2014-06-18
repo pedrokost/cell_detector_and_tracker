@@ -15,7 +15,7 @@ function cellAnnotator
     detMatFolderName = '';
     images = cell(1,1); % cache of images
     usrAnnotations = struct('dots', zeros(0, 2), 'links', zeros(0, 1)); % cache of annotation
-    detAnnotations = cell(1,1);
+    detAnnotations = struct('dots', zeros(0, 2), 'links', zeros(0, 1));
     curIdx = 1;
     numImages = 0;
 
@@ -506,26 +506,41 @@ function cellAnnotator
         set(hslider, 'Max', numImages);
         set(hslider, 'SliderStep', [1 5] / (numImages - 1));
 
-        displayImage(curIdx, numImages);        
-        displayAnnotations(curIdx, numImages);
-
-        displayUIElements()
-
-        performAction()
+        requestRedraw();
+        displayUIElements();
+        performAction();
 
     end
 
     function hbrowsemat_callback(source, eventdata) %#ok<INUSD>
-       foldn = uigetdir(imgFolderName, 'Select folder with annotations');
-       if foldn == 0
-          warning('Select the folder with annotations')
-          return
-       else
-           usrMatFolderName = foldn; %#ok<NASGU>
-       end
-       loadMatFiles();
-       updateFolderPaths()
-       displayAnnotations(curIdx);
+        if testing
+            foldn = '/home/pedro/Dropbox/Imperial/project/data/kidneygreenOUT'
+        else
+            foldn = uigetdir(imgFolderName, 'Select folder with annotations');
+        end
+
+        if foldn == 0
+            warning('Select the folder with annotations')
+            return
+        else
+            detMatFolderName = foldn;
+        end
+
+        updateFolderPaths()
+
+        detAnnotations.dots = cell(numImages, 1);
+        detAnnotations.dirty = cell(numImages, 1);
+        detAnnotations.links = cell(numImages, 1);
+
+        detMatfileNames = cell(numImages, 1);
+        for i=1:numImages
+            img = imgfileNames(i);
+            base = basename(img.name);
+            detMatfileNames{i} = strcat(base, '.mat');
+        end
+        detMatfileNames = struct('name', detMatfileNames);
+
+        % requestRedraw()
     end
 
     function wheel_callback(~, eventdata)
@@ -797,7 +812,6 @@ function cellAnnotator
                 displayAnnotations(curIdx, numImages);
             end
         end
-        % Get the click, find the closest line
     end
 
     function updateFolderPaths()
