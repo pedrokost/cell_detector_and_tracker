@@ -123,8 +123,26 @@ function cellAnnotator
         'ForegroundColor', FG_COLOR,...
         'HorizontalAlignment', 'right', ...
         'Units', 'norm',...
-        'Position', [0.89 0.25 0.1 0.5])
+        'Position', [0.89 0.25 0.1 0.5]);
 
+    hshowDots = uicontrol('Style', 'checkbox', ...
+        'String', 'Show cells', ...
+        'Units', 'norm',...
+        'Parent', hpactions3,...
+        'Background', BG_COLOR,...
+        'ForegroundColor', FG_COLOR, ...
+        'Value', 1, ...
+        'Position', [0.4 0 0.09 1],...
+        'Callback', {@requestRedraw});
+    hshowLinks = uicontrol('Style', 'checkbox', ...
+        'String', 'Show links', ...
+        'Units', 'norm',...
+        'Parent', hpactions3,...
+        'Value', 1, ...
+        'Background', BG_COLOR,...
+        'ForegroundColor', FG_COLOR, ...
+        'Position', [0.49 0 0.09 1],...
+        'Callback', {@requestRedraw});
 
     hbrowse = uicontrol('Style','pushbutton',...
            'String','Choose image folder',...
@@ -998,9 +1016,11 @@ function cellAnnotator
         elseif ind >= numImages
             ind = ind - 1; % FIXME
         end
+        hold(hviewer, 'on');
         
         dotsCell = cell(nDisplays, 1);
         linksCell = cell(nDisplays, 1);
+        
         dots = [];
         tmp_i = 1;
         for i=-floor(nDisplays/2):1:floor(nDisplays/2)
@@ -1013,30 +1033,35 @@ function cellAnnotator
         end
 
 
+
+        if get(hshowDots, 'Value')
+            h = plot(dots(:, 1), dots(:, 2), 'r+', 'Parent', hviewer);
+            annotationHandles = [annotationHandles; h];
+        end
+
         hold(hviewer, 'on');
-        h = plot(dots(:, 1), dots(:, 2), 'r+', 'Parent', hviewer);
-        annotationHandles = [annotationHandles; h];
        
+        if get(hshowLinks, 'Value')
+            % Plot links
+            % Select nonzeros
+            tmp_i = 1;
+            for i=-floor(nDisplays/2):1:floor(nDisplays/2)-1
+                links = linksCell{tmp_i};
+                dots0 = dotsCell{tmp_i};
+                dots1 = dotsCell{tmp_i+1};
+                I = find(links ~= 0);
+                c0 = dots0(I, :);
+                c1 = dots1(links(I), :);
 
-        % Plot links
-        % Select nonzeros
-        tmp_i = 1;
-        for i=-floor(nDisplays/2):1:floor(nDisplays/2)-1
-            links = linksCell{tmp_i};
-            dots0 = dotsCell{tmp_i};
-            dots1 = dotsCell{tmp_i+1};
-            I = find(links ~= 0);
-            c0 = dots0(I, :);
-            c1 = dots1(links(I), :);
+                for l=1:numel(I)
+                    X = [c0(l, 1) c1(l, 1)];
+                    Y = [c0(l, 2) c1(l, 2)];
+                    h = line(X, Y, 'Parent', hviewer, 'Color', [1 1 1], 'LineStyle', '--');
+                    annotationHandles = [annotationHandles; h]; %#ok<AGROW>
+                end
 
-            for l=1:numel(I)
-                X = [c0(l, 1) c1(l, 1)];
-                Y = [c0(l, 2) c1(l, 2)];
-                h = line(X, Y, 'Parent', hviewer, 'Color', [1 1 1], 'LineStyle', '--');
-                annotationHandles = [annotationHandles; h]; %#ok<AGROW>
+                tmp_i = tmp_i + 1;
             end
-
-            tmp_i = tmp_i + 1;
         end
     end
 
