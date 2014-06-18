@@ -423,15 +423,9 @@ function cellAnnotator
         nDisplays = get(jhSpinner, 'Value');
         requestRedraw();
     end
-    function close_callback(~,~)
-        % User-defined close request function 
-        % to display a question dialog box
 
-        % if testing
-        %     usrAnnotations.dirty{1} = 1;
-        %     usrAnnotations.dirty{7} = 1;
-        % end
-        % Determine if there are dirty changes
+    function discard = discardChangesPrompt()
+        discard = true;
         if isfield(usrAnnotations, 'dirty')
             I = getDirtyIndices();
             if sum(I) > 0
@@ -439,8 +433,20 @@ function cellAnnotator
                 selection = questdlg('Discard unsaved changes?',...
                     'Discard changes?',...
                     'Yes','No','Yes'); 
-                if ~strcmp(selection, 'Yes'); return; end
+                if strcmp(selection, 'No'); discard = false; end
             end
+        end
+    end
+
+    function close_callback(~,~)
+        % User-defined close request function 
+        % to display a question dialog box
+
+        % Determine if there are dirty changes
+        discard = discardChangesPrompt();
+
+        if ~discard
+            return;
         end
 
         % If still closing, remove the listeners
@@ -456,6 +462,13 @@ function cellAnnotator
 
     function hbrowse_callback(source, eventdata) %#ok<INUSD>
         
+        discard = discardChangesPrompt();
+
+        if ~discard
+            return;
+        end
+
+
         if testing
         	foldn = '/home/pedro/Dropbox/Imperial/project/data/kidneygreenIN';
         else
