@@ -6,6 +6,7 @@ function [trainFiles, testFiles, imExt, dataFolder, outFolder, mserParms, tol, f
 %INPUT
 %   dataSet = identifier of the data set as set in the switch-case
 %   options = a struct with options to override defaults
+%       testAll = 1 if the ML algorithm should be tested on the complete dataset
 %OUTPUT
 %   trainFiles = file names used for training (must be the same for the images
 %        and annotations)
@@ -23,6 +24,8 @@ function [trainFiles, testFiles, imExt, dataFolder, outFolder, mserParms, tol, f
 
 % NOTE: It is recommended to use rng to always load the same datasets
 
+if nargin < 2; options = struct; end
+if ~isfield(options, 'testAll'); options.testAll = false; end
 
 %Defaults
 BoD = 1;
@@ -32,6 +35,7 @@ maxPixels = [];
 Delta = 1;
 MaxVariation = 1;
 MinDiversity = 0.1;
+imPrefix = 'im';
 imExt = 'pgm';
 trainsplit = 0.7;  % percentage of data to be used for training 
 features = []; % Use default from setFeatures
@@ -76,7 +80,7 @@ switch dataset
         maxPixels = 1000;
         Delta = 2;
         tol = 8; %Tolerance (pixels) for evaluation only
-        features = [1 1 0 0 0 0 0];
+        features = [1 1 0 0 0 1 0];
         %      features: [1 1 0 0 0 0 0]
         %  timePerImage: 0.5353
         % meanPrecision: 0.6833
@@ -107,7 +111,7 @@ end
 
 
 
-files = dir(fullfile(dataFolder,['*.' imExt]));
+files = dir(fullfile(dataFolder,[imPrefix, '*.' imExt]));
 [~,files] = cellfun(@fileparts, {files.name}, 'UniformOutput',false);
 
 
@@ -115,7 +119,11 @@ trainFiles = datasample(files, ...
     round(trainsplit * numel(files)),...
     'Replace', false);
 trainFiles = sort(trainFiles);
-testFiles = setdiff(files, trainFiles);
+if options.testAll
+    testFiles = files;
+else
+    testFiles = setdiff(files, trainFiles);
+end
 
 
 mserParms.bod = BoD;

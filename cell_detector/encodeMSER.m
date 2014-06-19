@@ -17,11 +17,12 @@ pos = 1;
 %get ROI
 if parms.addDiffHist && parms.addPos
     st = fastregionprops(logical(mask), 'BoundingBox', 'Centroid');
-elseif parms.addDiffHist
+elseif parms.addDiffHist || parms.addShape || parms.addOrientation
     st = fastregionprops(logical(mask), 'BoundingBox');
 elseif parms.addPos
     st = fastregionprops(logical(mask), 'Centroid');
 end
+
 %--feature computation
 
 if parms.addArea

@@ -1,5 +1,5 @@
 function [mask, dots, prediction, img, sizeMSER, r, gt, nFeatures, X]...
-    = testCellDetect(w,dataset,imNum,parms,ctrl,verbosity)
+    = testCellDetect(w,dataset,imNum,parms,ctrl,verbosity, dataOpts)
 %Detect cells in an image given the W vector
 %OUTPUT
 %   mask = logical image with the regions selected
@@ -23,7 +23,7 @@ function [mask, dots, prediction, img, sizeMSER, r, gt, nFeatures, X]...
 withGT = 0;
 additionalU = 0;
 
-[trainFiles, testFiles, imExt, dataFolder, outFolder, mserParms] = loadDatasetInfo(dataset);
+[trainFiles, testFiles, imExt, dataFolder, outFolder, mserParms] = loadDatasetInfo(dataset, dataOpts);
 
 if exist([outFolder '/feats_' testFiles{imNum} '_test.mat'],'file') == 0
     
