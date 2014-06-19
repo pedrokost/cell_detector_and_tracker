@@ -40,7 +40,7 @@ function cellAnnotator
     colormaps = 'gray|jet|hsv|hot|cool';
     disableFilters = false;
     
-    testing = 1;
+    testing = 0;
 
     ACTION_OFF = 1;
     ACTION_ADD = 2;
@@ -1267,8 +1267,8 @@ function cellAnnotator
 
     function hideUIElements
         set(hpviewer, 'Visible', 'off');
-        set(hpactions, 'Visible', 'off');
-        set(hpactions1, 'Visible', 'off');
+        set(hpactions, 'Visible', 'on');
+        set(hpactions1, 'Visible', 'on');
         set(hpactions3, 'Visible', 'off');
         set(hfilters, 'Visible', 'off');
         set(hsave, 'Enable', 'off');

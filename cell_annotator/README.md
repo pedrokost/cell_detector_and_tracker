@@ -13,11 +13,14 @@ The main goal of this application is the annotation of cells in image sequences,
 
 ## Usage
 
-The application is packaged as a MATLAB app. It must first be installed into MATLAB. Once installed, it can be run by clicking on its icon in the `Apps` tab in MATLAB.
+The application is packaged as a MATLAB app (`Cell Annotator.mlappinstall`). It must first be installed into MATLAB. Once installed, it can be run by clicking on its icon in the `Apps` tab in MATLAB.
 
 ## Requirements
 
-Matlab with the `Image processing toolbox`
+Matlab with:
+
+- Image processing toolbox
+- Statistics toolbox
 
 ## Features
 
