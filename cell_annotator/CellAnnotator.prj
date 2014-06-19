@@ -1,5 +1,5 @@
 <deployment-project plugin="plugin.ezdeploy" plugin-version="1.0">
-  <configuration build-checksum="1384360343" file="/home/pedro/Dropbox/Imperial/project/cell_annotator/CellAnnotator.prj" location="/home/pedro/Dropbox/Imperial/project/cell_annotator" name="CellAnnotator" preferred-package-location="/home/pedro/Dropbox/Imperial/project/cell_annotator/bin/for_redistribution" preferred-package-type="package.type.install" target="target.ezdeploy.standalone" target-name="MATLAB Compiler for Standalone Applications">
+  <configuration build-checksum="3304138275" file="/home/pedro/Dropbox/Imperial/project/cell_annotator/CellAnnotator.prj" location="/home/pedro/Dropbox/Imperial/project/cell_annotator" name="CellAnnotator" preferred-package-location="/home/pedro/Dropbox/Imperial/project/cell_annotator/bin/for_redistribution" preferred-package-type="package.type.install" target="target.ezdeploy.standalone" target-name="MATLAB Compiler for Standalone Applications">
     <param.appname>CellAnnotator</param.appname>
     <param.icon />
     <param.icons />
