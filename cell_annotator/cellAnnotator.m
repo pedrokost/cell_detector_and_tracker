@@ -54,6 +54,7 @@ function cellAnnotator
     BG_COLOR = [236, 240, 241] / 255;
     BG_COLOR2 = BG_COLOR / 2;
     FG_COLOR = [44, 62, 80] / 255;
+    DIRTY_COLOR = [243,156,18]/255;
 
     % =====================================================================
     % ------------SETUP COMPONENTS-----------------------------------------
@@ -483,7 +484,7 @@ function cellAnnotator
 
 
         if testing
-        	foldn = '/home/pedro/Dropbox/Imperial/project/data/kidneygreenIN';
+        	foldn = '/home/pedro/Dropbox/Imperial/project/data/kidneyredIN';
         else
             foldn = uigetdir(pwd, 'Select folder with images');
             if foldn == 0
@@ -527,7 +528,7 @@ function cellAnnotator
 
     function hbrowsemat_callback(source, eventdata) %#ok<INUSD>
         if testing
-            foldn = '/home/pedro/Dropbox/Imperial/project/data/kidneygreenOUT';
+            foldn = '/home/pedro/Dropbox/Imperial/project/data/kidneyredOUT';
         else
             foldn = uigetdir(imgFolderName, 'Select folder with annotations');
         end
@@ -583,10 +584,13 @@ function cellAnnotator
     function save_callback(~, ~)
         % Overwrite old mat files with new ones
         % Assumes the mat files contain only `dots`.
-        
+        saveAnnotations();
+    end
+
+    function saveAnnotations()
         % Find dirty annotations
         I = getDirtyIndices();
-        oldColor = get(hsave, 'Background');
+
         set(hsave, 'Background', 'y');
         set(hsave, 'String', 'Saving');
         
@@ -606,7 +610,7 @@ function cellAnnotator
         set(hsave, 'String', 'Saved');
         pause(2);
         if ishandle(hsave)
-            set(hsave, 'Background', oldColor);
+            set(hsave, 'Background', BG_COLOR);
             set(hsave, 'String', 'Save');
         end
     end
@@ -655,6 +659,10 @@ function cellAnnotator
             case '5'
                 action = ACTION_DELLINK;
                 set(hactions, 'SelectedObject', hdellink);
+            case 's'
+                if numel(eventdata.Modifier) > 0 && strcmp(eventdata.Modifier{1}, 'control')
+                    saveAnnotations();
+                end
         end
     end
 
@@ -681,6 +689,7 @@ function cellAnnotator
 
     function performAction()
         while true
+            checkForSave()
             switch action
                 case ACTION_ADD
                     performActionAdd()
@@ -696,6 +705,19 @@ function cellAnnotator
                     break
             end
             pause(0.1)
+        end
+    end
+
+    function checkForSave()
+
+        if numel(getDirtyIndices()) > 0
+            color = DIRTY_COLOR;        
+        else
+            color = BG_COLOR;
+        end
+        
+        if ishandle(hsave)
+            set(hsave, 'BackgroundColor', BG_COLOR);
         end
     end
 
