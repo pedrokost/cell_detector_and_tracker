@@ -71,4 +71,4 @@ links =
 ## TODO
 
 * licence (probably BSD)
-* compile binary
+* refactor the code (it's a huge mess)
