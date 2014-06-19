@@ -16,9 +16,9 @@ function cellAnnotator
     images = cell(1,1); % cache of images
     usrAnnotations = struct('dots', zeros(0, 2), 'links', zeros(0, 1)); % cache of annotation
     detAnnotations = struct('dots', zeros(0, 2), 'links', zeros(0, 1));
+    
     curIdx = 1;
     numImages = 0;
-
     nDisplays = 3;
 
     SNAP_PERCENTAGE = 0.10;  % percentage of image width that you can miss
@@ -33,7 +33,7 @@ function cellAnnotator
     
     figWidth = 1025;
     figHeight = 500;
-    padding = 10;
+    padding = 5;
     topFigOffset = 0;
     actionsPanelHeight = 130;
     
@@ -123,25 +123,7 @@ function cellAnnotator
         'HorizontalAlignment', 'right', ...
         'Units', 'norm',...
         'Position', [0.89 0.25 0.1 0.5]);
-    % hndisplays = uicontrol('')
 
-    hnumDisps = uicontrol('Style', 'text', ...
-        'String', '# displays:',...
-        'Parent', hpactions3,...
-        'BackgroundColor', BG_COLOR,...
-        'ForegroundColor', FG_COLOR,...
-        'HorizontalAlignment', 'center', ...
-        'Units', 'norm',...
-        'Position', [0.58 .25 0.08 0.5]);
-
-    jModel = javax.swing.SpinnerNumberModel(nDisplays,1,10,1);
-    jSpinner = com.mathworks.mwswing.MJSpinner(jModel);
-    [jhSpinner, jhContainer] = javacomponent(jSpinner, ...
-        [0.5 0 0.1 1], ...
-        hpactions3);
-    set(jhContainer, 'Units','norm',...
-        'Position', [0.66 .15 0.05 .7]);
-    set(jhSpinner,'StateChangedCallback', @jhspinner_callback)
 
 
     hshowDots = uicontrol('Style', 'checkbox', ...
@@ -163,6 +145,17 @@ function cellAnnotator
         'Position', [0.49 0 0.09 1],...
         'Callback', {@requestRedraw});
 
+    hshowDetections = uicontrol('Style', 'checkbox', ...
+        'String', 'Show detections', ...
+        'Enable', 'off', ...
+        'Units', 'norm',...
+        'Parent', hpactions3,...
+        'Value', 0, ...
+        'Background', BG_COLOR,...
+        'ForegroundColor', FG_COLOR, ...
+        'Position', [0.58 0 0.13 1],...
+        'Callback', {@requestRedraw});
+
     hfiltertoggler = uicontrol('Style', 'checkbox', ...
         'String', 'Apply filters (t)', ...
         'Units', 'norm', ...
@@ -170,8 +163,28 @@ function cellAnnotator
         'Value', ~disableFilters, ...
         'Background', BG_COLOR, ...
         'ForegroundColor', FG_COLOR, ...
-        'Position', [0.72 0 0.14 1], ...
+        'Position', [0.71 0 0.14 1], ...
         'Callback', {@hfiltertoggler_callback});
+
+    hnumDisps = uicontrol('Style', 'text', ...
+        'String', 'Displays:',...
+        'Parent', hpactions3,...
+        'BackgroundColor', BG_COLOR,...
+        'ForegroundColor', FG_COLOR,...
+        'HorizontalAlignment', 'left', ...
+        'Units', 'norm',...
+        'Position', [0.83 .25 0.06 0.5]);
+
+    jModel = javax.swing.SpinnerNumberModel(nDisplays,1,10,1);
+    jSpinner = com.mathworks.mwswing.MJSpinner(jModel);
+    [jhSpinner, jhContainer] = javacomponent(jSpinner, ...
+        [0.5 0 0.1 1], ...
+        hpactions3);
+    set(jhContainer, 'Units','norm',...
+        'Position', [0.89 .15 0.05 .7]);
+    set(jhSpinner,'StateChangedCallback', @jhspinner_callback)
+
+
 
     hbrowse = uicontrol('Style','pushbutton',...
            'String','Choose image folder',...
@@ -514,7 +527,7 @@ function cellAnnotator
 
     function hbrowsemat_callback(source, eventdata) %#ok<INUSD>
         if testing
-            foldn = '/home/pedro/Dropbox/Imperial/project/data/kidneygreenOUT'
+            foldn = '/home/pedro/Dropbox/Imperial/project/data/kidneygreenOUT';
         else
             foldn = uigetdir(imgFolderName, 'Select folder with annotations');
         end
@@ -530,6 +543,7 @@ function cellAnnotator
 
         detAnnotations.dots = cell(numImages, 1);
         detAnnotations.dirty = cell(numImages, 1);
+        [detAnnotations.dirty{:}] = deal(0);
         detAnnotations.links = cell(numImages, 1);
 
         detMatfileNames = cell(numImages, 1);
@@ -540,6 +554,11 @@ function cellAnnotator
         end
         detMatfileNames = struct('name', detMatfileNames);
 
+
+        set(hshowDetections, 'Value', 1, ...
+            'Enable', 'on');
+
+        displayAnnotations(curIdx, numImages);
         % requestRedraw()
     end
 
@@ -852,14 +871,30 @@ function cellAnnotator
         usrAnnotations.dirty{index} = 1;
     end
 
-    function [dots, links] = getAnnotations(index)
+    function [dots, links] = getAnnotations(index, annotationType)
         % Returns the requested image annotations
 
         % Only reload from disk if not dirty. I may be empty otherwise if we
         % had delete all the annotations
+        if nargin < 2
+            annotationType = 'usr';
+        end
+        switch annotationType
+            case 'usr'
+                [dots, links] = private_getAnnotationsUsr(index);
+            case 'det'
+                [dots, links] = private_getAnnotationsDet(index);
+            otherwise
+                error('Wrong option %s', annotationType);
+        end
+        
+    end
 
-        noDots = isempty(usrAnnotations.dots{index}) && ~usrAnnotations.dirty{index};
-        noLinks = isempty(usrAnnotations.links{index}) && ~usrAnnotations.dirty{index};
+
+    function [dots, links] = private_getAnnotationsUsr(index)
+        noDots = isempty(usrAnnotations.dots{index}) && ~(usrAnnotations.dirty{index});
+        noLinks = isempty(usrAnnotations.links{index}) && ~(usrAnnotations.dirty{index});
+
         if noDots || noLinks
             filename = fullfile(imgFolderName, usrMatfileNames(index).name);
             if exist(filename, 'file')==2
@@ -877,7 +912,6 @@ function cellAnnotator
 
             if isfield(data, 'links')
                 links = data.links;
-
                 % TODO: check that the links format is OK
             else
                 numDots = size(dots, 1);
@@ -892,6 +926,46 @@ function cellAnnotator
             dots = usrAnnotations.dots{index};
             links = usrAnnotations.links{index};
         end
+    end
+
+    function [dots, links] = private_getAnnotationsDet(index)
+        noDots = isempty(detAnnotations.dots{index}) && ~(detAnnotations.dirty{index});
+        noLinks = isempty(detAnnotations.links{index}) && ~(detAnnotations.dirty{index});
+
+        if noDots || noLinks
+            filename = fullfile(detMatFolderName, detMatfileNames(index).name);
+            if exist(filename, 'file')==2
+                data = load(filename);
+            else
+                data = struct;
+            end
+            
+            if isfield(data, 'dots')
+                dots = data.dots;
+            elseif isfield(data, 'gl')
+                dots = data.gl;
+            else
+                dots = zeros(0, 2);
+                detAnnotations.dirty{index} = 1;
+            end
+
+            if isfield(data, 'links')
+                links = data.links;
+                % TODO: check that the links format is OK
+            else
+                numDots = size(dots, 1);
+                links = zeros(numDots, 1);
+                detAnnotations.dirty{index} = 1;
+            end
+
+            detAnnotations.dots{index} = dots;
+            detAnnotations.links{index} = links;
+            fprintf('Loaded detections for image %d from disk\n', index);
+        else
+            dots = detAnnotations.dots{index};
+            links = detAnnotations.links{index};
+        end
+
     end
 
 
@@ -1088,15 +1162,36 @@ function cellAnnotator
         % result in the viewer change.
         ind = private_correctIndex(index, numImages, nDisplays);
 
+        
+        private_displayAnnotations(ind, numImages, 'usr');
+
+        if ~isempty(detMatFolderName) && get(hshowDetections, 'Value')
+            private_displayAnnotations(ind, numImages, 'det');
+        end
+
+    end
+
+    function private_displayAnnotations(ind, numImages, annotationType)
         hold(hviewer, 'on');
         
         dotsCell = cell(nDisplays, 1);
         linksCell = cell(nDisplays, 1);
         
+        switch annotationType
+            case 'usr'
+                styleDots = 'r+';
+                colorLinks = [1 1 1];
+                lineStyle = '--';
+            case 'det'
+                styleDots = 'yo';
+                colorLinks = [0.3 0.3 1];
+                lineStyle = '.-';
+        end
+
         dots = [];
         tmp_i = 1;
         for i=-ceil(nDisplays/2)+1:1:floor(nDisplays/2)
-            [d, l] = getAnnotations(ind+i);
+            [d, l] = getAnnotations(ind+i, annotationType);
             d(:, 1) = d(:, 1) + (tmp_i-1)*(imgWidth + imgGap);
             dotsCell{tmp_i} = d;
             linksCell{tmp_i} = l;
@@ -1104,15 +1199,13 @@ function cellAnnotator
             dots = vertcat(dots, d);
         end
 
-
-
         if get(hshowDots, 'Value')
-            h = plot(dots(:, 1), dots(:, 2), 'r+', 'Parent', hviewer);
+            h = plot(dots(:, 1), dots(:, 2), styleDots, 'Parent', hviewer);
             annotationHandles = [annotationHandles; h];
         end
 
         hold(hviewer, 'on');
-       
+        
         if get(hshowLinks, 'Value')
             % Plot links
             % Select nonzeros
@@ -1128,7 +1221,7 @@ function cellAnnotator
                 for l=1:numel(I)
                     X = [c0(l, 1) c1(l, 1)];
                     Y = [c0(l, 2) c1(l, 2)];
-                    h = line(X, Y, 'Parent', hviewer, 'Color', [1 1 1], 'LineStyle', '--');
+                    h = line(X, Y, 'Parent', hviewer, 'Color', colorLinks, 'LineStyle', lineStyle);
                     annotationHandles = [annotationHandles; h]; %#ok<AGROW>
                 end
 
