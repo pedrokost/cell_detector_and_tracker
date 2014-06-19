@@ -1,11 +1,11 @@
-![cell annotator logo](thumbnail.png "Cell Annotator") Cell Annotator
+![cell annotator logo](https://gitlab.doc.ic.ac.uk/pdk10/cell-tracking/raw/master/cell_annotator/thumbnail.png "Cell Annotator") Cell Annotator
 ===================================
 
 A utility to facilitate the annotation of cell images with dots connect the cells between consecutive frames (links).
 
 Dots represent the centroids of cells, while links connect the same cells across consecutive frames.
 
-![cell annotator screenshot](screenshot.png "Cell Annotator")
+![cell annotator screenshot](https://gitlab.doc.ic.ac.uk/pdk10/cell-tracking/raw/master/cell_annotator/screenshot.png "Cell Annotator")
 
 ## Possible applications
 
