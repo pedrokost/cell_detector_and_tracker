@@ -1211,7 +1211,7 @@ function cellAnnotator
             case 'det'
                 styleDots = 'yo';
                 colorLinks = [0.3 0.3 1];
-                lineStyle = '.-';
+                lineStyle = '-.';
         end
 
         dots = [];
