@@ -3,8 +3,12 @@ function cellAnnotator
     
     set(0,'DefaultFigureCloseRequestFcn',@close_callback)
     
-    addpath('relativepath');
-    addpath('ginput2');
+    if exist('relativepath') == 7
+        addpath('relativepath');
+    end
+    if exist('ginput2') == 7
+        addpath('ginput2');
+    end
     % =====================================================================
     % ------------FUNCTION GLOBALS-----------------------------------------
     % =====================================================================
@@ -709,7 +713,6 @@ function cellAnnotator
     end
 
     function checkForSave()
-
         if numel(getDirtyIndices()) > 0
             color = DIRTY_COLOR;        
         else
@@ -717,7 +720,7 @@ function cellAnnotator
         end
         
         if ishandle(hsave)
-            set(hsave, 'BackgroundColor', BG_COLOR);
+            set(hsave, 'BackgroundColor', color);
         end
     end
 
