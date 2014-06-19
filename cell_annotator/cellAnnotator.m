@@ -438,7 +438,7 @@ function cellAnnotator
     end
 
     function jhspinner_callback(~, ~)
-        nDisplays = get(jhSpinner, 'Value');
+        nDisplays = min(get(jhSpinner, 'Value'), numImages);
         requestRedraw();
     end
 
@@ -505,6 +505,7 @@ function cellAnnotator
         imgfileNames = dir(fullfile(imgFolderName, strcat(imgPrefix, '*.', imgFormat)));
 
         numImages = numel(imgfileNames);
+        nDisplays = min(nDisplays, numImages);
         images = cell(numImages, 1);
 
         usrAnnotations.dots = cell(numImages, 1);
