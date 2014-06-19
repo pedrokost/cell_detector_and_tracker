@@ -1,0 +1,125 @@
+<deployment-project plugin="plugin.ezdeploy" plugin-version="1.0">
+  <configuration build-checksum="1384360343" file="/home/pedro/Dropbox/Imperial/project/cell_annotator/CellAnnotator.prj" location="/home/pedro/Dropbox/Imperial/project/cell_annotator" name="CellAnnotator" preferred-package-location="/home/pedro/Dropbox/Imperial/project/cell_annotator/bin/for_redistribution" preferred-package-type="package.type.install" target="target.ezdeploy.standalone" target-name="MATLAB Compiler for Standalone Applications">
+    <param.appname>CellAnnotator</param.appname>
+    <param.icon />
+    <param.icons />
+    <param.version>1.0</param.version>
+    <param.authnamewatermark>Pedro Damian Kostelec</param.authnamewatermark>
+    <param.email>web@pedro.si</param.email>
+    <param.company />
+    <param.summary>A utility to facilitate the annotation of cell images with dots connect the cells between consecutive frames (links).</param.summary>
+    <param.description />
+    <param.screenshot />
+    <param.guid />
+    <param.installpath.string>/CellAnnotator/</param.installpath.string>
+    <param.installpath.combo>option.installpath.userlocal</param.installpath.combo>
+    <param.logo>${PROJECT_ROOT}/thumbnail.png</param.logo>
+    <param.install.notes>On the target computer, append the following to your LD_LIBRARY_PATH environment variable (Where {MCR_ROOT} is the directory the MCR has been installed into):&lt;br&gt; {MCR_ROOT}/runtime/glnxa64&lt;br&gt; {MCR_ROOT}/bin/glnxa64&lt;br&gt; {MCR_ROOT}/sys/os/glnxa64&lt;br&gt; {MCR_ROOT}/sys/java/jre/glnxa64/jre/lib/amd64/native_threads&lt;br&gt; {MCR_ROOT}/sys/java/jre/glnxa64/jre/lib/amd64/server&lt;br&gt; {MCR_ROOT}/sys/java/jre/glnxa64/jre/lib/amd64&lt;br&gt;</param.install.notes>
+    <param.intermediate>${PROJECT_ROOT}/bin/for_testing</param.intermediate>
+    <param.output>${PROJECT_ROOT}/bin/for_redistribution</param.output>
+    <param.user.defined.mcr.options />
+    <param.embed.ctf>true</param.embed.ctf>
+    <param.server.ctf>${PROJECT_ROOT}/bin/for_testing/.ctf</param.server.ctf>
+    <param.server.readme>${PROJECT_ROOT}/bin/for_testing/readme.txt</param.server.readme>
+    <param.target.type>subtarget.standalone</param.target.type>
+    <param.support.packages />
+    <param.web.mcr>true</param.web.mcr>
+    <param.package.mcr>false</param.package.mcr>
+    <param.no.mcr>false</param.no.mcr>
+    <param.web.mcr.name>MyAppInstaller_web</param.web.mcr.name>
+    <param.package.mcr.name>MyAppInstaller_mcr</param.package.mcr.name>
+    <param.no.mcr.name>MyAppInstaller_app</param.no.mcr.name>
+    <param.windows.command.prompt>true</param.windows.command.prompt>
+    <param.create.log>false</param.create.log>
+    <param.log.file />
+    <unset>
+      <param.icon />
+      <param.icons />
+      <param.version />
+      <param.authnamewatermark />
+      <param.email />
+      <param.company />
+      <param.description />
+      <param.screenshot />
+      <param.guid />
+      <param.installpath.string />
+      <param.install.notes />
+      <param.user.defined.mcr.options />
+      <param.embed.ctf />
+      <param.server.ctf />
+      <param.server.readme />
+      <param.target.type />
+      <param.support.packages />
+      <param.web.mcr />
+      <param.package.mcr />
+      <param.no.mcr />
+      <param.web.mcr.name />
+      <param.package.mcr.name />
+      <param.no.mcr.name />
+      <param.windows.command.prompt />
+      <param.create.log />
+      <param.log.file />
+    </unset>
+    <fileset.main>
+      <file>${PROJECT_ROOT}/cellAnnotator.m</file>
+    </fileset.main>
+    <fileset.resources>
+      <file>${PROJECT_ROOT}/basename.m</file>
+      <file>${PROJECT_ROOT}/distancePointEdge.m</file>
+      <file>${PROJECT_ROOT}/doClick.m</file>
+      <file>${PROJECT_ROOT}/getCurrentPopupString.m</file>
+      <file>${PROJECT_ROOT}/ginput2/ginput.m</file>
+      <file>${PROJECT_ROOT}/ginput2/ginput2.m</file>
+      <file>${PROJECT_ROOT}/private_correctIndex.m</file>
+      <file>${PROJECT_ROOT}/relativepath/relativepath.m</file>
+    </fileset.resources>
+    <fileset.package>
+      <file>${PROJECT_ROOT}/README.md</file>
+    </fileset.package>
+    <build-deliverables>
+      <file location="${PROJECT_ROOT}/bin/for_testing" name="readme.txt" optional="true">/home/pedro/Dropbox/Imperial/project/cell_annotator/bin/for_testing/readme.txt</file>
+      <file location="${PROJECT_ROOT}/bin/for_testing" name="splash.png" optional="false">/home/pedro/Dropbox/Imperial/project/cell_annotator/bin/for_testing/splash.png</file>
+      <file location="${PROJECT_ROOT}/bin/for_testing" name="run_CellAnnotator.sh" optional="false">/home/pedro/Dropbox/Imperial/project/cell_annotator/bin/for_testing/run_CellAnnotator.sh</file>
+      <file location="${PROJECT_ROOT}/bin/for_testing" name="CellAnnotator" optional="false">/home/pedro/Dropbox/Imperial/project/cell_annotator/bin/for_testing/CellAnnotator</file>
+    </build-deliverables>
+    <workflow />
+    <matlab>
+      <root>/usr/local/MATLAB/R2014a</root>
+      <toolboxes>
+        <toolbox name="fixedpoint" />
+        <toolbox name="embeddedcoder" />
+        <toolbox name="matlabcoder" />
+      </toolboxes>
+      <toolbox>
+        <fixedpoint>
+          <enabled>true</enabled>
+        </fixedpoint>
+      </toolbox>
+      <toolbox>
+        <embeddedcoder>
+          <enabled>true</enabled>
+        </embeddedcoder>
+      </toolbox>
+      <toolbox>
+        <matlabcoder>
+          <enabled>true</enabled>
+        </matlabcoder>
+      </toolbox>
+    </matlab>
+    <platform>
+      <unix>true</unix>
+      <mac>false</mac>
+      <windows>false</windows>
+      <win2k>false</win2k>
+      <winxp>false</winxp>
+      <vista>false</vista>
+      <linux>true</linux>
+      <solaris>false</solaris>
+      <osver>3.13.0-24-generic</osver>
+      <os32>false</os32>
+      <os64>true</os64>
+      <arch>glnxa64</arch>
+      <matlab>true</matlab>
+    </platform>
+  </configuration>
+</deployment-project>

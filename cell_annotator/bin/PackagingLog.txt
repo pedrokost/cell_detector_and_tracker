@@ -1,0 +1,48 @@
+ant:
+<ant>
+  <mkdir dir="/home/pedro/Dropbox/Imperial/project/cell_annotator/bin/for_redistribution" />
+  <mkdir dir="/home/pedro/Dropbox/Imperial/project/cell_annotator/bin/for_testing" />
+</ant>
+mcc -o CellAnnotator -W WinMain:CellAnnotator -T link:exe -d /home/pedro/Dropbox/Imperial/project/cell_annotator/bin/for_testing -v /home/pedro/Dropbox/Imperial/project/cell_annotator/cellAnnotator.m -a /home/pedro/Dropbox/Imperial/project/cell_annotator/basename.m -a /home/pedro/Dropbox/Imperial/project/cell_annotator/distancePointEdge.m -a /home/pedro/Dropbox/Imperial/project/cell_annotator/doClick.m -a /home/pedro/Dropbox/Imperial/project/cell_annotator/getCurrentPopupString.m -a /home/pedro/Dropbox/Imperial/project/cell_annotator/ginput2/ginput.m -a /home/pedro/Dropbox/Imperial/project/cell_annotator/ginput2/ginput2.m -a /home/pedro/Dropbox/Imperial/project/cell_annotator/private_correctIndex.m -a /home/pedro/Dropbox/Imperial/project/cell_annotator/relativepath/relativepath.m 
+Compiler version: 5.1 (R2014a)
+Dependency analysis by REQUIREMENTS.
+[Warning: Adding path "/home/pedro/Dropbox/Imperial/project/cell_annotator" to
+Compiler path instance.] 
+Parsing file "/home/pedro/Dropbox/Imperial/project/cell_annotator/cellAnnotator.m"
+	(Referenced from: "Compiler Command Line").
+Parsing file "/usr/local/MATLAB/R2014a/toolbox/compiler/deploy/deployprint.m"
+	(Referenced from: "Compiler Command Line").
+Parsing file "/usr/local/MATLAB/R2014a/toolbox/compiler/deploy/printdlg.m"
+	(Referenced from: "Compiler Command Line").
+Deleting 25 temporary MEX authorization files.
+Removing: '/tmp/026ea4DWW3p_9962.auth'.
+Removing: '/tmp/026eaUzwbvk_9962.auth'.
+Removing: '/tmp/026eaAHptWe_9962.auth'.
+Removing: '/tmp/026ea7LTUn9_9962.auth'.
+Removing: '/tmp/026eaAcJqP3_9962.auth'.
+Removing: '/tmp/026eaBepZgY_9962.auth'.
+Removing: '/tmp/026eaVBRAIS_9962.auth'.
+Removing: '/tmp/026eas0bfaN_9962.auth'.
+Removing: '/tmp/026eaS2AXBH_9962.auth'.
+Removing: '/tmp/026eaxOGI3B_9962.auth'.
+Removing: '/tmp/026ea0ADwvw_9962.auth'.
+Removing: '/tmp/026eabsknXq_9962.auth'.
+Removing: '/tmp/026eamoHgpl_9962.auth'.
+Removing: '/tmp/026eaJH1cRf_9962.auth'.
+Removing: '/tmp/026eauQ7bja_9962.auth'.
+Removing: '/tmp/026eaio3dL4_9962.auth'.
+Removing: '/tmp/026ea5bOjdZ_9962.auth'.
+Removing: '/tmp/026eavW1rFT_9962.auth'.
+Removing: '/tmp/026eaoBZ97N_9962.auth'.
+Removing: '/tmp/026ea6CuXAI_9962.auth'.
+Removing: '/tmp/026ea43HZ3C_9962.auth'.
+Removing: '/tmp/026eaHc34wx_9962.auth'.
+Removing: '/tmp/026eaAL1A0r_9962.auth'.
+Removing: '/tmp/026eaecwaum_9962.auth'.
+Removing: '/tmp/026eaPGaXXg_9962.auth'.
+Generating file "/home/pedro/Dropbox/Imperial/project/cell_annotator/bin/for_testing/readme.txt".
+Generating file "/home/pedro/Dropbox/Imperial/project/cell_annotator/bin/for_testing/run_CellAnnotator.sh".
+Packaging...
+Creating the bundle...
+Web based installer created at /home/pedro/Dropbox/Imperial/project/cell_annotator/bin/for_redistribution/MyAppInstaller_web.install.
+Packaging complete.
