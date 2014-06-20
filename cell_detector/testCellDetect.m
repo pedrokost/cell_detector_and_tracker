@@ -1,5 +1,5 @@
 function [mask, dots, prediction, img, sizeMSER, r, gt, nFeatures, X]...
-    = testCellDetect(w,dataset,imNum,parms,ctrl,verbosity, dataOpts)
+    = testCellDetect(w,dataset,imNum,featureParms,ctrlParms,verbosity)
 %Detect cells in an image given the W vector
 %OUTPUT
 %   mask = logical image with the regions selected
@@ -13,7 +13,7 @@ function [mask, dots, prediction, img, sizeMSER, r, gt, nFeatures, X]...
 %INPUT
 %   w = vector learned with the structural-SVM
 %   dataset = dataset identifier
-%   parms and ctrl = structures set in setFeatures
+%   featureParms and ctrlParms = structures set in setFeatures
 %   verbosity = to show figures of the results. 
 %       0 doesn't show anything
 %       1 shows the image with the regions boundaries and centroids
@@ -23,7 +23,8 @@ function [mask, dots, prediction, img, sizeMSER, r, gt, nFeatures, X]...
 withGT = 0;
 additionalU = 0;
 
-dataParams = loadDatasetInfo(dataset, dataOpts);
+
+dataParams = loadDatasetInfo(dataset, ctrlParms);
 trainFiles = dataParams.trainFiles;
 testFiles  = dataParams.testFiles;
 imExt      = dataParams.imExt;
@@ -35,7 +36,7 @@ mserParms  = dataParams.mserParms;
 if exist([outFolder '/feats_' testFiles{imNum} '_test.mat'],'file') == 0
     
     [img, gt, X, ~, r, ell, MSERtree, ~, sizeMSER, nFeatures] =...
-        encodeImage(dataFolder, testFiles{imNum}, imExt, withGT, parms, mserParms);
+        encodeImage(dataFolder, testFiles{imNum}, imExt, withGT, featureParms, mserParms);
     %save([outFolder '/feats_' testFiles{imNum} '_test.mat']...
     %    ,'img', 'gt', 'X', 'r', 'ell', 'sizeMSER', 'MSERtree', 'nFeatures');
 
@@ -45,7 +46,7 @@ end
 
 %-------------------------------------------------------Evaluate Hypotheses
 prediction = w'*X';
-biasedPrediction = prediction  + ctrl.bias;
+biasedPrediction = prediction  + ctrlParms.bias;
 %-----------------------------------------------------------------Inference
 [mask, labels, dots] = PylonInference(img, biasedPrediction',...
     sizeMSER, r, additionalU, MSERtree);

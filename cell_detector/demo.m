@@ -27,41 +27,40 @@ end
 dataset = 2;  %Identifier of the training/testing data as set in loadDatasetInfo
 train = 0;%---->Do train
 test = 1;%----->Do test
-detectOnAll = 1;  % ----> Perform detections on all the images, not just test set
 
 inspectResults = 0; %1: Shows detected cells. 
 %2:A view on the results: MSERs found and selected
-
 isSequence = 0; % The testing images are a video sequences
 
 %-Features and control parameters-%
-dataParams = loadDatasetInfo(dataset, struct('testAll', detectOnAll));
-feats = dataParams.features;
+ctrlParms = ctrlParms();
+dataParams = loadDatasetInfo(dataset, ctrlParms);
 
-[parameters, ctrl] = setFeatures(feats); %Modify to select features and other parameters
+featureParms = setFeatures(dataParams.features); %Modify to select features and other parameters
 
-if ctrl.runPar %start parallel workers
-    if ~(matlabpool('size') > 0)
-        matlabpool open
+if ctrlParms.runPar %start parallel workers
+    if isempty(gcp('nocreate'))        
+        pool = parpool('local')
     end
 end
 
 %---------------------------------------------------------------------Train
 if train
-    w = trainCellDetect(dataset,ctrl,parameters);
+    w = trainCellDetect(dataset,ctrlParms,featureParms);
 else
-    dataParams = loadDatasetInfo(dataset, struct('testAll', detectOnAll));
+    dataParams = loadDatasetInfo(dataset, ctrlParms);
     outFolder = dataParams.outFolder;
-    model = load([outFolder '/wStruct_alpha_' num2str(ctrl.alpha) '.mat']);
+    model = load([outFolder '/wStruct_alpha_' num2str(ctrlParms.alpha) '.mat']);
     w = model.w;
     disp('Model Loaded');
 end
 
 %----------------------------------------------------------------------Test
 t = cputime;
+tic
 
 if test
-    dataParams = loadDatasetInfo(dataset, struct('testAll', detectOnAll));
+    dataParams = loadDatasetInfo(dataset, ctrlParms);
     trainFiles = dataParams.trainFiles;
     testFiles  = dataParams.testFiles;
     imExt      = dataParams.imExt;
@@ -72,17 +71,17 @@ if test
     for imNum = 1:numel(testFiles)
         disp(sprintf('Testing on image %d/%d (%s)', imNum, numel(testFiles), testFiles{imNum}))
         [mask, dots, prediction, img, sizeMSER, r, gt, nFeatures, descriptors] =...
-            testCellDetect(w,dataset,imNum,parameters,ctrl,inspectResults, struct('testAll', detectOnAll));
+            testCellDetect(w,dataset,imNum,featureParms,ctrlParms,inspectResults);
 
         %----------------------------------------------------------------Save masks
-        if ctrl.saveMasks
+        if ctrlParms.saveMasks
             % centers = logical image with centroids of the regions selected
             centers = zeros(size(mask), 'uint8');
             centers(dots(:, 2), dots(:, 1)) = 255;
             imwrite(mask, [outFolder '/mask_' testFiles{imNum} '.tif'],'tif');
         end
         %-----------------------------------------------------Save cell descriptors
-        if ctrl.saveCellDescriptors
+        if ctrlParms.saveCellDescriptors
             save([outFolder '/' testFiles{imNum} '.mat'],'descriptors', 'dots');
         else
             save([outFolder '/' testFiles{imNum} '.mat'],'dots');
@@ -123,10 +122,11 @@ if exist('prec','var')
     disp(' ');
 
     fprintf('Completed in %2.3f CPU time units\n', elapsedTime);
+    toc
 end
 
 %--------------------------------------------------------------------Finish
-if ctrl.runPar
-    matlabpool close
+if ctrlParms.runPar
+    parpool close
 end
 clear;
