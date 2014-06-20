@@ -9,7 +9,7 @@ function [mask, dots, prediction, img, sizeMSER, r, gt, nFeatures, X]...
 %   sizeMSER = size (in pixels) of each MSER in r
 %   gt = vector with the gt annotations
 %   nFeatures = total number of features used
-%   X = feature vectors of detected cells
+%   cellDescriptors = feature vectors of detected cells to be used in matching
 %INPUT
 %   w = vector learned with the structural-SVM
 %   dataset = dataset identifier
@@ -23,7 +23,14 @@ function [mask, dots, prediction, img, sizeMSER, r, gt, nFeatures, X]...
 withGT = 0;
 additionalU = 0;
 
-[trainFiles, testFiles, imExt, dataFolder, outFolder, mserParms] = loadDatasetInfo(dataset, dataOpts);
+dataParams = loadDatasetInfo(dataset, dataOpts);
+trainFiles = dataParams.trainFiles;
+testFiles  = dataParams.testFiles;
+imExt      = dataParams.imExt;
+dataFolder = dataParams.dataFolder;
+outFolder  = dataParams.outFolder;
+mserParms  = dataParams.mserParms;
+
 
 if exist([outFolder '/feats_' testFiles{imNum} '_test.mat'],'file') == 0
     
@@ -46,7 +53,6 @@ mask = logical(mask);
 
 dots = dots(labels, :);
 X = X(labels, :);
-
 %------------------------------------------------Post processing the masks?
 %mask = fastbwmorph(mask, 'close');
 %---------------------------------------------------------------Plot Result

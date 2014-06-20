@@ -17,7 +17,7 @@ ctrl.alpha = 0;%Controls the precision/recall from within the optimization
 ctrl.ssvm = 1;
 ctrl.maxOuterIter = 2;
 ctrl.saveMasks = 0;
-ctrl.saveCellDescriptor = 1;
+ctrl.saveCellDescriptors = 1;  % Store features to be used in the tracker for matching
 
 %------------------------------------------------------------------Features
 
