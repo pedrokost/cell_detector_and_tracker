@@ -1,24 +1,7 @@
-function [parameters, ctrl] = setFeatures(varargin)
-%To set the features and control for training/testing
+function parameters = setFeatures(varargin)
+%To set the features training/testing
 %OUTPUT
 %   parameters = strucutre with learning parameters
-%   ctrl = structure with some control parameters
-%-------------------------------------------------------------------Control
-%-Parallel computing-%
-ctrl.runPar = 0; %Set to activate parallel computing  
-ctrl.workers = 4;
-
-%-Some Control Parameters-%
-ctrl.c = 1; %C in the optimization objective
-ctrl.o = 2; %Slack rescaling = 1, Margin rescaling = 2.
-ctrl.bias = 0.5; %Offset in the output of the classifier's score
-ctrl.alpha = 0;%Controls the precision/recall from within the optimization
-%(penalization cost of regions with no dot inside is 1-alpha)
-ctrl.ssvm = 1;
-ctrl.maxOuterIter = 2;
-ctrl.saveMasks = 0;
-ctrl.saveCellDescriptors = 1;  % Store features to be used in the tracker for matching
-
 %------------------------------------------------------------------Features
 
 eqHist = 0; %Equalize histogram

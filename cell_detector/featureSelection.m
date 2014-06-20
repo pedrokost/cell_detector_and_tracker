@@ -26,8 +26,8 @@ inspectResults = 0;
 skipFeatureSetsShorterThan = 4;  % 0 for no skip
 
 if runPar %start parallel workers
-    if ~(matlabpool('size') > 0)
-        matlabpool open
+    if isempty(gcp('nocreate'))        
+        pool = parpool('local')
     end
 end
 
@@ -46,7 +46,7 @@ if profilerOn
 end
 
 fprintf('Loading dataset info\n');
-dataParams = loadDatasetInfo(datasetTest);
+dataParams = loadDatasetInfo(dataset);
 trainFiles = dataParams.trainFiles;
 testFiles  = dataParams.testFiles;
 imExt      = dataParams.imExt;
@@ -65,6 +65,8 @@ else
 	iter = 1;  % FIXME, start from 1
 end
 
+% %-Control parameters-%
+ctrlParms = ctrlParms();
 
 startIter = iter;
 for iter=startIter:size(X, 1);
@@ -82,20 +84,19 @@ for iter=startIter:size(X, 1);
 													size(X, 1), num2str(features));
 	fprintf('=================================================================\n');
 
-	% %-Features and control parameters-%
-	[parameters,ctrl] = setFeatures(features); %Modify to select features and other parameters
+	% %-Features parameters-%
+	featureParms = setFeatures(features); %Modify to select features and other parameters
+	%--------------------------------------------------------------------Train
+	w = trainCellDetect(dataset,ctrlParms,featureParms);
 
-
-	%---------------------------------------------------------------------Train
-	w = trainCellDetect(dataset,ctrl,parameters);
-
-	% %----------------------------------------------------------------------Test
+	%---------------------------------------------------------------------Test
     t = cputime;
+
     for imNum = 1:numel(testFiles)
 
         disp(['		Testing on Image ' num2str(imNum) '/' num2str(numel(testFiles))]);
         [centers, mask, dots, prediction, img, sizeMSER, r, gt, nFeatures] =...
-            testCellDetect(w,datasetTest,imNum,parameters,ctrl,inspectResults);
+            testCellDetect(w,datasetTest,imNum,featureParms,ctrlParms,inspectResults);
         imwrite(mask, [outFolder '/mask_' testFiles{imNum} '.tif'],'tif');
         save([outFolder '/' testFiles{imNum} '.mat'],'dots');      
         
@@ -148,6 +149,6 @@ end
 
 %--------------------------------------------------------------------Finish
 if runPar
-    matlabpool close
+    parpool close
 end
 clear;
