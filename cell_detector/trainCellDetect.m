@@ -13,7 +13,13 @@ done = 0;
 additionalU = 0;
 outerIter = 0;
 
-[trainFiles, testFiles, imExt, dataFolder, outFolder, mserParms] = loadDatasetInfo(dataset);
+dataParams = loadDatasetInfo(dataset);
+trainFiles = dataParams.trainFiles;
+testFiles  = dataParams.testFiles;
+imExt      = dataParams.imExt;
+dataFolder = dataParams.dataFolder;
+outFolder  = dataParams.outFolder;
+mserParms  = dataParams.mserParms;
 
 while ~done
     

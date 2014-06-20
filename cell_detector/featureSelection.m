@@ -46,7 +46,14 @@ if profilerOn
 end
 
 fprintf('Loading dataset info\n');
-[trainFiles, testFiles, imExt, dataFolder, outFolder,~,tol] = loadDatasetInfo(datasetTest);
+dataParams = loadDatasetInfo(datasetTest);
+trainFiles = dataParams.trainFiles;
+testFiles  = dataParams.testFiles;
+imExt      = dataParams.imExt;
+dataFolder = dataParams.dataFolder;
+outFolder  = dataParams.outFolder;
+tol        = dataParams.tol;
+
 resultsFile = fullfile(outFolder, 'batchResults.mat');
 
 fprintf('Initializing iteration loop\n');
@@ -121,7 +128,7 @@ for iter=startIter:size(X, 1);
 
  	results(iter, (numFeatures+1):end) = [prec, rec, elapsedTime];
  	fprintf('Completed in %2.3f CPU time units with precision %3.2f and recall %3.2f\n', ...
- 													elapsedTime, prec, rec);
+ 		elapsedTime, prec, rec);
  	save(resultsFile, 'results', 'iter');
 
 	

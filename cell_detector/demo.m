@@ -24,7 +24,7 @@ end
 
 %---------------------------------------------------------------------Setup
 %Choose parameters for the training/testing
-dataset = 4;  %Identifier of the training/testing data as set in loadDatasetInfo
+dataset = 2;  %Identifier of the training/testing data as set in loadDatasetInfo
 train = 0;%---->Do train
 test = 1;%----->Do test
 detectOnAll = 1;  % ----> Perform detections on all the images, not just test set
@@ -35,7 +35,9 @@ inspectResults = 0; %1: Shows detected cells.
 isSequence = 0; % The testing images are a video sequences
 
 %-Features and control parameters-%
-[~, ~, ~, ~, ~, ~, ~, feats] = loadDatasetInfo(dataset, struct('testAll', detectOnAll));
+dataParams = loadDatasetInfo(dataset, struct('testAll', detectOnAll));
+feats = dataParams.features;
+
 [parameters, ctrl] = setFeatures(feats); %Modify to select features and other parameters
 
 if ctrl.runPar %start parallel workers
@@ -48,7 +50,8 @@ end
 if train
     w = trainCellDetect(dataset,ctrl,parameters);
 else
-    [~, ~, ~, ~, outFolder] = loadDatasetInfo(dataset, struct('testAll', detectOnAll));
+    dataParams = loadDatasetInfo(dataset, struct('testAll', detectOnAll));
+    outFolder = dataParams.outFolder;
     model = load([outFolder '/wStruct_alpha_' num2str(ctrl.alpha) '.mat']);
     w = model.w;
     disp('Model Loaded');
@@ -58,11 +61,17 @@ end
 t = cputime;
 
 if test
-    [trainFiles, testFiles, imExt, dataFolder, outFolder,~,tol] = loadDatasetInfo(dataset, struct('testAll', detectOnAll));
+    dataParams = loadDatasetInfo(dataset, struct('testAll', detectOnAll));
+    trainFiles = dataParams.trainFiles;
+    testFiles  = dataParams.testFiles;
+    imExt      = dataParams.imExt;
+    dataFolder = dataParams.dataFolder;
+    outFolder  = dataParams.outFolder;
+    tol        = dataParams.tol;
 
     for imNum = 1:numel(testFiles)
         disp(sprintf('Testing on image %d/%d (%s)', imNum, numel(testFiles), testFiles{imNum}))
-        [mask, dots, prediction, img, sizeMSER, r, gt, nFeatures, X] =...
+        [mask, dots, prediction, img, sizeMSER, r, gt, nFeatures, descriptors] =...
             testCellDetect(w,dataset,imNum,parameters,ctrl,inspectResults, struct('testAll', detectOnAll));
 
         %----------------------------------------------------------------Save masks
@@ -73,8 +82,8 @@ if test
             imwrite(mask, [outFolder '/mask_' testFiles{imNum} '.tif'],'tif');
         end
         %-----------------------------------------------------Save cell descriptors
-        if ctrl.saveCellDescriptor
-            save([outFolder '/' testFiles{imNum} '.mat'],'X', 'dots');
+        if ctrl.saveCellDescriptors
+            save([outFolder '/' testFiles{imNum} '.mat'],'descriptors', 'dots');
         else
             save([outFolder '/' testFiles{imNum} '.mat'],'dots');
         end

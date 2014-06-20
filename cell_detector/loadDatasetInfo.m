@@ -1,5 +1,4 @@
-function [trainFiles, testFiles, imExt, dataFolder, outFolder, mserParms, tol, features] = ...
-    loadDatasetInfo(dataset, options)
+function dataParams = loadDatasetInfo(dataset, options)
 %This is used to setup (and load) the parameters of the dataset; use as
 %template for new datasets.
 %
@@ -133,6 +132,16 @@ mserParms.maxPix = maxPixels;
 mserParms.minDiv = MinDiversity;
 mserParms.delta = Delta;
 mserParms.maxVar = MaxVariation;
+
+
+dataParams.trainFiles = trainFiles;
+dataParams.testFiles  =  testFiles;
+dataParams.imExt      =      imExt;
+dataParams.dataFolder = dataFolder;
+dataParams.outFolder  =  outFolder;
+dataParams.mserParms  =  mserParms;
+dataParams.tol        =        tol;
+dataParams.features   =   features;
 
 
 end

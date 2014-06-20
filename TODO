@@ -1,14 +1,26 @@
- Today:
- ☐ Prevent dupes
- ☐ Load detections as well
+Today:
+   ✔ Where should I store the matching feautres data? in the im\d.mat: dots and matchFeatures @done (14-06-20 10:55)
+   ☐ Refactor params by groupping all the options in a struct
+   ☐ The cell detector should have an option to output 2 different feature vectors
+   ☐ Start by using the features
+     ☐ Position, size, appearance: x-y, intensity histogram, orientation, size, eccentricity, cpdh?
+   ☐ The feature vectors should be normalized by group: if a feature takes several cols, normalize it to 0-max of the set of cols
+   ☐ ??? Should this be a separate function? extract matching features?
+   ☐ Find effective matching features, make sure the matches are of good quality. Eliminate weak features.
+   ☐ Use sigmoind distance function instead of euclidean
+   ☐ Find robust tracklets only
+Approaches to solve the MAP problem of connecting tracklets:
+    ☐ Hungarian algorithm (cannot handle division)
+    ☐ Linear programming (handles division)
+    ☐ Network flow
+
+Data flow process:
+   ☐ annotator: IN: any, OUT: dots + links # I have lost Match features
+   ☐ detector train: IN: dots + [links], OUT: dots
+   ☐ detector test : IN: images, OUT: dots + MatchFeatures
+   ☐ tracker: IN: dots + Match features, OUT: robust tracklets
+   ☐ linker : IN: dots + robust matches, OUT: dots + links
 TODO:
- ☐ Create 2 feature vectors per candidate cell, one for detection one for matching, each with a different subset of features.
-     ☐ Include position
-     ☐ Mean intensity
-     ☐ Orientation
-     ☐ cpdh?
- ☐ Find effective matching features
- ☐ Find robust tracklets only
  ☐ compute the remaining probabilities
  ☐ If any detector NaN, in the end don't show average NaN.
  ☐ skip bad frames (leave an annotation to take into account in the algorithm)
@@ -16,8 +28,15 @@ TODO:
  ☐ Read Pylon stuff
  ☐ New features to try:
      ☐ Histeq + Laplacian(0.2) creates empty places in maximums, noise everywhere else
+
+Traclet evaluation metrics:
+   (1) MOTA: Multiple Object Tracking Accuracy, calculated from the number of false alarms, missed detections, and identity switches;
+  (2) FGTIM: Fraction of Ground Truth Instances Missed; and
+  (3) FAPF: False Alarm Per Frame.
 ＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿
 Archive:
+ ✔ Prevent dupes @done (14-06-20 09:05)
+ ✔ Load detections as well @done (14-06-20 09:05)
  ✔ Toggles: show detections, show links @done (14-06-19 09:11)
  ✔ Ask for confirm if reloading images and dirtynees exists @done (14-06-19 09:10)
  ✔ check that the links format is OK @done (14-06-18 10:02) @project(Today)
