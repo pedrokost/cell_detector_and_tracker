@@ -44,7 +44,9 @@ function cellAnnotator
     colormaps = 'gray|jet|hsv|hot|cool';
     disableFilters = false;
     
-    testing = 0;
+    testing = true;
+    displayAnnomalies = true; % Mark annotations that might be erroneous
+    ERRONEOUS_DISTANCE = 20; % Cells less than this far apart are erronous
 
     ACTION_OFF = 1;
     ACTION_ADD = 2;
@@ -1216,6 +1218,7 @@ function cellAnnotator
                 lineStyle = '-.';
         end
 
+
         dots = [];
         tmp_i = 1;
         for i=-ceil(nDisplays/2)+1:1:floor(nDisplays/2)
@@ -1225,6 +1228,17 @@ function cellAnnotator
             linksCell{tmp_i} = l;
             tmp_i = tmp_i + 1;
             dots = vertcat(dots, d);
+        end
+     
+        if strcmp(annotationType, 'usr') && displayAnnomalies
+
+            D = pdist(dots);
+            M = squareform(D);
+            bad = (M < ERRONEOUS_DISTANCE) - eye(size(dots, 1));
+            [I, J] = find(bad);
+            scatter(I, J, '')
+            % FIXME comlepete
+            keyboard
         end
 
         if get(hshowDots, 'Value')
@@ -1256,6 +1270,7 @@ function cellAnnotator
                 tmp_i = tmp_i + 1;
             end
         end
+        drawnow
     end
 
     function displayUIElements
