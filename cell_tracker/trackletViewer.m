@@ -81,9 +81,9 @@ function trackletViewer(tracklets, options)
 					y = y(zs);
 
 					h = plot3(x,y,z,'o', 'MarkerFaceColor', colors(d, :), 'MarkerEdgeColor', 'none');
-					if h; hs = [hs; h]; end
+					hs = [hs; h];
 				end
-				drawnow
+				drawnow update
 				pause(1/animationSpeed);
 			end
 		end

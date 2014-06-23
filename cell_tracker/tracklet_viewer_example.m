@@ -22,4 +22,4 @@ for t=1:nTracklets
 end
 
 
-trackletViewer(tracklets);
+trackletViewer(tracklets, struct('animate', true, 'animationSpeed', 200));
