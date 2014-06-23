@@ -1,4 +1,4 @@
-function [mask, dots, prediction, img, sizeMSER, r, gt, nFeatures, X]...
+function [mask, dots, prediction, img, sizeMSER, r, gt, nFeatures, cellDescriptors]...
     = testCellDetect(w,dataset,imNum,featureParms,ctrlParms,verbosity)
 %Detect cells in an image given the W vector
 %OUTPUT
@@ -35,7 +35,7 @@ mserParms  = dataParams.mserParms;
 
 if exist([outFolder '/feats_' testFiles{imNum} '_test.mat'],'file') == 0
     
-    [img, gt, X, ~, r, ell, MSERtree, ~, sizeMSER, nFeatures] =...
+    [img, gt, X, ~, r, ell, MSERtree, ~, sizeMSER, nFeatures, cellDescriptors] =...
         encodeImage(dataFolder, testFiles{imNum}, imExt, withGT, featureParms, mserParms);
     %save([outFolder '/feats_' testFiles{imNum} '_test.mat']...
     %    ,'img', 'gt', 'X', 'r', 'ell', 'sizeMSER', 'MSERtree', 'nFeatures');
@@ -53,7 +53,7 @@ biasedPrediction = prediction  + ctrlParms.bias;
 mask = logical(mask);
 
 dots = dots(labels, :);
-X = X(labels, :);
+cellDescriptors = cellDescriptors(labels, :);
 %------------------------------------------------Post processing the masks?
 %mask = fastbwmorph(mask, 'close');
 %---------------------------------------------------------------Plot Result

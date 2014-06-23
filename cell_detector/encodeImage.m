@@ -1,4 +1,4 @@
-function [img, gt, X, Y, r, ell, MSERtree, gtInMSER, sizeMSER, nFeatures] =...
+function [img, gt, X, Y, r, ell, MSERtree, gtInMSER, sizeMSER, nFeatures, cellDescriptors] =...
     encodeImage(dataFolder, imName, imExt, withGT, parms, mserParms)
 %Collects the MSERs in an image and encodes individually with the selected 
 %features.
@@ -13,6 +13,7 @@ function [img, gt, X, Y, r, ell, MSERtree, gtInMSER, sizeMSER, nFeatures] =...
 %   gtInMSER = number of ground truth annotations inside each MSER
 %   sizeMSER = size of each MSER
 %   nFeature = total number of features used in the encoding
+%   cellDescriptors = a descriptor used for the matching process in cell_tracker
 %
 %INPUT
 %   dataFolder = directory that contains the image
@@ -82,8 +83,11 @@ nFeatures = parms.nBinsArea*parms.addArea + 2*parms.addPos...
     + parms.addOrientation*parms.nBinsOrient + parms.addEdges ...
     + parms.addOrientGrad*parms.nBinsOrientGrad;
 
+nDescriptor = (size(img,3)+3*~isempty(colorImg))*parms.nBinsIntHist...
+    + parms.addArea + 2;
 
 parms.nFeatures = nFeatures;
+parms.nDescriptor = nDescriptor;
 numPixels = size(img,1)*size(img,2);
 minPix = mserParms.minPix;
 if isempty(mserParms.maxPix)
@@ -104,6 +108,7 @@ ell = ell([2 1 5 4 3],:);
 
 %feature Vector
 X = zeros(length(r), nFeatures);
+cellDescriptors = zeros(length(r), nDescriptor);
 %labels
 Y = zeros(length(r)+parms.jitter*8*length(r),1);
 %Sizes
@@ -136,10 +141,14 @@ if withGT %Ground Truth available = train image
         
         if isempty(sel) || numel(sel) < minPix/2;
             X(k,:) = zeros(1, nFeatures);
+            cellDescriptors(k,:) = zeros(1, nDescriptor);
             gtInMSER(k,:) = 0;
         else
-            X(k,:) = encodeMSER(img, colorImg, edgeImg, gradImg,...
+            [xx, des] = encodeMSER(img, colorImg, edgeImg, gradImg,...
                 orientGrad, sel, ell(:,k), parms);
+
+            X(k,:) = xx;
+            cellDescriptors(k,:) = des;
             %X(k,1:parameters.nBinsArea) = hist(X(k,1),areaBins);
             
             %GT evaluation
@@ -223,9 +232,12 @@ else %No ground Truth = test image
         sizeMSER(k) = numel(sel);
         if isempty(sel) %|| numel(sel) < minPix/2;
             X(k,:) = zeros(1,nFeatures);
+            cellDescriptors(k,:) = zeros(1,nDescriptor);
         else
-            X(k,:) = encodeMSER(img, colorImg, edgeImg, gradImg,...
+            [xx, des] = encodeMSER(img, colorImg, edgeImg, gradImg,...
                 orientGrad, sel, ell(:,k), parms);
+            X(k,:) = xx;
+            cellDescriptors(k, :) = des;
         end
         %X(k,1:parameters.nBinsArea) =  hist(X(k,1),areaBins); 
     end

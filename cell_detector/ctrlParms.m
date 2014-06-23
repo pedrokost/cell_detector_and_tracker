@@ -22,4 +22,4 @@ function params = ctrlParms()
 	params.saveCellDescriptors = 1;  % Store features to be used in the tracker for matching
 
 	%----------------------------------------------------------------Detection
-	params.testAll = false;  % Test on complete dataset, or only fraction
+	params.testAll = true;  % Test on complete dataset, or only fraction
