@@ -32,10 +32,25 @@ function [symm right left selectedRight selectedLeft] = match(XA, XB, dotsA, dot
 
 %---------------------------------------------------Options
 
+% TODO: replace with limits for each feature
+MIN_P_LINK = 0.7;
+
+testing = 0;
 % Defaults
 normalizeFeatures = 1;
 compareLocations = 1;
-locationWeight = 20;  % Add more importance to location
+normalizeWeights = 1; % Add more importance to location
+featureWeights = struct(...
+	'x', 20, ...
+	'y', 20, ...
+	'area', 1);
+
+nObsA = size(dotsA, 1);
+nObsB = size(dotsB, 1);
+nFeats = size(XA, 2);
+
+locPos = 1:2;
+featsPos = setdiff(1:nFeats+2, locPos);
 
 if nargin < 5
 	options = struct;
@@ -54,20 +69,33 @@ if isfield(options, 'locationWeight')
 end
 
 %----------------------------Add location to feature vector
+
 if compareLocations
-	XA = cat(2, XA, dotsA);
-	XB = cat(2, XB, dotsB);
+	XA2 = zeros(nObsA, nFeats+2);
+	XA2(:, locPos) = dotsA;
+	XA2(:, featsPos) = XA;
+	XB2 = zeros(nObsB, nFeats+2);
+	XB2(:, locPos) = dotsB;
+	XB2(:, featsPos) = XB;
+
+	XA = XA2; clear XA2;
+	XB = XB2; clear XB2;
 end
+
+% FIXME: remove once bayesian classifier trained
+XA = XA(:, 1:3);
+XB = XB(:, 1:3);
+
 %----------------------------------------Normalize features
 % Normalizes the ranges of each column to 0-1
 
 if normalizeFeatures
-	[XA mini maxi] = normalizeRange(XA);
-	XB = normalizeRange(XB);
-
-	% Make displacement for prominent
-	XA(:, end-1:end) = XA(:, end-1:end) * locationWeight;
-	XB(:, end-1:end) = XB(:, end-1:end) * locationWeight;
+	[XA, XB] = normalizeRangeMulti(XA, XB, {locPos});
+end
+if normalizeWeights
+	weights = cell2mat(struct2cell(featureWeights))';
+	XA = bsxfun(@times, XA, weights);
+	XB = bsxfun(@times, XB, weights);
 end
 
 %-----------------------------------------Compute distances
@@ -82,35 +110,82 @@ if nCellsA == 0 || nCellsB == 0
 	return
 end
 
-sigma = 2; % FIXME: Is this the std of the data? what data?
 dists = pdist2(XA, XB);
-dists = exp(-dists/sigma);
+sigma = std(dists')'; % Not sure the original authors meant this
+dists = exp(-bsxfun(@rdivide, dists, sigma));
+if testing
+	figure(2)
+	imagesc(dists)
+	xlabel('Right image')
+	ylabel('Left image')
+	figure(1)
+end
 
 %------------------------------------Find symmetric matches
-[~, right] = max(dists, [], 2);  % A --> B
-[~, left] = max(dists, [], 1);   % A <-- B
+[vright, right] = max(dists, [], 2);  % A --> B
+[vleft, left] = max(dists, [], 1);   % A <-- B
 right = right';
 
+ok = vright >= MIN_P_LINK;
+right(~ok) = NaN;
+
+ok = vleft >= MIN_P_LINK;
+left(~ok) = NaN;
 
 % Find symmetric matches
 % Use idxA to index into idxB
-idx = left(right);
+
+idxRight = zeros(size(right));
+for i=1:nCellsA
+	if ~isnan(right(i))
+		idxRight(i) = left(right(i));
+	end
+end
+idxLeft = zeros(size(left));
+for i=1:nCellsB
+	if ~isnan(left(i))
+		idxLeft(i) = right(left(i));
+	end
+end
+
 % Then select only the matches where that indexed version == 1:nCells
-% idx
-
-% if isempty(idx); selectedRight = [];
-% else
-selectedRight = idx == 1:nCellsA;
-% end
-
+selectedRight = idxRight == 1:nCellsA;
 % SelectedLeft indicates the cells in B that have a symmetric match in A
-% if isempty(right(left)); selectedLeft = [];
-% else
-	selectedLeft = right(left) == 1:nCellsB;
-% end
+selectedLeft = idxLeft == 1:nCellsB;
 %----------------------------------------Set bad matches to 0
 symm = right;
 symm(~selectedRight) = 0;
+
+end
+
+function varargout = normalizeRangeMulti(varargin)
+	% Given a sequences of matrixes nObsxnFeats, and an optional cell array containing indices with data of equal metrics, normalizes the data
+	% normalizeRangeMulti(A, B, {1:2, [3 6 7]})
+	if nargin < 1 && class(varargin{1} ~= 'cell')
+		error('At least one matrix must be provided')
+	end
+
+	nFeats = size(varargin{1}, 2);
+	mins = zeros(1, nFeats);
+	maxs = zeros(1, nFeats);
+	remainingFeats = 1:nFeats;
+
+	if class(varargin{end}) == 'cell'; nins = nargin - 1;
+	else nins = nargin; end;
+
+	data = vertcat(varargin{1:nins});
+
+	minimum = min(data, [], 1);
+	maximum = max(data, [], 1);
+
+	for idx=varargin{end}
+		minimum(idx{1}) = min(minimum(idx{1}));
+		maximum(idx{1}) = max(maximum(idx{1}));
+	end
+
+	for i=1:nins
+		varargout{i} = normalizeRange(varargin{i}, minimum, maximum);
+	end
 end
 
 function [X minimum maximum] = normalizeRange(X, minimum, maximum)
