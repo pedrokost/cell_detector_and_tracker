@@ -98,7 +98,9 @@ if test
                 gt(:,2), gt(:,1), ones(size(img)),tol);
             disp('Matching result: '); 
             disp(['Precision: ' num2str(prec(imNum)) ' Recall: ' num2str(rec(imNum))]);
+            toc
             disp(' ');
+
         end
         
         if inspectResults > 0
@@ -121,7 +123,7 @@ if exist('prec','var')
     disp(['Mean Recall: ' num2str(mean(rec)) ]);
     disp(' ');
 
-    fprintf('Completed in %2.3f CPU time units\n', elapsedTime);
+    fprintf('Completed in %2.3f CPU seconds (~%2.3f CPU seconds per frame)\n', elapsedTime, elapsedTime / numel(testFiles));
     toc
 end
 

@@ -14,15 +14,18 @@
     <param.installpath.string>/CellAnnotator/</param.installpath.string>
     <param.installpath.combo>option.installpath.userlocal</param.installpath.combo>
     <param.logo>${PROJECT_ROOT}/thumbnail.png</param.logo>
-    <param.install.notes>On the target computer, append the following to your LD_LIBRARY_PATH environment variable (Where {MCR_ROOT} is the directory the MCR has been installed into):&lt;br&gt; {MCR_ROOT}/runtime/glnxa64&lt;br&gt; {MCR_ROOT}/bin/glnxa64&lt;br&gt; {MCR_ROOT}/sys/os/glnxa64&lt;br&gt; {MCR_ROOT}/sys/java/jre/glnxa64/jre/lib/amd64/native_threads&lt;br&gt; {MCR_ROOT}/sys/java/jre/glnxa64/jre/lib/amd64/server&lt;br&gt; {MCR_ROOT}/sys/java/jre/glnxa64/jre/lib/amd64&lt;br&gt;</param.install.notes>
+    <param.install.notes>On the target computer, append the following to your LD_LIBRARY_PATH environment variable (Where {MCR_ROOT} is the directory the MCR has been installed into):&lt;br&gt; {MCR_ROOT}/runtime/glnxa64&lt;br&gt; {MCR_ROOT}/bin/glnxa64&lt;br&gt; {MCR_ROOT}/sys/os/glnxa64&lt;br&gt;{MCR_ROOT}/sys/opengl/glnxa64&lt;br&gt;</param.install.notes>
     <param.intermediate>${PROJECT_ROOT}/bin/for_testing</param.intermediate>
+    <param.files.only>${PROJECT_ROOT}/CellAnnotator/for_redistribution_files_only</param.files.only>
     <param.output>${PROJECT_ROOT}/bin/for_redistribution</param.output>
+    <param.enable.clean.build>false</param.enable.clean.build>
     <param.user.defined.mcr.options />
     <param.embed.ctf>true</param.embed.ctf>
     <param.server.ctf>${PROJECT_ROOT}/bin/for_testing/.ctf</param.server.ctf>
     <param.server.readme>${PROJECT_ROOT}/bin/for_testing/readme.txt</param.server.readme>
     <param.target.type>subtarget.standalone</param.target.type>
     <param.support.packages />
+    <param.required.mcr.products />
     <param.web.mcr>true</param.web.mcr>
     <param.package.mcr>false</param.package.mcr>
     <param.no.mcr>false</param.no.mcr>
@@ -44,12 +47,15 @@
       <param.guid />
       <param.installpath.string />
       <param.install.notes />
+      <param.files.only />
+      <param.enable.clean.build />
       <param.user.defined.mcr.options />
       <param.embed.ctf />
       <param.server.ctf />
       <param.server.readme />
       <param.target.type />
       <param.support.packages />
+      <param.required.mcr.products />
       <param.web.mcr />
       <param.package.mcr />
       <param.no.mcr />
@@ -84,7 +90,7 @@
     </build-deliverables>
     <workflow />
     <matlab>
-      <root>/usr/local/MATLAB/R2014a</root>
+      <root>/usr/local/MATLAB/R2014b</root>
       <toolboxes>
         <toolbox name="fixedpoint" />
         <toolbox name="embeddedcoder" />

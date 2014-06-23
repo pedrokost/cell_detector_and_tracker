@@ -1,13 +1,7 @@
 Today:
-   ✔ Where should I store the matching feautres data? in the im\d.mat: dots and matchFeatures @done (14-06-20 10:55)
-   ☐ Refactor params by groupping all the options in a struct
-   ☐ The cell detector should have an option to output 2 different feature vectors
-   ☐ Start by using the features
-     ☐ Position, size, appearance: x-y, intensity histogram, orientation, size, eccentricity, cpdh?
-   ☐ The feature vectors should be normalized by group: if a feature takes several cols, normalize it to 0-max of the set of cols
-   ☐ ??? Should this be a separate function? extract matching features?
+   ☐ For whatever I do, I would like to have high quality data, to be able to see if algorithms work or not. For this reason, I will spend the next day or two
+   ☐ cell_matcher: for matching use a naive bayes classifier with a large trained dataset
    ☐ Find effective matching features, make sure the matches are of good quality. Eliminate weak features.
-   ☐ Use sigmoind distance function instead of euclidean
    ☐ Find robust tracklets only
 Approaches to solve the MAP problem of connecting tracklets:
     ☐ Hungarian algorithm (cannot handle division)
@@ -35,6 +29,10 @@ Traclet evaluation metrics:
   (3) FAPF: False Alarm Per Frame.
 ＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿
 Archive:
+ ✔ The feature vectors should be normalized by group: if a feature takes several cols, normalize it to 0-max of the set of cols @done (14-06-23 14:23) @project(Today)
+ ✔ The cell detector should have an option to output 2 different feature vectors @done (14-06-23 14:23) @project(Today)
+ ✔ Refactor params by groupping all the options in a struct @done (14-06-20 14:43) @project(Today)
+ ✔ Where should I store the matching feautres data? in the im\d.mat: dots and matchFeatures @done (14-06-20 10:55) @project(Today)
  ✔ Prevent dupes @done (14-06-20 09:05)
  ✔ Load detections as well @done (14-06-20 09:05)
  ✔ Toggles: show detections, show links @done (14-06-19 09:11)

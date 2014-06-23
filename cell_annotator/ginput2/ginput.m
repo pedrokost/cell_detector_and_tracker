@@ -203,7 +203,7 @@ end
 
 % Setup FullCrosshair Pointer without warning. 
 oldwarnstate = warning('off', 'MATLAB:Figure:Pointer');
-set(fig,'Pointer','fullcrosshair');
+set(fig,'Pointer','crosshair');
 
 warning(oldwarnstate);
 

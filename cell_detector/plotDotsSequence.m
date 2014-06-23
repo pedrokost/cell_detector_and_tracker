@@ -22,8 +22,8 @@ function plotDotsSequence( directory )
 
     % calle the plotDotsSequence function
     doPlotSequences(dotsSequence)
-    savefig(fullfile(directory, 'timeplot.fig'));
-    saveas(gcf,fullfile(directory, 'timeplot.png'))
+    % savefig(fullfile(directory, 'timeplot.fig'));
+    % saveas(gcf,fullfile(directory, 'timeplot.png'))
 
     % close(gcf)
 end

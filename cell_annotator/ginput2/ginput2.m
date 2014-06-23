@@ -261,7 +261,7 @@ if DoScale
    % Default (equal):
    U1x = I1x; U2x = I2x;
    U1y = I1y; U2y = I2y;
-   hgeo     = [];
+   hgeo     = gobjects(0);
    dlgTitle = 'Georeference image';
    lineNo   = 1;
   

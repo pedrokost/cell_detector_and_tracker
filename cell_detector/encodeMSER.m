@@ -1,4 +1,4 @@
-function x = encodeMSER(img, colorImg, edgeImg, gradImg, orientGrad, sel, ell, parms)
+function [x, descriptor] = encodeMSER(img, colorImg, edgeImg, gradImg, orientGrad, sel, ell, parms)
 %Encodes a single MSER with the selected features.
 %OUTPUT:
 %   x =  feature vector
@@ -12,7 +12,9 @@ function x = encodeMSER(img, colorImg, edgeImg, gradImg, orientGrad, sel, ell, p
 mask = logical(false(size(img,1), size(img,2)));
 mask(sel) = 1;
 x = zeros(1,parms.nFeatures);
+descriptor = zeros(1, parms.nDescriptor);
 pos = 1;
+dPos = 1;
 
 %get ROI
 if parms.addDiffHist && parms.addPos
@@ -24,6 +26,9 @@ elseif parms.addPos
 end
 
 %--feature computation
+
+descriptor(dPos) = numel(sel);  % area
+dPos = dPos + 1;
 
 if parms.addArea
     numPixels = size(img,1)*size(img,2);
@@ -37,27 +42,27 @@ if parms.addPos
     pos = pos+numel(centroid);
 end
 
+
+intHist = fasthist(img(mask == 1), 0:255/parms.nBinsIntHist:255-255/parms.nBinsIntHist);
+intHist = intHist/norm(intHist,2);
+descriptor(dPos:dPos+parms.nBinsIntHist-1) = intHist;
+dPos = dPos+parms.nBinsIntHist;
+
 if parms.addIntHist
-
-    intHist = fasthist(img(mask == 1), 0:255/parms.nBinsIntHist:255-255/parms.nBinsIntHist);
-    
-    % This 6 lines are a replacement for the 1 (fasthist/hist) above
-%     b2 = (0:255/parms.nBinsIntHist:255) - 255/parms.nBinsIntHist/2;
-%     b2(1) = -Inf;
-%     b2(end) = Inf;
-%     intHist2 = histc(img(mask == 1), b2);
-%     intHist2(end-1) = intHist2(end-1)+ intHist2(end); 
-%     intHist2 = intHist2(1:end-1)';    
-
-    intHist = intHist/norm(intHist,2);
     x(pos:pos+parms.nBinsIntHist-1) = intHist;
     pos = pos+parms.nBinsIntHist;
+end
     
-    if ~isempty(colorImg)
-        for layer = 1:size(colorImg,3)
-            color = colorImg(:,:,layer);
-            intHist = fasthist(color(mask == 1),0:255/parms.nBinsIntHist:255-255/parms.nBinsIntHist);
-            intHist = intHist/norm(intHist,2);
+if ~isempty(colorImg)
+    for layer = 1:size(colorImg,3)
+        color = colorImg(:,:,layer);
+        intHist = fasthist(color(mask == 1),0:255/parms.nBinsIntHist:255-255/parms.nBinsIntHist);
+        intHist = intHist/norm(intHist,2);
+
+        descriptor(dPos:dPos+parms.nBinsIntHist-1) = intHist;
+        dPos = dPos+parms.nBinsIntHist;
+
+        if parms.addIntHist
             x(pos:pos+parms.nBinsIntHist-1) = intHist;
             pos = pos+parms.nBinsIntHist;
         end
