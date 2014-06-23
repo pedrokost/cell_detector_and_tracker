@@ -1,7 +1,7 @@
 rng(1234)
 figure(1); clf;
 
-folderOUT = fullfile('..', 'data', 'kidneygreenOUT');
+folderOUT = fullfile('..', 'data', 'lunggreenOUT');
 
 tracklets = generateTracklets(folderOUT);
 
