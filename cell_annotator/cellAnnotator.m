@@ -925,6 +925,8 @@ function cellAnnotator
             filename = fullfile(imgFolderName, usrMatfileNames(index).name);
             if exist(filename, 'file')==2
                 data = load(filename);
+            else
+                data = struct;
             end
             
             if isfield(data, 'dots')
