@@ -252,21 +252,21 @@ function cellAnnotator
            'Position', [actWidth*2 0 actWidth 1],...
            'Parent', hactions);
     haddlink = uicontrol('Style','togglebutton',...
-           'String','+ link (4)',...
+           'String','-- (4)',...
            'Units', 'norm',...
            'BackgroundColor', BG_COLOR, ...
            'ForegroundColor', FG_COLOR, ...
            'Position', [actWidth*3 0 actWidth 1],...
            'Parent', hactions);
     haddlinkfast = uicontrol('Style','togglebutton',...
-           'String','++ link (5)',...
+           'String','--- (5)',...
            'Units', 'norm',...
            'BackgroundColor', BG_COLOR, ...
            'ForegroundColor', FG_COLOR, ...
            'Position', [actWidth*4 0 actWidth 1],...
            'Parent', hactions);
     hdellink = uicontrol('Style','togglebutton',...
-           'String','- link (6)',...
+           'String','-x- (6)',...
            'Units', 'norm',...
            'BackgroundColor', BG_COLOR, ...
            'ForegroundColor', FG_COLOR, ...
@@ -657,38 +657,38 @@ function cellAnnotator
     % =====================================================================
 
     function keyUpListener(~, eventdata)
-        switch eventdata.Key
-            case {'space' 'rightarrow'}
+        keycode = double(get(f, 'CurrentCharacter'));
+
+        switch keycode
+            case {32 29} % {'space' 'rightarrow'}
                 nextImage();
-            case 'leftarrow'
+            case 28 % 'leftarrow'
                 prevImage();
-            case 't'
+            case 116 % 't'
                 disableFilters = ~disableFilters;
                 set(hfiltertoggler, 'Value', ~disableFilters);
                 displayImage(curIdx, numImages);
                 displayAnnotations(curIdx, numImages);
-            case {'1' 'escape' }
+            case {49 27}  % {'1' 'escape' }
                 action = ACTION_OFF;
                 set(hactions, 'SelectedObject', hoff);
-            case '2'
+            case 50 %'2'
                 action = ACTION_ADD;
                 set(hactions, 'SelectedObject', hadd);
-            case '3'
+            case 51 % '3'
                 action = ACTION_DEL;
                 set(hactions, 'SelectedObject', hdel);
-            case '4'
+            case 52 % '4'
                 action = ACTION_ADDLINK;
                 set(hactions, 'SelectedObject', haddlink);
-            case '5'
+            case 53 % '5'
                 action = ACTION_ADDLINKFAST;
                 set(hactions, 'SelectedObject', haddlinkfast);
-            case '6'
+            case 54 % '6'
                 action = ACTION_DELLINK;
                 set(hactions, 'SelectedObject', hdellink);
-            case 's'
-                if numel(eventdata.Modifier) > 0 && strcmp(eventdata.Modifier{1}, 'control')
-                    saveAnnotations();
-                end
+            case 19
+                saveAnnotations();
         end
     end
 
@@ -1238,7 +1238,7 @@ function cellAnnotator
         
         switch annotationType
             case 'usr'
-                styleDots = 'r+';
+                styleDots = 'rx';
                 colorLinks = [1 1 1];
                 lineStyle = '--';
             case 'det'
@@ -1272,7 +1272,7 @@ function cellAnnotator
         end
 
         if get(hshowDots, 'Value')
-            h = plot(dots(:, 1), dots(:, 2), styleDots, 'Parent', hviewer);
+            h = plot(dots(:, 1), dots(:, 2), styleDots, 'Parent', hviewer, 'MarkerSize', 8, 'LineWidth', 2);
             annotationHandles = [annotationHandles; h];
         end
 
