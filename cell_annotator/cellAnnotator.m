@@ -44,7 +44,7 @@ function cellAnnotator
     colormaps = 'gray|jet|hsv|hot|cool';
     disableFilters = false;
     
-    testing = true;
+    testing = false;
     displayAnnomalies = true; % Mark annotations that might be erroneous
     ERRONEOUS_DISTANCE = 0.03; % Cells less than this far apart are erronous
 
