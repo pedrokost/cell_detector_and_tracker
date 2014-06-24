@@ -1231,14 +1231,14 @@ function cellAnnotator
         end
      
         if strcmp(annotationType, 'usr') && displayAnnomalies
-
             D = pdist(dots);
             M = squareform(D);
             bad = (M < ERRONEOUS_DISTANCE) - eye(size(dots, 1));
             [I, J] = find(bad);
-            scatter(I, J, '')
-            % FIXME comlepete
-            keyboard
+            ds = double(unique(dots(I, :), 'rows'));
+            MARKER_RADIUS = 15;
+            plot(ds(:, 1), ds(:, 2), 'y^', 'MarkerSize', MARKER_RADIUS*2)
+            text(ds(:, 1)-3*MARKER_RADIUS, ds(:, 2)-2*MARKER_RADIUS, '!', 'Color', 'y', 'FontSize', 16);
         end
 
         if get(hshowDots, 'Value')
