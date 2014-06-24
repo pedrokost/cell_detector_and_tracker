@@ -40,6 +40,8 @@ function cellAnnotator
     padding = 5;
     topFigOffset = 0;
     actionsPanelHeight = 130;
+    fullsize = false;
+    oldpos = [0 0 1 1]; 
     
     colormaps = 'gray|jet|hsv|hot|cool';
     disableFilters = false;
@@ -687,14 +689,36 @@ function cellAnnotator
             case 54 % '6'
                 action = ACTION_DELLINK;
                 set(hactions, 'SelectedObject', hdellink);
-            case 19
+            case 19 % ctrl + s
                 saveAnnotations();
+            case 102  % 'f'
+                toggleFullScreen()
+
         end
     end
 
     % =====================================================================
     % -----------OTHER FUNCTIONS-------------------------------------------
     % =====================================================================
+
+    function toggleFullScreen()
+        fullsize = ~fullsize;
+
+        oldunits = get(hpviewer, 'Units')
+        set(hpviewer, 'Units', 'norm')
+        pos = get(hpviewer, 'Position');
+
+        if fullsize
+            oldpos = pos;
+            set(hpactions, 'Visible', 'off');
+            set(hpviewer, 'Position', [0, 0, 1 1]);
+
+        else
+            set(hpviewer, 'Position', oldpos);
+            set(hpactions, 'Visible', 'on');
+        end
+        set(hpviewer, 'Units', oldunits)
+    end
 
     function nextImage()
         curIdx = min(curIdx + 1, numImages);
