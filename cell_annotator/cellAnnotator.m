@@ -44,9 +44,9 @@ function cellAnnotator
     colormaps = 'gray|jet|hsv|hot|cool';
     disableFilters = false;
     
-    testing = true;
+    testing = false;
     displayAnnomalies = true; % Mark annotations that might be erroneous
-    ERRONEOUS_DISTANCE = 20; % Cells less than this far apart are erronous
+    ERRONEOUS_DISTANCE = 0.05; % Cells less than this far apart are erronous
 
     ACTION_OFF = 1;
     ACTION_ADD = 2;
@@ -492,7 +492,8 @@ function cellAnnotator
         if testing
         	foldn = '/home/pedro/Dropbox/Imperial/project/data/kidneyredIN';
         else
-            foldn = uigetdir(pwd, 'Select folder with images');
+            if ~isempty(imgFolderName) dr = imgFolderName; else; dr = pwd; end;
+            foldn = uigetdir(dr, 'Select folder with images');
             if foldn == 0
                 warning('Select the folder with images')
                 if numImages ==0;
@@ -1231,14 +1232,15 @@ function cellAnnotator
         end
      
         if strcmp(annotationType, 'usr') && displayAnnomalies
+            ERR_DST = ERRONEOUS_DISTANCE * imgWidth
             D = pdist(dots);
             M = squareform(D);
-            bad = (M < ERRONEOUS_DISTANCE) - eye(size(dots, 1));
+            bad = (M < ERR_DST) - eye(size(dots, 1));
             [I, J] = find(bad);
             ds = double(unique(dots(I, :), 'rows'));
             MARKER_RADIUS = 15;
             plot(ds(:, 1), ds(:, 2), 'y^', 'MarkerSize', MARKER_RADIUS*2)
-            text(ds(:, 1)-3*MARKER_RADIUS, ds(:, 2)-2*MARKER_RADIUS, '!', 'Color', 'y', 'FontSize', 16);
+            text(ds(:, 1)-MARKER_RADIUS, ds(:, 2)-MARKER_RADIUS, '!', 'Color', 'y', 'FontSize', 16);
         end
 
         if get(hshowDots, 'Value')
