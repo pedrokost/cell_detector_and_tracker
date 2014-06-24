@@ -181,7 +181,7 @@ ZOOMIN    = LEFTCLICK;             % ZOOM(2)    buttons
 ZOOMRESET = MIDDLECLICK;           % ZOOM RESET buttons
 ZOOMOUT   = DOUBLECLICK;           % ZOOM OUT   buttons
 % Other parameters
-secpause  = 0.2;    % Seconds to wait for double-click response.
+secpause  = 0.15;    % Seconds to wait for double-click response.
 YESERROR  = false;  % If there is an error with GINPUT, it tells to display 
                     % an ERROR or a WARNING message.
                     
