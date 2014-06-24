@@ -44,14 +44,15 @@ function cellAnnotator
     colormaps = 'gray|jet|hsv|hot|cool';
     disableFilters = false;
     
-    testing = false;
+    testing = true;
     displayAnnomalies = true; % Mark annotations that might be erroneous
-    ERRONEOUS_DISTANCE = 0.05; % Cells less than this far apart are erronous
+    ERRONEOUS_DISTANCE = 0.03; % Cells less than this far apart are erronous
 
     ACTION_OFF = 1;
     ACTION_ADD = 2;
     ACTION_DEL = 3;
     ACTION_ADDLINK = 4;
+    ACTION_ADDLINKFAST = 7;
     ACTION_DELLINK = 5;
     ACTION_STOP = 6; % stop the loop
 
@@ -219,6 +220,7 @@ function cellAnnotator
            'Callback', {@save_callback},...
            'Enable', 'off');
 
+    actWidth = 1/6;
     hactions = uibuttongroup(...
             'Units', 'norm',...
             'parent', hpactions3,...
@@ -233,35 +235,42 @@ function cellAnnotator
            'Units', 'norm',...
            'BackgroundColor', BG_COLOR, ...
            'ForegroundColor', FG_COLOR, ...
-           'Position', [0 0 0.2 1],...
+           'Position', [actWidth*0 0 actWidth 1],...
            'Parent', hactions);
     hadd = uicontrol('Style','togglebutton',...
            'String','+ (2)',...
            'Units', 'norm',...
            'BackgroundColor', BG_COLOR, ...
            'ForegroundColor', FG_COLOR, ...
-           'Position', [0.2 0 0.2 1],...
+           'Position', [actWidth 0 actWidth 1],...
            'Parent', hactions);
     hdel = uicontrol('Style','togglebutton',...
            'String','- (3)',...
            'Units', 'norm',...
            'BackgroundColor', BG_COLOR, ...
            'ForegroundColor', FG_COLOR, ...
-           'Position', [0.4 0 0.2 1],...
+           'Position', [actWidth*2 0 actWidth 1],...
            'Parent', hactions);
     haddlink = uicontrol('Style','togglebutton',...
            'String','+ link (4)',...
            'Units', 'norm',...
            'BackgroundColor', BG_COLOR, ...
            'ForegroundColor', FG_COLOR, ...
-           'Position', [0.6 0 0.2 1],...
+           'Position', [actWidth*3 0 actWidth 1],...
            'Parent', hactions);
-    hdellink = uicontrol('Style','togglebutton',...
-           'String','- link (5)',...
+    haddlinkfast = uicontrol('Style','togglebutton',...
+           'String','++ link (5)',...
            'Units', 'norm',...
            'BackgroundColor', BG_COLOR, ...
            'ForegroundColor', FG_COLOR, ...
-           'Position', [0.8 0 0.2 1],...
+           'Position', [actWidth*4 0 actWidth 1],...
+           'Parent', hactions);
+    hdellink = uicontrol('Style','togglebutton',...
+           'String','- link (6)',...
+           'Units', 'norm',...
+           'BackgroundColor', BG_COLOR, ...
+           'ForegroundColor', FG_COLOR, ...
+           'Position', [actWidth*5 0 actWidth 1],...
            'Parent', hactions);
 
     % Add uibuttongroup with togglebutton
@@ -408,8 +417,8 @@ function cellAnnotator
     set(hfilterlogsz, 'String', '3|5|7|9|11|13|15');
 
     hsliderListener = addlistener(hslider,'Value','PostSet',@hslider_callback);
-    set(f, 'KeyReleaseFcn', @keyUpListener);
     set(f, 'WindowScrollWheelFcn', @wheel_callback);
+    set(f, 'WindowKeyReleaseFcn', @keyUpListener);
 
     % =====================================================================
     % ------------INTITIALIZE THE GUI--------------------------------------
@@ -490,7 +499,7 @@ function cellAnnotator
 
 
         if testing
-        	foldn = '/home/pedro/Dropbox/Imperial/project/data/kidneyredIN';
+        	foldn = '/home/pedro/Dropbox/Imperial/project/data/series30green';
         else
             if ~isempty(imgFolderName) dr = imgFolderName; else; dr = pwd; end;
             foldn = uigetdir(dr, 'Select folder with images');
@@ -501,6 +510,10 @@ function cellAnnotator
                 end
                 return
             end
+        end
+
+        if ~strcmp(foldn, imgFolderName)
+            curIdx = 1;  % rest the index, but only if we are not just refreshing the same dataset
         end
 
         imgFolderName = foldn;
@@ -631,6 +644,8 @@ function cellAnnotator
                 action = ACTION_DEL;
             case haddlink
                 action = ACTION_ADDLINK;
+            case haddlinkfast
+                action = ACTION_ADDLINKFAST;
             case hdellink
                 action = ACTION_DELLINK;
             otherwise
@@ -665,6 +680,9 @@ function cellAnnotator
                 action = ACTION_ADDLINK;
                 set(hactions, 'SelectedObject', haddlink);
             case '5'
+                action = ACTION_ADDLINKFAST;
+                set(hactions, 'SelectedObject', haddlinkfast);
+            case '6'
                 action = ACTION_DELLINK;
                 set(hactions, 'SelectedObject', hdellink);
             case 's'
@@ -705,6 +723,8 @@ function cellAnnotator
                     performActionDell()
                 case ACTION_ADDLINK
                     performActionAddlink()
+                case ACTION_ADDLINKFAST
+                    performActionAddlink(10)
                 case ACTION_DELLINK
                     performActionDellink()
                 case ACTION_OFF
@@ -777,32 +797,40 @@ function cellAnnotator
         end
     end
 
-    function performActionAddlink()
-        SNAP_DISTANCE = SNAP_PERCENTAGE * imgWidth;
-        [P, clickedImgs] = doClick(numImages, imgWidth, imgGap, nDisplays, 'N', 2);
+    function performActionAddlink(points)
+        % Similar to addLink but allows for many consecutive click and then
+        % creates all the required connection
+        if nargin < 1; points = 2; end;
         
-        if ~isempty(P) && ~isempty(clickedImgs) && numel(clickedImgs) == 2
-            % Compute minimum distances to points
-            % store the connection in the lefty image
-            [dots1, links1] = getAnnotations(clickedImgs(1));
-            [dots2, ~] = getAnnotations(clickedImgs(2));
+        SNAP_DISTANCE = SNAP_PERCENTAGE * imgWidth;
+        fprintf('Press Enter to stop selecting points\n')
+        [P, clickedImgs] = doClick(numImages, imgWidth, imgGap, nDisplays, 'N', points);
+        
+        if ~isempty(P) && ~isempty(clickedImgs) && numel(clickedImgs) >= 2
 
-            D1 = pdist2(double(dots1), double(P(1, :)));
-            D2 = pdist2(double(dots2), double(P(2, :)));
+            % For each point, find its closest dot
+            for i=1:numel(clickedImgs)-1
+                [dots1, links1] = getAnnotations(clickedImgs(i));
+                [dots2, ~] = getAnnotations(clickedImgs(i+1));
 
-            [D1, I1] = min(D1, [], 1);
-            [D2, I2] = min(D2, [], 1);
+                D1 = pdist2(double(dots1), double(P(1, :)));
+                D2 = pdist2(double(dots2), double(P(2, :)));
+    
+                [D1, I1] = min(D1, [], 1);
+                [D2, I2] = min(D2, [], 1);
 
-            if all([D1 D2] < SNAP_DISTANCE)
+                if all([D1 D2] < SNAP_DISTANCE)
 
-                fprintf('Added links from %d %d (image %d) to %d %d (image %d).\n', dots1(I1,:), clickedImgs(1), dots2(I2, :), clickedImgs(2));
+                    fprintf('Added links from %d %d (image %d) to %d %d (image %d).\n', dots1(I1,:), clickedImgs(i), dots2(I2, :), clickedImgs(i+1));
 
-                links1(I1) = I2;
+                    links1(I1) = I2;
 
-                setAnnotations(clickedImgs(1), dots1, links1);
-                displayAnnotations(curIdx, numImages);
+                    setAnnotations(clickedImgs(i), dots1, links1);
+                end
             end
+            displayAnnotations(curIdx, numImages);
         end
+
     end
 
     function performActionDellink()
@@ -1232,7 +1260,7 @@ function cellAnnotator
         end
      
         if strcmp(annotationType, 'usr') && displayAnnomalies
-            ERR_DST = ERRONEOUS_DISTANCE * imgWidth
+            ERR_DST = ERRONEOUS_DISTANCE * imgWidth;
             D = pdist(dots);
             M = squareform(D);
             bad = (M < ERR_DST) - eye(size(dots, 1));
