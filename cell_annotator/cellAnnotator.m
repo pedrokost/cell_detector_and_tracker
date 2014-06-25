@@ -9,6 +9,9 @@ function cellAnnotator
     if exist('ginput2') == 7
         addpath('ginput2');
     end
+    if exist('patchline') == 7
+        addpath('patchline');
+    end
     % =====================================================================
     % ------------FUNCTION GLOBALS-----------------------------------------
     % =====================================================================
@@ -34,6 +37,10 @@ function cellAnnotator
     imgPrefix = 'im';
     imgGap = 25;
     imgWidth = 0;
+    imgHeight = 0;
+
+    LINK_MASK_POS = 300;
+    LINK_MASK_WIDTH = 150;
     
     figWidth = 1025;
     figHeight = 500;
@@ -46,7 +53,7 @@ function cellAnnotator
     colormaps = 'gray|jet|hsv|hot|cool';
     disableFilters = false;
     
-    testing = false;
+    testing = true;
     displayAnnomalies = true; % Mark annotations that might be erroneous
     ERRONEOUS_DISTANCE = 0.03; % Cells less than this far apart are erronous
 
@@ -69,7 +76,8 @@ function cellAnnotator
     % ------------SETUP COMPONENTS-----------------------------------------
     % =====================================================================
     %  Create and then hide the GUI as it is being constructed.
-    f = figure('Visible','off','Position',[0,0,figWidth,figHeight]);
+    f = figure('Visible','off','Position',[0,0,figWidth,figHeight],...
+        'Renderer', 'OpenGL');
     
     set(f,'Color', BG_COLOR2);
 
@@ -89,6 +97,7 @@ function cellAnnotator
     hpactions = uipanel('Tag', 'Actions',...
         'Units', 'pixels',...
         'Position', [padding figHeight-actionsPanelHeight-padding-topFigOffset figWidth-2*padding actionsPanelHeight],...
+        'Parent', f, ...
         'ShadowColor', BG_COLOR2, ...
         'HighlightColor', BG_COLOR2 ,...
         'Background', BG_COLOR2);
@@ -96,6 +105,7 @@ function cellAnnotator
     hpviewer = uipanel('Tag', 'Viewer', ...
         'Visible', 'off', ...
         'Units', 'pixels',...
+        'Parent', f, ...
         'Background', BG_COLOR,...
         'ShadowColor', BG_COLOR, ...
         'HighlightColor', BG_COLOR,...
@@ -280,7 +290,7 @@ function cellAnnotator
     hviewer = axes('Units','Pixels',...
         'parent', hpviewer,...
         'Units', 'norm',...
-        'Position', [0 0.08 1 0.92],...
+        'Position', [0 0.08 1 0.89],...
         'Visible','off'); 
     hslider = uicontrol('Style', 'slider', ...
         'Min', 1,...
@@ -293,7 +303,24 @@ function cellAnnotator
         'Units', 'norm',...
         'Position', [0 0 1 0.07],...
         'Callback', @hslider_callback);
-    
+    hmaskslider = uicontrol('Style', 'slider', ...
+        'Min', 0,...
+        'Max', 500,...
+        'SliderStep', [0.5 1]/10,...
+        'Value', LINK_MASK_POS,...
+        'parent', hpviewer,...
+        'BackgroundColor', BG_COLOR, ...
+        'ForegroundColor', FG_COLOR, ...
+        'Units', 'norm',...
+        'Position', [0 0.97 0.2 0.03]);
+    hmaskcheck = uicontrol('Style', 'checkbox', ...
+        'Value', 0,...
+        'Parent', hpviewer, ...
+        'Units', 'norm', ...
+        'BackgroundColor', BG_COLOR, ...
+        'ForegroundColor', FG_COLOR, ...
+        'Position', [0.21 0.97 0.03 0.03],...
+        'Callback', {@requestRedraw});
     filterNames = { 'Col' 'Contrast' 'Histeq'...
         'Adaptive Histeq' 'Median Filter' 'M' 'Wiener filter' 'W'...
         'Sharpen' 'S' 'Decorrelation stretch' 'Dec' 'Edge' 'Me' 'Th' 'Average' 'A'...
@@ -419,6 +446,7 @@ function cellAnnotator
     set(hfilterlogsz, 'String', '3|5|7|9|11|13|15');
 
     hsliderListener = addlistener(hslider,'Value','PostSet',@hslider_callback);
+    hmasksliderListener = addlistener(hmaskslider,'Value','PostSet',@hmaskslider_callback);
     set(f, 'WindowScrollWheelFcn', @wheel_callback);
     set(f, 'WindowKeyReleaseFcn', @keyUpListener);
 
@@ -483,6 +511,7 @@ function cellAnnotator
         % If still closing, remove the listeners
         try
             delete(hsliderListener);
+            delete(hmasksliderListener);
         end
         action = ACTION_STOP;  % Stops the main loop
         try
@@ -543,6 +572,14 @@ function cellAnnotator
         set(hslider, 'Max', numImages);
         set(hslider, 'SliderStep', [1 5] / (numImages - 1));
 
+        I = getImage(1);
+        imgWidth = size(I, 2);
+        imgHeight = size(I, 1);
+
+        set(hmaskslider, 'Max', imgWidth);
+        
+        LINK_MASK_POS = min(LINK_MASK_POS, imgWidth);
+
         requestRedraw();
         displayUIElements();
         performAction();
@@ -595,7 +632,13 @@ function cellAnnotator
         end
     end
 
-    function hslider_callback(source, eventdata) %#ok<INUSD>
+    function hmaskslider_callback(~, eventdata)
+        value = round(get(hmaskslider, 'Value'));
+        LINK_MASK_POS = value;
+        displayAnnotations(curIdx, numImages);
+    end
+
+    function hslider_callback(~, ~)
         value = round(get(hslider, 'Value'));
         if value == curIdx; return; end
         
@@ -661,6 +704,8 @@ function cellAnnotator
     function keyUpListener(~, eventdata)
         keycode = double(get(f, 'CurrentCharacter'));
 
+        if(isempty(keycode)); return; end
+
         switch keycode
             case {32 29} % {'space' 'rightarrow'}
                 nextImage();
@@ -704,7 +749,7 @@ function cellAnnotator
     function toggleFullScreen()
         fullsize = ~fullsize;
 
-        oldunits = get(hpviewer, 'Units')
+        oldunits = get(hpviewer, 'Units');
         set(hpviewer, 'Units', 'norm')
         pos = get(hpviewer, 'Position');
 
@@ -1254,38 +1299,81 @@ function cellAnnotator
 
     end
 
+    function within = withinDisplayBoundaries(dots)
+        % for each dot return t/f if it lies within the region marked by the
+        % LINK_MARK_POS marker
+
+        within = ones(size(dots, 1), 1);
+
+        out = dots(:, 1) < LINK_MASK_POS - LINK_MASK_WIDTH / 2;
+        out = out | dots(:, 1) > LINK_MASK_POS + LINK_MASK_WIDTH / 2;
+
+        within(out) = 0;
+        within = logical(within);
+    end
+
     function private_displayAnnotations(ind, numImages, annotationType)
         hold(hviewer, 'on');
         
         dotsCell = cell(nDisplays, 1);
+        dotsOrigCell = cell(nDisplays, 1);
         linksCell = cell(nDisplays, 1);
+
+
+        if get(hmaskcheck, 'Value')
+            x = zeros(4, nDisplays*2);
+            for i=1:nDisplays
+                offset = (i - 1) * (imgWidth + imgGap);
+
+                left = max(0, LINK_MASK_POS + offset - LINK_MASK_WIDTH / 2);
+                right = min(offset +imgWidth, LINK_MASK_POS + offset + LINK_MASK_WIDTH / 2);
+                fullRight = offset + imgWidth + 1;
+
+                x(:, i) = [offset offset left left];
+                x(:, i+nDisplays) = [right right fullRight fullRight];
+            end
+
+            y = repmat([0; imgHeight; imgHeight; 0], 1, nDisplays * 2);
+            h = fill(x, y, 'black', 'FaceAlpha', 0.8, 'EdgeColor', 'none');
+            annotationHandles = [annotationHandles; h];
+        end
         
         switch annotationType
             case 'usr'
-                styleDots = 'rx';
+                styleDots = '+';
+                col = [200 0 0] / 255;
+                hiddenCol = [50 50 50] / 255;
                 colorLinks = [1 1 1];
+                hiddenColorLinks = colorLinks / 3;
                 lineStyle = '--';
             case 'det'
                 styleDots = 'yo';
+                col = [200 0 0] / 255;
+                hiddenCol = col / 3;
                 colorLinks = [0.3 0.3 1];
+                hiddenColorLinks = colorLinks / 3;
                 lineStyle = '-.';
         end
 
 
         dots = [];
         tmp_i = 1;
+        orig_dots = [];
         for i=-ceil(nDisplays/2)+1:1:floor(nDisplays/2)
             [d, l] = getAnnotations(ind+i, annotationType);
+            orig_dots = vertcat(orig_dots, d);
+            dotsOrigCell{tmp_i} = d;
             d(:, 1) = d(:, 1) + (tmp_i-1)*(imgWidth + imgGap);
             dotsCell{tmp_i} = d;
             linksCell{tmp_i} = l;
             tmp_i = tmp_i + 1;
             dots = vertcat(dots, d);
         end
+        within = withinDisplayBoundaries(orig_dots);
      
         if strcmp(annotationType, 'usr') && displayAnnomalies
             ERR_DST = ERRONEOUS_DISTANCE * imgWidth;
-            D = pdist(dots);
+            D = pdist(double(dots));
             M = squareform(D);
             bad = (M < ERR_DST) - eye(size(dots, 1));
             [I, J] = find(bad);
@@ -1296,7 +1384,11 @@ function cellAnnotator
         end
 
         if get(hshowDots, 'Value')
-            h = plot(dots(:, 1), dots(:, 2), styleDots, 'Parent', hviewer, 'MarkerSize', 8, 'LineWidth', 2);
+            colors = bsxfun(@times, ones(size(orig_dots, 1), 3), col);
+            if get(hmaskcheck, 'Value')
+                colors(~within, :) = repmat(hiddenCol, sum(~within), 1);
+            end
+            h = scatter(dots(:, 1), dots(:, 2), figWidth/20, colors, styleDots, 'Parent', hviewer,'LineWidth', 2);
             annotationHandles = [annotationHandles; h];
         end
 
@@ -1309,15 +1401,25 @@ function cellAnnotator
             for i=-ceil(nDisplays/2)+1:1:floor(nDisplays/2)-1
                 links = linksCell{tmp_i};
                 dots0 = dotsCell{tmp_i};
+                dots0orig = dotsOrigCell{tmp_i};
                 dots1 = dotsCell{tmp_i+1};
                 I = find(links ~= 0);
                 c0 = dots0(I, :);
                 c1 = dots1(links(I), :);
+                within = withinDisplayBoundaries(dots0orig(I, :));
 
                 for l=1:numel(I)
                     X = [c0(l, 1) c1(l, 1)];
                     Y = [c0(l, 2) c1(l, 2)];
-                    h = line(X, Y, 'Parent', hviewer, 'Color', colorLinks, 'LineStyle', lineStyle);
+                    
+                    if get(hmaskcheck, 'Value')
+                        transp = within(l) * 1 + (1-within(l)) * 0.2;
+                    else
+                        transp = 1;
+                    end
+
+                    h = patchline(X, Y, 'Parent', hviewer, 'LineStyle', lineStyle, ...
+                        'edgecolor', colorLinks, 'EdgeAlpha', transp);
                     annotationHandles = [annotationHandles; h]; %#ok<AGROW>
                 end
 
