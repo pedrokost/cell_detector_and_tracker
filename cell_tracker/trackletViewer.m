@@ -58,7 +58,8 @@ function trackletViewer(tracklets, options)
 		% surface([x;x],[y;y],[z;z],[color;color], 'facecol','no','edgecol','interp');
 	end
 	axis tight;
-	view(-72,8)
+	% view(-72,8)
+	view(-90,0)
 
 	if animate
 		h = 0;

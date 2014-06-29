@@ -7,7 +7,7 @@ function tracklets = generateTracklets(folderOUT)
 % 	- tracklets = a matrix of tracklets. Each row belongs to one 
 %		tracklet
 
-	test = false;
+	test = true;
 
 	if exist(folderOUT, 'dir') ~= 7
 		error('The folder "%s" does not exist.', folderOUT);
@@ -22,17 +22,22 @@ function tracklets = generateTracklets(folderOUT)
 	if test
 		nFrames = 4;
 		nTracklets = 5; % estimate
+		firstFrame = 1;
+		nFrames = 4;
 	else
 		nFrames = length(matfiles);
 		nTracklets = 100; % estimate
 		% TODO: automatically grow trakclets size in batches to make it faster
+	
+		% nTracklets = 12; % estimate
+		% nFrames = firstFrame+4;
 	end
 		
 	% create the big matrix of tracklets
 	tracklets = zeros(nTracklets, nFrames, 2);
 
 	%--------------------------------------------------Insert first frame data
-	matfileB = matfiles(1);
+	matfileB = matfiles(firstFrame);
 
 	if test
 		dotsB = [1 1; 3 3]; nCellsB = 2; XB = dotsB;
@@ -41,26 +46,26 @@ function tracklets = generateTracklets(folderOUT)
 		XB = descriptors; dotsB = dots; nCellsB = size(dotsB, 1);
 	end
 
-	tracklets(1:nCellsB, 1, :) = dotsB;
+	tracklets(1:nCellsB, firstFrame, :) = dotsB;
 	nextID = nCellsB + 1;
 	Tprev = [1:nCellsB; 1:nCellsB]';  % previous projection table
 
 	Tcurr = []; % current projection table
 
-	for f=1:nFrames-1
+	for f=firstFrame+1:nFrames
 		%------------------------------------------------------------Load data
 		matfileA = matfileB;
 		XA = XB; dotsA = dotsB; nCellsA = nCellsB;
 
-		matfileB = matfiles(f+1);
+		matfileB = matfiles(f);
 
 		if test
-			if f == 1
+			if f == 2
 				dotsB = [2 2; 1 1; 3 3]; nCellsB = 3; XB = dotsB;
-			elseif f==2
-				dotsB = [3 3; 1 1]; nCellsB = 2; XB = dotsB;
 			elseif f==3
-				dotsB = [3 3; 2 2; 1 1]; nCellsB = 3; XB = dotsB;
+				dotsB = [3 3; 1 1; 2 2]; nCellsB = 3; XB = dotsB;
+			elseif f==4
+				dotsB = [3 3; 1 1]; nCellsB = 2; XB = dotsB;
 			end
 		else	
 			load(fullfile(folderOUT, matfileB.name));
@@ -83,14 +88,16 @@ function tracklets = generateTracklets(folderOUT)
 		% 	[symm right left selectedRight selectedLeft] = match(XA, XB, dotsA, dotsB);
 		% end
 		
-		[symm right left selectedRight selectedLeft] = match(XA, XB, dotsA, dotsB)
-			
-		%-----------------------------------------------Update existing tracks
+		[symm right left selectedRight selectedLeft] = match(XA, XB, dotsA, dotsB);
+
+
 		Tcurr = zeros(nCellsA, 2);
 
-		if ~(any(size(symm) == 0))
+		if ~(any(size(symm) == 0)) % if no cells
+
 			Tcurr(:, 2) = symm;
 			Icurr = 1:nCellsA;
+			%-----------------------------------------------Update existing tracks
 
 			for i=Icurr
 				if ~symm(i); continue; end
@@ -106,13 +113,18 @@ function tracklets = generateTracklets(folderOUT)
 			for i=1:size(Tcurr, 1)
 				if any(Tcurr(i, :)==0); continue; end
 				% fprintf('Take [%d, %d] and update tracklet %d\n', dotsB(Tcurr(i, 2), :), Tcurr(i, 1))
-				tracklets(Tcurr(i, 1), f+1, :) = dotsB(Tcurr(i, 2), :);
+				tracklets(Tcurr(i, 1), f, :) = dotsB(Tcurr(i, 2), :);
 			end
-			%-------------------------------------------------------Add new tracks
+			% -------------------------------------------------------Add new tracks
 			newCells = dotsB(~selectedLeft, :);
 			numNewCells = size(newCells, 1);
-			tracklets(nextID:(nextID+numNewCells-1), f+1, :) = newCells;
+			tracklets(nextID:(nextID+numNewCells-1), f, :) = newCells;
 			nextID = nextID+numNewCells;
+			% Should att the new tracklet to Tcurr, so I can update in next steps
+			% I need to add 0 indx where indx is the index of the new cell in dotsB
+			% [I, J] = find(~selectedLeft);
+			% Tnew = horzcat(zeros(sum(~selectedLeft), 1), J)
+			% Tcurr = vertcat(Tcurr, Tnew);
 		end
 		%--------------------------------------Use current data for next frame
 		Tprev = Tcurr;
