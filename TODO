@@ -7,7 +7,6 @@ Approaches to solve the MAP problem of connecting tracklets:
     ☐ Hungarian algorithm (cannot handle division)
     ☐ Linear programming (handles division)
     ☐ Network flow
-
 Data flow process:
    ☐ annotator: IN: any, OUT: dots + links # I have lost Match features
    ☐ detector train: IN: dots + [links], OUT: dots

@@ -25,7 +25,7 @@ end
 %---------------------------------------------------------------------Setup
 %Choose parameters for the training/testing
 dataset = 2;  %Identifier of the training/testing data as set in loadDatasetInfo
-train = 0;%---->Do train
+train = 1;%---->Do train
 test = 1;%----->Do test
 
 inspectResults = 0; %1: Shows detected cells. 

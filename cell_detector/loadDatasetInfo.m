@@ -52,11 +52,11 @@ switch dataset
         tol = 8; %Tolerance (pixels) for evaluation only
     case 2 %LungGreen
         %-TRAINING DATA SET-%
-        dataFolder = fullfile(rootFolder, 'lunggreenIN');
-        outFolder = fullfile(rootFolder, 'lunggreenOUT');
-        minPixels = 10;
-        maxPixels = 100;
-        Delta = 2;
+        dataFolder = fullfile(rootFolder, 'series30green');
+        outFolder = fullfile(rootFolder, 'series30greenOUT');
+        minPixels = 100;
+        maxPixels = 500;
+        Delta = 4;
         tol = 8; %Tolerance (pixels) for evaluation only
         features = [1 0 1 1 1 1 0];
         %      features: [1 0 1 1 1 1 0]
@@ -105,7 +105,8 @@ if exist(dataFolder,'dir') ~= 7
 end
 
 if exist(outFolder,'dir') ~= 7
-    error('Output folder not found')
+    mkdir(outFolder);
+    fprintf('Created folder "%s"', outFolder);
 end
 
 
