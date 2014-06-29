@@ -3,13 +3,13 @@ function cellAnnotator
     
     set(0,'DefaultFigureCloseRequestFcn',@close_callback)
     
-    if exist('relativepath') == 7
+    if exist('relativepath', 'dir') == 7
         addpath('relativepath');
     end
-    if exist('ginput2') == 7
+    if exist('ginput2', 'dir') == 7
         addpath('ginput2');
     end
-    if exist('patchline') == 7
+    if exist('patchline', 'dir') == 7
         addpath('patchline');
     end
     % =====================================================================
@@ -53,7 +53,7 @@ function cellAnnotator
     colormaps = 'gray|jet|hsv|hot|cool';
     disableFilters = false;
     
-    testing = true;
+    testing = false;
     displayAnnomalies = true; % Mark annotations that might be erroneous
     ERRONEOUS_DISTANCE = 0.03; % Cells less than this far apart are erronous
 
@@ -186,7 +186,7 @@ function cellAnnotator
         'Position', [0.71 0 0.14 1], ...
         'Callback', {@hfiltertoggler_callback});
 
-    hnumDisps = uicontrol('Style', 'text', ...
+    uicontrol('Style', 'text', ...
         'String', 'Displays:',...
         'Parent', hpactions3,...
         'BackgroundColor', BG_COLOR,...
@@ -406,7 +406,7 @@ function cellAnnotator
         pad(cell2mat(topad)) = filterpad;
         ws = cumsum(filterwidths(idx) + pad);
         cs = [0 ws(1:end-1)];
-        filteroffs = [filteroffs  cs];
+        filteroffs = [filteroffs  cs]; %#ok<AGROW>
     end
 
     for j=1:numel(filters)
@@ -509,7 +509,7 @@ function cellAnnotator
         end
 
         % If still closing, remove the listeners
-        try
+        try %#ok<TRYNC>
             delete(hsliderListener);
             delete(hmasksliderListener);
         end
@@ -577,8 +577,10 @@ function cellAnnotator
         imgHeight = size(I, 1);
 
         set(hmaskslider, 'Max', imgWidth);
+        set(hmaskslider, 'Value', imgWidth/2);
         
         LINK_MASK_POS = min(LINK_MASK_POS, imgWidth);
+        LINK_MASK_WIDTH = imgWidth/5;
 
         requestRedraw();
         displayUIElements();
@@ -632,7 +634,7 @@ function cellAnnotator
         end
     end
 
-    function hmaskslider_callback(~, eventdata)
+    function hmaskslider_callback(~, ~)
         value = round(get(hmaskslider, 'Value'));
         LINK_MASK_POS = value;
         displayAnnotations(curIdx, numImages);
@@ -662,7 +664,7 @@ function cellAnnotator
         
         for i=1:numel(I)
             % Find corresponding filenames
-            [dots, links] = getAnnotations(I(i)); %#ok<ASGLU,NASGU>
+            [dots, links] = getAnnotations(I(i)); %#ok<ASGLU>
             filename = fullfile(imgFolderName, usrMatfileNames(I(i)).name);
             % Save the new dots
             save(filename, 'dots', 'links');
@@ -701,7 +703,7 @@ function cellAnnotator
     % -----------LISTENERS-------------------------------------------------
     % =====================================================================
 
-    function keyUpListener(~, eventdata)
+    function keyUpListener(~, ~)
         keycode = double(get(f, 'CurrentCharacter'));
 
         if(isempty(keycode)); return; end
@@ -1319,7 +1321,6 @@ function cellAnnotator
         dotsOrigCell = cell(nDisplays, 1);
         linksCell = cell(nDisplays, 1);
 
-
         if get(hmaskcheck, 'Value')
             x = zeros(4, nDisplays*2);
             for i=1:nDisplays
@@ -1344,14 +1345,12 @@ function cellAnnotator
                 col = [200 0 0] / 255;
                 hiddenCol = [50 50 50] / 255;
                 colorLinks = [1 1 1];
-                hiddenColorLinks = colorLinks / 3;
                 lineStyle = '--';
             case 'det'
                 styleDots = 'yo';
                 col = [200 0 0] / 255;
                 hiddenCol = col / 3;
                 colorLinks = [0.3 0.3 1];
-                hiddenColorLinks = colorLinks / 3;
                 lineStyle = '-.';
         end
 
@@ -1361,13 +1360,13 @@ function cellAnnotator
         orig_dots = [];
         for i=-ceil(nDisplays/2)+1:1:floor(nDisplays/2)
             [d, l] = getAnnotations(ind+i, annotationType);
-            orig_dots = vertcat(orig_dots, d);
+            orig_dots = vertcat(orig_dots, d); %#ok<AGROW>
             dotsOrigCell{tmp_i} = d;
             d(:, 1) = d(:, 1) + (tmp_i-1)*(imgWidth + imgGap);
             dotsCell{tmp_i} = d;
             linksCell{tmp_i} = l;
             tmp_i = tmp_i + 1;
-            dots = vertcat(dots, d);
+            dots = vertcat(dots, d); %#ok<AGROW>
         end
         within = withinDisplayBoundaries(orig_dots);
      
@@ -1376,7 +1375,7 @@ function cellAnnotator
             D = pdist(double(dots));
             M = squareform(D);
             bad = (M < ERR_DST) - eye(size(dots, 1));
-            [I, J] = find(bad);
+            [I, ~] = find(bad);
             ds = double(unique(dots(I, :), 'rows'));
             MARKER_RADIUS = 15;
             plot(ds(:, 1), ds(:, 2), 'y^', 'MarkerSize', MARKER_RADIUS*2)

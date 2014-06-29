@@ -14,7 +14,6 @@ function [P, clickedImgs, relClickedImags] = doClick(numImages, imgWidth, imgGap
     %    same width)
     % imgGap = gap width between images
 
-
     %-----------------------------------------------------------Overwrites
     for i=1:2:(nargin-4)
         switch varargin{i}
