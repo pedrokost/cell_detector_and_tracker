@@ -584,6 +584,8 @@ function cellAnnotator
 
         requestRedraw();
         displayUIElements();
+
+        profile on;
         performAction();
 
     end
@@ -596,10 +598,13 @@ function cellAnnotator
         end
 
         if foldn == 0
-            warning('Select the folder with annotations')
-            return
+            detMatFolderName = '';
+            set(hshowDetections, 'Enable', 'off');
+            % warning('Select the folder with annotations')
+            % return
         else
             detMatFolderName = foldn;
+            set(hshowDetections, 'Value', 1);
         end
 
         updateFolderPaths()
@@ -1191,7 +1196,7 @@ function cellAnnotator
             if applyEdge; 
                 method = strtrim(getCurrentPopupString(hfilteredgemeth));
                 thr = getCurrentPopupString(hfilteredgethr);
-                if thr == 'auto'
+                if strcmp(thr, 'auto')
                     thr = [];
                 else
                     thr = str2double(thr);
@@ -1292,13 +1297,16 @@ function cellAnnotator
         % result in the viewer change.
         ind = private_correctIndex(index, numImages, nDisplays);
 
-        
-        private_displayAnnotations(ind, numImages, 'usr');
+
+        if ~ishold; hold(hviewer, 'on'); end
 
         if ~isempty(detMatFolderName) && get(hshowDetections, 'Value')
             private_displayAnnotations(ind, numImages, 'det');
         end
+        
+        private_displayAnnotations(ind, numImages, 'usr');
 
+        drawnow
     end
 
     function within = withinDisplayBoundaries(dots)
@@ -1315,12 +1323,28 @@ function cellAnnotator
     end
 
     function private_displayAnnotations(ind, numImages, annotationType)
-        hold(hviewer, 'on');
-        
         dotsCell = cell(nDisplays, 1);
         dotsOrigCell = cell(nDisplays, 1);
         linksCell = cell(nDisplays, 1);
+        
+        switch annotationType
+            case 'usr'
+                styleDots = '+';
+                col = [200 0 0] / 255;
+                hiddenCol = [50 50 50] / 255;
+                colorLinks = [1 1 1];
+                lineStyle = ':';
+                markerWidth = 2;
+            case 'det'
+                styleDots = 'o';
+                col = [200 200 0] / 255;
+                hiddenCol = [80 80 0] / 255;
+                colorLinks = [0.3 0.3 1];
+                lineStyle = '-.';
+                markerWidth = 1;
+        end
 
+        % Display masked images for easier annotation
         if get(hmaskcheck, 'Value')
             x = zeros(4, nDisplays*2);
             for i=1:nDisplays
@@ -1339,22 +1363,8 @@ function cellAnnotator
             annotationHandles = [annotationHandles; h];
         end
         
-        switch annotationType
-            case 'usr'
-                styleDots = '+';
-                col = [200 0 0] / 255;
-                hiddenCol = [50 50 50] / 255;
-                colorLinks = [1 1 1];
-                lineStyle = '--';
-            case 'det'
-                styleDots = 'yo';
-                col = [200 0 0] / 255;
-                hiddenCol = col / 3;
-                colorLinks = [0.3 0.3 1];
-                lineStyle = '-.';
-        end
 
-
+        % Prepare the dots annotations matrix
         dots = [];
         tmp_i = 1;
         orig_dots = [];
@@ -1368,8 +1378,11 @@ function cellAnnotator
             tmp_i = tmp_i + 1;
             dots = vertcat(dots, d); %#ok<AGROW>
         end
+
+        % Check which dots are within the margins
         within = withinDisplayBoundaries(orig_dots);
-     
+
+        % Display any annomalies (dots too close)
         if strcmp(annotationType, 'usr') && displayAnnomalies
             ERR_DST = ERRONEOUS_DISTANCE * imgWidth;
             D = pdist(double(dots));
@@ -1378,21 +1391,22 @@ function cellAnnotator
             [I, ~] = find(bad);
             ds = double(unique(dots(I, :), 'rows'));
             MARKER_RADIUS = 15;
-            plot(ds(:, 1), ds(:, 2), 'y^', 'MarkerSize', MARKER_RADIUS*2)
-            text(ds(:, 1)-MARKER_RADIUS, ds(:, 2)-MARKER_RADIUS, '!', 'Color', 'y', 'FontSize', 16);
+            h1 = plot(ds(:, 1), ds(:, 2), 'y^', 'MarkerSize', MARKER_RADIUS*2);
+            h2 = text(ds(:, 1)-MARKER_RADIUS, ds(:, 2)-MARKER_RADIUS, '!', 'Color', 'y', 'FontSize', 16);
+            annotationHandles = [annotationHandles; h1; h2];
         end
 
+        % Display the dots
         if get(hshowDots, 'Value')
             colors = bsxfun(@times, ones(size(orig_dots, 1), 3), col);
             if get(hmaskcheck, 'Value')
                 colors(~within, :) = repmat(hiddenCol, sum(~within), 1);
             end
-            h = scatter(dots(:, 1), dots(:, 2), figWidth/20, colors, styleDots, 'Parent', hviewer,'LineWidth', 2);
+            h = scatter(dots(:, 1), dots(:, 2), figWidth/20, colors, styleDots, 'Parent', hviewer,'LineWidth', markerWidth);
             annotationHandles = [annotationHandles; h];
         end
-
-        hold(hviewer, 'on');
         
+        % Display the links
         if get(hshowLinks, 'Value')
             % Plot links
             % Select nonzeros
@@ -1416,7 +1430,6 @@ function cellAnnotator
                     else
                         transp = 1;
                     end
-
                     h = patchline(X, Y, 'Parent', hviewer, 'LineStyle', lineStyle, ...
                         'edgecolor', colorLinks, 'EdgeAlpha', transp);
                     annotationHandles = [annotationHandles; h]; %#ok<AGROW>
@@ -1425,7 +1438,6 @@ function cellAnnotator
                 tmp_i = tmp_i + 1;
             end
         end
-        drawnow
     end
 
     function displayUIElements

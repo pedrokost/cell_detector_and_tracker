@@ -594,8 +594,8 @@ while cont<N     % Principal loop
     if ~holdon, hold on, end 
      h = plot([x0 x],[y0 y],PlotOpt{:});
      % Elevates the value:
-     z = get(ha,'ZLim'); z = z(2);
-     set(h,'Zdata',[z0 z])
+     % z = get(ha,'ZLim'); z = z(2);
+     % set(h,'Zdata',[z z0])
      % Sets the color:
      if yescolor
       set(h,'Color',color)

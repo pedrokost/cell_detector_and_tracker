@@ -96,9 +96,9 @@ end
 
 % Facecolor = 'k' is (essentially) ignored here, but syntactically necessary
 if isempty(zs)
-    p = patch([xs(:);NaN],[ys(:);NaN],'k');
+    p = patch(xs(:),ys(:),'k');
 else
-    p = patch([xs(:);NaN],[ys(:);NaN],[zs(:);NaN],'k');
+    p = patch(xs(:),ys(:),zs(:),'k');
 end
 
 % Apply PV pairs
