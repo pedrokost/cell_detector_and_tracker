@@ -23,7 +23,7 @@ if ~exist('vl_setup','file')
 end
 
 %Load an Image
-imgFull = imread('kidney/testKidneyRed/im40.pgm');
+imgFull = imread('../data/series30green/im040.pgm');
 
 %Smooth the image
 img = imgFull;
@@ -32,11 +32,11 @@ img = imgFull;
 %Setup for the MSER algorithm
 numPixels = size(img,1)*size(img,2);
 minPixels = 100;
-maxPixels = 500;
+maxPixels = 200;
 BoD = 1; %Bright on Dark
 DoB = 0; %Dark on Bright
-Delta = 5;
-MaxVariation = 0.5;
+Delta = 4;
+MaxVariation = 1;
 MinDiversity = 0.1;
 
 %Convert to gray-scale, UINT8
@@ -49,6 +49,8 @@ imgClass = class(img);
 if ~strcmp(imgClass,'uint8')
     img = uint8(img);
 end
+
+profile on;
 
 %Compute MSERs
 [r,ell] = vl_mser(img,'MaxArea',maxPixels/numPixels,...
@@ -85,3 +87,7 @@ B(boundary == 255) = 0;
 img = cat(3,R,G,B);
 subplot(1,2,2),imshow(img);
 title('Boundaries');
+
+profile off;
+
+profile viewer

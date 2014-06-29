@@ -25,7 +25,7 @@ while ~done
     
     patterns = {} ;
     labels = {} ;
-    p = numel(trainFiles); %nImages
+    p = 1; %nImages
     
     %-----------------------------------------------------Select Classifier
     
@@ -71,6 +71,10 @@ while ~done
             load([dataFolder '/feats_' trainFiles{d} '.mat']);
         end
         
+        % Skip ahead if the frame has no images to train on.
+        if size(gt, 1) == 0
+            continue
+        end
         %         imshow(img); hold on, plot(gt(:,1), gt(:,2), '*r');
         %         pause;
         
@@ -110,10 +114,10 @@ while ~done
             dotsInside{p} = gtInMSER;
             sizesR{p} = sizeMSER;
             trees{p} = MSERtree;
-            p = p - 1;
+            p = p + 1;
             
         else
-            
+            % FIXME: p was numel(images), now it starts at 1
             for p = current+length(r)-1:-1:current
                 patterns{p} = X(p-current+1,:)';
                 labels{p}   = Y(p-current+1);
