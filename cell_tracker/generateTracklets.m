@@ -38,7 +38,7 @@ function tracklets = generateTracklets(folderOUT)
 		dotsB = [1 1; 3 3]; nCellsB = 2; XB = dotsB;
 	else
 		load(fullfile(folderOUT, matfileB.name));
-		XB = X; dotsB = dots; nCellsB = size(dotsB, 1);
+		XB = descriptors; dotsB = dots; nCellsB = size(dotsB, 1);
 	end
 
 	tracklets(1:nCellsB, 1, :) = dotsB;
@@ -64,7 +64,7 @@ function tracklets = generateTracklets(folderOUT)
 			end
 		else	
 			load(fullfile(folderOUT, matfileB.name));
-			XB = X; dotsB = dots; nCellsB = size(dotsB, 1);
+			XB = descriptors; dotsB = dots; nCellsB = size(dotsB, 1);
 		end
 		fprintf('Processing frame %d (%s)\n', f, matfileB.name);
 		%-------------------------------------------------Find matches A <-> B
@@ -83,7 +83,7 @@ function tracklets = generateTracklets(folderOUT)
 		% 	[symm right left selectedRight selectedLeft] = match(XA, XB, dotsA, dotsB);
 		% end
 		
-		[symm right left selectedRight selectedLeft] = match(XA, XB, dotsA, dotsB);
+		[symm right left selectedRight selectedLeft] = match(XA, XB, dotsA, dotsB)
 			
 		%-----------------------------------------------Update existing tracks
 		Tcurr = zeros(nCellsA, 2);

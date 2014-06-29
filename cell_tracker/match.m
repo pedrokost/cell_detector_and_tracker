@@ -32,8 +32,9 @@ function [symm right left selectedRight selectedLeft] = match(XA, XB, dotsA, dot
 
 %---------------------------------------------------Options
 
+
 % TODO: replace with limits for each feature
-MIN_P_LINK = 0.7;
+MIN_P_LINK = 0.0;
 
 testing = 0;
 % Defaults
@@ -156,45 +157,4 @@ selectedLeft = idxLeft == 1:nCellsB;
 symm = right;
 symm(~selectedRight) = 0;
 
-end
-
-function varargout = normalizeRangeMulti(varargin)
-	% Given a sequences of matrixes nObsxnFeats, and an optional cell array containing indices with data of equal metrics, normalizes the data
-	% normalizeRangeMulti(A, B, {1:2, [3 6 7]})
-	if nargin < 1 && class(varargin{1} ~= 'cell')
-		error('At least one matrix must be provided')
-	end
-
-	nFeats = size(varargin{1}, 2);
-	mins = zeros(1, nFeats);
-	maxs = zeros(1, nFeats);
-	remainingFeats = 1:nFeats;
-
-	if class(varargin{end}) == 'cell'; nins = nargin - 1;
-	else nins = nargin; end;
-
-	data = vertcat(varargin{1:nins});
-
-	minimum = min(data, [], 1);
-	maximum = max(data, [], 1);
-
-	for idx=varargin{end}
-		minimum(idx{1}) = min(minimum(idx{1}));
-		maximum(idx{1}) = max(maximum(idx{1}));
-	end
-
-	for i=1:nins
-		varargout{i} = normalizeRange(varargin{i}, minimum, maximum);
-	end
-end
-
-function [X minimum maximum] = normalizeRange(X, minimum, maximum)
-	if nargin < 3
-		minimum = min(X, [], 1);
-		maximum = max(X, [], 1);
-	end
-	diffs = maximum - minimum;
-	X = bsxfun(@minus, X, minimum);
-	X = bsxfun(@rdivide, X, diffs);
-	X(:, diffs < 1e-4) = 1;
 end
