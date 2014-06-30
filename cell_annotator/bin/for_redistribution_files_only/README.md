@@ -1,7 +1,7 @@
 ![cell annotator logo](https://gitlab.doc.ic.ac.uk/pdk10/cell-tracking/raw/master/cell_annotator/thumbnail.png "Cell Annotator") Cell Annotator
 ===================================
 
-A utility to facilitate the annotation of cell images with dots connect the cells between consecutive frames (links).
+A utility to facilitate the annotation of cell images with dots and connect the cells between consecutive frames (links).
 
 Dots represent the centroids of cells, while links connect the same cells across consecutive frames.
 
@@ -9,7 +9,7 @@ Dots represent the centroids of cells, while links connect the same cells across
 
 ## Possible applications
 
-The main goal of this application is the annotation of cells in image sequences, however it can be used for the annotation of any kind of images with dots, for example any particle system.
+The main goal of this application is the annotation of cells in image sequences, however it can be used for the annotation of any kind of images with dots, for example a particle system.
 
 ## Usage
 
@@ -28,6 +28,8 @@ The MATLAB Compiler Runtime (installed automatically if missing)
 * Shortcuts for many things
 * Overlay of a different annotation set, for example one obtained using a cell detection algorithm.
 * Resizable interface
+* Full image mode with shortcut 'f'
+* Helper mask for linking cells in densely populated images
 
 ## File format
 
@@ -66,8 +68,18 @@ links =
 * If an action (eg add link) is being used and the window is closed, a new blank figure will open.
 * Cannot use scroll wheel to scroll between images when an action is being used (eg add dot annotation)
 * When the `+ link` tool is being use, and a new tool is selected, the tool change happens only after the user clicks twice on invalid cells (eg. twice on the same image, or too far from annotated cells)
+* The first click on the image to add an annotation takes several seconds.
 
 ## TODO
 
 * licence (probably BSD)
-* compile binary
+* refactor the code (it's a huge mess)
+
+## Changelog
+
+New in v1.1:
+- NEW: Fullscreen toggle with 'f'
+- NEW: Helper mask for adding links
+- BUGFIX: Support for MATLAB 2014b new graphics engine
+- BUGFIX: Improved plotting performance (less rerendering)
+- NEW: faster tool to annotate links
