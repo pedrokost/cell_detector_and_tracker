@@ -20,7 +20,7 @@ function tracklets = generateTracklets(folderOUT)
 	end
 
 	if test
-		nFrames = 4;
+		nFrames = 5;
 		nTracklets = 5; % estimate
 		firstFrame = 1;
 	else
@@ -67,7 +67,9 @@ function tracklets = generateTracklets(folderOUT)
 			elseif f==3
 				dotsB = [3 3; 1 1; 2 2]; nCellsB = 3; XB = dotsB;
 			elseif f==4
-				dotsB = [3 3; 1 1; 2.5 2.5]; nCellsB = 2; XB = dotsB;
+				dotsB = [3 3; 1 1; 2.5 2.5]; nCellsB = 3; XB = dotsB;
+			elseif f==5
+				dotsB = [2.5 2.5; 2 2; 3 3]; nCellsB = 3; XB = dotsB;
 			end
 		else	
 			load(fullfile(folderOUT, matfileB.name));
@@ -92,7 +94,7 @@ function tracklets = generateTracklets(folderOUT)
 		
 		[permutation right left selectedRight selectedLeft] = match(XA, XB, dotsA, dotsB);
 
-		[globalPremutation, currNumTracklets] = updateGlobalPermutation(globalPremutation, currNumTracklets, permutation, selectedLeft, selectedRight);
+		[globalPremutation, currNumTracklets] = updateGlobalPermutation(globalPremutation, currNumTracklets, permutation, selectedLeft, selectedRight)
 
 		% if f == 2
 		% 	currNumTracklets = 3;
@@ -108,10 +110,8 @@ function tracklets = generateTracklets(folderOUT)
 		gFrameCells = getCellTrackletsFrame(dotsB, globalPremutation, currNumTracklets);
 
 		tracklets(1:currNumTracklets, f, :) = gFrameCells;
-
+		dotsB(:, 1)
 		tracklets(:, :, 1)
-
-
 		% Tcurr = zeros(nCellsA, 2);
 
 		% if ~(any(size(permutation) == 0)) % if no cells
@@ -150,6 +150,7 @@ function tracklets = generateTracklets(folderOUT)
 		%--------------------------------------Use current data for next frame
 		% Tprev = Tcurr;
 	end
+
 end
 
 function gFrameCell = getCellTrackletsFrame(dotsB, globalPremutation, currNumTracklets)
@@ -178,11 +179,18 @@ function [globalPremutation, currNumTracklets] = updateGlobalPermutation(globalP
 	% globalPremutation = globalPremutation(permutation', :)
 	% See if u can update globalPremutation
 	% Else add new tracks
-	globalPremutation = zeros(size(globalPremutation));
-
+	perm = zeros(size(permutation));
+	for i=1:numel(perm)
+		if globalPremutation(i)
+			perm(i) = permutation(globalPremutation(i));
+		end
+	end
+	% perm = permutation(globalPremutation(1:numel(permutation)));
+	globalPremutation = perm'; % zeros(size(globalPremutation));
 
 	%---------------------------------------------------------Update tracklets
 
+	permutation
 	% for each existing cell
 	% find where it is saved in the dotsB
 	% and return its index
