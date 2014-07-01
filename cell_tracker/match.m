@@ -33,9 +33,9 @@ function [symm right left selectedRight selectedLeft] = match(XA, XB, dotsA, dot
 %---------------------------------------------------Options
 
 % TODO: replace with limits for each feature
-MIN_P_LINK = 0.0;
+MIN_P_LINK = 0.1;
 
-testing = 0;
+testing = false;
 % Defaults
 normalizeFeatures = 1;
 compareLocations = 1;
@@ -103,10 +103,10 @@ nCellsA = size(dotsA, 1);
 nCellsB = size(dotsB, 1);
 
 if nCellsA == 0 || nCellsB == 0
-	symm = zeros(nCellsA, 0);
+	symm = zeros(0, nCellsA);
 	right = []; left = [];
-	selectedRight = zeros(nCellsA, 1);
-	selectedLeft = zeros(nCellsB, 1);
+	selectedRight = zeros(1, nCellsA);
+	selectedLeft = zeros(1, nCellsB);
 	return
 end
 
