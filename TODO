@@ -2,6 +2,8 @@ Today:
    ☐ For whatever I do, I would like to have high quality data, to be able to see if algorithms work or not. For this reason, I will spend the next day or two
    ☐ cell_matcher: for matching use a naive bayes classifier with a large trained dataset
    ☐ Find effective matching features, make sure the matches are of good quality. Eliminate weak features.
+   ☐ Make all vectors vertical to prevent uneccessary transposes
+   ☐ Place threshold for matcher
    ☐ Find robust tracklets only
    ☐ cell_detector: use the builtin canny edge detector, with params 0.6+
 Approaches to solve the MAP problem of connecting tracklets:

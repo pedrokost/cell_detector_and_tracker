@@ -143,8 +143,9 @@ function [globalPremutation, currNumTracklets] = updateGlobalPermutation(globalP
 	%---------------------------------------------------------Update tracklets
 	% globalPremutation
 	% permutation
+
 	if ~isempty(permutation)
-		perm = zeros(size(permutation));
+		perm = zeros(size(globalPremutation'));
 		for i=1:numel(globalPremutation)
 			if globalPremutation(i)
 				perm(i) = permutation(globalPremutation(i));

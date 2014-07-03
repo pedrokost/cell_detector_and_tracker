@@ -59,7 +59,7 @@ function trackletViewer(tracklets, options)
 	end
 	axis tight;
 	% view(-72,8)
-	view(-90,0)
+	view(90,0)
 
 	if animate
 		h = 0;
