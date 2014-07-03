@@ -2,7 +2,6 @@ Today:
    ☐ For whatever I do, I would like to have high quality data, to be able to see if algorithms work or not. For this reason, I will spend the next day or two
    ☐ cell_matcher: for matching use a naive bayes classifier with a large trained dataset
    ☐ Find effective matching features, make sure the matches are of good quality. Eliminate weak features.
-   ☐ genreateTraclets: withAnnotations
    ☐ Place threshold for matcher
    ☐ Find robust tracklets only
    ☐ cell_detector: use the builtin canny edge detector, with params 0.6+
@@ -31,6 +30,7 @@ Traclet evaluation metrics:
   (3) FAPF: False Alarm Per Frame.
 ＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿
 Archive:
+ ✔ genreateTraclets: withAnnotations @done (14-07-03 13:09) @project(Today)
  ✔ Make all vectors vertical to prevent uneccessary transposes @done (14-07-03 11:58) @project(Today)
  ✔ The feature vectors should be normalized by group: if a feature takes several cols, normalize it to 0-max of the set of cols @done (14-06-23 14:23) @project(Today)
  ✔ The cell detector should have an option to output 2 different feature vectors @done (14-06-23 14:23) @project(Today)
