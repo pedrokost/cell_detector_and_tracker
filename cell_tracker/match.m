@@ -103,10 +103,10 @@ nCellsA = size(dotsA, 1);
 nCellsB = size(dotsB, 1);
 
 if nCellsA == 0 || nCellsB == 0
-	symm = zeros(0, nCellsA);
+	symm = zeros(nCellsA, 0);
 	right = []; left = [];
-	selectedRight = zeros(1, nCellsA);
-	selectedLeft = zeros(1, nCellsB);
+	selectedRight = zeros(nCellsA, 1);
+	selectedLeft = zeros(nCellsB, 1);
 	return
 end
 
@@ -124,7 +124,7 @@ end
 %------------------------------------Find symmetric matches
 [vright, right] = max(dists, [], 2);  % A --> B
 [vleft, left] = max(dists, [], 1);   % A <-- B
-right = right';
+left = left';
 
 ok = vright >= MIN_P_LINK;
 right(~ok) = NaN;
@@ -147,11 +147,10 @@ for i=1:nCellsB
 		idxLeft(i) = right(left(i));
 	end
 end
-
 % Then select only the matches where that indexed version == 1:nCells
-selectedRight = idxRight == 1:nCellsA;
+selectedRight = idxRight == (1:nCellsA)';
 % SelectedLeft indicates the cells in B that have a symmetric match in A
-selectedLeft = idxLeft == 1:nCellsB;
+selectedLeft = idxLeft == (1:nCellsB)';
 %----------------------------------------Set bad matches to 0
 symm = right;
 symm(~selectedRight) = 0;

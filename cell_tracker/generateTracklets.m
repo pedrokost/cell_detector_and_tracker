@@ -1,14 +1,20 @@
-function tracklets = generateTracklets(folderOUT)
+function tracklets = generateTracklets(folderOUT, withAnnoations)
 % GENERATETRACKLETS generates robust tracklets based on data found in the provided folder
 % Inputs:
 % 	- folderOUT = folder containing im*.mat files which contain a 
 %		feature vector and location of each cell. One file per image.
+% 	- withAnnotations = boolean saying if the metadata files have links annotations.
+% 		If false, it will use the match function to find matches
 % Output:
 % 	- tracklets = a matrix of tracklets. Each row belongs to one 
 %		tracklet
 
 	mockData = false;
 	mockGlobalPermutation = false;
+
+	if nargin < 2
+		withAnnoations = false;
+	end
 
 	if exist(folderOUT, 'dir') ~= 7
 		error('The folder "%s" does not exist.', folderOUT);
@@ -147,13 +153,13 @@ function [globalPremutation, currNumTracklets] = updateGlobalPermutation(globalP
 	% permutation
 
 	if ~isempty(permutation)
-		perm = zeros(size(globalPremutation'));
+		gPerm = zeros(size(globalPremutation));
 		for i=1:numel(globalPremutation)
 			if globalPremutation(i)
-				perm(i) = permutation(globalPremutation(i));
+				gPerm(i) = permutation(globalPremutation(i));
 			end
 		end
-		globalPremutation = perm';
+		globalPremutation = gPerm;
 	else
 		globalPremutation = zeros(size(globalPremutation));
 	end
@@ -161,8 +167,10 @@ function [globalPremutation, currNumTracklets] = updateGlobalPermutation(globalP
 	%--------------------------------------------------------Add new tracklets
 
 	% Only add new tracklets as new
-	[~, J] = find(~selectedLeft);
+	[I, J] = find(~selectedLeft);
 	newTracklets = sum(~selectedLeft);
 	currNumTracklets = currNumTracklets + newTracklets;
-	globalPremutation = vertcat(globalPremutation, J');
+	% globalPremutation
+	% I
+	globalPremutation = vertcat(globalPremutation, I);
 end

@@ -1,7 +1,7 @@
 rng(1234)
 figure(1); clf;
 
-folderOUT = fullfile('..', 'data', 'series30green');
+folderOUT = fullfile('..', 'data', 'series30red');
 
 tracklets = generateTracklets(folderOUT);
 % tracklets(:, :, 1)
