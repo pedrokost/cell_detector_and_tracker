@@ -1,33 +1,57 @@
 Today:
-   ☐ For whatever I do, I would like to have high quality data, to be able to see if algorithms work or not. For this reason, I will spend the next day or two
-   ☐ cell_matcher: for matching use a naive bayes classifier with a large trained dataset
-   ☐ Find effective matching features, make sure the matches are of good quality. Eliminate weak features.
-   ☐ Place threshold for matcher
-   ☐ Find robust tracklets only
-   ☐ cell_detector: use the builtin canny edge detector, with params 0.6+
+	☐	D1
+	☐	D2
+	☐	M1
+	☐	M2
+Cell matcher:
+	☐ 1) Given the detection results and the annotated links create a matrix det1 det2 [binary] indicating if the detectors match or not
+	☐ 2) build a algorithm to decide if the vectors match (make sure the algorithm is good with outliers... not all descriptors will be of good quality due to high image noise). The output of the algorithm should be the probability of linking. > 0.5 link, else not.
+Cell detector:
+	☐ 1) detector saves more features
+	☐ 2) Run detector on an example annotated dataset to extract new descriptors
+	☐ If any detector NaN, in the end don't show average NaN.
+	☐ Read Pylon stuff
+	☐ New features to try:
+		☐ Histeq + Laplacian(0.2) creates empty places in maximums, noise everywhere else
+		☐ use the builtin canny edge detector, with params 0.6+
+Cell tracker:
+	☐ 1) Robust tracklets (reqs: M1, M2, D1, D2 )
+	☐ 2) Start building the hypothesis matrix (just the structure)
+	☐ 3) compute the remaining probabilities
+		☐ link
+		☐ init
+		☐ term
+Cell annotator:
+	☐ Larger marker for detections
+	☐ Copy anotations over
+	☐ Copy links over
+	☐ Diplay links in different colors
+	☐ New tab/window that displays the tracklets in 3d
+	☐ Elimintate uncessary filters
+	☐ Colormap: change marker colors for best visibility
+	☐ Help window
+	☐ For whatever I do, I would like to have high quality data, to be able to see if algorithms work or not. For this reason, I will spend the next day or two
+	☐ skip bad frames annotation
+	☐ Menu bar for basic tools (load dets...)
+Evaluations:
+	☐ Evaluations with single type of cells (red/green)
+	☐ Evaluations with different number of training/testing examples
+	☐ Train a compound model with cells of different images
 Approaches to solve the MAP problem of connecting tracklets:
-    ☐ Hungarian algorithm (cannot handle division)
-    ☐ Linear programming (handles division)
-    ☐ Network flow
+	☐ Hungarian algorithm (cannot handle division)
+	☐ Linear programming (handles division)
+	☐ Network flow
 Data flow process:
    ☐ annotator: IN: any, OUT: dots + links # I have lost Match features
    ☐ detector train: IN: dots + [links], OUT: dots
    ☐ detector test : IN: images, OUT: dots + MatchFeatures
    ☐ tracker: IN: dots + Match features, OUT: robust tracklets
    ☐ linker : IN: dots + robust matches, OUT: dots + links
-TODO:
- ☐ compute the remaining probabilities
- ☐ If any detector NaN, in the end don't show average NaN.
- ☐ skip bad frames (leave an annotation to take into account in the algorithm)
- ☐ Train a compound model
- ☐ Read Pylon stuff
- ☐ New features to try:
-     ☐ Histeq + Laplacian(0.2) creates empty places in maximums, noise everywhere else
 
-Traclet evaluation metrics:
-   (1) MOTA: Multiple Object Tracking Accuracy, calculated from the number of false alarms, missed detections, and identity switches;
-  (2) FGTIM: Fraction of Ground Truth Instances Missed; and
-  (3) FAPF: False Alarm Per Frame.
+Track evaluation metrics:
+	(1) MOTA: Multiple Object Tracking Accuracy, calculated from the number of false alarms, missed detections, and identity switches;
+	(2) FGTIM: Fraction of Ground Truth Instances Missed; and
+	(3) FAPF: False Alarm Per Frame.
 ＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿
 Archive:
  ✔ genreateTraclets: withAnnotations @done (14-07-03 13:09) @project(Today)
