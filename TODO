@@ -3,6 +3,7 @@ Today:
    ☐ cell_matcher: for matching use a naive bayes classifier with a large trained dataset
    ☐ Find effective matching features, make sure the matches are of good quality. Eliminate weak features.
    ☐ Find robust tracklets only
+   ☐ cell_detector: use the builtin canny edge detector, with params 0.6+
 Approaches to solve the MAP problem of connecting tracklets:
     ☐ Hungarian algorithm (cannot handle division)
     ☐ Linear programming (handles division)
