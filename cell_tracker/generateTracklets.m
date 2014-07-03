@@ -47,7 +47,12 @@ function tracklets = generateTracklets(folderOUT, withAnnoations)
 	else
 		load(fullfile(folderOUT, matfileB.name));
 		dotsB = dots; nCellsB = size(dotsB, 1);
-		if exist('descriptors', 'var') == 1; XB = descriptors; else; XB = zeros(nCellsB, 2); end
+
+		if withAnnoations
+			linksB = links;
+		else
+			XB = descriptors;
+		end
 	end
 
 	currNumTracklets = nCellsB;
@@ -59,7 +64,12 @@ function tracklets = generateTracklets(folderOUT, withAnnoations)
 	for f=firstFrame+1:nFrames
 		%------------------------------------------------------------Load data
 		matfileA = matfileB;
-		XA = XB; dotsA = dotsB; nCellsA = nCellsB;
+		dotsA = dotsB; nCellsA = nCellsB;
+		if withAnnoations
+			linksA = linksB;
+		else
+			XA = XB;
+		end
 
 		matfileB = matfiles(f);
 
@@ -80,7 +90,12 @@ function tracklets = generateTracklets(folderOUT, withAnnoations)
 		else	
 			load(fullfile(folderOUT, matfileB.name));
 			dotsB = dots; nCellsB = size(dotsB, 1);
-			if exist('descriptors', 'var') == 1; XB = descriptors; else; XB = zeros(nCellsB, 2); end
+
+			if withAnnoations
+				linksB = links;
+			else
+				XB = descriptors;
+			end
 		end
 		fprintf('Processing frame %d (%s)\n', f, matfileB.name);
 		%-------------------------------------------------Find matches A <-> B
@@ -99,7 +114,16 @@ function tracklets = generateTracklets(folderOUT, withAnnoations)
 		% 	[permutation right left selectedRight selectedLeft] = match(XA, XB, dotsA, dotsB);
 		% end
 		
-		[permutation right left selectedRight selectedLeft] = match(XA, XB, dotsA, dotsB);
+		if withAnnoations
+			permutation = linksA;
+			selectedLeft = zeros(nCellsB, 1);
+			selectedLeft(linksA(linksA~=0)) = 1;
+		else
+			[permutation right left selectedRight selectedLeft] = match(XA, XB, dotsA, dotsB);
+		end
+
+		% permutation
+		% selectedLeft
 
 		if mockGlobalPermutation
 			if f == 2
@@ -122,7 +146,7 @@ function tracklets = generateTracklets(folderOUT, withAnnoations)
 				globalPremutation = [0 0 0 0 0 1 2 3]';
 			end
 		else
-			[globalPremutation, currNumTracklets] = updateGlobalPermutation(globalPremutation, currNumTracklets, permutation, selectedLeft, selectedRight);
+			[globalPremutation, currNumTracklets] = updateGlobalPermutation(globalPremutation, currNumTracklets, permutation, selectedLeft);
 		end
 
 		gFrameCells = getCellTrackletsFrame(dotsB, globalPremutation, currNumTracklets);
@@ -142,7 +166,7 @@ function gFrameCell = getCellTrackletsFrame(dotsB, globalPremutation, currNumTra
 	end
 end
 
-function [globalPremutation, currNumTracklets] = updateGlobalPermutation(globalPremutation, currNumTracklets, permutation, selectedLeft,selectedRight)
+function [globalPremutation, currNumTracklets] = updateGlobalPermutation(globalPremutation, currNumTracklets, permutation, selectedLeft)
 	% UPDATEGLOBALPERMUTATION Updates the previous globalPremutation to be used for inserting the cells
 	% in the correct tracklet. a globalPremutation is some kind of an index which indicates
 	% to which location (tracklet) in the tracklets matrix should the cells be
