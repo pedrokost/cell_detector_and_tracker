@@ -2,6 +2,7 @@
 *.sublime-*
 *~
 cell_tracking_papers/code/arteta12_tests/CellDetect_v1.0/*/out*
-data/*OUT
+data/lung*OUT
+data/kidney*OUT
 data/*/feats_*.mat
 README.html
