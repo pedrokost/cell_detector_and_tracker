@@ -33,7 +33,7 @@ function [symm right left selectedRight selectedLeft] = match(XA, XB, dotsA, dot
 %---------------------------------------------------Options
 
 % TODO: replace with limits for each feature
-MIN_P_LINK = 0.1;
+MIN_P_LINK = 0.0;
 
 testing = false;
 % Defaults

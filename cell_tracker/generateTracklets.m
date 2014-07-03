@@ -40,7 +40,8 @@ function tracklets = generateTracklets(folderOUT)
 		dotsB = [1 1; 3 3]; nCellsB = 2; XB = dotsB;
 	else
 		load(fullfile(folderOUT, matfileB.name));
-		XB = descriptors; dotsB = dots; nCellsB = size(dotsB, 1);
+		dotsB = dots; nCellsB = size(dotsB, 1);
+		if exist('descriptors', 'var') == 1; XB = descriptors; else; XB = zeros(nCellsB, 2); end
 	end
 
 	currNumTracklets = nCellsB;
@@ -72,7 +73,8 @@ function tracklets = generateTracklets(folderOUT)
 			end
 		else	
 			load(fullfile(folderOUT, matfileB.name));
-			XB = descriptors; dotsB = dots; nCellsB = size(dotsB, 1);
+			dotsB = dots; nCellsB = size(dotsB, 1);
+			if exist('descriptors', 'var') == 1; XB = descriptors; else; XB = zeros(nCellsB, 2); end
 		end
 		fprintf('Processing frame %d (%s)\n', f, matfileB.name);
 		%-------------------------------------------------Find matches A <-> B
