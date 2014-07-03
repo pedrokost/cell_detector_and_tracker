@@ -1,14 +1,14 @@
 Today:
-	☐	D1
-	☐	D2
+	✔	D1 @done (14-07-03 16:28)
+	✔	D2 @done (14-07-03 16:28)
 	☐	M1
 	☐	M2
 Cell matcher:
 	☐ 1) Given the detection results and the annotated links create a matrix det1 det2 [binary] indicating if the detectors match or not
 	☐ 2) build a algorithm to decide if the vectors match (make sure the algorithm is good with outliers... not all descriptors will be of good quality due to high image noise). The output of the algorithm should be the probability of linking. > 0.5 link, else not.
 Cell detector:
-	☐ 1) detector saves more features
-	☐ 2) Run detector on an example annotated dataset to extract new descriptors
+	✔ 1) detector saves more features @done (14-07-03 16:28)
+	✔ 2) Run detector on an example annotated dataset to extract new descriptors @done (14-07-03 16:28)
 	☐ If any detector NaN, in the end don't show average NaN.
 	☐ Read Pylon stuff
 	☐ New features to try:

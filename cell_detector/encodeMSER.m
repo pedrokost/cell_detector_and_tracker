@@ -51,6 +51,9 @@ dPos = dPos+parms.nBinsIntHist;
 if parms.addIntHist
     x(pos:pos+parms.nBinsIntHist-1) = intHist;
     pos = pos+parms.nBinsIntHist;
+
+    descriptor(dPos:dPos+parms.nBinsIntHist-1) = intHist;
+    dPos = dPos+parms.nBinsIntHist;
 end
     
 if ~isempty(colorImg)
@@ -107,6 +110,12 @@ if parms.addDiffHist
         % To check, [a(:,1),a(:,2)]=ind2sub(size(im),distanceTransf(borderPixels))
         x(pos:pos+parms.nBinsDiffHist-1) = diffHist;
         pos = pos+parms.nBinsDiffHist;
+
+
+        descriptor(dPos:dPos+parms.nBinsDiffHist-1) = diffHist;
+        dPos = dPos+parms.nBinsDiffHist;
+
+        
     end
 end
 if parms.addShape || parms.addOrientation
@@ -114,11 +123,17 @@ if parms.addShape || parms.addOrientation
     if parms.addShape
         x(pos:pos+length(bins)-1) = bins';
         pos = pos+length(bins);
+
+        descriptor(dPos:dPos+length(bins)-1) = bins';
+        dPos = dPos+length(bins);
     end
     if parms.addOrientation
         orientHist = histc(angle,-90:180/parms.nBinsOrient:90-180/parms.nBinsOrient);
         x(pos:pos+parms.nBinsOrient-1) = orientHist;
         pos = pos+parms.nBinsOrient;
+
+        descriptor(dPos:dPos+parms.nBinsOrient-1) = orientHist;
+        dPos = dPos+parms.nBinsOrient;
     end
 end
 
@@ -128,6 +143,9 @@ if parms.addEdges
     nEdges = 100*nEdges/numPixels;
     x(pos) = nEdges;
     pos = pos + 1;
+
+    descriptor(dPos) = nEdges;
+    dPos = dPos + 1;
 end
 
 if parms.addOrientGrad
@@ -141,6 +159,9 @@ if parms.addOrientGrad
     sumOrientGrad = sumOrientGrad/(numel(sel)*10);
     x(pos:pos+parms.nBinsOrientGrad-1) = sumOrientGrad;
     pos = pos+parms.nBinsOrientGrad;
+
+    descriptor(dPos:dPos+parms.nBinsOrientGrad-1) = sumOrientGrad;
+    dPos = dPos+parms.nBinsOrientGrad;
 end
 
 if parms.addBias
