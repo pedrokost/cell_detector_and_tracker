@@ -14,6 +14,7 @@ Cell detector:
 	☐ New features to try:
 		☐ Histeq + Laplacian(0.2) creates empty places in maximums, noise everywhere else
 		☐ use the builtin canny edge detector, with params 0.6+
+	☐	Make it clear in the headers of the files which belong to Arteta, which have some of my changes, which are completely mine
 Cell tracker:
 	☐ 1) Robust tracklets (reqs: M1, M2, D1, D2 )
 	☐ 2) Start building the hypothesis matrix (just the structure)
@@ -37,16 +38,22 @@ Evaluations:
 	☐ Evaluations with single type of cells (red/green)
 	☐ Evaluations with different number of training/testing examples
 	☐ Train a compound model with cells of different images
+	☐	Try the tracker effectiveness if frames are skipped: what is the max number of frames that can be skipped while still obtaining good enough tracks
+Biological statics:
+	☐	Discover (find in prev papers) stats that might be of interest
+Final GUI:
+	☐	plan design/workflow on paper
+	☐	Ask Leo if we also need the option to train a new model
 Approaches to solve the MAP problem of connecting tracklets:
 	☐ Hungarian algorithm (cannot handle division)
 	☐ Linear programming (handles division)
 	☐ Network flow
 Data flow process:
-   ☐ annotator: IN: any, OUT: dots + links # I have lost Match features
-   ☐ detector train: IN: dots + [links], OUT: dots
-   ☐ detector test : IN: images, OUT: dots + MatchFeatures
-   ☐ tracker: IN: dots + Match features, OUT: robust tracklets
-   ☐ linker : IN: dots + robust matches, OUT: dots + links
+	☐ annotator: IN: any, OUT: dots + links # I have lost Match features
+	☐ detector train: IN: dots + [links], OUT: dots
+	☐ detector test : IN: images, OUT: dots + MatchFeatures
+	☐ tracker: IN: dots + Match features, OUT: robust tracklets
+	☐ linker : IN: dots + robust matches, OUT: dots + links
 
 Track evaluation metrics:
 	(1) MOTA: Multiple Object Tracking Accuracy, calculated from the number of false alarms, missed detections, and identity switches;
