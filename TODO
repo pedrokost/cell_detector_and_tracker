@@ -1,10 +1,10 @@
 Today:
 	✔	D1 @done (14-07-03 16:28)
 	✔	D2 @done (14-07-03 16:28)
-	☐	M1
+	✔	M1 @done (14-07-04 12:12)
 	☐	M2
 Cell matcher:
-	☐ 1) Given the detection results and the annotated links create a matrix det1 det2 [binary] indicating if the detectors match or not
+	✔ 1) Given the detection results and the annotated links create a matrix det1 det2 [binary] indicating if the detectors match or not @done (14-07-04 12:12)
 	☐ 2) build a algorithm to decide if the vectors match (make sure the algorithm is good with outliers... not all descriptors will be of good quality due to high image noise). The output of the algorithm should be the probability of linking. > 0.5 link, else not.
 Cell detector:
 	✔ 1) detector saves more features @done (14-07-03 16:28)
@@ -34,6 +34,8 @@ Cell annotator:
 	☐ For whatever I do, I would like to have high quality data, to be able to see if algorithms work or not. For this reason, I will spend the next day or two
 	☐ skip bad frames annotation
 	☐ Menu bar for basic tools (load dets...)
+	☐	 Show dots should only toggle annotation dots
+	☐	 Possibly add a button show generated tracks to complement show links
 Evaluations:
 	☐ Evaluations with single type of cells (red/green)
 	☐ Evaluations with different number of training/testing examples
