@@ -8,9 +8,7 @@ function [symm right left selectedRight selectedLeft] = match(XA, XB, dotsA, dot
 % 	- dotsA: coordinates of cells in image A
 % 	- dotsB: coordinates of cells in image B
 %	- options: an optinal struct containing these options
-%		- normalizeFeatures[false]
-%		- compareLocations[true]
-% 		- locationWeight[32]
+%		- match_thresh = match threshold
 % OUTPUTS:
 % 	- symm: a vector containing the corresponding robust matches.
 % 		symm(i) = 0 when that cell does not have a best match
@@ -33,23 +31,15 @@ function [symm right left selectedRight selectedLeft] = match(XA, XB, dotsA, dot
 %---------------------------------------------------Options
 
 % TODO: replace with limits for each feature
-MIN_P_LINK = 0.0;
+MIN_P_LINK = 0.9;
 
 testing = false;
-% Defaults
-normalizeFeatures = 1;
-compareLocations = 1;
-normalizeWeights = 1; % Add more importance to location
-featureWeights = struct(...
-	'x', 20, ...
-	'y', 20, ...
-	'area', 1);
 
 nObsA = size(dotsA, 1);
 nObsB = size(dotsB, 1);
 nFeats = size(XA, 2);
 
-locPos = 1:2;
+locPos = [nFeats+1; nFeats+2];
 featsPos = setdiff(1:nFeats+2, locPos);
 
 if nargin < 5
@@ -70,33 +60,23 @@ end
 
 %----------------------------Add location to feature vector
 
-if compareLocations
-	XA2 = zeros(nObsA, nFeats+2);
-	XA2(:, locPos) = dotsA;
-	XA2(:, featsPos) = XA;
-	XB2 = zeros(nObsB, nFeats+2);
-	XB2(:, locPos) = dotsB;
-	XB2(:, featsPos) = XB;
+XA2 = zeros(nObsA, nFeats+2);
+XA2(:, locPos) = dotsA;
+XA2(:, featsPos) = XA;
+XB2 = zeros(nObsB, nFeats+2);
+XB2(:, locPos) = dotsB;
+XB2(:, featsPos) = XB;
 
-	XA = XA2; clear XA2;
-	XB = XB2; clear XB2;
-end
-
-% FIXME: remove once bayesian classifier trained
-XA = XA(:, 1:3);
-XB = XB(:, 1:3);
+XA = XA2; clear XA2;
+XB = XB2; clear XB2;
 
 %----------------------------------------Normalize features
 % Normalizes the ranges of each column to 0-1
+% This is done automatically by the neural net algorithm
 
-if normalizeFeatures
-	[XA, XB] = normalizeRangeMulti(XA, XB, {locPos});
-end
-if normalizeWeights
-	weights = cell2mat(struct2cell(featureWeights))';
-	XA = bsxfun(@times, XA, weights);
-	XB = bsxfun(@times, XB, weights);
-end
+% if normalizeFeatures
+% 	[XA, XB] = normalizeRangeMulti(XA, XB, {locPos});
+% end
 
 %-----------------------------------------Compute distances
 nCellsA = size(dotsA, 1);
@@ -110,9 +90,10 @@ if nCellsA == 0 || nCellsB == 0
 	return
 end
 
-dists = pdist2(XA, XB);
-sigma = std(dists')'; % Not sure the original authors meant this
-dists = exp(-bsxfun(@rdivide, dists, sigma));
+dists = pdist2(XA, XB, @classifierDistance);
+% sigma = std(dists')'; % Not sure the original authors meant this
+% dists = exp(-bsxfun(@rdivide, dists, sigma));
+
 if testing
 	figure(2)
 	imagesc(dists)
@@ -154,5 +135,22 @@ selectedLeft = idxLeft == (1:nCellsB)';
 %----------------------------------------Set bad matches to 0
 symm = right;
 symm(~selectedRight) = 0;
+
+end
+
+function Y = classifierDistance(featsA, featsB, distPos)
+	% Given 2 feature vectors, returns the similarity given by the trained classifier. The similarity is a metric between 0 and 1.
+	if nargin < 3
+		nFeats = size(featsA, 2);
+		distPos =  nFeats+1:nFeats+2;
+	end
+
+	% This distance function must be the same as the one used in the classifier
+	D = euclideanDistance(featsA, featsB)';
+	Y = testMatcherClassifierNB(D');
+
+
+	MAX_DIST_PERC = 0.05;  % maximum displacement in percentage/100
+
 
 end

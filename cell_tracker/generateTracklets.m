@@ -97,7 +97,7 @@ function tracklets = generateTracklets(folderOUT, withAnnoations)
 				XB = descriptors;
 			end
 		end
-		fprintf('Processing frame %d (%s)\n', f, matfileB.name);
+		% fprintf('Processing frame %d (%s)\n', f, matfileB.name);
 		%-------------------------------------------------Find matches A <-> B
 		% if test
 		% 	if f==1

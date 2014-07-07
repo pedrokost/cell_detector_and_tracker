@@ -12,7 +12,6 @@ function M = buildTrainMatrixForFramePair(descriptorsA, descriptorsB, links)
 	nFeatures = size(descriptorsA, 2);
 
 	% Build a matrix containing for each GT dot and each Det dot a vector with the euclidean distance between the corresponding feature vectors (provided theres is a detection for the annotation), and an objective value of 1 if the cells are linked, 0 if not.
-	eucFnc = @(XI,XJ)(sqrt(bsxfun(@minus,XI,XJ).^2));
 
 	M = zeros(nDotsA * nDotsB, nFeatures + 1);
 
@@ -28,7 +27,7 @@ function M = buildTrainMatrixForFramePair(descriptorsA, descriptorsB, links)
 			% detected dot descriptor
 			detB = descriptorsB(iB, :);
 
-			M(cur_idx, 1:end-1) = eucFnc(detA, detB);
+			M(cur_idx, 1:end-1) = euclideanDistance(detA, detB);
 
 			% If there is a link between the cells, mark it in the objective column
 			if links(iA) == iB

@@ -1,15 +1,12 @@
 Today:
-	✔	D1 @done (14-07-03 16:28)
-	✔	D2 @done (14-07-03 16:28)
-	✔	M1 @done (14-07-04 12:12)
-	✔	M2 @done (14-07-04 17:05)
+	✔	M3 @done (14-07-07 12:13)
+	✔	T1 @done (14-07-07 12:13)
+	☐	T2
+	✔	T4 @done (14-07-07 16:21)
 Cell matcher:
-	✔ 1) Given the detection results and the annotated links create a matrix det1 det2 [binary] indicating if the detectors match or not @done (14-07-04 12:12)
-	✔ 2) build a algorithm to decide if the vectors match (make sure the algorithm is good with outliers... not all descriptors will be of good quality due to high image noise). The output of the algorithm should be the probability of linking. > 0.5 link, else not. @done (14-07-04 17:06)
-	☐	3) Update the match function to the trained neural network 
+	✔	3) Update the match function to the trained neural network @done (14-07-07 12:13)
+	✔	4) Train a matcher using a Naive Bayesian classifier @done (14-07-07 12:13)
 Cell detector:
-	✔ 1) detector saves more features @done (14-07-03 16:28)
-	✔ 2) Run detector on an example annotated dataset to extract new descriptors @done (14-07-03 16:28)
 	☐ If any detector NaN, in the end don't show average NaN.
 	☐ Read Pylon stuff
 	☐ New features to try:
@@ -17,12 +14,14 @@ Cell detector:
 		☐ use the builtin canny edge detector, with params 0.6+
 	☐	Make it clear in the headers of the files which belong to Arteta, which have some of my changes, which are completely mine
 Cell tracker:
-	☐ 1) Robust tracklets (reqs: M1, M2, D1, D2 )
+	✔ 1) Robust tracklets (reqs: M1, M2, D1, D2 ) @done (14-07-07 12:13)
 	☐ 2) Start building the hypothesis matrix (just the structure)
 	☐ 3) compute the remaining probabilities
 		☐ link
 		☐ init
 		☐ term
+	✔	4) Research lpsolve in Matlab and replicate the example in the paper, to see if you get the same result @done (14-07-07 16:21)
+	☐	5) Tracklet linking features: direction over last N frames, average displacement over last N frames, td of displacement over last N frames
 Cell annotator:
 	☐ Larger marker for detections
 	☐ Copy anotations over
@@ -64,6 +63,14 @@ Track evaluation metrics:
 	(3) FAPF: False Alarm Per Frame.
 ＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿
 Archive:
+	✔ 2) build a algorithm to decide if the vectors match (make sure the algorithm is good with outliers... not all descriptors will be of good quality due to high image noise). The output of the algorithm should be the probability of linking. > 0.5 link, else not. @done (14-07-04 17:06) @project(Cell matcher)
+	✔	M2 @done (14-07-04 17:05) @project(Today)
+	✔ 1) Given the detection results and the annotated links create a matrix det1 det2 [binary] indicating if the detectors match or not @done (14-07-04 12:12) @project(Cell matcher)
+	✔	M1 @done (14-07-04 12:12) @project(Today)
+	✔ 2) Run detector on an example annotated dataset to extract new descriptors @done (14-07-03 16:28) @project(Cell detector)
+	✔ 1) detector saves more features @done (14-07-03 16:28) @project(Cell detector)
+	✔	D2 @done (14-07-03 16:28) @project(Today)
+	✔	D1 @done (14-07-03 16:28) @project(Today)
  ✔ genreateTraclets: withAnnotations @done (14-07-03 13:09) @project(Today)
  ✔ Make all vectors vertical to prevent uneccessary transposes @done (14-07-03 11:58) @project(Today)
  ✔ The feature vectors should be normalized by group: if a feature takes several cols, normalize it to 0-max of the set of cols @done (14-06-23 14:23) @project(Today)
