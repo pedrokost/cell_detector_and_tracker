@@ -1,11 +1,10 @@
 Today:
-	✔	M3 @done (14-07-07 12:13)
-	✔	T1 @done (14-07-07 12:13)
 	☐	T2
-	✔	T4 @done (14-07-07 16:21)
+	☐	T3
+	☐	M6
 Cell matcher:
-	✔	3) Update the match function to the trained neural network @done (14-07-07 12:13)
-	✔	4) Train a matcher using a Naive Bayesian classifier @done (14-07-07 12:13)
+	☐	5) Train ANN and NB with much more data, possibly of all different datasets combined
+	☐	6) Annotate more datasets
 Cell detector:
 	☐ If any detector NaN, in the end don't show average NaN.
 	☐ Read Pylon stuff
@@ -14,28 +13,34 @@ Cell detector:
 		☐ use the builtin canny edge detector, with params 0.6+
 	☐	Make it clear in the headers of the files which belong to Arteta, which have some of my changes, which are completely mine
 Cell tracker:
-	✔ 1) Robust tracklets (reqs: M1, M2, D1, D2 ) @done (14-07-07 12:13)
 	☐ 2) Start building the hypothesis matrix (just the structure)
 	☐ 3) compute the remaining probabilities
-		☐ link
+		☐ link (reqs: T6)
 		☐ init
 		☐ term
-	✔	4) Research lpsolve in Matlab and replicate the example in the paper, to see if you get the same result @done (14-07-07 16:21)
+		☐	 FP
 	☐	5) Tracklet linking features: direction over last N frames, average displacement over last N frames, td of displacement over last N frames
+	☐	6) Read Single Quantum Dot Tracking paper
+	☐	7) Skip blurred frames, and leave an annotation that you skipped a frame (reqs: S4)
 Cell annotator:
-	☐ Larger marker for detections
-	☐ Copy anotations over
-	☐ Copy links over
-	☐ Diplay links in different colors
-	☐ New tab/window that displays the tracklets in 3d
-	☐ Elimintate uncessary filters
-	☐ Colormap: change marker colors for best visibility
-	☐ Help window
-	☐ For whatever I do, I would like to have high quality data, to be able to see if algorithms work or not. For this reason, I will spend the next day or two
-	☐ skip bad frames annotation
-	☐ Menu bar for basic tools (load dets...)
-	☐	 Show dots should only toggle annotation dots
-	☐	 Possibly add a button show generated tracks to complement show links
+	☐ 1) Larger marker for detections
+	☐ 2) Copy anotations over
+	☐ 3) Copy links over
+	☐ 4) Diplay links in different colors
+	☐ 5) New tab/window that displays the tracklets in 3d
+	☐ 6) Elimintate uncessary filters
+	☐ 7) Colormap: change marker colors for best visibility
+	☐ 8) Help window
+	☐ 9) For whatever I do, I would like to have high quality data, to be able to see if algorithms work or not. For this reason, I will spend the next day or two annotating datasets
+	☐ 10) skip bad frames annotation
+	☐ 11) Menu bar for basic tools (load dets...)
+	☐	 12) Show dots should only toggle annotation dots
+	☐	 13) Possibly add a button show generated tracks to complement show links
+Cell stabilizer:
+	☐	1) Read how to easily do image stabilization in matlab (instaed of SIFT, RANSAC, homography, etc, which might take too long)
+	☐	2) Eliminate all detected cells from the images and extract sifts of the remaining regions (or extract sifts everywhere, elimintae those close to the detected cells)
+	☐	3) Given the number of SIFTs detected, or their distribution (eg only bottom part of image), it may be possible to detect bad frames. Just analyse. (reqs: S2)
+	☐	4) Store the names of bad or correct frames in a file, so they can be skipped in the tracker (reqs: S3)
 Evaluations:
 	☐ Evaluations with single type of cells (red/green)
 	☐ Evaluations with different number of training/testing examples
@@ -63,6 +68,13 @@ Track evaluation metrics:
 	(3) FAPF: False Alarm Per Frame.
 ＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿
 Archive:
+	✔	T4 @done (14-07-07 16:21) @project(Today)
+	✔	4) Research lpsolve in Matlab and replicate the example in the paper, to see if you get the same result @done (14-07-07 16:21) @project(Cell tracker)
+	✔ 1) Robust tracklets (reqs: M1, M2, D1, D2 ) @done (14-07-07 12:13) @project(Cell tracker)
+	✔	T1 @done (14-07-07 12:13) @project(Today)
+	✔	M3 @done (14-07-07 12:13) @project(Today)
+	✔	4) Train a matcher using a Naive Bayesian classifier @done (14-07-07 12:13) @project(Cell matcher)
+	✔	3) Update the match function to the trained neural network @done (14-07-07 12:13) @project(Cell matcher)
 	✔ 2) build a algorithm to decide if the vectors match (make sure the algorithm is good with outliers... not all descriptors will be of good quality due to high image noise). The output of the algorithm should be the probability of linking. > 0.5 link, else not. @done (14-07-04 17:06) @project(Cell matcher)
 	✔	M2 @done (14-07-04 17:05) @project(Today)
 	✔ 1) Given the detection results and the annotated links create a matrix det1 det2 [binary] indicating if the detectors match or not @done (14-07-04 12:12) @project(Cell matcher)
