@@ -1,11 +1,12 @@
 rng(1234)
 figure(1); clf;
+clear all;
 
 % save('squarematch_tracklets.mat', 'tracklets')
 subplot(2,2,2)
 folderOUT = fullfile('..', 'data', 'series30greenOUT');
 tracklets = generateTracklets(folderOUT, false);
-save nbmatch_tracklets.mat
+save('nbmatch_tracklets.mat', 'tracklets')
 trackletViewer(tracklets, struct('animate', false, 'showLabel', false));
 title('Classifier tracklets Naive Bayes')
 

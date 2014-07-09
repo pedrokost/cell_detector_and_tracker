@@ -4,12 +4,12 @@ function trackletViewer(tracklets, options)
 	%-----------------------------------------------------------------Defaults
 	animate = true;
 	animationSpeed = 100; % pause is 1/animationSpeed
-	showLabel = true;
+	showLabels = true;
 	%------------------------------------------------------------------Options
 	if nargin < 2; options = struct; end
 
 	if isfield(options, 'animate'); animate = options.animate; end
-	if isfield(options, 'showLabel'); showLabel = options.showLabel; end
+	if isfield(options, 'showLabels'); showLabels = options.showLabels; end
 	if isfield(options, 'animationSpeed');
 		animationSpeed = options.animationSpeed;
 	end
@@ -51,7 +51,7 @@ function trackletViewer(tracklets, options)
 		ylabel('y')
 		zlabel('time')
 
-		if showLabel
+		if showLabels
 			text(x(1), y(1), z(1) - 1, num2str(t))
 		end
 		% color=1:length(x);
