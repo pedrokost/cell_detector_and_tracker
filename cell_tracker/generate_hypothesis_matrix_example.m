@@ -39,7 +39,7 @@ tracklets(:, :, 2) = [
 
 P = [
 0.7
-0.4
+0.3
 0.2
 0.9
 0.2
@@ -55,7 +55,7 @@ P = [
 0.8
 
 0.1
-0.5
+0.7
 0.2
 0.15
 0.2
@@ -71,14 +71,8 @@ P = [
 ];
 
 % Then try to compute something with it
-numVars = size(M, 2);
-numRows = size(M, 1);
-options = optimoptions('intlinprog', 'Display', 'off');
-xsol = intlinprog(-P, 1:numVars, [],[], M', ones(numVars, 1), zeros(numRows,1), ones(numRows, 1), options);
+Iopt = getGlobalOpimalAssociation(M, P);
 
 % % Pretty dispaly results
-hypothesisPrint(M, P, xsol, 'table')
-hypothesisPrint(M, P, xsol, 'short')
-
-clear all
-load cell_tracks
+hypothesisPrint(M, P, Iopt, 'table')
+hypothesisPrint(M, P, Iopt, 'short')
