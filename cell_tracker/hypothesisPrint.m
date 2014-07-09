@@ -21,11 +21,13 @@ function hypothesisPrintShort(H, P, selected)
 	% HYPOTHESISPRINTSHORT displays the optimal selection results by marking
 	% the rows of the hypothesis matrix that were selected as optimal
 
-		
+	fprintf('\n')
+	fprintf('The following actions are optimal:\n\n');
 	numRows = size(H, 1);
 	Hselected = H(find(selected), :);
 	Q = humanizeHypothesis(Hselected);
-	char(Q)
+	disp(char(Q))
+	fprintf('\n')
 
 end
 
@@ -42,7 +44,17 @@ function hypothesisPrintTable(H, P, selected)
 
 	Q = char(humanizeHypothesis(H));
 
+	% Pwdth 
+	actionWidth = num2str(size(Q, 2));
+	probWidth = num2str(size(num2str(P), 2));
+	hWidth = num2str(size(H, 2) + 3);
+
 	H = full(H);
-	% TODO add title
-	[selected * SELECTED_MARKER_LEFT bar Q bar num2str(P) bar H(:, 1:numTracklets)*49 bar H(:, (numTracklets+1):end)*49 bar selected * SELECTED_MARKER_RIGHT]
+	fprintf('\n')
+	ttlFmt = ['  | %-' actionWidth 's | %' probWidth 's | %-' hWidth, 's |  '];
+	ttl = sprintf(ttlFmt, 'Action', 'Prob', 'H');
+	disp(ttl)
+	disp(char(ones(1,length(ttl)) * '-'))
+	disp([selected * SELECTED_MARKER_LEFT bar Q bar num2str(P) bar H(:, 1:numTracklets)*49 bar H(:, (numTracklets+1):end)*49 bar selected * SELECTED_MARKER_RIGHT])
+	fprintf('\n')
 end
