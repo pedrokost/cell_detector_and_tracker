@@ -79,7 +79,7 @@ function [M, P] = generateHypothesisMatrix(tracklets, options)
 
 	% Compute false positive hypothesis
 	for i=1:numTracklets
-		P(probCumIdx + i) = 0.3;
+		P(probCumIdx + i) = 0.2;
 		I(hyphCumIdx + i) = i + hyphCumIdx;
 		I(hyphCumIdx + numTracklets + i) = i + hyphCumIdx;
 		J(hyphCumIdx + i) = i;

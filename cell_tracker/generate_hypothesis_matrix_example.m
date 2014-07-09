@@ -32,8 +32,6 @@ if testing
 
 else
 	load nbmatch_tracklets.mat
-	tracklets = tracklets(1:20, :, :)
-	size(tracklets)
 end
 
 f1 = subplot(1,2,1);
@@ -79,14 +77,11 @@ ax = axis(f1);
 % 	];
 % end
 
-size(M)
-size(P)
-
 % Then try to compute something with it
 Iopt = getGlobalOpimalAssociation(M, P);
 
 % % Pretty dispaly results
-hypothesisPrint(M, P, Iopt, 'table');
+% hypothesisPrint(M, P, Iopt, 'table');
 hypothesisPrint(M, P, Iopt, 'short');
 
 f2 = subplot(1,2,2);

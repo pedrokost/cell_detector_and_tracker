@@ -40,9 +40,12 @@ function tracks = updateTracklets(tracklets, Hopt)
 	remLhs = zeros(0, numTracklets);
 	remRhs = zeros(0, numTracklets);
 	while ~isempty(lhs)
-		[~, Jlhs] = find(lhs);
-		[~, Jrhs] = find(rhs);
-		for i=1:size(lhs, 1) % loop by index over links
+		[Ilhs, Jlhs] = find(lhs);
+		Jlhs2 = zeros(size(Jlhs));
+		Jlhs(Ilhs) = Jlhs; 
+		[Irhs, Jrhs] = find(rhs);
+		Jrhs(Irhs) = Jrhs; 
+		for i=1:numel(Jlhs) % loop by index over links
 			if mapIdx(Jlhs(i)) == 0
 				% 	if the LHS of links is NOT in mapIdx
 				% 		place it at the remLinks
@@ -62,7 +65,7 @@ function tracks = updateTracklets(tracklets, Hopt)
 
 
 	%-------------------------------------------------Create the tracks matrix
-
+	
 	% Used the mapping indices matrix to create the tracks matrix
 	tracks = zeros(numel(HinitIdx), numFrames, numDims);
 	% in case one of the corrdinates is 0, use max.
