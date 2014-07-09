@@ -1,6 +1,7 @@
 Today:
 	✔	T8 @done (14-07-09 10:14)
 	☐	T13
+	✔	T14 @done (14-07-09 16:05)
 	☐	T3.1
 	☐	T3.2
 	✔	T9 @done (14-07-09 14:39)
@@ -33,6 +34,7 @@ Cell tracker:
 	✔	11) Update tracklets based on optimal data association @done (14-07-09 13:14)
 	✔	12) Add title to hypothesis prints @done (14-07-09 13:31)
 	☐	13) BUGFIX: updating trcklets based on optimal data association is broken
+	✔	14) Add Hypothesis printer: table and fulltable @done (14-07-09 16:05)
 Cell annotator:
 	☐ 1) Larger marker for detections
 	☐ 2) Copy anotations over

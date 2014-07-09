@@ -32,6 +32,7 @@ if testing
 
 else
 	load nbmatch_tracklets.mat
+	tracklets = tracklets(1:20, :, :)
 	size(tracklets)
 end
 

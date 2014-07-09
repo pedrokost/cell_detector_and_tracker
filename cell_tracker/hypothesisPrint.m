@@ -12,6 +12,8 @@ function hypothesisPrint(H, P, selected, view)
 	switch view
 		case 'table'
 			hypothesisPrintTable(H, P, selected);
+		case 'fulltable'
+			hypothesisPrintTable(H, P, selected, true);
 		case 'short'
 			hypothesisPrintShort(H, P, selected);
 	end
@@ -31,9 +33,11 @@ function hypothesisPrintShort(H, P, selected)
 
 end
 
-function hypothesisPrintTable(H, P, selected)
+function hypothesisPrintTable(H, P, selected, fulltable)
 	% HYPOTHESISPRINTTABLE displays the optimal selection results as a short
 	% list of human readable actions
+
+	if nargin < 4; fulltable = false; end
 
 	numRows = size(H, 1);
 	numTracklets = size(H, 2) / 2;
@@ -51,10 +55,20 @@ function hypothesisPrintTable(H, P, selected)
 
 	H = full(H);
 	fprintf('\n')
-	ttlFmt = ['  | %-' actionWidth 's | %' probWidth 's | %-' hWidth, 's |  '];
-	ttl = sprintf(ttlFmt, 'Action', 'Prob', 'H');
+	if fulltable
+		ttlFmt = ['  | %-' actionWidth 's | %' probWidth 's | %-' hWidth, 's |  '];
+		ttl = sprintf(ttlFmt, 'Action', 'Prob', 'H');
+	else
+		ttlFmt = ['  | %-' actionWidth 's | %' probWidth 's |  '];
+		ttl = sprintf(ttlFmt, 'Action', 'Prob');
+	end
 	disp(ttl)
 	disp(char(ones(1,length(ttl)) * '-'))
-	disp([selected * SELECTED_MARKER_LEFT bar Q bar num2str(P) bar H(:, 1:numTracklets)*49 bar H(:, (numTracklets+1):end)*49 bar selected * SELECTED_MARKER_RIGHT])
+
+	if fulltable
+		disp([selected * SELECTED_MARKER_LEFT bar Q bar num2str(P) bar H(:, 1:numTracklets)*49 bar H(:, (numTracklets+1):end)*49 bar selected * SELECTED_MARKER_RIGHT])
+	else
+		disp([selected * SELECTED_MARKER_LEFT bar Q bar num2str(P) bar selected * SELECTED_MARKER_RIGHT])
+	end
 	fprintf('\n')
 end
