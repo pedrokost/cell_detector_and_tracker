@@ -14,6 +14,22 @@ function [M, P] = generateHypothesisMatrix(tracklets, options)
 	% 	M = a sparse row matrix containing a row for each tracklet hypotesis. The dimensions of this matrix are numHypothesis x (2*nTracklets)
 	% 	P = a column vector of length numHypothesis containing probablities for each hypothesis
 
+	% TODO: remove this:
+	% To compute the probablities I will need:
+	% 	- to compute Pfp and Ptp I will need:
+	% 		- MISS DETECTION rate of cell_detector
+	% 		- number of cells in tracklet
+	% 	- to compute the Plink I will need:
+	% 		A FEATURE VECTOR of first and last tracklet in sequence (CELL DESCRIPTOR)
+	% 		including motion feature and distance to following tracklet
+	% 		check that the spatial distribution of cells in tracklets is similar
+	% 	- to compute init prob I will need
+	% 		temporal and spatial distribution of tracks before it,
+	% 		and its proximity to a boundary  (IMAGE SIZE)
+	% 	- to compute term prob I will need
+	% 		temporal and spatial distribution of tracks after it,
+	% 		and its proximity to a boundary
+
 	%------------------------------------------------------------------Options
 	if nargin < 2; options = struct; end
 
