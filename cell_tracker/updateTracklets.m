@@ -6,9 +6,7 @@ function tracks = updateTracklets(tracklets, Hopt)
 	% Outputs:
 	% 	tracks = tracklets updated wrt the chosen hypothesis
 
-	char(humanizeHypothesis(Hopt))
-	tracklets
-	[numTracklets, numFrames] = size(tracklets);
+	[numTracklets, numFrames, numDims] = size(tracklets);
 
 	HinitAndTermIdx = find(sum(Hopt, 2) == 1);
 	[I, J] = find(Hopt(HinitAndTermIdx, :));
@@ -18,13 +16,12 @@ function tracks = updateTracklets(tracklets, Hopt)
 	% For each tracklet index in the original tracklets matrix,
 	% indicates the position index in the new tracks matrix.
 	mapIdx = zeros(numTracklets, 1); 
-	%------------------------------------------------------Copy over the inits
+	%------------------------------Create map index vector for initializations
 	[~, J] = find(Hopt(HinitIdx, :));
 	J = J - numTracklets;
-	tracks = tracklets(J, :, :);
 	mapIdx(J) = 1:numel(J);
 
-	%-------------------------------------------Copy over each linked tracklet
+	%-----------------------------------------Update map index for transitions
 
 	% Find the matrix of linking hypothesis
 	HfpAndLinkIdx = find(sum(Hopt, 2) == 2);
@@ -36,11 +33,9 @@ function tracks = updateTracklets(tracklets, Hopt)
 	
 	lhs = lhs(linksLocalIdx, :);
 	rhs = rhs(linksLocalIdx, :);
-	% full(lhs)
-	% full(rhs)
 
-	% TODO in this loop I could just update the indices, 
-	% and then all at once move the data
+	% Update the map indices, which indicate for each tracklet to which track
+	% it should be copied over
 
 	remLhs = zeros(0, numTracklets);
 	remRhs = zeros(0, numTracklets);
@@ -51,22 +46,34 @@ function tracks = updateTracklets(tracklets, Hopt)
 			if mapIdx(Jlhs(i)) == 0
 				% 	if the LHS of links is NOT in mapIdx
 				% 		place it at the remLinks
+				% TODO: this branch is not testesd
 				remLhs = vertcat(remLhs, lhs(i, :));
 				remRhs = vertcat(remRhs, rhs(i, :));
 			else
 				% take the tracklet in RHS
 				% place it into mapIdx(LHS)
 				% set mapIdx(RHS) = mapIdx(LHS)
-				t = tracklets(Jrhs(i), :, :);
-				tIdx = find(max(t(:, :, 1), t(:, :, 2))); % in case there are coordinates equal to 0;
-				tracks(mapIdx(Jlhs(i)), tIdx, :) = t(:, tIdx, :);
-				mapIdx(Jrhs(i)) = mapIdx(Jrhs(i));
+				mapIdx(Jrhs(i)) = mapIdx(Jlhs(i));
 			end
 		end
 		lhs = remLhs;
 		rhs = remLhs;
 	end
 
-	tracks
 
+	%-------------------------------------------------Create the tracks matrix
+
+	% Used the mapping indices matrix to create the tracks matrix
+	tracks = zeros(numel(HinitIdx), numFrames, numDims);
+	% in case one of the corrdinates is 0, use max.
+	% The algorithm assumes that cells are never in position [0 0]
+	[I, J] = find(max(tracklets, [], 3) ~= 0);
+	% tracks = tracklets(J, :, :);
+	% tracks(mapIdx(Jlhs(i)), tIdx, :) = t(:, tIdx, :);
+	for i=1:numTracklets
+		if mapIdx(i)
+			idx = J(I==i);
+			tracks(mapIdx(i), idx, :) = tracklets(i, idx, :);
+		end
+	end
 end

@@ -71,15 +71,15 @@ P = [
 Iopt = getGlobalOpimalAssociation(M, P);
 
 % % Pretty dispaly results
-hypothesisPrint(M, P, Iopt, 'table')
-hypothesisPrint(M, P, Iopt, 'short')
+hypothesisPrint(M, P, Iopt, 'table');
+hypothesisPrint(M, P, Iopt, 'short');
 
 figure(1); clf;
 f1 = subplot(1,2,1);
-trackletViewer(tracklets, struct('animate', false))
+trackletViewer(tracklets, struct('animate', false));
 ax = axis(f1);
 f2 = subplot(1,2,2);
 Mopt = M(find(Iopt), :);
 tracks = updateTracklets(tracklets, Mopt);
-trackletViewer(tracks, struct('animate', false))
+trackletViewer(tracks, struct('animate', false));
 axis(f2, ax)
