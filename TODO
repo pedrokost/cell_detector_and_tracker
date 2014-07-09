@@ -4,6 +4,7 @@ Today:
 	☐	M6
 	☐	T9
 	✔	T10 @done (14-07-09 10:21)
+	☐	T11
 Cell matcher:
 	☐	5) Train ANN and NB with much more data, possibly of all different datasets combined (reqs: M6)
 	☐	6) Annotate more datasets
@@ -27,6 +28,8 @@ Cell tracker:
 	✔	8) Human display results of learning connections @done (14-07-09 10:14)
 	☐	9) Connect tracklets based on global optimisation
 	✔	10) Functionalize finding global optimization @done (14-07-09 10:20)
+	☐	11) Update tracklets based on optimal data association
+	☐	12) Add title to hypothesis prints 
 Cell annotator:
 	☐ 1) Larger marker for detections
 	☐ 2) Copy anotations over

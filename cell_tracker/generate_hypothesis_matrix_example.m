@@ -9,11 +9,12 @@ tracklets = zeros(nTracklets, nFrames, 2);
 % tracklets(4, 2:9, 1) = round(rand(1, 8)*100);
 % tracklets(5, 1:5, 1) = round(rand(1, 5)*100);
 % tracklets(6, 6:10, 1) = round(rand(1, 5)*100);
+% tracklets(:, :, 2) = tracklets(:, :, 1);
 
 
 tracklets(:, :, 1) = [
 1 2 3 4 5 0 0 0 0 0;
-0 0 0 0 0 6.3 7 0 0 0;
+0 0 0 0 0 6 7 0 0 0;
 0 0 0 0 0 6 7 8 9 10;
 1 2 3 4 0 0 0 0 0 0;
 0 0 0 0 5 6 7 0 0 0;
@@ -30,10 +31,6 @@ tracklets(:, :, 2) = [
 0 0 0 0 3 3 2 2 2 2;
 0 0 0 0 0 0 0 5 5 5;
 ];
-
-% trackletViewer(tracklets, struct('animate', false));
-
-% tracklets(:, :, 2) = tracklets(:, :, 1);
 
 [M, P] = generateHypothesisMatrix(tracklets, struct('maxGap', 0));
 
@@ -76,3 +73,13 @@ Iopt = getGlobalOpimalAssociation(M, P);
 % % Pretty dispaly results
 hypothesisPrint(M, P, Iopt, 'table')
 hypothesisPrint(M, P, Iopt, 'short')
+
+figure(1); clf;
+f1 = subplot(1,2,1);
+trackletViewer(tracklets, struct('animate', false))
+ax = axis(f1);
+f2 = subplot(1,2,2);
+Mopt = M(find(Iopt), :);
+tracks = updateTracklets(tracklets, Mopt);
+trackletViewer(tracks, struct('animate', false))
+axis(f2, ax)
