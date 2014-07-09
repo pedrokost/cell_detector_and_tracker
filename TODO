@@ -1,6 +1,5 @@
 Today:
-	✔	T2 @done (14-07-08 16:42)
-	☐	T8
+	✔	T8 @done (14-07-09 10:14)
 	☐	T3
 	☐	M6
 	☐	T9
@@ -16,7 +15,6 @@ Cell detector:
 	☐	Make it clear in the headers of the files which belong to Arteta, which have some of my changes, which are completely mine
 	☐	Detect cells in all datasets (reqs: M6)
 Cell tracker:
-	✔ 2) Start building the hypothesis matrix (just the structure) @done (14-07-08 16:42)
 	☐ 3) compute the remaining probabilities
 		☐ link (reqs: T6)
 		☐ init
@@ -25,7 +23,7 @@ Cell tracker:
 	☐	5) Tracklet linking features: direction over last N frames, average displacement over last N frames, td of displacement over last N frames
 	☐	6) Read Single Quantum Dot Tracking paper
 	☐	7) Skip blurred frames, and leave an annotation that you skipped a frame (reqs: S4)
-	☐	8) Human display results of learning connections
+	✔	8) Human display results of learning connections @done (14-07-09 10:14)
 	☐	9) Connect tracklets based on global optimisation
 Cell annotator:
 	☐ 1) Larger marker for detections
@@ -73,6 +71,8 @@ Track evaluation metrics:
 	(3) FAPF: False Alarm Per Frame.
 ＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿
 Archive:
+	✔	T2 @done (14-07-08 16:42) @project(Today)
+	✔ 2) Start building the hypothesis matrix (just the structure) @done (14-07-08 16:42) @project(Cell tracker)
 	✔	T4 @done (14-07-07 16:21) @project(Today)
 	✔	4) Research lpsolve in Matlab and replicate the example in the paper, to see if you get the same result @done (14-07-07 16:21) @project(Cell tracker)
 	✔ 1) Robust tracklets (reqs: M1, M2, D1, D2 ) @done (14-07-07 12:13) @project(Cell tracker)
