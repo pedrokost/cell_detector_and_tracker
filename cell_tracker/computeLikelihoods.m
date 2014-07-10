@@ -45,7 +45,9 @@ function Liks = computeLikelihoods(tracklets, hypothesis, hypTypes, options)
 
 	%-------------------------------------------------Precompute probabilities
 
-	pLinks = computePlink(hypothesis(hypTypes==TYPE_LINK, :));
+	linkHypothesisIdx = find(hypTypes == TYPE_LINK);
+	linkHypothesis = hypothesis(linkHypothesisIdx, :);
+	pLinks = computePlink(linkHypothesis);
 	[pFPs, pTPs] = computeTruthnessProbs(1:numTracklets);
 
 	%------------------------------------------------------Compute likelihoods
@@ -62,9 +64,7 @@ function Liks = computeLikelihoods(tracklets, hypothesis, hypTypes, options)
 	[I, ~] = find(hypothesis(hypTypes == TYPE_FP, 1:numTracklets));
 	Liks(hypTypes == TYPE_FP) = pFPs(I);
 
-	% % Compute link hypothesis
-	linkHypothesisIdx = find(hypTypes == TYPE_LINK);
-	linkHypothesis = hypothesis(linkHypothesisIdx, :);
+	% Compute link hypothesis
 	for i=1:numel(linkHypothesisIdx)
 		[~, J] = find(linkHypothesis(i, :));
 		Liks(linkHypothesisIdx(i)) = pLinks(J(1), J(2)-numTracklets);
@@ -77,18 +77,75 @@ function Liks = computeLikelihoods(tracklets, hypothesis, hypTypes, options)
 		% Outputs:
 		% 	P = the probability of linking the pairs of tracklets as evaluated by a learned model, in the form a of matrix the same size as linkHypothesis;
 
-		P = zeros(numTracklets, numTracklets);
-
 		% Algorithm outline:
 		% Find init and end of each tracklet
 		% find the corresponding index of the cell in the image
 		% find the corresponding cell descriptor
 		% TODO: augement the cell descriptor with motion features
-		% create a sparse matrix like linkHypthesis
+		% create a sparse matrix like linkHypothesis
 		% for each possible link hypothesis evaluate the model
 
 		% For each tracklet, find where it starts and where it ends
-		% TODO complete
+
+		datafolder = fullfile('..', 'data', 'series30greenOUT');
+		numLinkHypothesis = size(linkHypothesis, 1);
+
+		P = sparse([],[],[], numTracklets, numTracklets);
+
+		trackletPairs = zeros(numLinkHypothesis, 2);
+		for i=1:numLinkHypothesis
+			[~, J] = find(linkHypothesis(i, :));
+			trackletPairs(i, :) = [J(1) J(2)-numTracklets];
+		end
+
+		numFeatures = 102; % together with dots
+		descriptorDistMatrix = zeros(size(trackletPairs, 1), numFeatures);
+		uniqueTracklets = unique(trackletPairs(:));
+		descriptors = zeros(numel(uniqueTracklets), numFeatures, 2);
+
+		% for each unique tracklet load the descriptor of the head and tail
+		% TODO I only need to load one of head/tail for each tracklet
+		for i=1:numel(uniqueTracklets)
+			[~, J] = find(max(tracklets(uniqueTracklets(i), :, :), [], 3));
+			trackletStartFrame = J(1);
+			trackletEndFrame = J(end);
+
+			dataA = load(fullfile(datafolder, sprintf('im%03d.mat', trackletStartFrame)));
+			dataB = load(fullfile(datafolder, sprintf('im%03d.mat', trackletEndFrame)));
+
+			posStartFrame = tracklets(uniqueTracklets(i), trackletStartFrame, :);
+			posStartFrame = [posStartFrame(1,1,1) posStartFrame(1,1,2)];
+			idx=ismember(dataA.dots, posStartFrame,'rows');
+			desA = dataA.descriptors(idx, :);
+			dotsA = dataA.dots(idx, :);
+
+			posEndFrame = tracklets(uniqueTracklets(i), trackletEndFrame, :);
+			posEndFrame = [posEndFrame(1,1,1) posEndFrame(1,1,2)];
+			idx=ismember(dataB.dots, posEndFrame,'rows');
+			desB = dataB.descriptors(idx, :);
+			dotsB = dataB.dots(idx, :);
+
+			desA = combineDescriptorsWithDots(desA, dotsA);
+			desB = combineDescriptorsWithDots(desB, dotsB);
+
+			descriptors(uniqueTracklets(i), :, 1) = desA;
+			descriptors(uniqueTracklets(i), :, 2) = desB;
+		end
+
+		Ds = zeros(numLinkHypothesis, numFeatures);
+		for i=1:numLinkHypothesis
+			trackletA = trackletPairs(i, 1);
+			trackletB = trackletPairs(i, 2);
+
+			D = euclideanDistance(descriptors(trackletA, :, 2), ... % tail
+								  descriptors(trackletB, :, 1)); % head
+			Ds(i, :) = D;
+		end
+
+		matchP = testMatcherTrackletJoinerNB(Ds);
+		for i=1:numLinkHypothesis
+			P(trackletPairs(i, 1), trackletPairs(i, 2)) = matchP(i);
+		end		
 	end
 
 	function [FP, TP] = computeTruthnessProbs(trackletIdx)

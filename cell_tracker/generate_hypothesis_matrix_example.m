@@ -83,7 +83,7 @@ Iopt = getGlobalOpimalAssociation(M, Liks);
 
 % % Pretty dispaly results
 % hypothesisPrint(M, P, Iopt, 'table');
-hypothesisPrint(M, Liks, Iopt, 'short');
+% hypothesisPrint(M, Liks, Iopt, 'short');
 
 f2 = subplot(1,2,2);
 Mopt = M(find(Iopt), :);

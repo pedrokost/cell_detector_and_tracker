@@ -79,14 +79,14 @@ if (true)
   % Generate MATLAB function for neural network for application deployment
   % in MATLAB scripts or with MATLAB Compiler and Builder tools, or simply
   % to examine the calculations your trained neural network performs.
-  genFunction(net,'testMatcherClassifier');
-  y = testMatcherClassifier(x);
+  genFunction(net,'testMatcherRobustClassifierANN');
+  y = testMatcherRobustClassifierANN(x);
 end
 if (false)
   % Generate a matrix-only MATLAB function for neural network code
   % generation with MATLAB Coder tools.
-  genFunction(net,'testMatcherClassifier','MatrixOnly','yes');
-  y = testMatcherClassifier(x);
+  genFunction(net,'testMatcherRobustClassifierANN','MatrixOnly','yes');
+  y = testMatcherRobustClassifierANN(x);
 end
 if (false)
   % Generate a Simulink diagram for simulation or deployment with.

@@ -147,7 +147,7 @@ function Y = classifierDistance(featsA, featsB, distPos)
 
 	% This distance function must be the same as the one used in the classifier
 	D = euclideanDistance(featsA, featsB)';
-	Y = testMatcherClassifierNB(D');
+	Y = testMatcherRobustClassifierNB(D');
 
 
 	MAX_DIST_PERC = 0.05;  % maximum displacement in percentage/100

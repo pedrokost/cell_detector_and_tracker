@@ -1,4 +1,4 @@
-function P = testMatcherClassifierNB(x)
+function P = testMatcherRobustClassifierNB(x)
 	data = load('match_predictor_nb.mat');
 
 
