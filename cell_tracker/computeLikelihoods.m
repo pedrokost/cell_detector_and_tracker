@@ -45,7 +45,7 @@ function Liks = computeLikelihoods(tracklets, hypothesis, hypTypes, options)
 
 	%-------------------------------------------------Precompute probabilities
 
-	pLinks = computePlink(hypothesis(hypTypes==TYPE_LINK,:));
+	pLinks = computePlink(hypothesis(hypTypes==TYPE_LINK, :));
 	[pFPs, pTPs] = computeTruthnessProbs(1:numTracklets);
 
 	%------------------------------------------------------Compute likelihoods
@@ -62,8 +62,13 @@ function Liks = computeLikelihoods(tracklets, hypothesis, hypTypes, options)
 	[I, ~] = find(hypothesis(hypTypes == TYPE_FP, 1:numTracklets));
 	Liks(hypTypes == TYPE_FP) = pFPs(I);
 
-	% Compute link hypothesis
-	Liks(hypTypes == TYPE_LINK) = 0.4;
+	% % Compute link hypothesis
+	linkHypothesisIdx = find(hypTypes == TYPE_LINK);
+	linkHypothesis = hypothesis(linkHypothesisIdx, :);
+	for i=1:numel(linkHypothesisIdx)
+		[~, J] = find(linkHypothesis(i, :));
+		Liks(linkHypothesisIdx(i)) = pLinks(J(1), J(2)-numTracklets);
+	end
 
 	function P = computePlink(linkHypothesis)
 		% COMPUTEPLINK for each link hypothesis compute the probability of linking
@@ -71,7 +76,8 @@ function Liks = computeLikelihoods(tracklets, hypothesis, hypTypes, options)
 		% 	linkHypothesis= a (sparse) matrix of dimensions numTracklets x numTracklets containing 1 if the tracks could potentially be linked
 		% Outputs:
 		% 	P = the probability of linking the pairs of tracklets as evaluated by a learned model, in the form a of matrix the same size as linkHypothesis;
-		P = linkHypothesis * 0.4;
+
+		P = zeros(numTracklets, numTracklets);
 
 		% Algorithm outline:
 		% Find init and end of each tracklet
