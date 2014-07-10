@@ -1,4 +1,4 @@
-function tracklets = generateTracklets(folderOUT, withAnnoations)
+function tracklets = generateTracklets(folderOUT, withAnnotations)
 % GENERATETRACKLETS generates robust tracklets based on data found in the provided folder
 % Inputs:
 % 	- folderOUT = folder containing im*.mat files which contain a 
@@ -13,7 +13,7 @@ function tracklets = generateTracklets(folderOUT, withAnnoations)
 	mockGlobalPermutation = false;
 
 	if nargin < 2
-		withAnnoations = false;
+		withAnnotations = false;
 	end
 
 	if exist(folderOUT, 'dir') ~= 7
@@ -48,7 +48,7 @@ function tracklets = generateTracklets(folderOUT, withAnnoations)
 		load(fullfile(folderOUT, matfileB.name));
 		dotsB = dots; nCellsB = size(dotsB, 1);
 
-		if withAnnoations
+		if withAnnotations
 			linksB = links;
 		else
 			XB = descriptors;
@@ -65,7 +65,7 @@ function tracklets = generateTracklets(folderOUT, withAnnoations)
 		%------------------------------------------------------------Load data
 		matfileA = matfileB;
 		dotsA = dotsB; nCellsA = nCellsB;
-		if withAnnoations
+		if withAnnotations
 			linksA = linksB;
 		else
 			XA = XB;
@@ -91,7 +91,7 @@ function tracklets = generateTracklets(folderOUT, withAnnoations)
 			load(fullfile(folderOUT, matfileB.name));
 			dotsB = dots; nCellsB = size(dotsB, 1);
 
-			if withAnnoations
+			if withAnnotations
 				linksB = links;
 			else
 				XB = descriptors;
@@ -114,7 +114,7 @@ function tracklets = generateTracklets(folderOUT, withAnnoations)
 		% 	[permutation right left selectedRight selectedLeft] = match(XA, XB, dotsA, dotsB);
 		% end
 		
-		if withAnnoations
+		if withAnnotations
 			permutation = linksA;
 			selectedLeft = zeros(nCellsB, 1);
 			selectedLeft(linksA(linksA~=0)) = 1;

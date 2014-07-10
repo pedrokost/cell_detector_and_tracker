@@ -6,7 +6,8 @@ clear all;
 subplot(2,2,2)
 folderOUT = fullfile('..', 'data', 'series30greenOUT');
 tracklets = generateTracklets(folderOUT, false);
-save('nbmatch_tracklets.mat', 'tracklets')
+descriptors = getTrackletDescriptors(tracklets, folderOUT)
+save('nbmatch_tracklets.mat', 'tracklets', 'descriptors')
 trackletViewer(tracklets, struct('animate', false, 'showLabel', false));
 title('Classifier tracklets Naive Bayes')
 
