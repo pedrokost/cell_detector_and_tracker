@@ -39,50 +39,51 @@ trackletViewer(tracklets, struct('animate', false, 'showLabels', true));
 title('Tracklets')
 ax = axis(f1);
 
-[M, P] = generateHypothesisMatrix(tracklets, struct('maxGap', 0));
+[M, hypTypes] = generateHypothesisMatrix(tracklets, struct('maxGap', 0));
 
+if testing
+	Liks = [
+	0.7
+	0.3
+	0.2
+	0.9
+	0.2
+	0.15
+	0.2
 
-% if testing
-% 	P = [
-% 	0.7
-% 	0.3
-% 	0.2
-% 	0.9
-% 	0.2
-% 	0.15
-% 	0.2
+	0.1
+	0.3
+	0.6
+	0.1
+	0.2
+	0.9
+	0.8
 
-% 	0.1
-% 	0.3
-% 	0.6
-% 	0.1
-% 	0.2
-% 	0.9
-% 	0.8
+	0.1
+	0.7
+	0.2
+	0.15
+	0.2
+	0.05
+	0.25
 
-% 	0.1
-% 	0.7
-% 	0.2
-% 	0.15
-% 	0.2
-% 	0.05
-% 	0.25
-
-% 	0.5
-% 	0.5
-% 	0.6
-% 	0.65
-% 	0.1
-% 	0.5
-% 	];
-% end
+	0.5
+	0.5
+	0.6
+	0.65
+	0.1
+	0.5
+	];
+else
+	Liks = computeLikelihoods(tracklets, M, hypTypes);
+end
 
 % Then try to compute something with it
-Iopt = getGlobalOpimalAssociation(M, P);
+Iopt = getGlobalOpimalAssociation(M, Liks);
 
 % % Pretty dispaly results
 % hypothesisPrint(M, P, Iopt, 'table');
-hypothesisPrint(M, P, Iopt, 'short');
+% hypothesisPrint(M, Liks, Iopt, 'short');
 
 f2 = subplot(1,2,2);
 Mopt = M(find(Iopt), :);
