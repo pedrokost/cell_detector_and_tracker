@@ -1,4 +1,4 @@
-function [M, P] = generateHypothesisMatrix(tracklets, options)
+function [M, Ro] = generateHypothesisMatrix(tracklets, options)
 	% GENERATEHYPOTHESISMATRIX generates a matrix with probablities that each tracklet might be an initializer, terminator, linker, false positive.
 	% For each tracklets it computes the following hypothesis:
 	% 	- initialization
@@ -12,7 +12,7 @@ function [M, P] = generateHypothesisMatrix(tracklets, options)
 	% 		maxGap = [20] maximum gap between tracks that may be closed
 	% Outputs:
 	% 	M = a sparse row matrix containing a row for each tracklet hypotesis. The dimensions of this matrix are numHypothesis x (2*nTracklets)
-	% 	P = a column vector of length numHypothesis containing probablities for each hypothesis
+	% 	Ro = a column vector of length numHypothesis containing likelihoods for each hypothesis
 
 	% TODO: remove this:
 	% To compute the probablities I will need:
@@ -35,6 +35,7 @@ function [M, P] = generateHypothesisMatrix(tracklets, options)
 
 	% Defaults
 	maxGap = 20;
+	MISS_DETECTION_RATE = 0.3;  % TODO: load real value
 
 	% Overrides
 	if isfield(options, 'maxGap')
@@ -49,19 +50,21 @@ function [M, P] = generateHypothesisMatrix(tracklets, options)
 	% starting in the following maxGap frames after the last cell in the
 	% tracklet
 	tracklets = max(tracklets(:, :, 1), tracklets(:, :, 2)); % Merge x-y into a single dimension to get a 2D matrix
-	tracklets = min(1, tracklets);
+	trackletsBinary = min(1, tracklets);
 	kernel = [1 -1]; % detect starts/ends of tracklets
-	Itracklets = conv2(tracklets, kernel);
+	Itracklets = conv2(trackletsBinary, kernel);
 	[iI, iJ] = find(Itracklets==1); % Initializations
 	[tI, tJ] = find(Itracklets==-1); % Terminations
 
 	linkHypothesis = getLinkHypothesis(iI, iJ, tI, tJ, maxGap);
 	numLinkHypothesis = full(sum(sum(linkHypothesis)));
 
+	pLinks = computePlink(linkHypothesis);
+
 	numHypothesis = numLinkHypothesis + 3 * numTracklets; % init, term, fp
 
-	% Probability vector
-	P = zeros(numHypothesis, 1);
+	% Likelihood vector
+	Ro = zeros(numHypothesis, 1);
 
 	% The hypothesis matrix requires:
 	% 	- 1 entry for each initialization hypothesis
@@ -77,7 +80,7 @@ function [M, P] = generateHypothesisMatrix(tracklets, options)
 	probCumIdx = 0;
 	% Compute initialization hypothesis
 	for i=1:numTracklets
-		P(i) = 0.1;
+		Ro(i) = 0.1;
 		I(i) = i; % 
 		J(i) = numTracklets + i; % tracklet idx in second part of matrix
 	end
@@ -86,7 +89,7 @@ function [M, P] = generateHypothesisMatrix(tracklets, options)
 
 	% Compute termination hypothesis
 	for i=1:numTracklets
-		P(probCumIdx + i) = 0.2;
+		Ro(probCumIdx + i) = 0.2;
 		I(hyphCumIdx + i) = hyphCumIdx + i;
 		J(hyphCumIdx + i) = i;
 	end
@@ -95,7 +98,7 @@ function [M, P] = generateHypothesisMatrix(tracklets, options)
 
 	% Compute false positive hypothesis
 	for i=1:numTracklets
-		P(probCumIdx + i) = 0.2;
+		Ro(probCumIdx + i) = PfalsePositive(i);
 		I(hyphCumIdx + i) = i + hyphCumIdx;
 		I(hyphCumIdx + numTracklets + i) = i + hyphCumIdx;
 		J(hyphCumIdx + i) = i;
@@ -106,11 +109,9 @@ function [M, P] = generateHypothesisMatrix(tracklets, options)
 
 	% Compute link hypothesis
 	[ilink, jlink] = find(linkHypothesis);
-	% tracksWithLinks = find(any(linkHypothesis, 2))
-	% A = full(linkHypothesis(, :))
+	Ro(probCumIdx+1:probCumIdx+numLinkHypothesis) = pLinks(find(linkHypothesis));
+	% TODO: I think I could vectorize this below
 	for i=1:numLinkHypothesis
-		% I need to know which tracklet links to which
-		P(probCumIdx + i) = 0.4;
 		I(hyphCumIdx + i) = i + probCumIdx;
 		I(hyphCumIdx + numLinkHypothesis + i) = i + probCumIdx;
 		J(hyphCumIdx + i) = ilink(i);
@@ -118,6 +119,38 @@ function [M, P] = generateHypothesisMatrix(tracklets, options)
 	end
 
 	M = sparse(I, J, S);
+
+	function P = computePlink(linkHypothesis)
+		% COMPUTEPLINK for each link hypothesis compute the probability of linking
+		% Inputs:
+		% 	linkHypothesis= a (sparse) matrix of dimensions numTracklets x numTracklets containing 1 if the tracks could potentially be linked
+		% Outputs:
+		% 	P = the probability of linking the pairs of tracklets as evaluated by a learned model, in the form a of matrix the same size as linkHypothesis;
+		P = linkHypothesis * 0.4;
+
+		% Algorithm outline:
+		% Find init and end of each tracklet
+		% find the corresponding index of the cell in the image
+		% find the corresponding cell descriptor
+		% TODO: augement the cell descriptor with motion features
+		% create a sparse matrix like linkHypthesis
+		% for each possible link hypothesis evaluate the model
+
+		% For each tracklet, find where it starts and where it ends
+		% TODO complete
+	end
+
+	function FP = PfalsePositive(trackletIdx)
+		% PFALSEPOSITIVE The probability that a tracklet is a false positive
+		% sum(max(tracklets(trackletIdx, :, :), [], 3) ~= 0)
+		len = length(find(max(tracklets(trackletIdx, :, :), [], 3)));
+		FP = MISS_DETECTION_RATE ^ len;
+	end
+
+	function TP = PtruePositive(trackletIdx)
+		% PTRUEPOSITIVE The probability that a tracklet is a true positive
+		TP = 1 - PfalsePositive(trackletIdx);
+	end
 end
 
 function H = getLinkHypothesis(initializationY, initializationX, terminationY, terminationX, maxGap)

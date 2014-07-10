@@ -1,9 +1,14 @@
 Today:
+	✔	T3.3 @done (14-07-10 09:33)
+	☐	T19
+	☐	T3.4
+	☐	T16
 	☐	T3.1
 	☐	T3.2
 Cell matcher:
 	☐	5) Train ANN and NB with much more data, possibly of all different datasets combined (reqs: M6)
 	☐	6) Annotate more datasets
+	☐	7) To match cells accross frames, use the robust tracklets to learn a similarity model using all possible larger displacements between them (up to a higher limit eg 50 frames) (reqs: M6)
 Cell detector:
 	☐ If any detector NaN, in the end don't show average NaN.
 	☐ Read Pylon stuff
@@ -13,15 +18,19 @@ Cell detector:
 	☐	Make it clear in the headers of the files which belong to Arteta, which have some of my changes, which are completely mine
 	☐	Detect cells in all datasets (reqs: M6)
 Cell tracker:
-	☐ 3) compute the likelihoods (reqs: T3.1 T3.2 T3.3 T3.4)
+	☐	3) compute the likelihoods (reqs: T3.1 T3.2 T3.3 T3.4)
 	☐	3.1) Compute init likelihood
 	☐	3.2) Compute term likelihood
-	☐	3.3) Compute FP likelihood
-	☐	3.4) Compute link likelihood (reqs: T6)
+	✔	3.3) Compute FP likelihood @done (14-07-10 09:33)
+	☐	3.4) Compute link likelihood
 	☐	5) Tracklet linking features: direction over last N frames, average displacement over last N frames, td of displacement over last N frames
 	☐	6) Read Single Quantum Dot Tracking paper
 	☐	7) Skip blurred frames, and leave an annotation that you skipped a frame (reqs: S4)
 	☐	15) In the code, replace probability with likelihood
+	☐	16) Figure out how to bring in the cell descriptors
+	☐	17) Correctly estimate the number of missedetections of the detector
+	☐	18) Add parameters so that the user can tweak the probabilities of Pfp, Ptp, Plink, Pinit, Pterm
+	☐	19) Separate the code of generating Link hypothesis and computing the Likelihoods, or it will get messy
 Cell annotator:
 	☐ 1) Larger marker for detections
 	☐ 2) Copy anotations over
@@ -34,7 +43,7 @@ Cell annotator:
 	☐ 9) For whatever I do, I would like to have high quality data, to be able to see if algorithms work or not. For this reason, I will spend the next day or two annotating datasets
 	☐ 10) skip bad frames annotation
 	☐ 11) Menu bar for basic tools (load dets...)
-	☐	 12) Show dots should only toggle annotation dots
+	☐ 12) Show dots should only toggle annotation dots
 	☐	 13) Possibly add a button show generated tracks to complement show links
 Cell stabilizer:
 	☐	1) Read how to easily do image stabilization in matlab (instaed of SIFT, RANSAC, homography, etc, which might take too long)
