@@ -47,6 +47,7 @@ function hypothesisPrintTable(H, P, selected, fulltable)
 	SELECTED_MARKER_RIGHT = 60;
 
 	Q = char(humanizeHypothesis(H));
+	P = num2str(P, '%.2f');
 
 	% Pwdth 
 	actionWidth = num2str(size(Q, 2));
@@ -66,9 +67,9 @@ function hypothesisPrintTable(H, P, selected, fulltable)
 	disp(char(ones(1,length(ttl)) * '-'))
 
 	if fulltable
-		disp([selected * SELECTED_MARKER_LEFT bar Q bar num2str(P) bar H(:, 1:numTracklets)*49 bar H(:, (numTracklets+1):end)*49 bar selected * SELECTED_MARKER_RIGHT])
+		disp([selected * SELECTED_MARKER_LEFT bar Q bar P bar H(:, 1:numTracklets)*49 bar H(:, (numTracklets+1):end)*49 bar selected * SELECTED_MARKER_RIGHT])
 	else
-		disp([selected * SELECTED_MARKER_LEFT bar Q bar num2str(P) bar selected * SELECTED_MARKER_RIGHT])
+		disp([selected * SELECTED_MARKER_LEFT bar Q bar P bar selected * SELECTED_MARKER_RIGHT])
 	end
 	fprintf('\n')
 end

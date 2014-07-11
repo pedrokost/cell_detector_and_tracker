@@ -52,7 +52,7 @@ function trackletViewer(tracklets, options)
 		zlabel('time')
 
 		if showLabels
-			text(x(1), y(1), z(1) - 1, num2str(t))
+			text(x(1), y(1), z(1)-0.2, num2str(t))
 		end
 		% color=1:length(x);
 		% surface([x;x],[y;y],[z;z],[color;color], 'facecol','no','edgecol','interp');

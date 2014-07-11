@@ -39,11 +39,14 @@ trackletViewer(tracklets, struct('animate', false, 'showLabels', true));
 title('Tracklets');
 ax = axis(f1);
 
-maxGaps = [0];
+if testing
+	maxGaps = [0];
+else
+	maxGaps = [0 2];
+end
 
 for i=1:numel(maxGaps)
 	[M, hypTypes] = generateHypothesisMatrix(tracklets, struct('maxGap', maxGaps(i)));
-
 	if testing
 		Liks = [
 		0.7
@@ -78,14 +81,14 @@ for i=1:numel(maxGaps)
 		0.5
 		];
 	else
-		Liks = computeLikelihoods(tracklets, descriptors, M, hypTypes);
+		Liks = computeLikelihoods(tracklets, descriptors, M, hypTypes, struct('matcher', 'NB'));
 	end
 
 	% Then try to compute something with it
 	Iopt = getGlobalOpimalAssociation(M, Liks);
 
 	% % Pretty dispaly results
-	% hypothesisPrint(M, P, Iopt, 'table');
+	hypothesisPrint(M, Liks, Iopt, 'table');
 	% hypothesisPrint(M, Liks, Iopt, 'short');
 
 	Mopt = M(find(Iopt), :);

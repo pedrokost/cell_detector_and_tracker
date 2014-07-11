@@ -6,11 +6,22 @@ function Liks = computeLikelihoods(tracklets, descriptors, hypothesis, hypTypes,
 	% 	hypothesis = the hypothesis matrix generate by generateHypothesisMatrix()
 	%	hypTypes = a vector indicating the type of hypothesis, as generateb by generateHypothesisMatrix()
 	% 	options = a struct with options
+	%		matcher = ('ANN', 'NB')  % which matcher model to use to join tracklets
 	% Outputs:
 	% 	Liks = a column vector of length numHypothesis containing likelihoods for each hypothesis
 
 	%------------------------------------------------------------------Options
-	if nargin < 2; options = struct; end
+	if nargin < 5; options = struct; end
+
+	matcher = 'ANN';
+
+	if isfield(options, 'matcher'); 
+		if ismember(options.matcher, {'NB' 'ANN'})
+			matcher = options.matcher;
+		else
+			error('Mather %s is not valid. It must be one of "NB", "ANN"', options.matcher);
+		end
+	end
 
 	% This should mirror the types in generateHypothesisMatrix()
 	TYPE_INIT = 1;
@@ -110,7 +121,6 @@ function Liks = computeLikelihoods(tracklets, descriptors, hypothesis, hypTypes,
 			descriptorPairDffs(i, :) = D;
 		end
 
-		matcher = 'ANN';
 		if strcmp(matcher, 'ANN')
 			matchP = testMatcherTrackletJoinerANN(descriptorPairDffs')';
 		else
