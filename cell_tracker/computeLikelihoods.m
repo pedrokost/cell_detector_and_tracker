@@ -19,8 +19,7 @@ function Liks = computeLikelihoods(tracklets, descriptors, hypothesis, hypTypes,
 	% 		including motion feature and distance to following tracklet
 	% 		check that the spatial distribution of cells in tracklets is similar
 	% 	- to compute init prob I will need
-	% 		temporal and spatial distribution of tracks before it,
-	% 		and its proximity to a boundary  (IMAGE SIZE)
+	% 		complete Plink for any tracklets before it (up to maxGap frames)
 	% 	- to compute term prob I will need
 	% 		temporal and spatial distribution of tracks after it,
 	% 		and its proximity to a boundary
@@ -47,8 +46,9 @@ function Liks = computeLikelihoods(tracklets, descriptors, hypothesis, hypTypes,
 	%-------------------------------------------------Precompute probabilities
 
 	linkHypothesisIdx = find(hypTypes == TYPE_LINK);
+	numLinkHypothesis = size(linkHypothesisIdx);
 	linkHypothesis = hypothesis(linkHypothesisIdx, :);
-	pLinks = computePlink(linkHypothesis);
+	pLinks = computePlink();
 	[pFPs, pTPs] = computeTruthnessProbs(1:numTracklets);
 
 	%------------------------------------------------------Compute likelihoods
@@ -71,7 +71,7 @@ function Liks = computeLikelihoods(tracklets, descriptors, hypothesis, hypTypes,
 		Liks(linkHypothesisIdx(i)) = pLinks(J(1), J(2)-numTracklets);
 	end
 
-	function P = computePlink(linkHypothesis)
+	function P = computePlink()
 		% COMPUTEPLINK for each link hypothesis compute the probability of linking
 		% Inputs:
 		% 	linkHypothesis= a (sparse) matrix of dimensions numTracklets x numTracklets containing 1 if the tracks could potentially be linked
@@ -116,17 +116,18 @@ function Liks = computeLikelihoods(tracklets, descriptors, hypothesis, hypTypes,
 		% TODO augment descriptorPairs with motion history
 
 		%---------------------------------------------------Evaluate the Plink
-
 		for i=1:numLinkHypothesis
-			trackletA = trackletPairs(i, 1);
-			trackletB = trackletPairs(i, 2);
-
-			D = euclideanDistance(descriptorPairs(trackletA, :, 1), ...
-								  descriptorPairs(trackletB, :, 2));
+			D = euclideanDistance(descriptorPairs(i, :, 1), ...
+								  descriptorPairs(i, :, 2));
 			descriptorPairDffs(i, :) = D;
 		end
 
-		matchP = testMatcherTrackletJoinerNB(descriptorPairDffs);
+		matcher = 'ANN';
+		if strcmp(matcher, 'ANN')
+			matchP = testMatcherTrackletJoinerANN(descriptorPairDffs')';
+		else
+			matchP = testMatcherTrackletJoinerNB(descriptorPairDffs);
+		end
 		for i=1:numLinkHypothesis
 			P(trackletPairs(i, 1), trackletPairs(i, 2)) = matchP(i);
 		end

@@ -36,58 +36,63 @@ end
 
 f1 = subplot(1,2,1);
 trackletViewer(tracklets, struct('animate', false, 'showLabels', true));
-title('Tracklets')
+title('Tracklets');
 ax = axis(f1);
 
-[M, hypTypes] = generateHypothesisMatrix(tracklets, struct('maxGap', 0));
+maxGaps = [0 1 2 4 8];
 
-if testing
-	Liks = [
-	0.7
-	0.3
-	0.2
-	0.9
-	0.2
-	0.15
-	0.2
+for i=1:numel(maxGaps)
+	[M, hypTypes] = generateHypothesisMatrix(tracklets, struct('maxGap', maxGaps(i)));
 
-	0.1
-	0.3
-	0.6
-	0.1
-	0.2
-	0.9
-	0.8
+	if testing
+		Liks = [
+		0.7
+		0.3
+		0.2
+		0.9
+		0.2
+		0.15
+		0.2
 
-	0.1
-	0.7
-	0.2
-	0.15
-	0.2
-	0.05
-	0.25
+		0.1
+		0.3
+		0.6
+		0.1
+		0.2
+		0.9
+		0.8
 
-	0.5
-	0.5
-	0.6
-	0.65
-	0.1
-	0.5
-	];
-else
-	Liks = computeLikelihoods(tracklets, descriptors, M, hypTypes);
-end
+		0.1
+		0.7
+		0.2
+		0.15
+		0.2
+		0.05
+		0.25
 
-% Then try to compute something with it
-Iopt = getGlobalOpimalAssociation(M, Liks);
+		0.5
+		0.5
+		0.6
+		0.65
+		0.1
+		0.5
+		];
+	else
+		Liks = computeLikelihoods(tracklets, descriptors, M, hypTypes);
+	end
 
-% % Pretty dispaly results
-% hypothesisPrint(M, P, Iopt, 'table');
-% hypothesisPrint(M, Liks, Iopt, 'short');
+	% Then try to compute something with it
+	Iopt = getGlobalOpimalAssociation(M, Liks);
 
+	% % Pretty dispaly results
+	% hypothesisPrint(M, P, Iopt, 'table');
+	% hypothesisPrint(M, Liks, Iopt, 'short');
+
+	Mopt = M(find(Iopt), :);
+	tracks = updateTracklets(tracklets, Mopt);
+	tracklets = tracks;
+end	
 f2 = subplot(1,2,2);
-Mopt = M(find(Iopt), :);
-tracks = updateTracklets(tracklets, Mopt);
 trackletViewer(tracks, struct('animate', false));
 title('Tracks')
 axis(f2, ax)

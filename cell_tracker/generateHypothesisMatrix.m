@@ -43,8 +43,20 @@ function [M, hypTypes] = generateHypothesisMatrix(tracklets, options)
 	trackletsBinary = min(1, tracklets);
 	kernel = [1 -1]; % detect starts/ends of tracklets
 	Itracklets = conv2(trackletsBinary, kernel);
+	% Careful! 
+	% There seemed to be a bug if I run the updateTracklets command several times
+	% with increasing maxGap, which results from the fact that merged tracks
+	% can have discontinuities, thus tracks could link to themselves in the future
+	% or a discontinued track could link to a third track twice. It is fixed here below:
 	[iI, iJ] = find(Itracklets==1); % Initializations
 	[tI, tJ] = find(Itracklets==-1); % Terminations
+
+	% Take only the first initialization and last termination of each tracklet
+	[iI, idx] = unique(iI);
+	iJ = iJ(idx);
+
+	[tI, idx] = unique(tI, 'last');
+	tJ = tJ(idx);
 
 	linkHypothesis = getLinkHypothesis(iI, iJ, tI, tJ, maxGap);
 	numLinkHypothesis = full(sum(sum(linkHypothesis)));
@@ -96,7 +108,9 @@ function [M, hypTypes] = generateHypothesisMatrix(tracklets, options)
 
 	% Compute link hypothesis
 	[ilink, jlink] = find(linkHypothesis);
-	hypTypes(probCumIdx+1:probCumIdx+numTracklets) = TYPE_LINK;
+	% [size(ilink, 1) numLinkHypothesis]
+
+	hypTypes(probCumIdx+1:probCumIdx+numLinkHypothesis) = TYPE_LINK;
 	% TODO: I think I could vectorize this below
 	for i=1:numLinkHypothesis
 		I(hyphCumIdx + i) = i + probCumIdx;
@@ -137,7 +151,6 @@ function H = getLinkHypothesis(initializationY, initializationX, terminationY, t
 		xStartBInd = (initializationX >= xEndA) & (initializationX <= xEndA + maxGap);
 
 		numLinks = sum(xStartBInd);
-
 		if numLinks > 0
 			I(numLinkHypothesis:numLinkHypothesis+numLinks-1) = repmat(yEndA, numLinks, 1);
 			J(numLinkHypothesis:numLinkHypothesis+numLinks-1) = initializationY(xStartBInd);
