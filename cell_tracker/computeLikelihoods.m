@@ -51,22 +51,19 @@ function Liks = computeLikelihoods(tracklets, descriptors, hypothesis, hypTypes,
 
 	%------------------------------------------------------Compute likelihoods
 
-	% Although generateHypothesisMatrix orders the hypothesis is an easy to remember order, I do not rely on the order, but on the types given in hypTypes
-
 	% Compute initialization hypothesis
-	Liks(hypTypes == TYPE_INIT) = pInit;
+	Liks(hypTypes == TYPE_INIT) = log(pInit) + 0.5 * log(pTPs);
 
 	% Compute termination hypothesis
-	Liks(hypTypes == TYPE_TERM) = pTerm;
+	Liks(hypTypes == TYPE_TERM) = log(pTerm) + 0.5 * log(pTPs);
 
 	% Compute false positive hypothesis
-	[I, ~] = find(hypothesis(hypTypes == TYPE_FP, 1:numTracklets));
-	Liks(hypTypes == TYPE_FP) = pFPs(I);
+	Liks(hypTypes == TYPE_FP) = log(pFPs);
 
 	% Compute link hypothesis
 	for i=1:numel(linkHypothesisIdx)
 		[~, J] = find(linkHypothesis(i, :));
-		Liks(linkHypothesisIdx(i)) = pLinks(J(1), J(2)-numTracklets);
+		Liks(linkHypothesisIdx(i)) = log(pLinks(J(1), J(2)-numTracklets)) + 0.5 * log(pTPs(J(1))) + 0.5 * log(pTPs(J(2)-numTracklets));
 	end
 
 	function P = computePlink()
@@ -152,7 +149,7 @@ function Liks = computeLikelihoods(tracklets, descriptors, hypothesis, hypTypes,
 		% It relies on pLinks, which is a numTrackletsxnumTracklets matrix
 		% containing the probabilities of linking each tracklet to another
 
-		pInit = 1 - max(pLinks, [], 1);
+		pInit = 1 - max(pLinks, [], 1)';
 	end
 
 	function pTerm = computePterm()
