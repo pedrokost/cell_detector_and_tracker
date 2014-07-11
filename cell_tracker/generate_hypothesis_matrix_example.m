@@ -42,7 +42,7 @@ ax = axis(f1);
 if testing
 	maxGaps = [0];
 else
-	maxGaps = [0 2 4];
+	maxGaps = [1];
 end
 
 for i=1:numel(maxGaps)
@@ -82,14 +82,14 @@ for i=1:numel(maxGaps)
 		];
 		Liks = log(Liks);
 	else
-		Liks = computeLikelihoods(tracklets, descriptors, M, hypTypes, struct('matcher', 'NB'));
+		Liks = computeLikelihoods(tracklets, descriptors, M, hypTypes, struct('matcher', 'ANN'));
 	end
 
 	% Then try to compute something with it
 	Iopt = getGlobalOpimalAssociation(M, Liks);
 
 	% % Pretty dispaly results
-	% hypothesisPrint(M, Liks, Iopt, 'table');
+	hypothesisPrint(M, Liks, Iopt, 'table');
 	% hypothesisPrint(M, Liks, Iopt, 'short');
 
 	Mopt = M(find(Iopt), :);
