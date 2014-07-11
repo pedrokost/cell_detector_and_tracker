@@ -75,7 +75,7 @@ if testing
 	0.5
 	];
 else
-	Liks = computeLikelihoods(tracklets, M, hypTypes);
+	Liks = computeLikelihoods(tracklets, descriptors, M, hypTypes);
 end
 
 % Then try to compute something with it

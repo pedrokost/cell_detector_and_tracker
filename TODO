@@ -2,7 +2,7 @@ Today:
 	✔	T3.3 @done (14-07-10 09:33)
 	✔	T19 @done (14-07-10 15:19)
 	✔	T3.4 @done (14-07-10 16:17)
-	☐	T16
+	✔	T16 @done (14-07-11 10:18)
 	☐	T3.1
 	☐	T3.2
 Cell matcher:
@@ -19,15 +19,15 @@ Cell detector:
 	☐	Detect cells in all datasets (reqs: M6)
 Cell tracker:
 	☐	3) compute the likelihoods (reqs: T3.1 T3.2 T3.3 T3.4)
-	☐	3.1) Compute init likelihood (Pinit could be 1 - max(Plink of previous)) (reqs T3.4 T16)
-	☐	3.2) Compute term likelihood (Pterm could be 1 - max(Plink to any future cells)) (reqs T3.4 T16)
-	✔	3.3) Compute FP likelihood @done (14-07-10 09:33)
-	✔	3.4) Compute link likelihood @done (14-07-10 16:17)
+	☐	3.1) Compute init prob (Pinit could be 1 - max(Plink of previous)) (reqs T3.4 T16)
+	☐	3.2) Compute term prob (Pterm could be 1 - max(Plink to any future cells)) (reqs T3.4 T16)
+	✔	3.3) Compute FP prob @done (14-07-10 09:33)
+	✔	3.4) Compute link prob @done (14-07-10 16:17)
 	☐	5) Tracklet linking features: direction over last N frames, average displacement over last N frames, td of displacement over last N frames, gaussian broadening idea
-	☐	6) Read Single Quantum Dot Tracking paper
+	✔	6) Read Single Quantum Dot Tracking paper @done (14-07-11 10:20)
 	☐	7) Skip blurred frames, and leave an annotation that you skipped a frame (reqs: S4)
 	☐	15) In the code, replace probability with likelihood
-	☐	16) Figure out how to bring in the cell descriptors
+	✔	16) Figure out how to bring in the cell descriptors @done (14-07-11 10:18)
 	☐	17) Correctly estimate the number of missedetections of the detector
 	☐	18) Add parameters so that the user can tweak the probabilities of Pfp, Ptp, Plink, Pinit, Pterm
 	✔	19) Separate the code of generating Link hypothesis and computing the Likelihoods, or it will get messy @done (14-07-10 15:19)
