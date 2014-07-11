@@ -3,8 +3,9 @@ Today:
 	✔	T19 @done (14-07-10 15:19)
 	✔	T3.4 @done (14-07-10 16:17)
 	✔	T16 @done (14-07-11 10:18)
-	☐	T3.1
-	☐	T3.2
+	✔	T3.1 @done (14-07-11 12:49)
+	✔	T3.2 @done (14-07-11 12:49)
+	☐	T3
 Cell matcher:
 	☐	5) Train ANN and NB with much more data, possibly of all different datasets combined (reqs: M6)
 	☐	6) Annotate more datasets
@@ -19,8 +20,8 @@ Cell detector:
 	☐	Detect cells in all datasets (reqs: M6)
 Cell tracker:
 	☐	3) compute the likelihoods (reqs: T3.1 T3.2 T3.3 T3.4)
-	☐	3.1) Compute init prob (Pinit could be 1 - max(Plink of previous)) (reqs T3.4 T16)
-	☐	3.2) Compute term prob (Pterm could be 1 - max(Plink to any future cells)) (reqs T3.4 T16)
+	✔	3.1) Compute init prob (Pinit could be 1 - max(Plink of previous)) (reqs T3.4 T16) @done (14-07-11 12:49)
+	✔	3.2) Compute term prob (Pterm could be 1 - max(Plink to any future cells)) (reqs T3.4 T16) @done (14-07-11 12:49)
 	✔	3.3) Compute FP prob @done (14-07-10 09:33)
 	✔	3.4) Compute link prob @done (14-07-10 16:17)
 	☐	5) Tracklet linking features: direction over last N frames, average displacement over last N frames, td of displacement over last N frames, gaussian broadening idea

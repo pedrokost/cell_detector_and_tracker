@@ -9,21 +9,6 @@ function Liks = computeLikelihoods(tracklets, descriptors, hypothesis, hypTypes,
 	% Outputs:
 	% 	Liks = a column vector of length numHypothesis containing likelihoods for each hypothesis
 
-	% TODO: remove this:
-	% To compute the probablities I will need:
-	% 	- to compute Pfp and Ptp I will need:
-	% 		- MISS DETECTION rate of cell_detector
-	% 		- number of cells in tracklet
-	% 	- to compute the Plink I will need:
-	% 		A FEATURE VECTOR of first and last tracklet in sequence (CELL DESCRIPTOR)
-	% 		including motion feature and distance to following tracklet
-	% 		check that the spatial distribution of cells in tracklets is similar
-	% 	- to compute init prob I will need
-	% 		complete Plink for any tracklets before it (up to maxGap frames)
-	% 	- to compute term prob I will need
-	% 		temporal and spatial distribution of tracks after it,
-	% 		and its proximity to a boundary
-
 	%------------------------------------------------------------------Options
 	if nargin < 2; options = struct; end
 
@@ -50,16 +35,18 @@ function Liks = computeLikelihoods(tracklets, descriptors, hypothesis, hypTypes,
 	linkHypothesis = hypothesis(linkHypothesisIdx, :);
 	pLinks = computePlink();
 	[pFPs, pTPs] = computeTruthnessProbs(1:numTracklets);
+	pInit = computePinit();
+	pTerm = computePterm();
 
 	%------------------------------------------------------Compute likelihoods
 
 	% Although generateHypothesisMatrix orders the hypothesis is an easy to remember order, I do not rely on the order, but on the types given in hypTypes
 
 	% Compute initialization hypothesis
-	Liks(hypTypes == TYPE_INIT) = 0.1;
+	Liks(hypTypes == TYPE_INIT) = pInit;
 
 	% Compute termination hypothesis
-	Liks(hypTypes == TYPE_TERM) = 0.2;
+	Liks(hypTypes == TYPE_TERM) = pTerm;
 
 	% Compute false positive hypothesis
 	[I, ~] = find(hypothesis(hypTypes == TYPE_FP, 1:numTracklets));
@@ -101,6 +88,7 @@ function Liks = computeLikelihoods(tracklets, descriptors, hypothesis, hypTypes,
 			trackletPairs(i, :) = [J(1) J(2)-numTracklets];
 		end
 
+		% TODO: convert this to a function so I can reuse to train the model
 		% For each link hypothesis place into descriptorPair the tail of
 		% the previous and head of next tracklet
 		TAIL_POS = 2;
@@ -144,5 +132,27 @@ function Liks = computeLikelihoods(tracklets, descriptors, hypothesis, hypTypes,
 		len = sum(max(tracklets(trackletIdx, :, :), [], 3) ~= 0, 2);
 		FP = MISS_DETECTION_RATE .^ len;
 		TP = 1 - FP;
+	end
+
+	function pInit = computePinit()
+		% COMPUTEPINIT Returns the probability of initialization for each tracklet
+		% Pinit = 1 - max(Plink_prev) where Plink_prev are the probabilities of
+		% linking any of the previous trackets (up to maxGap in the past) to it.
+
+		% It relies on pLinks, which is a numTrackletsxnumTracklets matrix
+		% containing the probabilities of linking each tracklet to another
+
+		pInit = 1 - max(pLinks, [], 1);
+	end
+
+	function pTerm = computePterm()
+		% COMPUTEPINIT Returns the probability of initialization for each tracklet
+		% Pinit  =1 - max(Plink_next) where Plink_next are the probabilities of
+		% linking the current track to any of the next (up to maxGap in the future).
+
+		% It relies on pLinks, which is a numTrackletsxnumTracklets matrix
+		% containing the probabilities of linking each tracklet to another
+
+		pTerm = 1 - max(pLinks, [], 2);
 	end
 end

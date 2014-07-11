@@ -39,7 +39,7 @@ trackletViewer(tracklets, struct('animate', false, 'showLabels', true));
 title('Tracklets');
 ax = axis(f1);
 
-maxGaps = [0 1 2 4 8];
+maxGaps = [0];
 
 for i=1:numel(maxGaps)
 	[M, hypTypes] = generateHypothesisMatrix(tracklets, struct('maxGap', maxGaps(i)));
