@@ -7,7 +7,7 @@
 %   x - input data.
 %   y - target data.
 
-load(fullfile('..', 'data', 'series30greenOUT', 'matcherTrainMatrix.mat'))
+load(fullfile('..', 'data', 'series30greenOUT', 'matcherTrainRobustJoinerMatrix.mat'))
 x = X(:, 1:end-1)';
 t = X(:, end)';
 

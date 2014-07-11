@@ -1,4 +1,4 @@
-load(fullfile('..', 'data', 'series30greenOUT', 'matcherTrainMatrix.mat'))
+load(fullfile('..', 'data', 'series30greenOUT', 'matcherTrainRobustJoinerMatrix.mat'))
 x = X(:, 1:end-1)';
 labels = X(:, end)';
 

@@ -6,6 +6,9 @@ Today:
 	✔	T3.1 @done (14-07-11 12:49)
 	✔	T3.2 @done (14-07-11 12:49)
 	✔	T3 @done (14-07-11 15:04)
+	✔	T21 @done (14-07-11 17:13)
+	✔	T22 @done (14-07-11 17:14)
+	☐	T20
 	☐	T8
 Cell matcher:
 	☐	5) Train ANN and NB with much more data, possibly of all different datasets combined (reqs: M6)
@@ -34,6 +37,11 @@ Cell tracker:
 	☐	17) Correctly estimate the number of missedetections of the detector
 	☐	18) Add parameters so that the user can tweak the probabilities of Pfp, Ptp, Plink, Pinit, Pterm
 	✔	19) Separate the code of generating Link hypothesis and computing the Likelihoods, or it will get messy @done (14-07-10 15:19)
+	☐	20) Transform the tracklets to contain the indices of cells instead of their x-y coordinate (reqs T22).
+	✔	21) Review and streamline the cell_tracking process (from generating the tracklets matrix to joining tracklets) @done (14-07-11 17:13)
+	✔	22) Measure the memory usage before the change to store indices within tracklets matrix @done (14-07-11 17:13)
+	☐	22) Measure the memory usage before the change to store indices after tracklets matrix (reqs: T20)
+
 Cell annotator:
 	☐ 1) Larger marker for detections
 	☐ 2) Copy anotations over

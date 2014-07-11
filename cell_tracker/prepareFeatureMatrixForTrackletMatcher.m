@@ -1,5 +1,5 @@
 %{
-	This script prepares a matrix containing pairs of cell descriptors and a third objective column indicating if they are the same (that is if the cells are DIRECTLY linked)
+	This script prepares a matrix containing pairs of cell descriptors and a third objective column indicating if they are the same (that is if the cells are DIRECTLY or UNDIRECTLY (through several links) linked)
 
 	The descriptors are obtained from the cell_detector as a by-product of detecting cells. Additionally a cell location is concatenated to that vector.
 
@@ -13,7 +13,7 @@ folderIN = fullfile('..', 'data', 'series30green');
 % Folder with cell descriptors
 folderOUT = fullfile('..', 'data', 'series30greenOUT');
 
-saveToFile = fullfile(folderOUT, 'matcherTrainRobustJoinerMatrix.mat');
+saveToFile = fullfile(folderOUT, 'matcherTrainTrackletJoinerMatrix.mat');
 
 matAnnotations = dir(fullfile(folderIN, 'im*.mat'));
 numFrames = numel(matAnnotations);
