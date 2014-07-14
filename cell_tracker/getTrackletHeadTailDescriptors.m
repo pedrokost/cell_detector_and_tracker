@@ -7,17 +7,19 @@ function descriptors = getTrackletHeadTailDescriptors(tracklets, folderOUT)
 	% 	descriptors = a numTracklets x numFeatures x 2 matrix containing descriptors of the head and tail of each tracklet
 
 	numTracklets = size(tracklets, 1);
+
+	% TODO: bring this in from a config file
 	imPrefix = 'im';
-	imNamesDigits = '3';
+
 	% Get the number of features of each descriptor
 	dataFiles = dir(fullfile(folderOUT, sprintf('%s*.mat', imPrefix)));
 	data1 = load(fullfile(folderOUT, dataFiles(1).name));
 
 	numFeatures = length(data1.descriptors) + 2; % together with dots
-	descriptors = zeros(numTracklets, numFeatures, 2);
+	descriptors = zeros(numTracklets, numFeatures, 2, 'single');
 	
 	for i=1:numTracklets
-		trackletFrames = find(max(tracklets(i, :, :), [], 3));
+		trackletFrames = find(tracklets(i, :));
 
 		indices = [trackletFrames(1) trackletFrames(end)];
 
@@ -25,11 +27,7 @@ function descriptors = getTrackletHeadTailDescriptors(tracklets, folderOUT)
 			data = load(fullfile(folderOUT, dataFiles(indices(headtail)).name));
 			deses = combineDescriptorsWithDots(data.descriptors, data.dots);
 
-			% find the correct descriptor corresponding to the tracklet position
-			loc = [tracklets(i, indices(headtail), 1) tracklets(i, indices(headtail), 2)];
-
-			idx = ismember(data.dots, loc, 'rows');
-			des = deses(idx, :);
+			des = deses(tracklets(i, indices(headtail)), :);
 
 			descriptors(i, :, headtail) = des;
 			if length(trackletFrames) == 1

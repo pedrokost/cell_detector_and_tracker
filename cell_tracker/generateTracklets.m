@@ -6,14 +6,14 @@ function tracklets = generateTracklets(folderData, options)
 % 		If false, it will use the match function to find matches
 % 	- options = a struct containing options
 %	 	withAnnotations = [false] boolean saying if the metadata files have links annotations.
-%		numericFormat = [uint8] Use uint16 if more than 255 cells per image
+%		numericFormat = [single] Use uint16 if more than 255 cells per image
 % Output:
 % 	- tracklets = a matrix of tracklets. Each row belongs to one 
 %		tracklet
 
 	%-----------------------------------------------------------------Defaults
 	withAnnotations = false;
-	numericFormat = 'uint8';
+	numericFormat = 'single';
 
 	if nargin < 2; options = struct; end;
 	%----------------------------------------------------------------Overrides
@@ -40,7 +40,7 @@ function tracklets = generateTracklets(folderData, options)
 	% TODO: automatically grow trakclets size in batches to make it faster
 		
 	% create the big matrix of tracklets
-	tracklets = zeros(numTracklets, numFrames, 'int8');
+	tracklets = zeros(numTracklets, numFrames, numericFormat);
 
 	%--------------------------------------------------Insert first frame data
 	matfileB = matfiles(firstFrame);

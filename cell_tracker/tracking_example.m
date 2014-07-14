@@ -8,25 +8,25 @@ if doProfile
 end
 
 
-folderData = fullfile('..', 'data', 'series30green');
+folderData = fullfile('..', 'data', 'series30greenOUT');
 matcher = 'ANN';
 maxGaps = [1 10];
 
 figure(1); clf;
 f1 = subplot(1,2,1);
-tracklets = generateTracklets(folderData, struct('withAnnotations', true));
+tracklets = generateTracklets(folderData, struct('withAnnotations', false));
 
 % tracklets 52x66x2            54912
-whos
 trackletViewer(tracklets, folderData, struct('animate', false, 'showLabel', false));
-% descriptors = getTrackletHeadTailDescriptors(tracklets, folderData);
+descriptors = getTrackletHeadTailDescriptors(tracklets, folderData);
 ax = axis(f1);
 
 tracks = tracklets;
+
 for i=1:numel(maxGaps)
-	[M, hypTypes] = generateHypothesisMatrix(tracklets, struct('maxGap', maxGaps(i)));
+	% [M, hypTypes] = generateHypothesisMatrix(tracklets, struct('maxGap', maxGaps(i)));
 	
-% 	Liks = computeLikelihoods(tracklets, descriptors, M, hypTypes, struct('matcher', matcher));
+	% Liks = computeLikelihoods(tracklets, descriptors, M, hypTypes, struct('matcher', matcher));
 
 % 	Iopt = getGlobalOpimalAssociation(M, Liks);
 
@@ -37,6 +37,7 @@ for i=1:numel(maxGaps)
 % 	tracklets = tracks;
 end	
 
+whos
 
 f2 = subplot(1,2,2);
 trackletViewer(tracks, folderData, struct('animate', false));
