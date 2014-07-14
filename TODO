@@ -15,6 +15,7 @@ Cell matcher:
 	☐	6) Annotate more datasets
 	☐	7) To match cells accross frames, use the robust tracklets to learn a similarity model using all possible larger displacements between them (up to a higher limit eg 50 frames)
 	☐	8) Build the matrix to learn to classify jointing tracklets
+	☐	9) Run data through PCA/LDA or other first
 Cell detector:
 	☐ If any detector NaN, in the end don't show average NaN.
 	☐ Read Pylon stuff

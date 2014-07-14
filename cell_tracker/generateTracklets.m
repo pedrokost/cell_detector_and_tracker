@@ -1,67 +1,64 @@
-function tracklets = generateTracklets(folderOUT, withAnnotations)
+function tracklets = generateTracklets(folderData, options)
 % GENERATETRACKLETS generates robust tracklets based on data found in the provided folder
 % Inputs:
-% 	- folderOUT = folder containing im*.mat files which contain a 
+% 	- folderData = folder containing im*.mat files which contain a 
 %		feature vector and location of each cell. One file per image.
-% 	- withAnnotations = boolean saying if the metadata files have links annotations.
 % 		If false, it will use the match function to find matches
+% 	- options = a struct containing options
+%	 	withAnnotations = [false] boolean saying if the metadata files have links annotations.
+%		numericFormat = [uint8] Use uint16 if more than 255 cells per image
 % Output:
 % 	- tracklets = a matrix of tracklets. Each row belongs to one 
 %		tracklet
 
-	mockData = false;
-	mockGlobalPermutation = false;
+	%-----------------------------------------------------------------Defaults
+	withAnnotations = false;
+	numericFormat = 'uint8';
 
-	if nargin < 2
-		withAnnotations = false;
+	if nargin < 2; options = struct; end;
+	%----------------------------------------------------------------Overrides
+	if isfield(options, 'withAnnotations')
+		withAnnotations = options.withAnnotations;
 	end
-
-	if exist(folderOUT, 'dir') ~= 7
-		error('The folder "%s" does not exist.', folderOUT);
+	if isfield(options, 'numericFormat')
+		numericFormat = options.numericFormat;
 	end
+	if exist(folderData, 'dir') ~= 7
+		error('The folder "%s" does not exist.', folderData);
+	end
+	%-----------------------------------------------------------Initialization
 
-	matfiles = dir(fullfile(folderOUT, 'im*.mat'));
+	matfiles = dir(fullfile(folderData, 'im*.mat'));
 
 	if numel(matfiles) == 0
-		error('There is no im*.mat file in folder: "%s"\n', folderOUT);
+		error('There is no im*.mat file in folder: "%s"\n', folderData);
 	end
 
 	firstFrame = 1;
-	if mockData || mockGlobalPermutation
-		nFrames = 7;
-		nTracklets = 5; % estimate
-	else
-		nFrames = length(matfiles);
-		nTracklets = 12; % estimate
-		% TODO: automatically grow trakclets size in batches to make it faster
-	end
+	numFrames = numel(matfiles);
+	numTracklets = 100; % estimate
+	% TODO: automatically grow trakclets size in batches to make it faster
 		
 	% create the big matrix of tracklets
-	tracklets = zeros(nTracklets, nFrames, 2);
+	tracklets = zeros(numTracklets, numFrames, 'int8');
 
 	%--------------------------------------------------Insert first frame data
 	matfileB = matfiles(firstFrame);
 
-	if mockGlobalPermutation || mockData
-		dotsB = [1 1; 3 3]; nCellsB = 2; XB = dotsB;
-	else
-		load(fullfile(folderOUT, matfileB.name));
-		dotsB = dots; nCellsB = size(dotsB, 1);
+	load(fullfile(folderData, matfileB.name));
+	dotsB = dots; nCellsB = size(dotsB, 1);
 
-		if withAnnotations
-			linksB = links;
-		else
-			XB = descriptors;
-		end
+	if withAnnotations
+		linksB = links;
+	else
+		XB = descriptors;
 	end
 
 	currNumTracklets = nCellsB;
-	tracklets(1:currNumTracklets, firstFrame, :) = dotsB;
-	nextID = nCellsB + 1;
-
 	globalPremutation = (1:nCellsB)';
+	tracklets(globalPremutation, firstFrame) = globalPremutation;
 
-	for f=firstFrame+1:nFrames
+	for f=firstFrame+1:numFrames
 		%------------------------------------------------------------Load data
 		matfileA = matfileB;
 		dotsA = dotsB; nCellsA = nCellsB;
@@ -73,46 +70,14 @@ function tracklets = generateTracklets(folderOUT, withAnnotations)
 
 		matfileB = matfiles(f);
 
-		if mockData || mockGlobalPermutation
-			if f == 2
-				dotsB = [2 2; 1 1; 3 3]; nCellsB = 3; XB = dotsB;
-			elseif f==3
-				dotsB = [3 3; 1 1; 2 2]; nCellsB = 3; XB = dotsB;
-			elseif f==4
-				dotsB = [3 3; 1 1; 2.5 2.5]; nCellsB = 3; XB = dotsB;
-			elseif f==5
-				dotsB = [2.5 2.5; 2 2; 3 3]; nCellsB = 3; XB = dotsB;
-			elseif f==6
-				dotsB = zeros(0, 2); nCellsB = 0; XB = dotsB;
-			elseif f==7
-				dotsB = [2.5 2.5; 2 2; 3 3]; nCellsB = 3; XB = dotsB;
-			end
-		else	
-			load(fullfile(folderOUT, matfileB.name));
-			dotsB = dots; nCellsB = size(dotsB, 1);
+		load(fullfile(folderData, matfileB.name));
+		dotsB = dots; nCellsB = size(dotsB, 1);
 
-			if withAnnotations
-				linksB = links;
-			else
-				XB = descriptors;
-			end
+		if withAnnotations
+			linksB = links;
+		else
+			XB = descriptors;
 		end
-		% fprintf('Processing frame %d (%s)\n', f, matfileB.name);
-		%-------------------------------------------------Find matches A <-> B
-		% if test
-		% 	if f==1
-		% 		permutation = [2; 3];
-		% 		selectedLeft = [0;1;1];
-		% 	elseif f==2
-		% 		permutation = [0;2;1];
-		% 		selectedLeft = [1;1];
-		% 	elseif f==3
-		% 		permutation = [1;3];
-		% 		selectedLeft = [1;0;1];
-		% 	end
-		% else
-		% 	[permutation right left selectedRight selectedLeft] = match(XA, XB, dotsA, dotsB);
-		% end
 		
 		if withAnnotations
 			permutation = linksA;
@@ -122,48 +87,13 @@ function tracklets = generateTracklets(folderOUT, withAnnotations)
 			[permutation right left selectedRight selectedLeft] = match(XA, XB, dotsA, dotsB);
 		end
 
-		% permutation
-		% selectedLeft
 
-		if mockGlobalPermutation
-			if f == 2
-				currNumTracklets = 3;
-				globalPremutation = [2 3 1]';
-			elseif f==3
-				currNumTracklets = 3;
-				globalPremutation = [2 1 3]';
-			elseif f==4
-				currNumTracklets = 4;
-				globalPremutation = [2 1 0 3]';
-			elseif f==5
-				currNumTracklets = 5;
-				globalPremutation = [0 3 0 1 2]';
-			elseif f==6
-				currNumTracklets = 5;
-				globalPremutation = [0 0 0 0 0]';
-			elseif f==7
-				currNumTracklets = 8;
-				globalPremutation = [0 0 0 0 0 1 2 3]';
-			end
-		else
-			[globalPremutation, currNumTracklets] = updateGlobalPermutation(globalPremutation, currNumTracklets, permutation, selectedLeft);
-		end
+		[globalPremutation, currNumTracklets] = updateGlobalPermutation(globalPremutation, currNumTracklets, permutation, selectedLeft);
 
-		gFrameCells = getCellTrackletsFrame(dotsB, globalPremutation, currNumTracklets);
-
-		tracklets(1:currNumTracklets, f, :) = gFrameCells;
+		tracklets(1:currNumTracklets, f) = globalPremutation;
 	end
-end
-
-function gFrameCell = getCellTrackletsFrame(dotsB, globalPremutation, currNumTracklets)
-	% GETCELLTRACKLETSFRAME returns a vector with the data from dotsB but reordered
-	% based on the indices in globalPremutation
-	gFrameCell = zeros(currNumTracklets, 2, 'double');
-	for i=1:numel(globalPremutation)
-		if globalPremutation(i)
-			gFrameCell(i, :) = dotsB(globalPremutation(i), :);
-		end
-	end
+	
+	tracklets = tracklets(1:currNumTracklets, :);
 end
 
 function [globalPremutation, currNumTracklets] = updateGlobalPermutation(globalPremutation, currNumTracklets, permutation, selectedLeft)
@@ -173,8 +103,6 @@ function [globalPremutation, currNumTracklets] = updateGlobalPermutation(globalP
 	% stored
 
 	%---------------------------------------------------------Update tracklets
-	% globalPremutation
-	% permutation
 
 	if ~isempty(permutation)
 		gPerm = zeros(size(globalPremutation));
@@ -194,7 +122,5 @@ function [globalPremutation, currNumTracklets] = updateGlobalPermutation(globalP
 	[I, J] = find(~selectedLeft);
 	newTracklets = sum(~selectedLeft);
 	currNumTracklets = currNumTracklets + newTracklets;
-	% globalPremutation
-	% I
 	globalPremutation = vertcat(globalPremutation, I);
 end

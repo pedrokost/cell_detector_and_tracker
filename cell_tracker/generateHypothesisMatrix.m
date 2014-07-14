@@ -39,7 +39,6 @@ function [M, hypTypes] = generateHypothesisMatrix(tracklets, options)
 	% hypothesis for each tracklet. I need to find out the number of tracklets
 	% starting in the following maxGap frames after the last cell in the
 	% tracklet
-	tracklets = max(tracklets(:, :, 1), tracklets(:, :, 2)); % Merge x-y into a single dimension to get a 2D matrix
 	trackletsBinary = min(1, tracklets);
 	kernel = [1 -1]; % detect starts/ends of tracklets
 	Itracklets = conv2(trackletsBinary, kernel);
