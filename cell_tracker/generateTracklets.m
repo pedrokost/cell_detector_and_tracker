@@ -106,11 +106,8 @@ function [globalPremutation, currNumTracklets] = updateGlobalPermutation(globalP
 
 	if ~isempty(permutation)
 		gPerm = zeros(size(globalPremutation));
-		for i=1:numel(globalPremutation)
-			if globalPremutation(i)
-				gPerm(i) = permutation(globalPremutation(i));
-			end
-		end
+		gPermIdx = find(globalPremutation);
+		gPerm(gPermIdx) = permutation(globalPremutation(gPermIdx));
 		globalPremutation = gPerm;
 	else
 		globalPremutation = zeros(size(globalPremutation));
