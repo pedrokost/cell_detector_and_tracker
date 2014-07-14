@@ -124,13 +124,9 @@ function gFrameCell = getCellTrackletsFrame(dots, globalPremutation, currNumTrac
 	% tracklets(1:currNumTracklets, f, :) = gFrameCells;
 	if nargin < 3
 		currNumTracklets = numel(globalPremutation);
-		% TODO: make smarter
 	end
 
 	gFrameCell = zeros(currNumTracklets, 2, 'uint16');
-	for i=1:numel(globalPremutation)
-		if globalPremutation(i)
-			gFrameCell(i, :) = dots(globalPremutation(i), :);
-		end
-	end
+	gPermIdx = find(globalPremutation);
+	gFrameCell(gPermIdx, :) = dots(globalPremutation(gPermIdx), :);
 end
