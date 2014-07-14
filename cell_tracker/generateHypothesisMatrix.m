@@ -120,7 +120,6 @@ function [M, hypTypes] = generateHypothesisMatrix(tracklets, options)
 	end
 
 	M = sparse(I, J, S);
-	whos
 end
 
 function H = getLinkHypothesis(initializationY, initializationX, terminationY, terminationX, maxGap)

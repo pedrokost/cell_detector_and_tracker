@@ -1,7 +1,7 @@
 clear all;
 rng(1234)
 
-doProfile = false;
+doProfile = true;
 
 if doProfile
 	profile -memory on

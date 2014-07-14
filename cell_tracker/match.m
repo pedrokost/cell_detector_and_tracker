@@ -138,19 +138,11 @@ symm(~selectedRight) = 0;
 
 end
 
-function Y = classifierDistance(featsA, featsB, distPos)
+function Y = classifierDistance(featsA, featsB)
 	% Given 2 feature vectors, returns the similarity given by the trained classifier. The similarity is a metric between 0 and 1.
-	if nargin < 3
-		nFeats = size(featsA, 2);
-		distPos =  nFeats+1:nFeats+2;
-	end
 
 	% This distance function must be the same as the one used in the classifier
 	D = euclideanDistance(featsA, featsB)';
 	Y = testMatcherRobustClassifierNB(D');
-
-
-	MAX_DIST_PERC = 0.05;  % maximum displacement in percentage/100
-
 
 end

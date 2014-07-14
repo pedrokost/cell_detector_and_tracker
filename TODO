@@ -1,14 +1,5 @@
 Today:
-	✔	T3.3 @done (14-07-10 09:33)
-	✔	T19 @done (14-07-10 15:19)
-	✔	T3.4 @done (14-07-10 16:17)
-	✔	T16 @done (14-07-11 10:18)
-	✔	T3.1 @done (14-07-11 12:49)
-	✔	T3.2 @done (14-07-11 12:49)
-	✔	T3 @done (14-07-11 15:04)
-	✔	T21 @done (14-07-11 17:13)
-	✔	T22 @done (14-07-11 17:14)
-	☐	T20
+	✔	T20 @done (14-07-14 10:58)
 	☐	T8
 Cell matcher:
 	☐	5) Train ANN and NB with much more data, possibly of all different datasets combined (reqs: M6)
@@ -25,22 +16,11 @@ Cell detector:
 	☐	Make it clear in the headers of the files which belong to Arteta, which have some of my changes, which are completely mine
 	☐	Detect cells in all datasets (reqs: M6)
 Cell tracker:
-	✔	3) compute the likelihoods (reqs: T3.1 T3.2 T3.3 T3.4) @done (14-07-11 15:05)
-	✔	3.1) Compute init prob (Pinit could be 1 - max(Plink of previous)) (reqs T3.4 T16) @done (14-07-11 12:49)
-	✔	3.2) Compute term prob (Pterm could be 1 - max(Plink to any future cells)) (reqs T3.4 T16) @done (14-07-11 12:49)
-	✔	3.3) Compute FP prob @done (14-07-10 09:33)
-	✔	3.4) Compute link prob @done (14-07-10 16:17)
 	☐	5) Tracklet linking features: direction over last N frames, average displacement over last N frames, td of displacement over last N frames, gaussian broadening idea
-	✔	6) Read Single Quantum Dot Tracking paper @done (14-07-11 10:20)
 	☐	7) Skip blurred frames, and leave an annotation that you skipped a frame (reqs: S4)
-	✔	15) In the code, replace probability with likelihood @done (14-07-11 15:11)
-	✔	16) Figure out how to bring in the cell descriptors @done (14-07-11 10:18)
 	☐	17) Correctly estimate the number of missedetections of the detector
 	☐	18) Add parameters so that the user can tweak the probabilities of Pfp, Ptp, Plink, Pinit, Pterm
-	✔	19) Separate the code of generating Link hypothesis and computing the Likelihoods, or it will get messy @done (14-07-10 15:19)
 	☐	20) Transform the tracklets to contain the indices of cells instead of their x-y coordinate (reqs T22).
-	✔	21) Review and streamline the cell_tracking process (from generating the tracklets matrix to joining tracklets) @done (14-07-11 17:13)
-	✔	22) Measure the memory usage before the change to store indices within tracklets matrix @done (14-07-11 17:13)
 	☐	22) Measure the memory usage before the change to store indices after tracklets matrix (reqs: T20)
 
 Cell annotator:
@@ -89,6 +69,26 @@ Track evaluation metrics:
 	(3) FAPF: False Alarm Per Frame.
 ＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿
 Archive:
+	✔	T3.3 @done (14-07-10 09:33) @project(Today)
+	✔	T19 @done (14-07-10 15:19) @project(Today)
+	✔	T3.4 @done (14-07-10 16:17) @project(Today)
+	✔	T16 @done (14-07-11 10:18) @project(Today)
+	✔	T3.1 @done (14-07-11 12:49) @project(Today)
+	✔	T3.2 @done (14-07-11 12:49) @project(Today)
+	✔	T3 @done (14-07-11 15:04) @project(Today)
+	✔	T21 @done (14-07-11 17:13) @project(Today)
+	✔	T22 @done (14-07-11 17:14) @project(Today)
+	✔	3) compute the likelihoods (reqs: T3.1 T3.2 T3.3 T3.4) @done (14-07-11 15:05) @project(Cell tracker)
+	✔	3.1) Compute init prob (Pinit could be 1 - max(Plink of previous)) (reqs T3.4 T16) @done (14-07-11 12:49) @project(Cell tracker)
+	✔	3.2) Compute term prob (Pterm could be 1 - max(Plink to any future cells)) (reqs T3.4 T16) @done (14-07-11 12:49) @project(Cell tracker)
+	✔	3.3) Compute FP prob @done (14-07-10 09:33) @project(Cell tracker)
+	✔	3.4) Compute link prob @done (14-07-10 16:17) @project(Cell tracker)
+	✔	6) Read Single Quantum Dot Tracking paper @done (14-07-11 10:20) @project(Cell tracker)
+	✔	15) In the code, replace probability with likelihood @done (14-07-11 15:11) @project(Cell tracker)
+	✔	16) Figure out how to bring in the cell descriptors @done (14-07-11 10:18) @project(Cell tracker)
+	✔	19) Separate the code of generating Link hypothesis and computing the Likelihoods, or it will get messy @done (14-07-10 15:19) @project(Cell tracker)
+	✔	21) Review and streamline the cell_tracking process (from generating the tracklets matrix to joining tracklets) @done (14-07-11 17:13) @project(Cell tracker)
+	✔	22) Measure the memory usage before the change to store indices within tracklets matrix @done (14-07-11 17:13) @project(Cell tracker)
 	✔	T8 @done (14-07-09 10:14) @project(Today)
 	✔	T13 @done (14-07-09 16:39) @project(Today)
 	✔	T14 @done (14-07-09 16:05) @project(Today)
