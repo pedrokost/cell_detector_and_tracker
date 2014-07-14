@@ -6,7 +6,7 @@ function tracks = updateTracklets(tracklets, Hopt)
 	% Outputs:
 	% 	tracks = tracklets updated wrt the chosen hypothesis
 
-	[numTracklets, numFrames, numDims] = size(tracklets);
+	[numTracklets, numFrames] = size(tracklets);
 
 	HinitAndTermIdx = find(sum(Hopt, 2) == 1);
 	[I, J] = find(Hopt(HinitAndTermIdx, :));
@@ -67,12 +67,8 @@ function tracks = updateTracklets(tracklets, Hopt)
 	%-------------------------------------------------Create the tracks matrix
 	
 	% Used the mapping indices matrix to create the tracks matrix
-	tracks = zeros(numel(HinitIdx), numFrames, numDims);
-	% in case one of the corrdinates is 0, use max.
-	% The algorithm assumes that cells are never in position [0 0]
-	[I, J] = find(max(tracklets, [], 3) ~= 0);
-	% tracks = tracklets(J, :, :);
-	% tracks(mapIdx(Jlhs(i)), tIdx, :) = t(:, tIdx, :);
+	tracks = zeros(numel(HinitIdx), numFrames);
+	[I, J] = find(tracklets);
 	for i=1:numTracklets
 		if mapIdx(i)
 			idx = J(I==i);
