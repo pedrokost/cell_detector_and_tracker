@@ -65,7 +65,7 @@ classdef DataStore
 				dots = obj.dotsCache(frameNumber);
 			else
 				if obj.verbose;
-					fprintf('Accessing %s on disk\n', obj.frameFile(frameNumber));
+					fprintf('GETDOTS:       Accessing %s on disk\n', obj.frameFile(frameNumber));
 				end
 				data = load(obj.frameFile(frameNumber));
 				dots = data.dots;
@@ -83,7 +83,7 @@ classdef DataStore
 				descriptors = obj.descriptorsCache(frameNumber);
 			else
 				if obj.verbose;
-					fprintf('Accessing %s on disk\n', obj.frameFile(frameNumber));
+					fprintf('GETDETECTIONS: Accessing %s on disk\n', obj.frameFile(frameNumber));
 				end
 				data = load(obj.frameFile(frameNumber));
 				if isfield(data, 'descriptors')

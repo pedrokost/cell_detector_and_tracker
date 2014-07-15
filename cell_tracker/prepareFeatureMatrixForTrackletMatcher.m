@@ -6,7 +6,7 @@
 	The objective column is obtained from the user annotations of links in the dataset. It is important for the purpose of learning a good matcher that the annotations are as complete possible. 
 %}
 rng(1234)
-clear all
+% clear all
 
 doProfile = false;
 
@@ -16,6 +16,7 @@ end
 
 global DSIN DSOUT;
 MIN_TRACKLET_LENGTH = 5;
+MAX_GAP = 3;
 
 % Folder with user annotation of links
 folderIN = fullfile('..', 'data', 'series30green');
@@ -23,38 +24,48 @@ folderIN = fullfile('..', 'data', 'series30green');
 folderOUT = fullfile('..', 'data', 'series30greenOUT');
 saveToFile = fullfile(folderOUT, 'matcherTrainTrackletJoinerMatrix.mat');
 % Data stores
-DSIN = DataStore(folderIN);
-DSOUT = DataStore(folderOUT);
+DSIN = DataStore(folderIN, false);
+DSOUT = DataStore(folderOUT, false);
 
 tracklets = generateTracklets(folderIN, struct('withAnnotations', true));
 
 % Only bother working with tracklets of length > N
 cnt = sum(min(tracklets, 1), 2);
 tracklets = tracklets(cnt > MIN_TRACKLET_LENGTH, :);
+
+[numTracklets, numFrames] = size(tracklets);
 subplot(1,2,1); trackletViewer(tracklets, folderIN)
 
-
-t = tracklets;
-tracklets = convertInToOutIdx(tracklets);
+% For each tracklets, find the corresponding dots in the OUT folder
+tracklets = convertAnnotationToDetectionIdx(tracklets);
 subplot(1,2,2); trackletViewer(tracklets, folderOUT)
 
-if doProfile
-	profile off
-	profile viewer
+Y = zeros(0, 1, 'uint8'); %[match/no-match]
+I = zeros(0, 4, 'uint16'); % [frameA, cellindexA, frameB, cellindexB]
+
+
+for t=1:numTracklets
+	idx = find(tracklets(t, :));
+	vals = tracklets(t, idx);
+
+	C = combnk(idx, 2);
+	D = C(:, 2) - C(:, 1);
+	C = C(D < MAX_GAP, :);
+
+	% TODO: random sample just a portion of the cases
+
+	new = [C(:, 1) tracklets(t, C(:, 1))' C(:, 2) tracklets(t, C(:, 2))']
+	I = [I; new];
+
+	Y = [Y; ones(size(C, 1), 1)];
 end
 
-% For each tracklets, find the corresponding dots in the OUT folder
+size(I)
+size(Y)
+
+
 % First append all positive examples
 % Then find all possible combinations of tracklets, and add all negative examples
-
-
-
-
-% Build a tracklets matrix using the links
-% For each possible combination create a matrix containindg each possible combination of linking and not linking tracklts
-% For each not possible pair, also create an entry
-
-
 % Then load the corresponding descriptors, and store the differences (normalized)
 
 
@@ -114,3 +125,9 @@ end
 % end
 % X = normalizeRange(X, {1:2});
 % imagesc(X)
+
+
+if doProfile
+	profile off
+	profile viewer
+end
