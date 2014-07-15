@@ -6,7 +6,7 @@
 	The objective column is obtained from the user annotations of links in the dataset. It is important for the purpose of learning a good matcher that the annotations are as complete possible. 
 %}
 rng(1234)
-% clear all
+clear all
 
 doProfile = false;
 
@@ -16,7 +16,7 @@ end
 
 global DSIN DSOUT;
 MIN_TRACKLET_LENGTH = 5;
-MAX_GAP = 3;
+MAX_GAP = 5;
 
 % Folder with user annotation of links
 folderIN = fullfile('..', 'data', 'series30green');
@@ -34,16 +34,17 @@ cnt = sum(min(tracklets, 1), 2);
 tracklets = tracklets(cnt > MIN_TRACKLET_LENGTH, :);
 
 [numTracklets, numFrames] = size(tracklets);
-subplot(1,2,1); trackletViewer(tracklets, folderIN)
+% subplot(1,2,1); trackletViewer(tracklets, folderIN)
 
 % For each tracklets, find the corresponding dots in the OUT folder
 tracklets = convertAnnotationToDetectionIdx(tracklets);
-subplot(1,2,2); trackletViewer(tracklets, folderOUT)
+% subplot(1,2,2); trackletViewer(tracklets, folderOUT)
 
 Y = zeros(0, 1, 'uint8'); %[match/no-match]
 I = zeros(0, 4, 'uint16'); % [frameA, cellindexA, frameB, cellindexB]
 
-
+% First append all positive examples:
+% cells in same tracklets with max distance of MAX_GAP
 for t=1:numTracklets
 	idx = find(tracklets(t, :));
 	vals = tracklets(t, idx);
@@ -54,26 +55,67 @@ for t=1:numTracklets
 
 	% TODO: random sample just a portion of the cases
 
-	new = [C(:, 1) tracklets(t, C(:, 1))' C(:, 2) tracklets(t, C(:, 2))']
+	new = [C(:, 1) tracklets(t, C(:, 1))' C(:, 2) tracklets(t, C(:, 2))'];
 	I = [I; new];
 
 	Y = [Y; ones(size(C, 1), 1)];
 end
 
-size(I)
-size(Y)
+% findall possible tracklets combinations
+trackletCombos = combnk(1:numTracklets, 2);
 
+for i=1:size(trackletCombos, 1)
+	trackletA = tracklets(trackletCombos(1), :);
+	trackletB = tracklets(trackletCombos(2), :);
+	idxA = find(trackletA);
+	idxB = find(trackletB);
+	% For each cell in each tracklet
+	% take all other cells in opposite tracklet
+	C = combvec(idxA, idxB);
 
-% First append all positive examples
-% Then find all possible combinations of tracklets, and add all negative examples
-% Then load the corresponding descriptors, and store the differences (normalized)
+	% TODO random sample
+	new = [C(1, :); trackletA(C(1, :)); C(2, :); trackletB(C(2, :))]';
 
+	I = [I; new];
+	Y = [Y; zeros(size(C, 2), 1)];
+	% and set it a negative example
+end
 
+clear new C D cnt i idx idxA idxB t trackletA trackletB vals;
 
+n = numel(Y);
+perm = randperm(n);
+I = I(perm, :);
+Y = Y(perm);
 
-% First, associate each annotation with the corresponding feature vector
-% Drop any detected cells that don't have annotation, or annotations with missing detections
-% startIdx = 1;
+fprintf('There are %d positive and %d negative examples.\nThe ratio of positive to negative examples is 1:%.1f.\n', sum(Y==1), sum(Y==0), sum(Y==0)/sum(Y==1))
+
+% TODO delete
+% I = I(1:1000, :);
+% Y = Y(1:1000);
+% n = numel(Y);
+% Using the matrix, create a new matrix containing the difference of histograms
+% with the objective function
+
+% Check the side of descriptors
+descriptorSize = numel(DSOUT.getDescriptors(1, 1));
+
+X = zeros(n, descriptorSize + 2, 'single');
+
+for i=1:n
+	% [frameA, cellindexA, frameB, cellindexB]
+	[dotsA, desA] = DSOUT.get(I(i, 1), I(i, 2));
+	[dotsB, desB] = DSOUT.get(I(i, 3), I(i, 4));
+
+	features = computeTrackletMatchFeatures(dotsA, desA, dotsB, desB);
+
+	X(i, :) = features;
+end
+
+save(saveToFile, 'X', 'Y')
+
+% clear DSIN DSOUT
+
 
 % % Load annotations and detections for first image
 % filenameA = matAnnotations(startIdx).name;

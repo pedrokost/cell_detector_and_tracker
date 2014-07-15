@@ -1,17 +1,20 @@
 Today:
 	✔	M10 @done (14-07-15 10:15)
-	☐	M8
-	☐	M7
+	✔	M8 @done (14-07-15 15:29)
+	✔	M7 @done (14-07-15 16:26)
 	☐	W1
 	☐	W2
+	☐	M12
 Cell matcher:
 	☐	5) Train ANN and NB with much more data, possibly of all different datasets combined (reqs: M6)
 	☐	6) Annotate more datasets
-	☐	7) To match cells accross frames, use the links to learn a similarity model using all possible larger displacements between them (up to a higher limit eg 50 frames)
-	☐	8) Build the matrix to learn to classify jointing tracklets
+	✔	7) To match cells accross frames, use the links to learn a similarity model using all possible larger displacements between them (up to a higher limit eg 50 frames) @done (14-07-15 16:26)
+	✔	8) Build a basic matrix to learn to classify jointing tracklets @done (14-07-15 15:29)
 	☐	9) Run data through PCA/LDA or other first
 	✔	10) Create data store object to store dots and descriptors and reduce disk io @done (14-07-15 10:15)
-	☐	11) If collections.Map are passed by reference, I may not need global var
+	☐	12) Build a better matrix to learn to classifiy joining tracklets based on spatio-temporal features as well
+	☐	13) Automatic feature selection
+	☐	14) Solve the unbalanced learning sets problem
 Cell detector:
 	☐ If any detector NaN, in the end don't show average NaN.
 	☐ Read Pylon stuff

@@ -1,3 +1,4 @@
+clear all;
 load(fullfile('..', 'data', 'series30greenOUT', 'matcherTrainRobustJoinerMatrix.mat'))
 x = X(:, 1:end-1);
 t = X(:, end);
@@ -10,4 +11,6 @@ NB = fitNaiveBayes(x,t);
 
 save('match_predictor_nb.mat', 'NB', 'idx', 'minimum', 'maximum');
 
-cMat1 = confusionmat(t,Y) 
+Y = testMatcherRobustClassifierNB(X(:, 1:end-1));
+
+cMat1 = confusionmat(t, double(Y>0.9))

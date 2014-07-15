@@ -10,10 +10,11 @@ end
 
 folderData = fullfile('..', 'data', 'series30greenOUT');
 matcher = 'ANN';
-maxGaps = [1 10];
+maxGaps = [1 3 6 10];
+numGaps = numel(maxGaps)+1;
 
 figure(1); clf;
-f1 = subplot(1,2,1);
+f1 = subplot(1,numGaps,1);
 tracklets = generateTracklets(folderData, struct('withAnnotations', false));
 
 % tracklets 52x66x2            54912
@@ -29,17 +30,19 @@ for i=1:numel(maxGaps)
 
 	Iopt = getGlobalOpimalAssociation(M, Liks);
 
-	hypothesisPrint(M, Liks, Iopt, 'short');
+	hypothesisPrint(M, Liks, Iopt, 'shortextra');
 
 	Mopt = M(find(Iopt), :);
 	tracks = updateTracklets(tracklets, Mopt);
 	tracklets = tracks;
-end	
 
-f2 = subplot(1,2,2);
-trackletViewer(tracks, folderData, struct('animate', false));
-title('Tracks')
-axis(f2, ax)
+	f2 = subplot(1, numGaps,i+1);
+	trackletViewer(tracklets, folderData, struct('animate', false));
+	axis(f2, ax)
+	title(sprintf('Tracks. Min gap: %d', maxGaps(i)))
+	drawnow update;
+	pause(1)
+end
 
 if doProfile
 	profile off

@@ -16,19 +16,26 @@ function hypothesisPrint(H, P, selected, view)
 			hypothesisPrintTable(H, P, selected, true);
 		case 'short'
 			hypothesisPrintShort(H, P, selected);
+		case 'shortextra'
+			hypothesisPrintShort(H, P, selected, true);
 	end
 end
 
-function hypothesisPrintShort(H, P, selected)
+function hypothesisPrintShort(H, P, selected, extra)
 	% HYPOTHESISPRINTSHORT displays the optimal selection results by marking
 	% the rows of the hypothesis matrix that were selected as optimal
+	if nargin < 4; extra = false; end
 
 	fprintf('\n')
 	fprintf('The following actions are optimal:\n\n');
 	numRows = size(H, 1);
 	Hselected = H(find(selected), :);
 	Q = humanizeHypothesis(Hselected);
-	disp(char(Q))
+	if extra
+		disp([char(Q) num2str(P(logical(selected)))])
+	else
+		disp(char(Q))
+	end
 	fprintf('\n')
 
 end
