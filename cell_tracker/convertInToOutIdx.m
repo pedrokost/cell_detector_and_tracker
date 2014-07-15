@@ -29,7 +29,7 @@ function tracklets2 = convertInToOutIdx(tracklets, options)
 		% Permute this dots with the tracklets matrix
 		dotsGt = getCellTrackletsFrame(dotsGt, tracklets(:, i));
 
-		dotsDet = DSOUT.getDots(i); 
+		dotsDet = DSOUT.getDots(i);
 		% This computes for each GT dot, the closest Det dot.
 		[D, perm] = pdist2(single(dotsDet), single(dotsGt), 'euclidean', 'Smallest', 1);
 
@@ -38,7 +38,5 @@ function tracklets2 = convertInToOutIdx(tracklets, options)
 			tracklets2(:, i) = perm;
 		end
 
-		tracklets(:, i);
-		perm;
 	end
 end

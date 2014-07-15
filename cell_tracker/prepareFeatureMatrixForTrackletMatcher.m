@@ -21,11 +21,10 @@ MIN_TRACKLET_LENGTH = 5;
 folderIN = fullfile('..', 'data', 'series30green');
 % Folder with cell descriptors
 folderOUT = fullfile('..', 'data', 'series30greenOUT');
+saveToFile = fullfile(folderOUT, 'matcherTrainTrackletJoinerMatrix.mat');
 % Data stores
 DSIN = DataStore(folderIN);
 DSOUT = DataStore(folderOUT);
-
-saveToFile = fullfile(folderOUT, 'matcherTrainTrackletJoinerMatrix.mat');
 
 tracklets = generateTracklets(folderIN, struct('withAnnotations', true));
 
@@ -37,15 +36,12 @@ subplot(1,2,1); trackletViewer(tracklets, folderIN)
 
 t = tracklets;
 tracklets = convertInToOutIdx(tracklets);
-t(:, 1:15);
-tracklets(:, 1:15);
-all(all(t == tracklets))
-% subplot(1,2,2); trackletViewer(tracklets, folderOUT)
+subplot(1,2,2); trackletViewer(tracklets, folderOUT)
 
-% if doProfile
-% 	profile off
-% 	profile viewer
-% end
+if doProfile
+	profile off
+	profile viewer
+end
 
 % For each tracklets, find the corresponding dots in the OUT folder
 % First append all positive examples
