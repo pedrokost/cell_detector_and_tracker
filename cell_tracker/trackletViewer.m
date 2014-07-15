@@ -10,11 +10,11 @@ function trackletViewer(tracklets, folderData, options)
 	% Outputs: /
 
 	%-----------------------------------------------------------------Defaults
-	animate = true;
+	animate = false;
 	animationSpeed = 100; % pause is 1/animationSpeed
 	showLabels = true;
 	%------------------------------------------------------------------Options
-	if nargin < 2; options = struct; end
+	if nargin < 3; options = struct; end
 
 	if isfield(options, 'animate'); animate = options.animate; end
 	if isfield(options, 'showLabels'); showLabels = options.showLabels; end
@@ -56,7 +56,7 @@ function trackletViewer(tracklets, folderData, options)
 
 		if showLabels
 
-			text(double(x(1)), double(y(1)), double(z(1)), num2str(t))
+			text(double(x(1)), double(y(1)), double(z(1)), num2str(t));
 		end
 		% color=1:length(x);
 		% surface([x;x],[y;y],[z;z],[color;color], 'facecol','no','edgecol','interp');
@@ -114,19 +114,4 @@ function tracklets2 = trackletsToPosition(tracklets, folderData)
 		data = load(fullfile(folderData, imTitle));
 		tracklets2(:, i, :) = getCellTrackletsFrame(data.dots, tracklets(:, i)); 
 	end
-end
-
-function gFrameCell = getCellTrackletsFrame(dots, globalPremutation, currNumTracklets)
-	% GETCELLTRACKLETSFRAME returns a vector with the data from dots but reordered
-	% based on the indices in globalPremutation
-	
-	% gFrameCells = getCellTrackletsFrame(dots, globalPremutation, currNumTracklets);
-	% tracklets(1:currNumTracklets, f, :) = gFrameCells;
-	if nargin < 3
-		currNumTracklets = numel(globalPremutation);
-	end
-
-	gFrameCell = zeros(currNumTracklets, 2, 'uint16');
-	gPermIdx = find(globalPremutation);
-	gFrameCell(gPermIdx, :) = dots(globalPremutation(gPermIdx), :);
 end

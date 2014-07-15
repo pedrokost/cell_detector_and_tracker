@@ -65,7 +65,7 @@ classdef DataStore
 					fprintf('Accessing %s on disk\n', obj.frameFile(frameNumber));
 				end
 				data = load(obj.frameFile(frameNumber));
-				dots = uint16(data.dots);
+				dots = data.dots;
 				obj.dotsCache(frameNumber) = dots;
 			end
 

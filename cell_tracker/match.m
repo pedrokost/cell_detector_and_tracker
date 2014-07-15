@@ -46,18 +46,6 @@ if nargin < 5
 	options = struct;
 end
 
-if isfield(options, 'normalizeFeatures')
-	normalizeFeatures = options.normalizeFeatures;
-end
-
-if isfield(options, 'compareLocations')
-	compareLocations = options.compareLocations;
-end
-
-if isfield(options, 'locationWeight')
-	locationWeight = options.locationWeight;
-end
-
 %----------------------------Add location to feature vector
 
 XA2 = zeros(nObsA, nFeats+2);
