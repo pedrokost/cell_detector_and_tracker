@@ -10,11 +10,9 @@ classdef DataStore
 
 	properties(SetAccess = private, GetAccess = private)
 		dataFolder  % Folder containing mat files with descriptors
-		dotsCache = containers.Map('KeyType','uint32','ValueType', 'any');
-		descriptorsCache = containers.Map('KeyType','uint32',...
-			'ValueType', 'any');
-		filePathsCache = containers.Map('KeyType', 'uint32',...
-			'ValueType', 'char');
+		dotsCache
+		descriptorsCache
+		filePathsCache
 		imPrefix = 'im';
 		imDigets = 3;  % load from outside
 		verbose = true;
@@ -24,10 +22,15 @@ classdef DataStore
 		function obj = DataStore(dataFolder, verbose)
 			obj.dataFolder = dataFolder;
 
+			obj.dotsCache = containers.Map('KeyType','uint32','ValueType', 'any');
+			obj.descriptorsCache = containers.Map('KeyType','uint32',...
+				'ValueType', 'any');
+			obj.filePathsCache = containers.Map('KeyType', 'uint32',...
+				'ValueType', 'char');
+
 			if nargin > 1
 				obj.verbose = verbose;
 			end
-
 			% TODO Precompute file names because fullfile is too slow otherwise
 		end
 
@@ -45,7 +48,6 @@ classdef DataStore
 
 		function p = frameFile(obj, frameNumber)
 			% Return the name of the mat file of frameNumber
-
 			if isKey(obj.filePathsCache, frameNumber)
 				p = obj.filePathsCache(frameNumber);
 			else
@@ -58,6 +60,7 @@ classdef DataStore
 
 		function dots = getDots(obj, frameNumber, cellIndices)
 			% Returns the dots of cells indicated by cellIndices in frame frameNumberd
+
 			if isKey(obj.dotsCache, frameNumber)
 				dots = obj.dotsCache(frameNumber);
 			else
