@@ -1,12 +1,16 @@
 Today:
-	✔	T20 @done (14-07-14 10:58)
-	☐	T8
+	✔	M10 @done (14-07-15 10:15)
+	☐	M8
+	☐	M7
+	☐	W1
+	☐	W2
 Cell matcher:
 	☐	5) Train ANN and NB with much more data, possibly of all different datasets combined (reqs: M6)
 	☐	6) Annotate more datasets
-	☐	7) To match cells accross frames, use the robust tracklets to learn a similarity model using all possible larger displacements between them (up to a higher limit eg 50 frames)
+	☐	7) To match cells accross frames, use the links to learn a similarity model using all possible larger displacements between them (up to a higher limit eg 50 frames)
 	☐	8) Build the matrix to learn to classify jointing tracklets
 	☐	9) Run data through PCA/LDA or other first
+	☐	10) Create data store object to store dots and descriptors and reduce disk io
 Cell detector:
 	☐ If any detector NaN, in the end don't show average NaN.
 	☐ Read Pylon stuff
@@ -20,9 +24,10 @@ Cell tracker:
 	☐	7) Skip blurred frames, and leave an annotation that you skipped a frame (reqs: S4)
 	☐	17) Correctly estimate the number of missedetections of the detector
 	☐	18) Add parameters so that the user can tweak the probabilities of Pfp, Ptp, Plink, Pinit, Pterm
-	☐	20) Transform the tracklets to contain the indices of cells instead of their x-y coordinate (reqs T22).
-	☐	22) Measure the memory usage before the change to store indices after tracklets matrix (reqs: T20)
-
+	☐	23) Make everything use a global store
+Writing thesis:
+	☐	1) Craft a rough outline
+	☐	2) Analyse the amount of work that is left to do before I can focus on writing
 Cell annotator:
 	☐ 1) Larger marker for detections
 	☐ 2) Copy anotations over
@@ -69,6 +74,10 @@ Track evaluation metrics:
 	(3) FAPF: False Alarm Per Frame.
 ＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿
 Archive:
+	✔	T20 @done (14-07-14 10:58) @project(Today)
+	✔	T22 @done (14-07-14 11:12) @project(Today)
+	✔	20) Transform the tracklets to contain the indices of cells instead of their x-y coordinate (reqs T22). @done (14-07-14 11:12) @project(Cell tracker)
+	✔	22) Measure the memory usage before the change to store indices after tracklets matrix (reqs: T20) @done (14-07-14 11:12) @project(Cell tracker)
 	✔	T3.3 @done (14-07-10 09:33) @project(Today)
 	✔	T19 @done (14-07-10 15:19) @project(Today)
 	✔	T3.4 @done (14-07-10 16:17) @project(Today)
