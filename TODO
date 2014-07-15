@@ -1,38 +1,38 @@
 Today:
-	✔	M10 @done (14-07-15 10:15)
-	✔	M8 @done (14-07-15 15:29)
-	✔	M7 @done (14-07-15 16:26)
-	☐	W1
+	✔	T30 @done (14-07-15 10:15)
+	✔	T28 @done (14-07-15 15:29)
+	✔	T27 @done (14-07-15 16:26)
+	✔	W1 @done (14-07-15 16:56)
 	☐	W2
-	☐	M12
-Cell matcher:
-	☐	5) Train ANN and NB with much more data, possibly of all different datasets combined (reqs: M6)
-	☐	6) Annotate more datasets
-	✔	7) To match cells accross frames, use the links to learn a similarity model using all possible larger displacements between them (up to a higher limit eg 50 frames) @done (14-07-15 16:26)
-	✔	8) Build a basic matrix to learn to classify jointing tracklets @done (14-07-15 15:29)
-	☐	9) Run data through PCA/LDA or other first
-	✔	10) Create data store object to store dots and descriptors and reduce disk io @done (14-07-15 10:15)
-	☐	12) Build a better matrix to learn to classifiy joining tracklets based on spatio-temporal features as well
-	☐	13) Automatic feature selection
-	☐	14) Solve the unbalanced learning sets problem
-Cell detector:
+	☐	T32
+Cell tracker (1 week work minimum - 3 weeks maximum):
+	☐	5) Tracklet linking features: direction over last N frames, average displacement over last N frames, td of displacement over last N frames, gaussian broadening idea
+	☐	7) Skip blurred frames, and leave an annotation that you skipped a frame (reqs: S4)
+	☐	17) Correctly estimate the number of missedetections of the detector
+	☐	18) Add parameters so that the user can tweak the probabilities of Pfp, Ptp, Plink, Pinit, Pterm
+	☐	23) Make everything use a global store
+	☐	24) Create files with parameters, that can be loaded anywhere (small overhead) 
+	☐	25) Train ANN and NB with much more data, possibly of all different datasets combined (reqs: M6)
+	☐	26) Annotate more datasets
+	✔	27) To match cells accross frames, use the links to learn a similarity model using all possible larger displacements between them (up to a higher limit eg 50 frames) @done (14-07-15 16:26)
+	✔	28) Build a basic matrix to learn to classify jointing tracklets @done (14-07-15 15:29)
+	☐	29) Run data through PCA/LDA or other first
+	✔	30) Create data store object to store dots and descriptors and reduce disk io @done (14-07-15 10:15)
+	☐	32) Build a better matrix to learn to classifiy joining tracklets based on spatio-temporal features as well
+	☐	33) Best feature subset analysis
+	☐	34) Solve the unbalanced learning sets problem
+Cell detector (3 days work minimum - 1 week maximum):
 	☐ If any detector NaN, in the end don't show average NaN.
 	☐ Read Pylon stuff
 	☐ New features to try:
 		☐ Histeq + Laplacian(0.2) creates empty places in maximums, noise everywhere else
 		☐ use the builtin canny edge detector, with params 0.6+
 	☐	Make it clear in the headers of the files which belong to Arteta, which have some of my changes, which are completely mine
-	☐	Detect cells in all datasets (reqs: M6)
-Cell tracker:
-	☐	5) Tracklet linking features: direction over last N frames, average displacement over last N frames, td of displacement over last N frames, gaussian broadening idea
-	☐	7) Skip blurred frames, and leave an annotation that you skipped a frame (reqs: S4)
-	☐	17) Correctly estimate the number of missedetections of the detector
-	☐	18) Add parameters so that the user can tweak the probabilities of Pfp, Ptp, Plink, Pinit, Pterm
-	☐	23) Make everything use a global store
-Writing thesis:
-	☐	1) Craft a rough outline
+	☐	Detect cells in all datasets (reqs: M6)	
+Writing thesis (4 weeks work minimum - 7 weeks maximum):
+	✔	1) Craft a rough outline @done (14-07-15 16:56)
 	☐	2) Analyse the amount of work that is left to do before I can focus on writing
-Cell annotator:
+Cell annotator (3 days work minimum - 1 week maximum):
 	☐ 1) Larger marker for detections
 	☐ 2) Copy anotations over
 	☐ 3) Copy links over
@@ -46,19 +46,20 @@ Cell annotator:
 	☐ 11) Menu bar for basic tools (load dets...)
 	☐ 12) Show dots should only toggle annotation dots
 	☐	 13) Possibly add a button show generated tracks to complement show links
-Cell stabilizer:
+Cell stabilizer (0 minimum - 2 weeks maximum):
 	☐	1) Read how to easily do image stabilization in matlab (instaed of SIFT, RANSAC, homography, etc, which might take too long)
 	☐	2) Eliminate all detected cells from the images and extract sifts of the remaining regions (or extract sifts everywhere, elimintae those close to the detected cells)
 	☐	3) Given the number of SIFTs detected, or their distribution (eg only bottom part of image), it may be possible to detect bad frames. Just analyse. (reqs: S2)
 	☐	4) Store the names of bad or correct frames in a file, so they can be skipped in the tracker (reqs: S3)
-Evaluations:
+Evaluations (1 week minimum - 2 weeks maximum):
 	☐ Evaluations with single type of cells (red/green)
 	☐ Evaluations with different number of training/testing examples
 	☐ Train a compound model with cells of different images
 	☐	Try the tracker effectiveness if frames are skipped: what is the max number of frames that can be skipped while still obtaining good enough tracks
-Biological statics:
+Biological statics (3 days minimum - 1 week maximum):
 	☐	Discover (find in prev papers) stats that might be of interest
-Final GUI:
+	☐	Write a function that computes these stats
+Final GUI (1 week minimum - 2 weeks maximum):
 	☐	plan design/workflow on paper
 	☐	Ask Leo if we also need the option to train a new model
 Approaches to solve the MAP problem of connecting tracklets:
