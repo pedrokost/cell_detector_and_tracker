@@ -1,5 +1,5 @@
 Today:
-	☐	T35
+	✔	T35 @done (14-07-16 09:34)
 	☐	T32
 	☐	T36
 	☐	T37
@@ -17,7 +17,7 @@ Cell tracker (1 week work minimum - 3 weeks maximum):
 	☐	32) Feature computation for tracklet join should contain angle difference between last few frames and the numeber of frames between cells
 	☐	33) Best feature subset analysis
 	☐	34) Solve the unbalanced learning sets probl
-	☐	35) Upgrade the tracklet join matrix to contain the tracklet ID
+	✔	35) Upgrade the tracklet join matrix to contain the tracklet ID @done (14-07-16 09:34)
 	☐	36) Load imPrefix and imDigits from a config file
 	☐	37) Load join tracklet feauture choice from a config file
 Cell detector (3 days work minimum - 1 week maximum):

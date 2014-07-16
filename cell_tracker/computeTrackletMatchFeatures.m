@@ -1,4 +1,4 @@
-function features = computeTrackletMatchFeatures(dotsA, desA, dotsB, desB)
+function features = computeTrackletMatchFeatures(trackletA, dotsA, desA, trackletB, dotsB, desB)
 
 	desA = combineDescriptorsWithDots(desA, dotsA);
 	desB = combineDescriptorsWithDots(desB, dotsB);
