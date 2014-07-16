@@ -14,31 +14,26 @@ if doProfile
 	profile on % -memory 
 end
 
+params = loadDatasetInfo(2);
+classifierParams = params.joinerClassifierParams;
+
 global DSIN DSOUT;
-MIN_TRACKLET_LENGTH = 5;
-MAX_GAP = 5;
+% Data storescl
+DSIN = DataStore(params.dataFolder, false);
+DSOUT = DataStore(params.outFolder, false);
 
-% Folder with user annotation of links
-folderIN = fullfile('..', 'data', 'series30green');
-% Folder with cell descriptors
-folderOUT = fullfile('..', 'data', 'series30greenOUT');
-saveToFile = fullfile(folderOUT, 'matcherTrainTrackletJoinerMatrix.mat');
-% Data stores
-DSIN = DataStore(folderIN, false);
-DSOUT = DataStore(folderOUT, false);
-
-tracklets = generateTracklets(folderIN, struct('withAnnotations', true));
+tracklets = generateTracklets(params.dataFolder, struct('withAnnotations', true));
 
 % Only bother working with tracklets of length > N
 cnt = sum(min(tracklets, 1), 2);
-tracklets = tracklets(cnt > MIN_TRACKLET_LENGTH, :);
+tracklets = tracklets(cnt > classifierParams.MIN_TRACKLET_LENGTH, :);
 
 [numTracklets, numFrames] = size(tracklets);
-% subplot(1,2,1); trackletViewer(tracklets, folderIN)
+% subplot(1,2,1); trackletViewer(tracklets, params.dataFolder)
 
 % For each tracklets, find the corresponding dots in the OUT folder
 tracklets = convertAnnotationToDetectionIdx(tracklets);
-% subplot(1,2,2); trackletViewer(tracklets, folderOUT)
+% subplot(1,2,2); trackletViewer(tracklets, params.outFolder)
 
 Y = zeros(0, 1, 'uint8'); %[match/no-match]
 I = zeros(0, 6, 'uint16'); % [trackletA, frameA, cellindexA, trackletB, frameB, cellindexB]
@@ -51,7 +46,7 @@ for t=1:numTracklets
 
 	C = combnk(idx, 2);
 	D = C(:, 2) - C(:, 1);
-	C = C(D < MAX_GAP, :);
+	C = C(D < classifierParams.MAX_GAP, :);
 
 	% TODO: random sample just a portion of the cases
 	n = size(C, 1);
@@ -114,7 +109,7 @@ for i=1:n
 	X(i, :) = features;
 end
 
-save(saveToFile, 'X', 'Y')
+save(classifierParams.outputFile, 'X', 'Y')
 
 if doProfile
 	profile off
