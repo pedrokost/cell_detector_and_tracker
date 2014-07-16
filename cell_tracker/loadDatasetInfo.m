@@ -11,12 +11,14 @@ function dataParams = loadDatasetInfo(dataset)
 %         imDigits   =  number of digits in image name
 %         dataFolder =  folder that contains the data (if training data, it must contain the both the images and the annotations)
 %         outFolder  = folder to save results and intermediary data
+%         maxGaps = gaps to try to close
 %         joinerClassifierParams = a struct with parameters for the join tracklets classifier
     
 %Defaults
 imPrefix = 'im';
 imExt = 'pgm';
 imDigits = 3;
+maxGaps = [1 3 9]; % for the linker
 rootFolder = fullfile('..', 'data');
 
 switch dataset
@@ -44,9 +46,10 @@ end
 
 % Parameters for training the classifier for joining tracklets
 joinerClassifierParams = struct(...
-    'MIN_TRACKLET_LENGTH', 5,...
-    'MAX_GAP', 5,...
-    'outputFile', fullfile(outFolder, 'matcherTrainTrackletJoinerMatrix.mat')...
+    'MIN_TRACKLET_LENGTH', 0,...
+    'MAX_GAP', max(horzcat(5, maxGaps)),...
+    'outputFile', fullfile(outFolder, 'matcherTrainTrackletJoinerMatrix.mat'),...
+    'algorithm', 'ANN'...
 );
 
 if exist(dataFolder,'dir') ~= 7
@@ -62,6 +65,7 @@ dataParams.imPrefix   =   imPrefix;
 dataParams.imDigits   =   imDigits;
 dataParams.dataFolder = dataFolder;
 dataParams.outFolder  =  outFolder;
+dataParams.maxGaps  =  maxGaps;
 dataParams.joinerClassifierParams = joinerClassifierParams;
 
 end

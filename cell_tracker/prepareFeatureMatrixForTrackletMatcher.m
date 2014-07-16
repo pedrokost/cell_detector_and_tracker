@@ -8,7 +8,7 @@
 rng(1234)
 clear all
 
-doProfile = true;
+doProfile = false;
 
 if doProfile
 	profile on % -memory 
@@ -26,6 +26,8 @@ tracklets = generateTracklets(params.dataFolder, struct('withAnnotations', true)
 
 % Only bother working with tracklets of length > N
 cnt = sum(min(tracklets, 1), 2);
+% FIXING THIS THING HERE
+[cnt cnt > classifierParams.MIN_TRACKLET_LENGTH];
 tracklets = tracklets(cnt > classifierParams.MIN_TRACKLET_LENGTH, :);
 
 [numTracklets, numFrames] = size(tracklets);
@@ -44,6 +46,11 @@ for t=1:numTracklets
 	idx = find(tracklets(t, :));
 	vals = tracklets(t, idx);
 
+	% Do not try to split tracklets with only 1 element, don't add those
+	if numel(idx) == 1
+		continue
+	end
+
 	C = combnk(idx, 2);
 	D = C(:, 2) - C(:, 1);
 	C = C(D < classifierParams.MAX_GAP, :);
@@ -61,17 +68,18 @@ end
 % findall possible tracklets combinations
 trackletCombos = combnk(1:numTracklets, 2);
 
+% TODO make sure that the tracklets ordering makes sense
 for i=1:size(trackletCombos, 1)
-	trackletA = tracklets(trackletCombos(1), :);
-	trackletB = tracklets(trackletCombos(2), :);
+	trackletA = tracklets(trackletCombos(i, 1), :);
+	trackletB = tracklets(trackletCombos(i, 2), :);
 	idxA = find(trackletA);
 	idxB = find(trackletB);
 	% For each cell in each tracklet
 	% take all other cells in opposite tracklet
 	C = combvec(idxA, idxB);
 	n = size(C, 2);
-	tVecA = repmat(trackletCombos(1), 1, n);
-	tVecB = repmat(trackletCombos(2), 1, n);
+	tVecA = repmat(trackletCombos(i, 1), 1, n);
+	tVecB = repmat(trackletCombos(i, 2), 1, n);
 
 	% TODO random sample
 	new = [tVecA; C(1, :); trackletA(C(1, :)); tVecB; C(2, :); trackletB(C(2, :))]';
@@ -79,9 +87,13 @@ for i=1:size(trackletCombos, 1)
 	I = [I; new];
 	Y = [Y; zeros(size(C, 2), 1)];
 	% and set it a negative example
+
 end
 
 clear new C D cnt i idx idxA idxB t trackletA trackletB vals;
+
+% I = I(1:100, :);
+% Y = Y(1:100, :);
 
 n = numel(Y);
 perm = randperm(n);
@@ -93,18 +105,21 @@ fprintf('There are %d positive and %d negative examples.\nThe ratio of positive 
 % Using the matrix, create a new matrix containing the difference of histograms
 % with the objective function
 
-% Check the side of descriptors
-descriptorSize = numel(DSOUT.getDescriptors(1, 1));
+[featParams, numFeatures] = setFeatures();
 
-X = zeros(n, descriptorSize + 2, 'single');
+X = zeros(n, numFeatures, 'single');
 
 for i=1:n
-	% [trackletA, frameA, cellindexA, trackletB, frameB, cellindexB]
-	[dotsA, desA] = DSOUT.get(I(i, 2), I(i, 3));
-	[dotsB, desB] = DSOUT.get(I(i, 5), I(i, 6));
-	trackletA = tracklets(I(i, 1), :);
-	trackletB = tracklets(I(i, 4), :);
-	features = computeTrackletMatchFeatures(trackletA, dotsA, desA, trackletB, dotsB, desB);
+	% [trackletA, frameA, cellindexA, trackletB, frameB, cellindexB],
+	trackletA = tracklets(I(i, 1), 1:I(i, 2));
+	trackletB = tracklets(I(i, 4), I(i, 5):end);
+
+	trackletAIdx = find(trackletA);
+	trackletBIdx = find(trackletB);
+	trackletA = trackletA(trackletAIdx(1):trackletAIdx(end));
+	trackletB = trackletB(trackletBIdx(1):trackletBIdx(end));
+
+	features = computeTrackletMatchFeaturesForPair(trackletA, trackletB, I(i, :), featParams, numFeatures);
 
 	X(i, :) = features;
 end

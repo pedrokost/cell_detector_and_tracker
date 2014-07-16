@@ -1,9 +1,11 @@
 Today:
 	✔	T35 @done (14-07-16 09:34)
+	✔	T38 @done (14-07-16 16:57)
 	☐	T32
 	✔	T36 @done (14-07-16 09:56)
 	✔	T37 @done (14-07-16 09:50)
 	☐	W3
+	✔	FixBug: when setting MIN_TRACKLET_LENGTH to 2 instead of 5 I get less negative examples, instead than more! @done (14-07-16 15:36)
 Cell tracker (1 week work minimum - 3 weeks maximum):
 	☐	5) Tracklet linking features: direction over last N frames, average displacement over last N frames, td of displacement over last N frames, gaussian broadening idea
 	☐	7) Skip blurred frames, and leave an annotation that you skipped a frame (reqs: S4)
@@ -20,6 +22,7 @@ Cell tracker (1 week work minimum - 3 weeks maximum):
 	✔	35) Upgrade the tracklet join matrix to contain the tracklet ID @done (14-07-16 09:34)
 	✔	36) Config file: imPrefix and imDigits @done (14-07-16 09:56)
 	✔	37) Config file: join tracklet feauture choice @done (14-07-16 09:56)
+	✔	38) Update computeLikelihoods to correctly form the matrix for the classifier @done (14-07-16 16:57)
 Cell detector (3 days work minimum - 1 week maximum):
 	☐ If any detector NaN, in the end don't show average NaN.
 	☐ Read Pylon stuff
