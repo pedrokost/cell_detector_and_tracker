@@ -1,26 +1,25 @@
 Today:
-	✔	T30 @done (14-07-15 10:15)
-	✔	T28 @done (14-07-15 15:29)
-	✔	T27 @done (14-07-15 16:26)
-	✔	W1 @done (14-07-15 16:56)
-	☐	W2
+	☐	T35
 	☐	T32
+	☐	T36
+	☐	T37
+	☐	W3
 Cell tracker (1 week work minimum - 3 weeks maximum):
 	☐	5) Tracklet linking features: direction over last N frames, average displacement over last N frames, td of displacement over last N frames, gaussian broadening idea
 	☐	7) Skip blurred frames, and leave an annotation that you skipped a frame (reqs: S4)
-	☐	17) Correctly estimate the number of missedetections of the detector
+	☐	17) Correctly estimate then number of missedetections of the detector
 	☐	18) Add parameters so that the user can tweak the probabilities of Pfp, Ptp, Plink, Pinit, Pterm
 	☐	23) Make everything use a global store
 	☐	24) Create files with parameters, that can be loaded anywhere (small overhead) 
 	☐	25) Train ANN and NB with much more data, possibly of all different datasets combined (reqs: M6)
 	☐	26) Annotate more datasets
-	✔	27) To match cells accross frames, use the links to learn a similarity model using all possible larger displacements between them (up to a higher limit eg 50 frames) @done (14-07-15 16:26)
-	✔	28) Build a basic matrix to learn to classify jointing tracklets @done (14-07-15 15:29)
 	☐	29) Run data through PCA/LDA or other first
-	✔	30) Create data store object to store dots and descriptors and reduce disk io @done (14-07-15 10:15)
-	☐	32) Build a better matrix to learn to classifiy joining tracklets based on spatio-temporal features as well
+	☐	32) Feature computation for tracklet join should contain angle difference between last few frames and the numeber of frames between cells
 	☐	33) Best feature subset analysis
-	☐	34) Solve the unbalanced learning sets problem
+	☐	34) Solve the unbalanced learning sets probl
+	☐	35) Upgrade the tracklet join matrix to contain the tracklet ID
+	☐	36) Load imPrefix and imDigits from a config file
+	☐	37) Load join tracklet feauture choice from a config file
 Cell detector (3 days work minimum - 1 week maximum):
 	☐ If any detector NaN, in the end don't show average NaN.
 	☐ Read Pylon stuff
@@ -30,8 +29,9 @@ Cell detector (3 days work minimum - 1 week maximum):
 	☐	Make it clear in the headers of the files which belong to Arteta, which have some of my changes, which are completely mine
 	☐	Detect cells in all datasets (reqs: M6)	
 Writing thesis (4 weeks work minimum - 7 weeks maximum):
-	✔	1) Craft a rough outline @done (14-07-15 16:56)
 	☐	2) Analyse the amount of work that is left to do before I can focus on writing
+	☐	3) Analyse headings of the cell_detector part
+	☐	4) Analyse headings of the cell_tracker part
 Cell annotator (3 days work minimum - 1 week maximum):
 	☐ 1) Larger marker for detections
 	☐ 2) Copy anotations over
@@ -79,6 +79,14 @@ Track evaluation metrics:
 	(3) FAPF: False Alarm Per Frame.
 ＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿
 Archive:
+	✔	T30 @done (14-07-15 10:15) @project(Today)
+	✔	T28 @done (14-07-15 15:29) @project(Today)
+	✔	T27 @done (14-07-15 16:26) @project(Today)
+	✔	W1 @done (14-07-15 16:56) @project(Today)
+	✔	27) To match cells accross frames, use the links to learn a similarity model using all possible larger displacements between them (up to a higher limit eg 50 frames) @done (14-07-15 16:26) @project(Cell tracker (1 week work minimum - 3 weeks maximum))
+	✔	28) Build a basic matrix to learn to classify jointing tracklets @done (14-07-15 15:29) @project(Cell tracker (1 week work minimum - 3 weeks maximum))
+	✔	30) Create data store object to store dots and descriptors and reduce disk io @done (14-07-15 10:15) @project(Cell tracker (1 week work minimum - 3 weeks maximum))
+	✔	1) Craft a rough outline @done (14-07-15 16:56) @project(Writing thesis (4 weeks work minimum - 7 weeks maximum))
 	✔	T20 @done (14-07-14 10:58) @project(Today)
 	✔	T22 @done (14-07-14 11:12) @project(Today)
 	✔	20) Transform the tracklets to contain the indices of cells instead of their x-y coordinate (reqs T22). @done (14-07-14 11:12) @project(Cell tracker)
