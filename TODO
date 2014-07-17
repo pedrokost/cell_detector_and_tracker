@@ -1,28 +1,24 @@
 Today:
-	✔	T35 @done (14-07-16 09:34)
-	✔	T38 @done (14-07-16 16:57)
 	☐	T32
-	✔	T36 @done (14-07-16 09:56)
-	✔	T37 @done (14-07-16 09:50)
-	☐	W3
-	✔	FixBug: when setting MIN_TRACKLET_LENGTH to 2 instead of 5 I get less negative examples, instead than more! @done (14-07-16 15:36)
+	☐	T36
+	☐	W4
+	☐	W5
+	☐	A14
 Cell tracker (1 week work minimum - 3 weeks maximum):
-	☐	5) Tracklet linking features: direction over last N frames, average displacement over last N frames, td of displacement over last N frames, gaussian broadening idea
 	☐	7) Skip blurred frames, and leave an annotation that you skipped a frame (reqs: S4)
 	☐	17) Correctly estimate then number of missedetections of the detector
 	☐	18) Add parameters so that the user can tweak the probabilities of Pfp, Ptp, Plink, Pinit, Pterm
 	☐	23) Make everything use a global store
-	☐	24) Create files with parameters, that can be loaded anywhere (small overhead) 
 	☐	25) Train ANN and NB with much more data, possibly of all different datasets combined (reqs: M6)
 	☐	26) Annotate more datasets
 	☐	29) Run data through PCA/LDA or other first
-	☐	32) Feature computation for tracklet join should contain angle difference between last few frames and the numeber of frames between cells
+	☐	32) Feature linker: angular direction theta
 	☐	33) Best feature subset analysis
-	☐	34) Solve the unbalanced learning sets probl
-	✔	35) Upgrade the tracklet join matrix to contain the tracklet ID @done (14-07-16 09:34)
-	✔	36) Config file: imPrefix and imDigits @done (14-07-16 09:56)
-	✔	37) Config file: join tracklet feauture choice @done (14-07-16 09:56)
-	✔	38) Update computeLikelihoods to correctly form the matrix for the classifier @done (14-07-16 16:57)
+	☐	34) Solve the unbalanced learning sets problem
+	☐	36) Feature linker: spacing/displacement between frames (mean, std)
+	☐	37) Feature linker: gaussian broadening idea
+	☐	38) Rename tracklet joiner to linker
+	☐	39) Implement cell tracking quality metrics
 Cell detector (3 days work minimum - 1 week maximum):
 	☐ If any detector NaN, in the end don't show average NaN.
 	☐ Read Pylon stuff
@@ -30,11 +26,11 @@ Cell detector (3 days work minimum - 1 week maximum):
 		☐ Histeq + Laplacian(0.2) creates empty places in maximums, noise everywhere else
 		☐ use the builtin canny edge detector, with params 0.6+
 	☐	Make it clear in the headers of the files which belong to Arteta, which have some of my changes, which are completely mine
-	☐	Detect cells in all datasets (reqs: M6)	
+	☐	Detect cells in all datasets (reqs: T6)	
 Writing thesis (4 weeks work minimum - 7 weeks maximum):
-	☐	2) Analyse the amount of work that is left to do before I can focus on writing
 	☐	3) Analyse headings of the cell_detector part
 	☐	4) Analyse headings of the cell_tracker part
+	☐	5) Review past best dissertations for section and writing style inspiration
 Cell annotator (3 days work minimum - 1 week maximum):
 	☐ 1) Larger marker for detections
 	☐ 2) Copy anotations over
@@ -48,15 +44,18 @@ Cell annotator (3 days work minimum - 1 week maximum):
 	☐ 10) skip bad frames annotation
 	☐ 11) Menu bar for basic tools (load dets...)
 	☐ 12) Show dots should only toggle annotation dots
-	☐	 13) Possibly add a button show generated tracks to complement show links
-Cell stabilizer (0 minimum - 2 weeks maximum):
+	☐	13) Possibly add a button show generated tracks to complement show links
+	☐	14) break out last dataset into individual files 
+Cell stabilizer (1 week minimum - 2 weeks maximum):
 	☐	1) Read how to easily do image stabilization in matlab (instaed of SIFT, RANSAC, homography, etc, which might take too long)
 	☐	2) Eliminate all detected cells from the images and extract sifts of the remaining regions (or extract sifts everywhere, elimintae those close to the detected cells)
 	☐	3) Given the number of SIFTs detected, or their distribution (eg only bottom part of image), it may be possible to detect bad frames. Just analyse. (reqs: S2)
 	☐	4) Store the names of bad or correct frames in a file, so they can be skipped in the tracker (reqs: S3)
-Evaluations (1 week minimum - 2 weeks maximum):
-	☐ Evaluations with single type of cells (red/green)
-	☐ Evaluations with different number of training/testing examples
+Evaluations (2 week minimum - 3 weeks maximum):
+	☐ Evaluations of detector with single type of cells (red/green)
+	☐ Evaluations of tracker with single type of cells (red/green)
+	☐ Evaluations of detector with different number of training/testing examples
+	☐ Evaluations of tracker with different number of training/testing examples
 	☐ Train a compound model with cells of different images
 	☐	Try the tracker effectiveness if frames are skipped: what is the max number of frames that can be skipped while still obtaining good enough tracks
 Biological statics (3 days minimum - 1 week maximum):
@@ -77,59 +76,71 @@ Data flow process:
 	☐ linker : IN: dots + robust matches, OUT: dots + links
 
 Track evaluation metrics:
-	(1) MOTA: Multiple Object Tracking Accuracy, calculated from the number of false alarms, missed detections, and identity switches;
-	(2) FGTIM: Fraction of Ground Truth Instances Missed; and
-	(3) FAPF: False Alarm Per Frame.
+	☐	1) MOTA: Multiple Object Tracking Accuracy, calculated from the number of false alarms, missed detections, and identity switches;
+	☐	2) FGTIM: Fraction of Ground Truth Instances Missed; and
+	☐	3) FAPF: False Alarm Per Frame.
 ＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿
 Archive:
-	✔	T30 @done (14-07-15 10:15) @project(Today)
-	✔	T28 @done (14-07-15 15:29) @project(Today)
-	✔	T27 @done (14-07-15 16:26) @project(Today)
+	✔	24) Create files with parameters, that can be loaded anywhere (small overhead) @done (14-07-17 09:17) @project(Cell tracker (1 week work minimum - 3 weeks maximum))
+	✔	35) Feature linker: numeber of frames between cells @done (14-07-17 09:14) @project(Cell tracker (1 week work minimum - 3 weeks maximum))
+	✔	2) Analyse the amount of work that is left to do before I can focus on writing @done (14-07-17 09:12) @project(Writing thesis (4 weeks work minimum - 7 weeks maximum))
+	✔	T38 @done (14-07-16 16:57) @project(Today)
+	✔	38) Update computeLikelihoods to correctly form the matrix for the classifier @done (14-07-16 16:57) @project(Cell tracker (1 week work minimum - 3 weeks maximum))
+	✔	FixBug: when setting MIN_TRACKLET_LENGTH to 2 instead of 5 I get less negative examples, instead than more! @done (14-07-16 15:36) @project(Today)
+	✔	T36 @done (14-07-16 09:56) @project(Today)
+	✔	37) Config file: join tracklet feauture choice @done (14-07-16 09:56) @project(Cell tracker (1 week work minimum - 3 weeks maximum))
+	✔	36) Config file: imPrefix and imDigits @done (14-07-16 09:56) @project(Cell tracker (1 week work minimum - 3 weeks maximum))
+	✔	T37 @done (14-07-16 09:50) @project(Today)
+	✔	T35 @done (14-07-16 09:34) @project(Today)
+	✔	35) Upgrade the tracklet join matrix to contain the tracklet ID @done (14-07-16 09:34) @project(Cell tracker (1 week work minimum - 3 weeks maximum))
 	✔	W1 @done (14-07-15 16:56) @project(Today)
-	✔	27) To match cells accross frames, use the links to learn a similarity model using all possible larger displacements between them (up to a higher limit eg 50 frames) @done (14-07-15 16:26) @project(Cell tracker (1 week work minimum - 3 weeks maximum))
-	✔	28) Build a basic matrix to learn to classify jointing tracklets @done (14-07-15 15:29) @project(Cell tracker (1 week work minimum - 3 weeks maximum))
-	✔	30) Create data store object to store dots and descriptors and reduce disk io @done (14-07-15 10:15) @project(Cell tracker (1 week work minimum - 3 weeks maximum))
 	✔	1) Craft a rough outline @done (14-07-15 16:56) @project(Writing thesis (4 weeks work minimum - 7 weeks maximum))
-	✔	T20 @done (14-07-14 10:58) @project(Today)
+	✔	T27 @done (14-07-15 16:26) @project(Today)
+	✔	27) To match cells accross frames, use the links to learn a similarity model using all possible larger displacements between them (up to a higher limit eg 50 frames) @done (14-07-15 16:26) @project(Cell tracker (1 week work minimum - 3 weeks maximum))
+	✔	T28 @done (14-07-15 15:29) @project(Today)
+	✔	28) Build a basic matrix to learn to classify jointing tracklets @done (14-07-15 15:29) @project(Cell tracker (1 week work minimum - 3 weeks maximum))
+	✔	T30 @done (14-07-15 10:15) @project(Today)
+	✔	30) Create data store object to store dots and descriptors and reduce disk io @done (14-07-15 10:15) @project(Cell tracker (1 week work minimum - 3 weeks maximum))
 	✔	T22 @done (14-07-14 11:12) @project(Today)
-	✔	20) Transform the tracklets to contain the indices of cells instead of their x-y coordinate (reqs T22). @done (14-07-14 11:12) @project(Cell tracker)
 	✔	22) Measure the memory usage before the change to store indices after tracklets matrix (reqs: T20) @done (14-07-14 11:12) @project(Cell tracker)
-	✔	T3.3 @done (14-07-10 09:33) @project(Today)
-	✔	T19 @done (14-07-10 15:19) @project(Today)
-	✔	T3.4 @done (14-07-10 16:17) @project(Today)
-	✔	T16 @done (14-07-11 10:18) @project(Today)
-	✔	T3.1 @done (14-07-11 12:49) @project(Today)
-	✔	T3.2 @done (14-07-11 12:49) @project(Today)
-	✔	T3 @done (14-07-11 15:04) @project(Today)
-	✔	T21 @done (14-07-11 17:13) @project(Today)
+	✔	20) Transform the tracklets to contain the indices of cells instead of their x-y coordinate (reqs T22). @done (14-07-14 11:12) @project(Cell tracker)
+	✔	T20 @done (14-07-14 10:58) @project(Today)
 	✔	T22 @done (14-07-11 17:14) @project(Today)
-	✔	3) compute the likelihoods (reqs: T3.1 T3.2 T3.3 T3.4) @done (14-07-11 15:05) @project(Cell tracker)
-	✔	3.1) Compute init prob (Pinit could be 1 - max(Plink of previous)) (reqs T3.4 T16) @done (14-07-11 12:49) @project(Cell tracker)
-	✔	3.2) Compute term prob (Pterm could be 1 - max(Plink to any future cells)) (reqs T3.4 T16) @done (14-07-11 12:49) @project(Cell tracker)
-	✔	3.3) Compute FP prob @done (14-07-10 09:33) @project(Cell tracker)
-	✔	3.4) Compute link prob @done (14-07-10 16:17) @project(Cell tracker)
-	✔	6) Read Single Quantum Dot Tracking paper @done (14-07-11 10:20) @project(Cell tracker)
-	✔	15) In the code, replace probability with likelihood @done (14-07-11 15:11) @project(Cell tracker)
-	✔	16) Figure out how to bring in the cell descriptors @done (14-07-11 10:18) @project(Cell tracker)
-	✔	19) Separate the code of generating Link hypothesis and computing the Likelihoods, or it will get messy @done (14-07-10 15:19) @project(Cell tracker)
-	✔	21) Review and streamline the cell_tracking process (from generating the tracklets matrix to joining tracklets) @done (14-07-11 17:13) @project(Cell tracker)
+	✔	T21 @done (14-07-11 17:13) @project(Today)
 	✔	22) Measure the memory usage before the change to store indices within tracklets matrix @done (14-07-11 17:13) @project(Cell tracker)
-	✔	T8 @done (14-07-09 10:14) @project(Today)
+	✔	21) Review and streamline the cell_tracking process (from generating the tracklets matrix to joining tracklets) @done (14-07-11 17:13) @project(Cell tracker)
+	✔	15) In the code, replace probability with likelihood @done (14-07-11 15:11) @project(Cell tracker)
+	✔	3) compute the likelihoods (reqs: T3.1 T3.2 T3.3 T3.4) @done (14-07-11 15:05) @project(Cell tracker)
+	✔	T3 @done (14-07-11 15:04) @project(Today)
+	✔	T3.2 @done (14-07-11 12:49) @project(Today)
+	✔	T3.1 @done (14-07-11 12:49) @project(Today)
+	✔	3.2) Compute term prob (Pterm could be 1 - max(Plink to any future cells)) (reqs T3.4 T16) @done (14-07-11 12:49) @project(Cell tracker)
+	✔	3.1) Compute init prob (Pinit could be 1 - max(Plink of previous)) (reqs T3.4 T16) @done (14-07-11 12:49) @project(Cell tracker)
+	✔	6) Read Single Quantum Dot Tracking paper @done (14-07-11 10:20) @project(Cell tracker)
+	✔	T16 @done (14-07-11 10:18) @project(Today)
+	✔	16) Figure out how to bring in the cell descriptors @done (14-07-11 10:18) @project(Cell tracker)
+	✔	T3.4 @done (14-07-10 16:17) @project(Today)
+	✔	3.4) Compute link prob @done (14-07-10 16:17) @project(Cell tracker)
+	✔	T19 @done (14-07-10 15:19) @project(Today)
+	✔	19) Separate the code of generating Link hypothesis and computing the Likelihoods, or it will get messy @done (14-07-10 15:19) @project(Cell tracker)
+	✔	T3.3 @done (14-07-10 09:33) @project(Today)
+	✔	3.3) Compute FP prob @done (14-07-10 09:33) @project(Cell tracker)
 	✔	T13 @done (14-07-09 16:39) @project(Today)
-	✔	T14 @done (14-07-09 16:05) @project(Today)
-	✔	T9 @done (14-07-09 14:39) @project(Today)
-	✔	T10 @done (14-07-09 10:21) @project(Today)
-	✔	T11 @done (14-07-09 13:14) @project(Today)
-	✔	T12 @done (14-07-09 13:31) @project(Today)
-	✔	8) Human display results of learning connections @done (14-07-09 10:14) @project(Cell tracker)
-	✔	9) Connect tracklets based on global optimisation @done (14-07-09 14:39) @project(Cell tracker)
-	✔	10) Functionalize finding global optimization @done (14-07-09 10:20) @project(Cell tracker)
-	✔	11) Update tracklets based on optimal data association @done (14-07-09 13:14) @project(Cell tracker)
-	✔	12) Add title to hypothesis prints @done (14-07-09 13:31) @project(Cell tracker)
 	✔	13) BUGFIX: updating trcklets based on optimal data association is broken @done (14-07-09 16:39) @project(Cell tracker)
+	✔	T14 @done (14-07-09 16:05) @project(Today)
 	✔	14) Add Hypothesis printer: table and fulltable @done (14-07-09 16:05) @project(Cell tracker)
-	✔	T2 @done (14-07-08 16:42) @project(Today)
+	✔	T9 @done (14-07-09 14:39) @project(Today)
+	✔	9) Connect tracklets based on global optimisation @done (14-07-09 14:39) @project(Cell tracker)
+	✔	T12 @done (14-07-09 13:31) @project(Today)
+	✔	12) Add title to hypothesis prints @done (14-07-09 13:31) @project(Cell tracker)
+	✔	T11 @done (14-07-09 13:14) @project(Today)
+	✔	11) Update tracklets based on optimal data association @done (14-07-09 13:14) @project(Cell tracker)
+	✔	T10 @done (14-07-09 10:21) @project(Today)
+	✔	10) Functionalize finding global optimization @done (14-07-09 10:20) @project(Cell tracker)
+	✔	T8 @done (14-07-09 10:14) @project(Today)
+	✔	8) Human display results of learning connections @done (14-07-09 10:14) @project(Cell tracker)
 	✔ 2) Start building the hypothesis matrix (just the structure) @done (14-07-08 16:42) @project(Cell tracker)
+	✔	T2 @done (14-07-08 16:42) @project(Today)
 	✔	T4 @done (14-07-07 16:21) @project(Today)
 	✔	4) Research lpsolve in Matlab and replicate the example in the paper, to see if you get the same result @done (14-07-07 16:21) @project(Cell tracker)
 	✔ 1) Robust tracklets (reqs: M1, M2, D1, D2 ) @done (14-07-07 12:13) @project(Cell tracker)
