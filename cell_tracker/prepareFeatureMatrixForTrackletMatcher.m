@@ -116,15 +116,19 @@ fprintf('There are %d positive and %d negative examples.\nThe ratio of positive 
 
 X = zeros(n, numFeatures, 'single');
 
+tracklets2 = trackletsToPosition(tracklets, 'out');
+
 for i=1:n
 	% [trackletA, frameA, cellindexA, trackletB, frameB, cellindexB],
-	trackletA = tracklets(I(i, 1), 1:I(i, 2));
-	trackletB = tracklets(I(i, 4), I(i, 5):end);
 
-	trackletAIdx = find(trackletA);
-	trackletBIdx = find(trackletB);
-	trackletA = trackletA(trackletAIdx(1):trackletAIdx(end));
-	trackletB = trackletB(trackletBIdx(1):trackletBIdx(end));
+	trackletAPos = tracklets(I(i, 1),  :);
+	trackletBPos = tracklets(I(i, 4), :);
+
+	trackletAIdx = find(trackletAPos);
+	trackletBIdx = find(trackletBPos);
+
+	trackletA = tracklets2(I(i, 1), trackletAIdx(1):trackletAIdx(end));
+	trackletB = tracklets2(I(i, 4), trackletBIdx(1):trackletBIdx(end));
 
 	features = computeTrackletMatchFeaturesForPair(trackletA, trackletB, I(i, :), featParams, numFeatures);
 

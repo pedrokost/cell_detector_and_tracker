@@ -13,8 +13,8 @@ params = loadDatasetInfo(2);
 DSIN = DataStore(params.dataFolder, false);
 DSOUT = DataStore(params.outFolder, false);
 
-% run prepareFeatureMatrixForTrackletMatcher;
-% run trainMatcherTrackletJoinerANN;
+run prepareFeatureMatrixForTrackletMatcher;
+run trainMatcherTrackletJoinerANN;
 
 classifierParams = params.joinerClassifierParams;
 maxGaps = params.maxGaps;
