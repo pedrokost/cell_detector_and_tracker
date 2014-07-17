@@ -3,18 +3,26 @@ function tracklets2 = trackletsToPosition(tracklets, folderData)
 	% instread of global indices
 	% Inputs:
 	% 	tracklets = a tracklet matrix containing global mappings
-	% 	folderData = the name of the folder containing the mat files with dot annoations
+	% 	folderData = {in, out} to indicate which store to use
+	% 	DSIN or DSOUT are global store of data
 	% Outputs:
 	% 	tracklets2 = a matrix similar to tracklets but with x-y positions instead of indices
 
-	% TODO: get matPrefix from outside
-	matPrefix = 'im';
+	if strcmp(folderData, 'in');
+		global DSIN;
+		store = DSIN;
+	elseif strcmp(folderData, 'out')
+		global DSOUT;
+		store = DSOUT;
+	end
+
 	[numTracklets, numFrames] = size(tracklets);
 	tracklets2 = zeros(numTracklets, numFrames, 2, 'uint16');
 
 	for i=1:numFrames
-		imTitle = [matPrefix sprintf('%03d', i) '.mat'];
-		data = load(fullfile(folderData, imTitle));
-		tracklets2(:, i, :) = getCellTrackletsFrame(data.dots, tracklets(:, i)); 
+		dots = store.getDots(i);
+		tracklets2(:, i, :) = getCellTrackletsFrame(dots, tracklets(:, i)); 
 	end
+	sizes = store.size()
+
 end
