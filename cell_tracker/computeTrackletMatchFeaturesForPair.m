@@ -52,20 +52,23 @@ function features = computeTrackletMatchFeaturesForPair(trackletA, trackletB, I,
 		% [trackletA2D(end, :) trackletB2D(1, :)]
 		% [dotsA, dotsB]
 		% '-------------------'
+		% This seems to be causeing some bad switches!!!
+
 		idx = idx + featParams.posDimensions;
 	end
 
 	if featParams.addPosDistanceSquared
-		features(idx:(idx+featParams.posDimensions-1)) = (dotsA - dotsB).^2;
+		features(idx:(idx+featParams.posDimensions-1)) = (dotsA - dotsB).^4;
 
 		idx = idx + featParams.posDimensions;
 	end
 
-
-
 	%---------------------------------------Features that look at past history
 
 	if featParams.addDirectionTheta
+
+		% FIXME: make sure I am correctly elimintating just what i must
+		% Functionalizae this so I don't copy this logic everywhere
 		lA = size(trackletA2D, 1);
 		lB = size(trackletB2D, 1);
 		iA = min(lA, featParams.numCellsToEstimateDirectionTheta)-1;
@@ -122,4 +125,43 @@ function features = computeTrackletMatchFeaturesForPair(trackletA, trackletB, I,
 		features(idx:(idx + featParams.posDimensions-1)) = abs(cB - cB)';
 		idx = idx + featParams.posDimensions;
 	end
+
+	if featParams.addMeanDisplacement || featParams.addStdDisplacement
+
+		% Only use the data where there are no gaps. If gap, start a new subgroup
+		% and finally average the results
+
+
+		I start working on this feature now, but after I need to fix the caused in the above comments 
+
+		% lA = size(trackletA2D, 1);
+		% lB = size(trackletB2D, 1);
+		% iA = min(lA, featParams.numCellsForDirectionVariances)-1;
+		% iB = min(lB, featParams.numCellsForDirectionVariances);
+
+		% trackletA2D2 = trackletA2D((lA-iA):lA, :);
+		% trackletB2D2 = trackletB2D(1:iB, :);
+
+		% % Remove zero rowsa
+		% trackletA2D2 = trackletA2D2(all(trackletA2D2 ~= 0, 2), :);
+		% trackletB2D2 = trackletB2D2(all(trackletB2D2 ~= 0, 2), :);
+
+		% cA = diag(cov(trackletA2D2));
+		% cB = diag(cov(trackletB2D2));
+
+		% if numel(cA) < 2
+		% 	cA = [0;0];
+		% end
+		% if numel(cB) < 2
+		% 	cB = [0;0];
+		% end
+
+		% cA = cA / norm(cA);
+		% cB = cB / norm(cB);
+
+		% features(idx:(idx + featParams.posDimensions-1)) = abs(cB - cB)';
+		% idx = idx + featParams.posDimensions;
+	end
+
+
 end
