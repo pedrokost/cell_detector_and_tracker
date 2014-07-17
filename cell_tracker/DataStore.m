@@ -99,12 +99,39 @@ classdef DataStore
 			end
 		end
 
+		function [dots, links] = getDotsAndLinks(obj, frameNumber, cellIndices)
+			% I don't bother caching the links, because I don't access them often, only when creating the tracklets
+
+			if obj.verbose;
+				fprintf('GETDOTSANDLINKS: Accessing %s on disk\n', obj.frameFile(frameNumber));
+			end
+			data = load(obj.frameFile(frameNumber));
+			dots = data.dots;
+			links = data.links;
+			obj.dotsCache(frameNumber) = dots;
+
+			if nargin == 3
+				dots = dots(cellIndices, :);
+				links = links(cellIndices, :);
+			end
+		end
+
 		function sizes = size(obj)
 			sizes = struct(...
-				'dots', size(obj.dotsCache),...
-				'descriptors', size(obj.descriptorsCache),...
-				'filepaths', size(obj.filePathsCache)...
+				'dots', length(obj.dotsCache),...
+				'descriptors', length(obj.descriptorsCache),...
+				'filepaths', length(obj.filePathsCache)...
 			);
+		end
+
+		function idx = getMatfileIndices(obj)
+			% Checks the available mat files on disk and returns their frame numbers
+
+			matfiles = dir(fullfile(obj.dataFolder, [obj.imPrefix '*.mat']));
+			idx = zeros(numel(matfiles), 1);
+
+			name2frame = @(name) str2num(name(length(obj.imPrefix)+1:end-4));
+			idx = cellfun(name2frame, {matfiles.name});
 		end
 	end
 end

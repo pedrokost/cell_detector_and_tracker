@@ -1,5 +1,6 @@
 function tracklets = generateTracklets(folderData, options)
-% GENERATETRACKLETS generates robust tracklets based on data found in the provided folder
+% GENERATETRACKLETS generates robust tracklets based on data found in the provided folder.
+
 % Inputs:
 % 	- folderData = folder containing im*.mat files which contain a 
 %		feature vector and location of each cell. One file per image.
@@ -15,6 +16,14 @@ function tracklets = generateTracklets(folderData, options)
 	withAnnotations = false;
 	numericFormat = 'single';
 
+	if strcmp(folderData, 'in');
+		global DSIN;
+		store = DSIN;
+	elseif strcmp(folderData, 'out')
+		global DSOUT;
+		store = DSOUT;
+	end
+
 	if nargin < 2; options = struct; end;
 	%----------------------------------------------------------------Overrides
 	if isfield(options, 'withAnnotations')
@@ -23,19 +32,16 @@ function tracklets = generateTracklets(folderData, options)
 	if isfield(options, 'numericFormat')
 		numericFormat = options.numericFormat;
 	end
-	if exist(folderData, 'dir') ~= 7
-		error('The folder "%s" does not exist.', folderData);
-	end
 	%-----------------------------------------------------------Initialization
 
-	matfiles = dir(fullfile(folderData, 'im*.mat'));
+	frameNumbers = store.getMatfileIndices();
 
-	if numel(matfiles) == 0
+	if numel(frameNumbers) == 0
 		error('There is no im*.mat file in folder: "%s"\n', folderData);
 	end
 
-	firstFrame = 1;
-	numFrames = numel(matfiles);
+	firstFrame = frameNumbers(1);
+	numFrames = numel(frameNumbers);
 	numTracklets = 100; % estimate
 	% TODO: automatically grow trakclets size in batches to make it faster
 		
@@ -43,16 +49,15 @@ function tracklets = generateTracklets(folderData, options)
 	tracklets = zeros(numTracklets, numFrames, numericFormat);
 
 	%--------------------------------------------------Insert first frame data
-	matfileB = matfiles(firstFrame);
-
-	load(fullfile(folderData, matfileB.name));
-	dotsB = dots; nCellsB = size(dotsB, 1);
 
 	if withAnnotations
+		[dots, links] = store.getDotsAndLinks(frameNumbers(firstFrame));
 		linksB = links;
 	else
+		[dots, descriptors] = store.get(frameNumbers(firstFrame));
 		XB = descriptors;
 	end
+	dotsB = dots; nCellsB = size(dotsB, 1);
 
 	currNumTracklets = nCellsB;
 	globalPremutation = (1:nCellsB)';
@@ -60,7 +65,6 @@ function tracklets = generateTracklets(folderData, options)
 
 	for f=firstFrame+1:numFrames
 		%------------------------------------------------------------Load data
-		matfileA = matfileB;
 		dotsA = dotsB; nCellsA = nCellsB;
 		if withAnnotations
 			linksA = linksB;
@@ -68,17 +72,15 @@ function tracklets = generateTracklets(folderData, options)
 			XA = XB;
 		end
 
-		matfileB = matfiles(f);
-
-		load(fullfile(folderData, matfileB.name));
-		dotsB = dots; nCellsB = size(dotsB, 1);
-
 		if withAnnotations
+			[dots, links] = store.getDotsAndLinks(frameNumbers(f));
 			linksB = links;
 		else
+			[dots, descriptors] = store.get(frameNumbers(f));
 			XB = descriptors;
 		end
-		
+		dotsB = dots; nCellsB = size(dotsB, 1);
+
 		if withAnnotations
 			permutation = linksA;
 			selectedLeft = zeros(nCellsB, 1);
@@ -86,7 +88,6 @@ function tracklets = generateTracklets(folderData, options)
 		else
 			[permutation right left selectedRight selectedLeft] = match(XA, XB, dotsA, dotsB);
 		end
-
 
 		[globalPremutation, currNumTracklets] = updateGlobalPermutation(globalPremutation, currNumTracklets, permutation, selectedLeft);
 
