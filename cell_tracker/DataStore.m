@@ -98,5 +98,13 @@ classdef DataStore
 				descriptors = descriptors(cellIndices, :);
 			end
 		end
+
+		function sizes = size(obj)
+			sizes = struct(...
+				'dots', size(obj.dotsCache),...
+				'descriptors', size(obj.descriptorsCache),...
+				'filepaths', size(obj.filePathsCache)...
+			);
+		end
 	end
 end
