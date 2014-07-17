@@ -10,12 +10,14 @@ params.addCellDescriptors = 1;
 params.addGapSize         = 1;
 params.addPosDistance     = 1;   % euclidean x-y distance between tail of tracklet A and head of tracklet B
 params.addDirectionTheta  = 0;   % angle between the direction of 2 tracklets
-params.addDirectionVariances = 0;
+params.addDirectionVariances = 0;  % variance of direction over last N frames
+params.addMeanDisplacement = 0;  % mean displacement between frames
 
 params.descriptorSize = CELL_DESCRIPTOR_SIZE;
 params.posDimensions = 2;   % x y
 params.numCellsToEstimateDirection = 5;  % 0 means all
-params.numCellsForDirectionVariances = 5;  % 0 means all
+params.numCellsForDirectionVariances = 3;  % 0 means all
+params.numCellsForMeanDisplacement = 5;  % 0 means all
  
 if nargout > 1
 	numFeatures = params.addCellDescriptors * params.descriptorSize...

@@ -127,8 +127,8 @@ for i=1:n
 	trackletAIdx = find(trackletAPos);
 	trackletBIdx = find(trackletBPos);
 
-	trackletA = tracklets2(I(i, 1), trackletAIdx(1):trackletAIdx(end));
-	trackletB = tracklets2(I(i, 4), trackletBIdx(1):trackletBIdx(end));
+	trackletA = tracklets2(I(i, 1), trackletAIdx(1):trackletAIdx(end), :);
+	trackletB = tracklets2(I(i, 4), trackletBIdx(1):trackletBIdx(end), :);
 
 	features = computeTrackletMatchFeaturesForPair(trackletA, trackletB, I(i, :), featParams, numFeatures);
 

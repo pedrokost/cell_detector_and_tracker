@@ -1,9 +1,7 @@
 Today:
+	✔	T44 @done (14-07-17 17:01)
 	☐	T32
 	☐	T36
-	☐	W4
-	☐	W5
-	☐	A14
 Cell tracker (1 week work minimum - 3 weeks maximum):
 	☐	7) Skip blurred frames, and leave an annotation that you skipped a frame (reqs: S4)
 	☐	17) Correctly estimate then number of missedetections of the detector
@@ -19,6 +17,11 @@ Cell tracker (1 week work minimum - 3 weeks maximum):
 	☐	37) Feature linker: gaussian broadening idea
 	☐	38) Rename tracklet joiner to linker
 	☐	39) Implement cell tracking quality metrics
+	☐	40) Render getTrackletHeadTailDescriptors fully obsolete 
+	☐	41) Linker could rely on 'average' descriptor for matching, instead of just the tail or head. First remove outliers, them compute average or median (if neeeded just of a few frames)
+	☐	42) Feature linker: distance from border
+	☐	43) Feature linker: tracklet quality (number of gaps within the track)
+	✔	44) Feature linker: variance @done (14-07-17 17:00)
 Cell detector (3 days work minimum - 1 week maximum):
 	☐ If any detector NaN, in the end don't show average NaN.
 	☐ Read Pylon stuff
@@ -26,7 +29,7 @@ Cell detector (3 days work minimum - 1 week maximum):
 		☐ Histeq + Laplacian(0.2) creates empty places in maximums, noise everywhere else
 		☐ use the builtin canny edge detector, with params 0.6+
 	☐	Make it clear in the headers of the files which belong to Arteta, which have some of my changes, which are completely mine
-	☐	Detect cells in all datasets (reqs: T6)	
+	☐	Detect cells in all datasets (reqs: T6)
 Writing thesis (4 weeks work minimum - 7 weeks maximum):
 	☐	3) Analyse headings of the cell_detector part
 	☐	4) Analyse headings of the cell_tracker part
