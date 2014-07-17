@@ -1,6 +1,6 @@
 Today:
 	✔	T44 @done (14-07-17 17:01)
-	☐	T32
+	✔	T32 @done (14-07-17 18:01)
 	☐	T36
 Cell tracker (1 week work minimum - 3 weeks maximum):
 	☐	7) Skip blurred frames, and leave an annotation that you skipped a frame (reqs: S4)
@@ -22,6 +22,7 @@ Cell tracker (1 week work minimum - 3 weeks maximum):
 	☐	42) Feature linker: distance from border
 	☐	43) Feature linker: tracklet quality (number of gaps within the track)
 	✔	44) Feature linker: variance @done (14-07-17 17:00)
+	☐	45) Feature Linker: add euclidean distance (even if we have position already)
 Cell detector (3 days work minimum - 1 week maximum):
 	☐ If any detector NaN, in the end don't show average NaN.
 	☐ Read Pylon stuff

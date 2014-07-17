@@ -21,6 +21,13 @@ function features = computeTrackletMatchFeaturesForPair(trackletA, trackletB, I,
 
 	[dotsA, desA] = DSOUT.get(frameA, cellIdxA);
 	[dotsB, desB] = DSOUT.get(frameB, cellIdxB);
+	dotsA = single(dotsA);
+	dotsB = single(dotsB);
+
+
+	% Tells you the ration of movement in the X and Y direction
+	trackletA2D = single(permute(trackletA, [2 3 1]));
+	trackletB2D = single(permute(trackletB, [2 3 1]));
 
 	features = zeros(1, numFeatures);
 	idx = 1;
@@ -40,36 +47,67 @@ function features = computeTrackletMatchFeaturesForPair(trackletA, trackletB, I,
 
 	if featParams.addPosDistance
 		features(idx:(idx+featParams.posDimensions-1)) = euclideanDistance(dotsA, dotsB);
+
+		% FIXME: This below should results in the same values
+		% [trackletA2D(end, :) trackletB2D(1, :)]
+		% [dotsA, dotsB]
+		% '-------------------'
 		idx = idx + featParams.posDimensions;
 	end
+
+	if featParams.addPosDistanceSquared
+		features(idx:(idx+featParams.posDimensions-1)) = (dotsA - dotsB).^2;
+
+		idx = idx + featParams.posDimensions;
+	end
+
+
 
 	%---------------------------------------Features that look at past history
 
 	if featParams.addDirectionTheta
-		% TODO
+		lA = size(trackletA2D, 1);
+		lB = size(trackletB2D, 1);
+		iA = min(lA, featParams.numCellsToEstimateDirectionTheta)-1;
+		iB = min(lB, featParams.numCellsToEstimateDirectionTheta);
+
+		trackletA2D2 = trackletA2D((lA-iA):lA, :);
+		trackletB2D2 = trackletB2D(1:iB, :);
+
+		% FIXME: Define what to say about the angle when an item has length of 1. Should it be assumed perfect match? angleDiff = 0? NaN?;
+
+		% Remove zero rowsa
+		trackletA2D2 = trackletA2D2(all(trackletA2D2 ~= 0, 2), :);
+		trackletB2D2 = trackletB2D2(all(trackletB2D2 ~= 0, 2), :);
+
+		trackletA2D2 = trackletA2D2(2:end, :) - trackletA2D2(1:end-1, :);
+		trackletB2D2 = trackletB2D2(2:end, :) - trackletB2D2(1:end-1, :);
+
+		trackletA2D2 = atan2(trackletA2D2(:, 1), trackletA2D2(:, 2));
+		trackletB2D2 = atan2(trackletB2D2(:, 1), trackletB2D2(:, 2));
+
+		angA = mean(trackletA2D2);
+		angB = mean(trackletB2D2);
+
+		features(idx:idx) = angB - angA;
+		idx = idx + 1;
 	end
 
 	if featParams.addDirectionVariances
-		% Tells you the ration of movement in the X and Y direction
-		tA = permute(trackletA, [2 3 1]);
-		tB = permute(trackletB, [2 3 1]);
-
-		% TODO: only use first/last N elements
-
-		lA = size(tA, 1);
-		lB = size(tB, 1);
+		lA = size(trackletA2D, 1);
+		lB = size(trackletB2D, 1);
 		iA = min(lA, featParams.numCellsForDirectionVariances)-1;
 		iB = min(lB, featParams.numCellsForDirectionVariances);
 
-		tA = tA((lA-iA):lA, :);
-		tB = tB(1:iB, :);
+		trackletA2D2 = trackletA2D((lA-iA):lA, :);
+		trackletB2D2 = trackletB2D(1:iB, :);
 
 		% Remove zero rowsa
-		tA = tA(all(tA ~= 0, 2), :);
-		tB = tB(all(tB ~= 0, 2), :);
+		trackletA2D2 = trackletA2D2(all(trackletA2D2 ~= 0, 2), :);
+		trackletB2D2 = trackletB2D2(all(trackletB2D2 ~= 0, 2), :);
 
-		cA = diag(cov(double(tA)));
-		cB = diag(cov(double(tB)));
+		cA = diag(cov(trackletA2D2));
+		cB = diag(cov(trackletB2D2));
 
 		if numel(cA) < 2
 			cA = [0;0];
