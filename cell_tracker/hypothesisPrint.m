@@ -30,9 +30,10 @@ function hypothesisPrintShort(H, P, selected, extra)
 	fprintf('The following actions are optimal:\n\n');
 	numRows = size(H, 1);
 	Hselected = H(find(selected), :);
+	bar = ones(sum(selected), 1) * ' | ';
 	Q = humanizeHypothesis(Hselected);
 	if extra
-		disp([char(Q) num2str(P(logical(selected)))])
+		disp([char(Q) bar num2str(exp(P(logical(selected))), '%0.2f')])
 	else
 		disp(char(Q))
 	end
