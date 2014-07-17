@@ -23,6 +23,4 @@ function tracklets2 = trackletsToPosition(tracklets, folderData)
 		dots = store.getDots(i);
 		tracklets2(:, i, :) = getCellTrackletsFrame(dots, tracklets(:, i)); 
 	end
-	sizes = store.size()
-
 end

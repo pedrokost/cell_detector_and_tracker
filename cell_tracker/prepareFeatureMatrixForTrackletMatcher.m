@@ -19,10 +19,17 @@ classifierParams = params.joinerClassifierParams;
 
 global DSIN DSOUT;
 % Data storescl
-DSIN = DataStore(params.dataFolder, false);
-DSOUT = DataStore(params.outFolder, false);
 
-tracklets = generateTracklets(params.dataFolder, struct('withAnnotations', true));
+% if the variables are not defined, define the stores
+
+if size(DSIN) == [0 0]
+	DSIN = DataStore(params.dataFolder, false);
+end
+if size(DSOUT) == [0 0]
+	DSOUT = DataStore(params.outFolder, false);
+end
+
+tracklets = generateTracklets('in', struct('withAnnotations', true));
 
 % Only bother working with tracklets of length > N
 cnt = sum(min(tracklets, 1), 2);
