@@ -44,7 +44,7 @@ for i=1:numel(maxGaps)
 
 	Iopt = getGlobalOpimalAssociation(M, Liks);
 
-	hypothesisPrint(M, Liks, Iopt, 'shortfull');
+	hypothesisPrint(M, Liks, Iopt, 'fulltable');
 
 	Mopt = M(find(Iopt), :);
 	tracks = updateTracklets(tracklets, Mopt);

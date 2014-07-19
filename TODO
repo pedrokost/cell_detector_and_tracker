@@ -1,40 +1,23 @@
 Today:
-	✔	T44 @done (14-07-17 17:01)
-	✔	T32 @done (14-07-17 18:01)
-	✔	T46.1 @done (14-07-19 11:47)
-	✔	T46.2 @done (14-07-19 18:52)
-	✔	T46 @done (14-07-19 18:54)
-	☐	T36
-	✔	T42 @done (14-07-19 22:42)
-	✔	T38 @done (14-07-19 22:56)
 Cell tracker (1 week work minimum - 3 weeks maximum):
 	☐	7) Skip blurred frames, and leave an annotation that you skipped a frame (reqs: S4)
 	☐	17) Correctly estimate then number of missedetections of the detector
 	☐	18) Add parameters so that the user can tweak the probabilities of Pfp, Ptp, Plink, Pinit, Pterm
-	☐	23) Make everything use a global store
-	☐	25) Train ANN and NB with much more data, possibly of all different datasets combined (reqs: M6)
+	☐	25) Train ANN and NB with much more data, possibly of all different datasets combined (reqs: T26)
 	☐	26) Annotate more datasets
 	☐	29) Run data through PCA/LDA or other first
-	☐	32) Feature linker: angular direction theta
 	☐	33) Best feature subset analysis
 	☐	34) Solve the unbalanced learning sets problem
-	☐	36) Feature linker: spacing/displacement between frames (mean, std)
 	☐	37) Feature linker: gaussian broadening idea
-	✔	38) Rename tracklet joiner to linker @done (14-07-19 22:56)
 	☐	39) Implement cell tracking quality metrics
 	☐	40) Render getTrackletHeadTailDescriptors fully obsolete 
-	☐	41) Linker could rely on 'average' descriptor for matching, instead of just the tail or head. First remove outliers, them compute average or median (if neeeded just of a few frames)
-	✔	42) Feature linker: distance from border for each tracklet @done (14-07-19 22:42)
+	☐	41) Linker could rely on 'average/median' descriptor for matching, instead of just the tail or head. First remove outliers, them compute average or median (if neeeded just of a few frames)
 	☐	43) Feature linker: tracklet quality (number of gaps within the track)
-	✔	44) Feature linker: variance @done (14-07-17 17:00)
 	☐	45) Feature Linker: add euclidean distance (even if we have position already)
-	✔	46) Feature linker: check all the TODOS and FIXME in the feautre creature (reqs: T46.1, T46.2) @done (14-07-19 18:53)
-		✔	46.1) Fixed bug in the matrix for the linker, where the tracklets were not correctly selected (cut) because if a bad interpretation of indices. @done (14-07-19 11:48)
-		✔	46.2) Functionalize and check correctness of selecting just a part of the tracklet to compute the feature @done (14-07-19 18:53)
 	☐	47) The cellIndex is uneccessary information in I, it's included in tracklets already and accessible with remaining data of I
 	☐	48) Lean a linker model for each of the possible closing gaps, because otherwise I connect gaps prematurely
-	☐	PrepareMatrix... to use data store
-	☐	Robust tracker config in loadDatasetInfo
+	☐	49) PrepareMatrix... to use data store
+	☐	50) Robust tracker config in loadDatasetInfo
 Cell detector (3 days work minimum - 1 week maximum):
 	☐ If any detector NaN, in the end don't show average NaN.
 	☐ Read Pylon stuff
@@ -97,6 +80,22 @@ Track evaluation metrics:
 	☐	3) FAPF: False Alarm Per Frame.
 ＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿
 Archive:
+	✔	23) Make everything use a global store @done (14-07-19 23:46) @project(Today)
+	✔	T44 @done (14-07-17 17:01) @project(Today)
+	✔	T32 @done (14-07-17 18:01) @project(Today)
+	✔	T46.1 @done (14-07-19 11:47) @project(Today)
+	✔	T46.2 @done (14-07-19 18:52) @project(Today)
+	✔	T46 @done (14-07-19 18:54) @project(Today)
+	✔	T36 @done (14-07-19 23:45) @project(Today)
+	✔	T42 @done (14-07-19 22:42) @project(Today)
+	✔	T38 @done (14-07-19 22:56) @project(Today)
+	✔	36) Feature linker: spacing/displacement between frames (mean, std) @done (14-07-19 23:45) @project(Cell tracker (1 week work minimum - 3 weeks maximum))
+	✔	38) Rename tracklet joiner to linker @done (14-07-19 22:56) @project(Cell tracker (1 week work minimum - 3 weeks maximum))
+	✔	42) Feature linker: distance from border for each tracklet @done (14-07-19 22:42) @project(Cell tracker (1 week work minimum - 3 weeks maximum))
+	✔	44) Feature linker: variance @done (14-07-17 17:00) @project(Cell tracker (1 week work minimum - 3 weeks maximum))
+	✔	46) Feature linker: check all the TODOS and FIXME in the feautre creature (reqs: T46.1, T46.2) @done (14-07-19 18:53) @project(Cell tracker (1 week work minimum - 3 weeks maximum))
+	✔	46.1) Fixed bug in the matrix for the linker, where the tracklets were not correctly selected (cut) because if a bad interpretation of indices. @done (14-07-19 11:48) @project(Cell tracker (1 week work minimum - 3 weeks maximum))
+	✔	46.2) Functionalize and check correctness of selecting just a part of the tracklet to compute the feature @done (14-07-19 18:53) @project(Cell tracker (1 week work minimum - 3 weeks maximum))
 	✔	24) Create files with parameters, that can be loaded anywhere (small overhead) @done (14-07-17 09:17) @project(Cell tracker (1 week work minimum - 3 weeks maximum))
 	✔	35) Feature linker: numeber of frames between cells @done (14-07-17 09:14) @project(Cell tracker (1 week work minimum - 3 weeks maximum))
 	✔	2) Analyse the amount of work that is left to do before I can focus on writing @done (14-07-17 09:12) @project(Writing thesis (4 weeks work minimum - 7 weeks maximum))

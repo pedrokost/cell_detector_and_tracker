@@ -26,10 +26,12 @@ function features = computeTrackletMatchFeaturesForPair(trackletA, trackletB, I,
 	dotsA = single(dotsA);
 	dotsB = single(dotsB);
 
-
 	% Tells you the ration of movement in the X and Y direction
 	trackletA2D = single(permute(trackletA, [2 3 1]));
 	trackletB2D = single(permute(trackletB, [2 3 1]));
+
+	lenTrackletA = size(trackletA2D, 1);
+	lenTrackletB = size(trackletB2D, 1);
 
 	features = zeros(1, numFeatures);
 	idx = 1;
@@ -71,7 +73,6 @@ function features = computeTrackletMatchFeaturesForPair(trackletA, trackletB, I,
 	end
 
 	%---------------------------------------Features that look at past history
-
 	if featParams.addDirectionTheta
 
 		trackA = getTail(trackletA2D, featParams.numCellsToEstimateDirectionTheta);
@@ -83,8 +84,8 @@ function features = computeTrackletMatchFeaturesForPair(trackletA, trackletB, I,
 		% REVIEW: Define what to say about the angle when an item has length of 1. Should it be assumed perfect match? angleDiff = 0? NaN?;
 
 		% Compute the differences of movement between successive frames
-		trackA = trackA(2:end, :) - trackA(1:end-1, :);
-		trackB = trackB(2:end, :) - trackB(1:end-1, :);
+		trackA = computeBetweenFrameDistances(trackA);
+		trackB = computeBetweenFrameDistances(trackB);
 
 		% Compute the direction angle between each frames
 		trackA = atan2(trackA(:, 1), trackA(:, 2));
@@ -137,40 +138,77 @@ function features = computeTrackletMatchFeaturesForPair(trackletA, trackletB, I,
 
 	if featParams.addMeanDisplacement || featParams.addStdDisplacement
 
-		% Only use the data where there are no gaps. If gap, start a new subgroup
-		% and finally average the results
+		% Linearly Interpolate the value where there are gaps
+		if lenTrackletA > 1
+			[trackA, nonzeroIdx] = eliminateZeroRows(trackletA2D);
 
+			if any(nonzeroIdx == 0)
+				trackA = interp1(find(nonzeroIdx), trackA, (1:lenTrackletA)');
+			else
+				trackA = trackletA2D;
+			end
+		end
 
-		% I start working on this feature now, but after I need to fix the caused in the above comments 
+		if lenTrackletB > 1
+			[trackB, nonzeroIdx] = eliminateZeroRows(trackletB2D);
 
-		% lA = size(trackletA2D, 1);
-		% lB = size(trackletB2D, 1);
-		% iA = min(lA, featParams.numCellsForDirectionVariances)-1;
-		% iB = min(lB, featParams.numCellsForDirectionVariances);
+			if any(nonzeroIdx == 0)
+				trackB = interp1(find(nonzeroIdx), trackB, (1:lenTrackletB)');
+			else
+				trackB = trackletB2D;
+			end
+		end
 
-		% trackletA2D2 = trackletA2D((lA-iA):lA, :);
-		% trackletB2D2 = trackletB2D(1:iB, :);
+		trackA = getTail(trackA, featParams.numCellsForMeanAndStdDisplacement);
+		trackB = getHead(trackB, featParams.numCellsForMeanAndStdDisplacement);
 
-		% % Remove zero rowsa
-		% trackletA2D2 = trackletA2D2(all(trackletA2D2 ~= 0, 2), :);
-		% trackletB2D2 = trackletB2D2(all(trackletB2D2 ~= 0, 2), :);
+		% Compute successive distances
+		trackA = computeBetweenFrameDistances(trackA);
+		trackB = computeBetweenFrameDistances(trackB);
 
-		% cA = diag(cov(trackletA2D2));
-		% cB = diag(cov(trackletB2D2));
+		if lenTrackletA == 1 
+			trackA = zeros(1, featParams.posDimensions);
+		end
 
-		% if numel(cA) < 2
-		% 	cA = [0;0];
-		% end
-		% if numel(cB) < 2
-		% 	cB = [0;0];
-		% end
+		if lenTrackletB == 1
+			trackB = zeros(1, featParams.posDimensions);
+		end
 
-		% cA = cA / norm(cA);
-		% cB = cB / norm(cB);
+		if featParams.addMeanDisplacement
+			if lenTrackletA > 1
+				meanDiff = mean(trackA, 1) - mean(trackB, 1);
+			else
+				meanDiff = zeros(1, featParams.posDimensions);
+			end
+			if isnan(meanDiff)
+				keyboard
+			end
 
-		% features(idx:(idx + featParams.posDimensions-1)) = abs(cB - cB)';
-		% idx = idx + featParams.posDimensions;
+			features(idx:(idx + featParams.posDimensions-1)) = meanDiff;
+			idx = idx + featParams.posDimensions;
+		end
+
+		if featParams.addStdDisplacement
+			if lenTrackletA > 1
+				stdDiff = std(trackA, 1) - std(trackB, 1);
+			else
+				stdDiff = zeros(1, featParams.posDimensions);
+			end
+			features(idx:(idx + featParams.posDimensions-1)) = stdDiff;
+			idx = idx + featParams.posDimensions;
+		end
 	end
+
+	function dists = computeBetweenFrameDistances(tracklet2D)
+		% Compute the differences of movement between successive frames
+		% Inputs:
+		% 	tracklet2D = a row matrix of cell positions
+		% Outputs:
+		% 	dists = a row matrix of distances containing N - 1 rows
+
+		dists = tracklet2D(2:end, :) - tracklet2D(1:end-1, :);
+	end
+
 
 
 end
