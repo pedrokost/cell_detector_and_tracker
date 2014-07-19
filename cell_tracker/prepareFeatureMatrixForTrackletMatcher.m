@@ -42,6 +42,7 @@ tracklets = tracklets(cnt > classifierParams.MIN_TRACKLET_LENGTH, :);
 
 % For each tracklets, find the corresponding dots in the OUT folder
 tracklets = convertAnnotationToDetectionIdx(tracklets);
+
 % subplot(1,2,2); trackletViewer(tracklets, params.outFolder)
 
 Y = zeros(0, 1, 'uint8'); %[match/no-match]
@@ -60,7 +61,7 @@ for t=1:numTracklets
 
 	C = combnk(idx, 2);
 	D = C(:, 2) - C(:, 1);
-	C = C(D < classifierParams.MAX_GAP, :);
+	C = C(D <= classifierParams.MAX_GAP, :);
 
 	% TODO: random sample just a portion of the cases
 	n = size(C, 1);
@@ -68,7 +69,6 @@ for t=1:numTracklets
 
 	new = [tVec C(:, 1) tracklets(t, C(:, 1))' tVec C(:, 2) tracklets(t, C(:, 2))'];
 	I = [I; new];
-
 	Y = [Y; ones(size(C, 1), 1)];
 end
 
@@ -127,8 +127,8 @@ for i=1:n
 	trackletAIdx = find(trackletAPos);
 	trackletBIdx = find(trackletBPos);
 
-	trackletA = tracklets2(I(i, 1), trackletAIdx(1):trackletAIdx(end), :);
-	trackletB = tracklets2(I(i, 4), trackletBIdx(1):trackletBIdx(end), :);
+	trackletA = tracklets2(I(i, 1), trackletAIdx(1):I(i, 2), :);
+	trackletB = tracklets2(I(i, 4), I(i, 5):trackletBIdx(end), :);
 
 	features = computeTrackletMatchFeaturesForPair(trackletA, trackletB, I(i, :), featParams, numFeatures);
 

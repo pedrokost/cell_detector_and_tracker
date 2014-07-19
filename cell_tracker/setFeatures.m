@@ -6,11 +6,11 @@ function [params, numFeatures] = setFeatures()
 
 CELL_DESCRIPTOR_SIZE = 100;
 %------------------------------------------------------------------Features
-params.addCellDescriptors = 0;
-params.addGapSize         = 0;
-params.addPosDistance     = 0;   % euclidean x-y distance between tail of tracklet A and head of tracklet B
-params.addPosDistanceSquared = 1;   % euclidean x-y distance between tail of tracklet A and head of tracklet B
-params.addDirectionTheta  = 0;   % angle between the direction of 2 tracklets
+params.addCellDescriptors = 1;
+params.addGapSize         = 1;
+params.addPosDistance     = 1;   % euclidean x-y distance between tail of tracklet A and head of tracklet B
+params.addPosDistanceSquared = 1;   % square euclidean x-y distance between tail of tracklet A and head of tracklet B
+params.addDirectionTheta  = 1;   % angle between the direction of 2 tracklets
 params.addDirectionVariances = 0;  % variance of direction over last N frames
 params.addMeanDisplacement = 0;  % mean displacement between frames
 params.addStdDisplacement = 0;  % mean displacement between frames

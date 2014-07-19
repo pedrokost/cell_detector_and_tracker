@@ -1,8 +1,12 @@
 Today:
 	✔	T44 @done (14-07-17 17:01)
 	✔	T32 @done (14-07-17 18:01)
-	☐	T36
+	✔	46.1 @done (14-07-19 11:47)
 	☐	T46
+	☐	T36
+	☐	T42
+	☐	T46
+	☐	T38
 Cell tracker (1 week work minimum - 3 weeks maximum):
 	☐	7) Skip blurred frames, and leave an annotation that you skipped a frame (reqs: S4)
 	☐	17) Correctly estimate then number of missedetections of the detector
@@ -24,7 +28,9 @@ Cell tracker (1 week work minimum - 3 weeks maximum):
 	☐	43) Feature linker: tracklet quality (number of gaps within the track)
 	✔	44) Feature linker: variance @done (14-07-17 17:00)
 	☐	45) Feature Linker: add euclidean distance (even if we have position already)
-	☐	46) Feature linker: check all the TODOS and FIXME in the feautre creature
+	☐	46) Feature linker: check all the TODOS and FIXME in the feautre creature (reqs: T46.1)
+		✔	46.1) Fixed bug in the matrix for the linker, where the tracklets were not correctly selected (cut) because if a bad interpretation of indices. @done (14-07-19 11:48)
+	☐	The cellIndex is uneccessary information in I, it's included in tracklets already and accessible with remaining data of I
 Cell detector (3 days work minimum - 1 week maximum):
 	☐ If any detector NaN, in the end don't show average NaN.
 	☐ Read Pylon stuff

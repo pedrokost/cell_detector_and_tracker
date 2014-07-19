@@ -48,12 +48,6 @@ function features = computeTrackletMatchFeaturesForPair(trackletA, trackletB, I,
 	if featParams.addPosDistance
 		features(idx:(idx+featParams.posDimensions-1)) = euclideanDistance(dotsA, dotsB);
 
-		% FIXME: This below should results in the same values
-		% [trackletA2D(end, :) trackletB2D(1, :)]
-		% [dotsA, dotsB]
-		% '-------------------'
-		% This seems to be causeing some bad switches!!!
-
 		idx = idx + featParams.posDimensions;
 	end
 
@@ -132,7 +126,7 @@ function features = computeTrackletMatchFeaturesForPair(trackletA, trackletB, I,
 		% and finally average the results
 
 
-		I start working on this feature now, but after I need to fix the caused in the above comments 
+		% I start working on this feature now, but after I need to fix the caused in the above comments 
 
 		% lA = size(trackletA2D, 1);
 		% lB = size(trackletB2D, 1);
