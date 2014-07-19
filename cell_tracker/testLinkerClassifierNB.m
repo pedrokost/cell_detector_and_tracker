@@ -1,4 +1,4 @@
-function P = testMatcherTrackletJoinerNB(x)
+function P = testLinkerClassifierNB(x)
 	data = load('match_tracklet_predictor_nb.mat');
 
 

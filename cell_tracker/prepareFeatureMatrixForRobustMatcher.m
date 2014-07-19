@@ -13,7 +13,7 @@ folderIN = fullfile('..', 'data', 'series30green');
 % Folder with cell descriptors
 folderOUT = fullfile('..', 'data', 'series30greenOUT');
 
-saveToFile = fullfile(folderOUT, 'matcherTrainRobustJoinerMatrix.mat');
+saveToFile = fullfile(folderOUT, 'linkerClassifierTrainMatrix.mat');
 
 matAnnotations = dir(fullfile(folderIN, 'im*.mat'));
 numFrames = numel(matAnnotations);

@@ -1,5 +1,5 @@
 function [params, numFeatures] = setFeatures()
-%To set the features training/testing for the tracklet joiner
+%To set the features training/testing for the linker
 %	Inputs: /
 % 	Outputs:
 %   	params = strucutre with learning params

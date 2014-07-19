@@ -7,6 +7,7 @@
 %   x - input data.
 %   y - target data.
 
+% TODO; load from config file
 load(fullfile('..', 'data', 'series30greenOUT', 'matcherTrainRobustJoinerMatrix.mat'))
 x = X(:, 1:end-1)';
 t = X(:, end)';

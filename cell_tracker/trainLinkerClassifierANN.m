@@ -7,7 +7,8 @@
 %   x - input data.
 %   y - target data.
 
-load(fullfile('..', 'data', 'series30greenOUT', 'matcherTrainTrackletJoinerMatrix.mat'))
+% TODO: load rom config
+load(fullfile('..', 'data', 'series30greenOUT', 'linkerClassifierTrainMatrix.mat'))
 
 
 X = double(X');
@@ -80,14 +81,14 @@ if (true)
   % Generate MATLAB function for neural network for application deployment
   % in MATLAB scripts or with MATLAB Compiler and Builder tools, or simply
   % to examine the calculations your trained neural network performs.
-  genFunction(net,'testMatcherTrackletJoinerANN');
-  y = testMatcherTrackletJoinerANN(X);
+  genFunction(net,'testLinkerClassifierANN');
+  y = testLinkerClassifierANN(X);
 end
 if (false)
   % Generate a matrix-only MATLAB function for neural network code
   % generation with MATLAB Coder tools.
-  genFunction(net,'testMatcherTrackletJoinerANN','MatrixOnly','yes');
-  y = testMatcherTrackletJoinerANN(X);
+  genFunction(net,'testLinkerClassifierANN','MatrixOnly','yes');
+  y = testLinkerClassifierANN(X);
 end
 if (false)
   % Generate a Simulink diagram for simulation or deployment with.

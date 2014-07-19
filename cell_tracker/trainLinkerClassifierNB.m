@@ -1,6 +1,6 @@
 % clear all;
 
-load(fullfile('..', 'data', 'dumyOUT', 'matcherTrainTrackletJoinerMatrix.mat'))
+load(fullfile('..', 'data', 'series30greenOUT', 'linkerClassifierTrainMatrix.mat'))
 
 idx = ones(1, size(X, 2));
 % idx = std(X) > 0.005;
@@ -12,5 +12,5 @@ NB = fitNaiveBayes(x, Y);
 
 save('match_tracklet_predictor_nb.mat', 'NB', 'idx', 'minimum', 'maximum');
 
-t = testMatcherTrackletJoinerNB(X);
+t = testLinkerClassifierNB(X);
 cMat1 = confusionmat(double(Y), double(t>0.9))

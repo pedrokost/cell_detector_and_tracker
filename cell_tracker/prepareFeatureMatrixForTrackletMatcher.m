@@ -15,7 +15,7 @@ if doProfile
 end
 
 params = loadDatasetInfo(2);
-classifierParams = params.joinerClassifierParams;
+classifierParams = params.linkerClassifierParams;
 
 global DSIN DSOUT;
 % Data storescl
