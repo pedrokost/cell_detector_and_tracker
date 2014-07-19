@@ -61,50 +61,52 @@ function features = computeTrackletMatchFeaturesForPair(trackletA, trackletB, I,
 
 	if featParams.addDirectionTheta
 
-		% FIXME: make sure I am correctly elimintating just what i must
-		% Functionalizae this so I don't copy this logic everywhere
-		lA = size(trackletA2D, 1);
-		lB = size(trackletB2D, 1);
-		iA = min(lA, featParams.numCellsToEstimateDirectionTheta)-1;
-		iB = min(lB, featParams.numCellsToEstimateDirectionTheta);
+		trackA = getTail(trackletA2D, featParams.numCellsToEstimateDirectionTheta);
+		trackB = getHead(trackletB2D, featParams.numCellsToEstimateDirectionTheta);
 
-		trackletA2D2 = trackletA2D((lA-iA):lA, :);
-		trackletB2D2 = trackletB2D(1:iB, :);
+		[trackA nonzeroIdxA] = eliminateZeroRows(trackA);
+		[trackB nonzeroIdxB] = eliminateZeroRows(trackB);
 
-		% FIXME: Define what to say about the angle when an item has length of 1. Should it be assumed perfect match? angleDiff = 0? NaN?;
+		% REVIEW: Define what to say about the angle when an item has length of 1. Should it be assumed perfect match? angleDiff = 0? NaN?;
 
-		% Remove zero rowsa
-		trackletA2D2 = trackletA2D2(all(trackletA2D2 ~= 0, 2), :);
-		trackletB2D2 = trackletB2D2(all(trackletB2D2 ~= 0, 2), :);
+		% Compute the differences of movement between successive frames
+		trackA = trackA(2:end, :) - trackA(1:end-1, :);
+		trackB = trackB(2:end, :) - trackB(1:end-1, :);
 
-		trackletA2D2 = trackletA2D2(2:end, :) - trackletA2D2(1:end-1, :);
-		trackletB2D2 = trackletB2D2(2:end, :) - trackletB2D2(1:end-1, :);
+		% Compute the direction angle between each frames
+		trackA = atan2(trackA(:, 1), trackA(:, 2));
+		trackB = atan2(trackB(:, 1), trackB(:, 2));
 
-		trackletA2D2 = atan2(trackletA2D2(:, 1), trackletA2D2(:, 2));
-		trackletB2D2 = atan2(trackletB2D2(:, 1), trackletB2D2(:, 2));
+		% Get the mean
+		angA = mean(trackA);
+		angB = mean(trackB);
 
-		angA = mean(trackletA2D2);
-		angB = mean(trackletB2D2);
+		% If one of the tracks has just 1 cell, assume perfect match
+		if isnan(angA)
+			angA = angB;
+		elseif isnan(angB)
+			angB == angA;
+		end	
 
-		features(idx:idx) = angB - angA;
+		if any([isnan(angA) isnan(angB)])
+			features(idx:idx) = 0; % perfect = 0
+		else
+			features(idx:idx) = angB - angA;
+		end
+
 		idx = idx + 1;
 	end
 
 	if featParams.addDirectionVariances
-		lA = size(trackletA2D, 1);
-		lB = size(trackletB2D, 1);
-		iA = min(lA, featParams.numCellsForDirectionVariances)-1;
-		iB = min(lB, featParams.numCellsForDirectionVariances);
 
-		trackletA2D2 = trackletA2D((lA-iA):lA, :);
-		trackletB2D2 = trackletB2D(1:iB, :);
+		trackA = getTail(trackletA2D, featParams.numCellsForDirectionVariances);
+		trackB = getHead(trackletB2D, featParams.numCellsForDirectionVariances);
 
-		% Remove zero rowsa
-		trackletA2D2 = trackletA2D2(all(trackletA2D2 ~= 0, 2), :);
-		trackletB2D2 = trackletB2D2(all(trackletB2D2 ~= 0, 2), :);
+		trackA = eliminateZeroRows(trackA);
+		trackB = eliminateZeroRows(trackB);
 
-		cA = diag(cov(trackletA2D2));
-		cB = diag(cov(trackletB2D2));
+		cA = diag(cov(trackA));
+		cB = diag(cov(trackB));
 
 		if numel(cA) < 2
 			cA = [0;0];

@@ -18,7 +18,7 @@ function dataParams = loadDatasetInfo(dataset)
 imPrefix = 'im';
 imExt = 'pgm';
 imDigits = 3;
-maxGaps = [1 3 9]; % for the linker
+maxGaps = [1 5 9]; % for the linker
 rootFolder = fullfile('..', 'data');
 
 switch dataset
@@ -42,6 +42,10 @@ switch dataset
         %-TRAINING DATA SET-%
         dataFolder = fullfile(rootFolder, 'kidneyredIN');
         outFolder = fullfile(rootFolder, 'kidneyredOUT');
+    case 6 %KidneyRed
+        %-TRAINING DATA SET-%
+        dataFolder = fullfile(rootFolder, 'dumy');
+        outFolder = fullfile(rootFolder, 'dumyOUT');
 end
 
 % Parameters for training the classifier for joining tracklets

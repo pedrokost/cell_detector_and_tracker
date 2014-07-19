@@ -55,7 +55,7 @@ function hypothesisPrintTable(H, P, selected, fulltable)
 	SELECTED_MARKER_RIGHT = 60;
 
 	Q = char(humanizeHypothesis(H));
-	P = num2str(P, '%.2f');
+	P = num2str(exp(P), '%.2f');
 
 	% Pwdth 
 	actionWidth = num2str(size(Q, 2));

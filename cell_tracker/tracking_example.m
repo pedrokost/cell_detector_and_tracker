@@ -13,8 +13,9 @@ params = loadDatasetInfo(2);
 DSIN = DataStore(params.dataFolder, false);
 DSOUT = DataStore(params.outFolder, false);
 
-run prepareFeatureMatrixForTrackletMatcher;
-run trainMatcherTrackletJoinerANN;
+% run prepareFeatureMatrixForTrackletMatcher;
+% run trainMatcherTrackletJoinerANN;
+% run trainMatcherTrackletJoinerNB;
 
 classifierParams = params.joinerClassifierParams;
 maxGaps = params.maxGaps;
@@ -42,7 +43,7 @@ for i=1:numel(maxGaps)
 
 	Iopt = getGlobalOpimalAssociation(M, Liks);
 
-	hypothesisPrint(M, Liks, Iopt, 'shortextra');
+	hypothesisPrint(M, Liks, Iopt, 'fulltable');
 
 	Mopt = M(find(Iopt), :);
 	tracks = updateTracklets(tracklets, Mopt);

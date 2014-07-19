@@ -1,5 +1,7 @@
 clear all;
-load(fullfile('..', 'data', 'series30greenOUT', 'matcherTrainRobustJoinerMatrix.mat'))
+load(fullfile('..', 'data', 'seriesdumy30greenOUT', 'matcherTrainRobustJoinerMatrix.mat'))
+
+% FIXME: name of data matrix
 x = X(:, 1:end-1);
 t = X(:, end);
 idx = std(x) > 0.005;

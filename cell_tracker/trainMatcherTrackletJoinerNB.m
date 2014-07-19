@@ -1,6 +1,6 @@
-clear all;
+% clear all;
 
-load(fullfile('..', 'data', 'series30greenOUT', 'matcherTrainTrackletJoinerMatrix.mat'))
+load(fullfile('..', 'data', 'dumyOUT', 'matcherTrainTrackletJoinerMatrix.mat'))
 
 idx = ones(1, size(X, 2));
 % idx = std(X) > 0.005;
