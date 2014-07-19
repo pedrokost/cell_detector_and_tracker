@@ -5,12 +5,13 @@ function Liks = computeLikelihoods(tracklets, hypothesis, hypTypes, options)
 	% 	hypothesis = the hypothesis matrix generate by generateHypothesisMatrix()
 	%	hypTypes = a vector indicating the type of hypothesis, as generateb by generateHypothesisMatrix()
 	% 	options = a struct with options
-	%		matcher = ('ANN', 'NB')  % which matcher model to use to join tracklets
+	%		[matcher] = ('ANN', 'NB')  % which matcher model to use to join tracklets
+	%		imageDimensions = a 2d vector containing source images height and width
 	% Outputs:
 	% 	Liks = a column vector of length numHypothesis containing likelihoods for each hypothesis
 
 	%------------------------------------------------------------------Options
-	if nargin < 5; options = struct; end
+	if nargin < 4; options = struct; end
 
 
 	matcher = 'ANN';
@@ -19,8 +20,12 @@ function Liks = computeLikelihoods(tracklets, hypothesis, hypTypes, options)
 		if ismember(options.matcher, {'NB' 'ANN'})
 			matcher = options.matcher;
 		else
-			error('Mather %s is not valid. It must be one of "NB", "ANN"', options.matcher);
+			error('Macther %s is not valid. It must be one of "NB", "ANN"', options.matcher);
 		end
+	end
+
+	if ~isfield(options, 'imageDimensions')
+		error('Options should have imageDimensions field set.')
 	end
 
 	% This should mirror the types in generateHypothesisMatrix()
@@ -85,7 +90,7 @@ function Liks = computeLikelihoods(tracklets, hypothesis, hypTypes, options)
 			trackletPairs(i, :) = [J(1) J(2)-numTracklets];
 		end
 
-		X = computeTrackletMatchFeatures(tracklets, trackletPairs);
+		X = computeTrackletMatchFeatures(tracklets, trackletPairs, options);
 
 		%---------------------------------------------------Evaluate the Plink
 

@@ -14,6 +14,7 @@ params.addDirectionTheta  = 1;   % angle between the direction of 2 tracklets
 params.addDirectionVariances = 1;  % variance of direction over last N frames
 params.addMeanDisplacement = 0;  % mean displacement between frames
 params.addStdDisplacement = 0;  % mean displacement between frames
+params.addDistanceFromEdge = 1; % Distance from the closest image edge for each tracklet
 
 params.descriptorSize = CELL_DESCRIPTOR_SIZE;
 params.posDimensions = 2;   % x y
@@ -29,7 +30,8 @@ if nargout > 1
 			+ params.addDirectionTheta...
 			+ params.addDirectionVariances * params.posDimensions...
 			+ params.addMeanDisplacement * params.posDimensions...;
-			+ params.addStdDisplacement * params.posDimensions;
+			+ params.addStdDisplacement * params.posDimensions...
+			+ params.addDistanceFromEdge * 2;
 end
 
 end

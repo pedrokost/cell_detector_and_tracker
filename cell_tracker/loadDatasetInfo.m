@@ -26,26 +26,32 @@ switch dataset
         %-TRAINING DATA SET-%
         dataFolder = fullfile(rootFolder, 'phasecontrastIN');
         outFolder = fullfile(rootFolder, 'phasecontrastOUT');
+        imageDims = [];  % TODO [height width]
     case 2 %LungGreen
         %-TRAINING DATA SET-%
         dataFolder = fullfile(rootFolder, 'series30green');
         outFolder = fullfile(rootFolder, 'series30greenOUT');
+        imageDims = [512 512];  % TODO [height width]
     case 3 %LungRed
         %-TRAINING DATA SET-%
         dataFolder = fullfile(rootFolder, 'lungredIN');
         outFolder = fullfile(rootFolder, 'lungredOUT');
+        imageDims = [512 512];  % TODO [height width]
     case 4 %KidneyGreen
         %-TRAINING DATA SET-%
         dataFolder = fullfile(rootFolder, 'kidneygreenIN');
         outFolder = fullfile(rootFolder, 'kidneygreenOUT');
+        imageDims = [512 512];  % TODO [height width]
     case 5 %KidneyRed
         %-TRAINING DATA SET-%
         dataFolder = fullfile(rootFolder, 'kidneyredIN');
         outFolder = fullfile(rootFolder, 'kidneyredOUT');
+        imageDims = [512 512];  % TODO [height width]
     case 6 %KidneyRed
         %-TRAINING DATA SET-%
         dataFolder = fullfile(rootFolder, 'dumy');
         outFolder = fullfile(rootFolder, 'dumyOUT');
+        imageDims = [512 512];  % TODO [height width]
 end
 
 % Parameters for training the classifier for joining tracklets
@@ -71,5 +77,6 @@ dataParams.dataFolder = dataFolder;
 dataParams.outFolder  =  outFolder;
 dataParams.maxGaps  =  maxGaps;
 dataParams.joinerClassifierParams = joinerClassifierParams;
+dataParams.imageDimensions = imageDims;
 
 end

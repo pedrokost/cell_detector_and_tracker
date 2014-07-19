@@ -130,7 +130,7 @@ for i=1:n
 	trackletA = tracklets2(I(i, 1), trackletAIdx(1):I(i, 2), :);
 	trackletB = tracklets2(I(i, 4), I(i, 5):trackletBIdx(end), :);
 
-	features = computeTrackletMatchFeaturesForPair(trackletA, trackletB, I(i, :), featParams, numFeatures);
+	features = computeTrackletMatchFeaturesForPair(trackletA, trackletB, I(i, :), featParams, numFeatures, params);
 
 	X(i, :) = features;
 end

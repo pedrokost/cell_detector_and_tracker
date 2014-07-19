@@ -1,4 +1,4 @@
-function features = computeTrackletMatchFeaturesForPair(trackletA, trackletB, I, featParams, numFeatures)
+function features = computeTrackletMatchFeaturesForPair(trackletA, trackletB, I, featParams, numFeatures, dataParams)
 	% COMPUTETRACKLETMATCHFEATURESFORPAIR Compute a spatio-temporal feature vector for two possibly interacting tracklets.
 	% Inputs:
 	% 	trackletA/trackletB = the row of the tracklets matrix concerning these two descriptors, BUT with POSITION information instead of indices
@@ -8,6 +8,8 @@ function features = computeTrackletMatchFeaturesForPair(trackletA, trackletB, I,
 	%		cellIdxA/cellindexB = the indices of the cells within the corresponding frames
 	% 	featParams = a structure with parameters for building the feature vector. See setFeatures()
 	% 	numFeatures = the number of features in the final descriptor
+	% 	dataParams = a struct containing
+	%		imageDimensions = a 2d vector contining the height and width of the source images
 	% 	DSOUT = a Global datastore for data in outFolder
 	% Outputs:
 	% 	features = a feature vector of the two intracting tracklets
@@ -55,6 +57,17 @@ function features = computeTrackletMatchFeaturesForPair(trackletA, trackletB, I,
 		features(idx:(idx+featParams.posDimensions-1)) = (dotsA - dotsB).^4;
 
 		idx = idx + featParams.posDimensions;
+	end
+
+	if featParams.addDistanceFromEdge
+		% For each tracklet, the distance to the closest image edge
+		min_xyA = min(min(dotsA, abs(fliplr(dataParams.imageDimensions)-dotsA)));
+		min_xyB = min(min(dotsB, abs(fliplr(dataParams.imageDimensions)-dotsB)));
+		
+		features(idx:idx) = min_xyA;
+		idx = idx + 1;
+		features(idx:idx) = min_xyB;
+		idx = idx + 1;
 	end
 
 	%---------------------------------------Features that look at past history

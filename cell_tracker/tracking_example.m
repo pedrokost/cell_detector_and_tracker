@@ -36,14 +36,15 @@ axis(f1, ax)
 % tracklets 52x66x2            54912
 
 
+options = struct('matcher', classifierParams.algorithm, 'imageDimensions', params.imageDimensions);
 for i=1:numel(maxGaps)
 	[M, hypTypes] = generateHypothesisMatrix(tracklets, struct('maxGap', maxGaps(i)));
 	
-	Liks = computeLikelihoods(tracklets, M, hypTypes, struct('matcher', classifierParams.algorithm));
+	Liks = computeLikelihoods(tracklets, M, hypTypes, options);
 
 	Iopt = getGlobalOpimalAssociation(M, Liks);
 
-	hypothesisPrint(M, Liks, Iopt, 'fulltable');
+	hypothesisPrint(M, Liks, Iopt, 'shortfull');
 
 	Mopt = M(find(Iopt), :);
 	tracks = updateTracklets(tracklets, Mopt);

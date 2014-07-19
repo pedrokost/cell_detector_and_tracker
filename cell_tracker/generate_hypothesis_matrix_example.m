@@ -82,7 +82,7 @@ for i=1:numel(maxGaps)
 		];
 		Liks = log(Liks);
 	else
-		Liks = computeLikelihoods(tracklets, descriptors, M, hypTypes, struct('matcher', 'ANN'));
+		Liks = computeLikelihoods(tracklets, descriptors, M, hypTypes, struct('matcher', 'ANN', 'imageDimensions'), [512 512]);
 	end
 
 	% Then try to compute something with it

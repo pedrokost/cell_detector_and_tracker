@@ -1,4 +1,4 @@
-function X = computeTrackletMatchFeatures(tracklets, trackletPairs)
+function X = computeTrackletMatchFeatures(tracklets, trackletPairs, dataParams)
 	% COMPUTETRACKLETMATCHFEATURES Compute the matrix containing for each tracklet pair a feature vector
 
 	[featParams, numFeatures] = setFeatures();
@@ -26,7 +26,7 @@ function X = computeTrackletMatchFeatures(tracklets, trackletPairs)
 
 		trackletA = tracklets2(I(1), trackletAIdx(1):trackletAIdx(end), :);
 		trackletB = tracklets2(I(4), trackletBIdx(1):trackletBIdx(end), :);
-		features = computeTrackletMatchFeaturesForPair(trackletA, trackletB, I, featParams, numFeatures);
+		features = computeTrackletMatchFeaturesForPair(trackletA, trackletB, I, featParams, numFeatures, dataParams);
 
 		X(i, :) = features;
 	end

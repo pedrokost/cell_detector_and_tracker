@@ -5,7 +5,7 @@ Today:
 	✔	T46.2 @done (14-07-19 18:52)
 	✔	T46 @done (14-07-19 18:54)
 	☐	T36
-	☐	T42
+	✔	T42 @done (14-07-19 22:42)
 	☐	T46
 	☐	T38
 Cell tracker (1 week work minimum - 3 weeks maximum):
@@ -25,7 +25,7 @@ Cell tracker (1 week work minimum - 3 weeks maximum):
 	☐	39) Implement cell tracking quality metrics
 	☐	40) Render getTrackletHeadTailDescriptors fully obsolete 
 	☐	41) Linker could rely on 'average' descriptor for matching, instead of just the tail or head. First remove outliers, them compute average or median (if neeeded just of a few frames)
-	☐	42) Feature linker: distance from border
+	✔	42) Feature linker: distance from border for each tracklet @done (14-07-19 22:42)
 	☐	43) Feature linker: tracklet quality (number of gaps within the track)
 	✔	44) Feature linker: variance @done (14-07-17 17:00)
 	☐	45) Feature Linker: add euclidean distance (even if we have position already)
