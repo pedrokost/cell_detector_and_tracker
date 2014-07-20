@@ -7,6 +7,10 @@ function Liks = computeLikelihoods(tracklets, hypothesis, hypTypes, options)
 	% 	options = a struct with options
 	%		[matcher] = ('ANN', 'NB')  % which matcher model to use to join tracklets
 	%		imageDimensions = a 2d vector containing source images height and width
+	% 		[Kfp] = 1 % FP mutliplication factor
+	% 		[Kinit] = 1 % Init mutliplication factor
+	% 		[Kterm] = 1 % Term mutliplication factor
+	% 		[Klink] = 1 % Link mutliplication factor
 	% Outputs:
 	% 	Liks = a column vector of length numHypothesis containing likelihoods for each hypothesis
 
@@ -15,6 +19,26 @@ function Liks = computeLikelihoods(tracklets, hypothesis, hypTypes, options)
 
 
 	matcher = 'ANN';
+	Kfp = 1;
+	Kinit = 1;
+	Kterm = 1;
+	Klink = 1;
+
+	if isfield(options, 'Kfp')
+		Kfp = options.Kfp;
+	end
+
+	if isfield(options, 'Kinit')
+		Kinit = options.Kinit;
+	end
+
+	if isfield(options, 'Kterm')
+		Kterm = options.Kterm;
+	end
+
+	if isfield(options, 'Klink')
+		Klink = options.Klink;
+	end
 
 	if isfield(options, 'matcher'); 
 		if ismember(options.matcher, {'NB' 'ANN'})
@@ -49,10 +73,12 @@ function Liks = computeLikelihoods(tracklets, hypothesis, hypTypes, options)
 	linkHypothesisIdx = find(hypTypes == TYPE_LINK);
 	numLinkHypothesis = size(linkHypothesisIdx);
 	linkHypothesis = hypothesis(linkHypothesisIdx, :);
-	pLinks = computePlink();
+	pLinks = computePlink() * Klink;
 	[pFPs, pTPs] = computeTruthnessProbs(1:numTracklets);
-	pInit = computePinit();
-	pTerm = computePterm();
+	pFPs = pFPs * Kfp;
+	pTPs = pTPs / Kfp;
+	pInit = computePinit() * Kinit;
+	pTerm = computePterm() * Kterm;
 
 	%------------------------------------------------------Compute likelihoods
 

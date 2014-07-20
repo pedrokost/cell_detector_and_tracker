@@ -20,6 +20,10 @@ imExt = 'pgm';
 imDigits = 3;
 maxGaps = [1 5 9]; % for the linker
 rootFolder = fullfile('..', 'data');
+Kinit = 1.5;
+Kterm = 1.5;
+Kfp = 1.3;
+Klink = 1;
 
 switch dataset
     case 1 %PhaseContrast
@@ -78,5 +82,8 @@ dataParams.outFolder  =  outFolder;
 dataParams.maxGaps  =  maxGaps;
 dataParams.linkerClassifierParams = linkerClassifierParams;
 dataParams.imageDimensions = imageDims;
-
+dataParams.Kinit = Kinit;
+dataParams.Kterm = Kterm;
+dataParams.Kfp = Kfp;
+dataParams.Klink = Klink;
 end

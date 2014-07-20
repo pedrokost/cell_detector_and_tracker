@@ -1,23 +1,23 @@
 Today:
 Cell tracker (1 week work minimum - 3 weeks maximum):
-	☐	7) Skip blurred frames, and leave an annotation that you skipped a frame (reqs: S4)
-	☐	17) Correctly estimate then number of missedetections of the detector
-	☐	18) Add parameters so that the user can tweak the probabilities of Pfp, Ptp, Plink, Pinit, Pterm
-	☐	25) Train ANN and NB with much more data, possibly of all different datasets combined (reqs: T26)
-	☐	26) Annotate more datasets
-	☐	29) Run data through PCA/LDA or other first
-	☐	33) Best feature subset analysis
-	☐	34) Solve the unbalanced learning sets problem
+	✔	18) Add parameters so that the user can tweak the probabilities of Pfp, Ptp, Plink, Pinit, Pterm @done (14-07-20 13:49)
 	☐	37) Feature linker: gaussian broadening idea
 	☐	39) Implement cell tracking quality metrics
 	☐	40) Render getTrackletHeadTailDescriptors fully obsolete 
-	☐	41) Linker could rely on 'average/median' descriptor for matching, instead of just the tail or head. First remove outliers, them compute average or median (if neeeded just of a few frames)
+	☐	34) Solve the unbalanced learning sets problem
 	☐	43) Feature linker: tracklet quality (number of gaps within the track)
 	☐	45) Feature Linker: add euclidean distance (even if we have position already)
 	☐	47) The cellIndex is uneccessary information in I, it's included in tracklets already and accessible with remaining data of I
-	☐	48) Lean a linker model for each of the possible closing gaps, because otherwise I connect gaps prematurely
 	☐	49) PrepareMatrix... to use data store
+	☐	48) Lean a linker model for each of the possible closing gaps, because otherwise I connect gaps prematurely
 	☐	50) Robust tracker config in loadDatasetInfo
+	☐	17) Correctly estimate then number of missedetections of the detector
+	☐	29) Run data through PCA/LDA or other first
+	☐	25) Train ANN and NB with much more data, possibly of all different datasets combined (reqs: T26)
+	☐	41) Linker could rely on 'average/median' descriptor for matching, instead of just the tail or head. First remove outliers, them compute average or median (if neeeded just of a few frames)
+	☐	26) Annotate more datasets
+	☐	33) Best feature subset analysis
+	☐	7) Skip blurred frames, and leave an annotation that you skipped a frame (reqs: S4)
 Cell detector (3 days work minimum - 1 week maximum):
 	☐ If any detector NaN, in the end don't show average NaN.
 	☐ Read Pylon stuff

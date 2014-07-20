@@ -13,9 +13,9 @@ params = loadDatasetInfo(2);
 DSIN = DataStore(params.dataFolder, false);
 DSOUT = DataStore(params.outFolder, false);
 
-run prepareFeatureMatrixForTrackletMatcher;
+% run prepareFeatureMatrixForTrackletMatcher;
 % run trainLinkerClassifierNB;
-run trainLinkerClassifierANN;
+% run trainLinkerClassifierANN;
 
 classifierParams = params.linkerClassifierParams;
 maxGaps = params.maxGaps;
@@ -36,7 +36,7 @@ axis(f1, ax)
 % tracklets 52x66x2            54912
 
 
-options = struct('matcher', classifierParams.algorithm, 'imageDimensions', params.imageDimensions);
+options = struct('matcher', classifierParams.algorithm, 'imageDimensions', params.imageDimensions, 'Kfp', params.Kfp, 'Klink', params.Klink, 'Kinit', params.Kinit, 'Kterm', params.Kterm);
 for i=1:numel(maxGaps)
 	[M, hypTypes] = generateHypothesisMatrix(tracklets, struct('maxGap', maxGaps(i)));
 	
