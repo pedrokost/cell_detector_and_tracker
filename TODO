@@ -1,6 +1,9 @@
 Today:
+	☐	W6
+	☐	T37
+	☐	A1
+	☐	A4
 Cell tracker (1 week work minimum - 3 weeks maximum):
-	✔	18) Add parameters so that the user can tweak the probabilities of Pfp, Ptp, Plink, Pinit, Pterm @done (14-07-20 13:49)
 	☐	37) Feature linker: gaussian broadening idea
 	☐	39) Implement cell tracking quality metrics
 	☐	40) Render getTrackletHeadTailDescriptors fully obsolete 
@@ -30,6 +33,7 @@ Writing thesis (4 weeks work minimum - 7 weeks maximum):
 	☐	3) Analyse headings of the cell_detector part
 	☐	4) Analyse headings of the cell_tracker part
 	☐	5) Review past best dissertations for section and writing style inspiration
+	☐	6) cell_detection introduction
 Cell annotator (3 days work minimum - 1 week maximum):
 	☐ 1) Larger marker for detections
 	☐ 2) Copy anotations over
@@ -39,12 +43,9 @@ Cell annotator (3 days work minimum - 1 week maximum):
 	☐ 6) Elimintate uncessary filters
 	☐ 7) Colormap: change marker colors for best visibility
 	☐ 8) Help window
-	☐ 9) For whatever I do, I would like to have high quality data, to be able to see if algorithms work or not. For this reason, I will spend the next day or two annotating datasets
-	☐ 10) skip bad frames annotation
 	☐ 11) Menu bar for basic tools (load dets...)
 	☐ 12) Show dots should only toggle annotation dots
-	☐	13) Possibly add a button show generated tracks to complement show links
-	☐	14) break out last dataset into individual files 
+	☐	13) Add a button show generated tracks to complement show links
 Cell stabilizer (1 week minimum - 2 weeks maximum):
 	☐	1) Read how to easily do image stabilization in matlab (instaed of SIFT, RANSAC, homography, etc, which might take too long)
 	☐	2) Eliminate all detected cells from the images and extract sifts of the remaining regions (or extract sifts everywhere, elimintae those close to the detected cells)
@@ -73,29 +74,29 @@ Data flow process:
 	☐ detector test : IN: images, OUT: dots + MatchFeatures
 	☐ tracker: IN: dots + Match features, OUT: robust tracklets
 	☐ linker : IN: dots + robust matches, OUT: dots + links
-
 Track evaluation metrics:
 	☐	1) MOTA: Multiple Object Tracking Accuracy, calculated from the number of false alarms, missed detections, and identity switches;
 	☐	2) FGTIM: Fraction of Ground Truth Instances Missed; and
 	☐	3) FAPF: False Alarm Per Frame.
 ＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿
 Archive:
+	✔	18) Add parameters so that the user can tweak the probabilities of Pfp, Ptp, Plink, Pinit, Pterm @done (14-07-20 13:49) @project(Cell tracker (1 week work minimum - 3 weeks maximum))
 	✔	23) Make everything use a global store @done (14-07-19 23:46) @project(Today)
-	✔	T44 @done (14-07-17 17:01) @project(Today)
-	✔	T32 @done (14-07-17 18:01) @project(Today)
-	✔	T46.1 @done (14-07-19 11:47) @project(Today)
-	✔	T46.2 @done (14-07-19 18:52) @project(Today)
-	✔	T46 @done (14-07-19 18:54) @project(Today)
 	✔	T36 @done (14-07-19 23:45) @project(Today)
-	✔	T42 @done (14-07-19 22:42) @project(Today)
-	✔	T38 @done (14-07-19 22:56) @project(Today)
 	✔	36) Feature linker: spacing/displacement between frames (mean, std) @done (14-07-19 23:45) @project(Cell tracker (1 week work minimum - 3 weeks maximum))
+	✔	T38 @done (14-07-19 22:56) @project(Today)
 	✔	38) Rename tracklet joiner to linker @done (14-07-19 22:56) @project(Cell tracker (1 week work minimum - 3 weeks maximum))
+	✔	T42 @done (14-07-19 22:42) @project(Today)
 	✔	42) Feature linker: distance from border for each tracklet @done (14-07-19 22:42) @project(Cell tracker (1 week work minimum - 3 weeks maximum))
-	✔	44) Feature linker: variance @done (14-07-17 17:00) @project(Cell tracker (1 week work minimum - 3 weeks maximum))
-	✔	46) Feature linker: check all the TODOS and FIXME in the feautre creature (reqs: T46.1, T46.2) @done (14-07-19 18:53) @project(Cell tracker (1 week work minimum - 3 weeks maximum))
-	✔	46.1) Fixed bug in the matrix for the linker, where the tracklets were not correctly selected (cut) because if a bad interpretation of indices. @done (14-07-19 11:48) @project(Cell tracker (1 week work minimum - 3 weeks maximum))
+	✔	T46 @done (14-07-19 18:54) @project(Today)
 	✔	46.2) Functionalize and check correctness of selecting just a part of the tracklet to compute the feature @done (14-07-19 18:53) @project(Cell tracker (1 week work minimum - 3 weeks maximum))
+	✔	46) Feature linker: check all the TODOS and FIXME in the feautre creature (reqs: T46.1, T46.2) @done (14-07-19 18:53) @project(Cell tracker (1 week work minimum - 3 weeks maximum))
+	✔	T46.2 @done (14-07-19 18:52) @project(Today)
+	✔	46.1) Fixed bug in the matrix for the linker, where the tracklets were not correctly selected (cut) because if a bad interpretation of indices. @done (14-07-19 11:48) @project(Cell tracker (1 week work minimum - 3 weeks maximum))
+	✔	T46.1 @done (14-07-19 11:47) @project(Today)
+	✔	T32 @done (14-07-17 18:01) @project(Today)
+	✔	T44 @done (14-07-17 17:01) @project(Today)
+	✔	44) Feature linker: variance @done (14-07-17 17:00) @project(Cell tracker (1 week work minimum - 3 weeks maximum))
 	✔	24) Create files with parameters, that can be loaded anywhere (small overhead) @done (14-07-17 09:17) @project(Cell tracker (1 week work minimum - 3 weeks maximum))
 	✔	35) Feature linker: numeber of frames between cells @done (14-07-17 09:14) @project(Cell tracker (1 week work minimum - 3 weeks maximum))
 	✔	2) Analyse the amount of work that is left to do before I can focus on writing @done (14-07-17 09:12) @project(Writing thesis (4 weeks work minimum - 7 weeks maximum))
