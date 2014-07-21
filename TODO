@@ -1,5 +1,6 @@
 Today:
-	☐	W6
+	✔	W2 @done (14-07-21 13:50)
+	✔ W7 @done (14-07-21 13:50)
 	☐	T37
 	☐	A1
 	☐	A4
@@ -30,10 +31,12 @@ Cell detector (3 days work minimum - 1 week maximum):
 	☐	Make it clear in the headers of the files which belong to Arteta, which have some of my changes, which are completely mine
 	☐	Detect cells in all datasets (reqs: T6)
 Writing thesis (4 weeks work minimum - 7 weeks maximum):
+	✔	2) Create thesis outline @done (14-07-21 13:50)
 	☐	3) Analyse headings of the cell_detector part
 	☐	4) Analyse headings of the cell_tracker part
 	☐	5) Review past best dissertations for section and writing style inspiration
 	☐	6) cell_detection introduction
+	✔	7) Thesis todos @done (14-07-21 13:50)
 Cell annotator (3 days work minimum - 1 week maximum):
 	☐ 1) Larger marker for detections
 	☐ 2) Copy anotations over
