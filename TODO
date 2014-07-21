@@ -22,6 +22,8 @@ Cell tracker (1 week work minimum - 3 weeks maximum):
 	☐	26) Annotate more datasets
 	☐	33) Best feature subset analysis
 	☐	7) Skip blurred frames, and leave an annotation that you skipped a frame (reqs: S4)
+	☐	42) Feature linker: Overlapp area of broadened gaussians
+	☐	43) Feature linker: Distance of interpolated tracklets to midpoint
 Cell detector (3 days work minimum - 1 week maximum):
 	☐ If any detector NaN, in the end don't show average NaN.
 	☐ Read Pylon stuff
