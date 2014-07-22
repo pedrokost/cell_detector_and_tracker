@@ -1,6 +1,7 @@
 Today:
-	✔	W2 @done (14-07-21 13:50)
-	✔ W7 @done (14-07-21 13:50)
+	☐	W5
+	✔	W8 @done (14-07-22 10:01)
+	☐	W7
 	☐	T37
 	☐	A1
 	☐	A4
@@ -16,7 +17,7 @@ Cell tracker (1 week work minimum - 3 weeks maximum):
 	☐	48) Lean a linker model for each of the possible closing gaps, because otherwise I connect gaps prematurely
 	☐	50) Robust tracker config in loadDatasetInfo
 	☐	17) Correctly estimate then number of missedetections of the detector
-	☐	29) Run data through PCA/LDA or other first
+	☐	29) Run data through PCA or other first
 	☐	25) Train ANN and NB with much more data, possibly of all different datasets combined (reqs: T26)
 	☐	41) Linker could rely on 'average/median' descriptor for matching, instead of just the tail or head. First remove outliers, them compute average or median (if neeeded just of a few frames)
 	☐	26) Annotate more datasets
@@ -33,12 +34,12 @@ Cell detector (3 days work minimum - 1 week maximum):
 	☐	Make it clear in the headers of the files which belong to Arteta, which have some of my changes, which are completely mine
 	☐	Detect cells in all datasets (reqs: T6)
 Writing thesis (4 weeks work minimum - 7 weeks maximum):
-	✔	2) Create thesis outline @done (14-07-21 13:50)
 	☐	3) Analyse headings of the cell_detector part
 	☐	4) Analyse headings of the cell_tracker part
 	☐	5) Review past best dissertations for section and writing style inspiration
 	☐	6) cell_detection introduction
-	✔	7) Thesis todos @done (14-07-21 13:50)
+	☐	7) Write something (if no focus: cell_tracking)
+	✔	8) Review relevant papers and see what sections could be added @done (14-07-22 10:01)
 Cell annotator (3 days work minimum - 1 week maximum):
 	☐ 1) Larger marker for detections
 	☐ 2) Copy anotations over
@@ -83,8 +84,17 @@ Track evaluation metrics:
 	☐	1) MOTA: Multiple Object Tracking Accuracy, calculated from the number of false alarms, missed detections, and identity switches;
 	☐	2) FGTIM: Fraction of Ground Truth Instances Missed; and
 	☐	3) FAPF: False Alarm Per Frame.
+	☐	4) Mostly tracked trajectories (MT): The number of tracjectories that are successfully tracked for more than 80%
+	☐	5) Mostly lost trajectories (ML): The number of trajectories that are tracked for less than 20%
+	☐	6) Partially tracked trajectories (PT): the number of trajectories that are tracked between 20% and 80%
+	☐	7) Fragmentation (FRMT): the number of times a trajectory is interrupted
+	☐	8) ID switches (IDS): the number of times two trajectories switch their ID
 ＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿
 Archive:
+	✔ W7 @done (14-07-21 13:50) @project(Today)
+	✔	W2 @done (14-07-21 13:50) @project(Today)
+	✔	7) Thesis todos @done (14-07-21 13:50) @project(Writing thesis (4 weeks work minimum - 7 weeks maximum))
+	✔	2) Create thesis outline @done (14-07-21 13:50) @project(Writing thesis (4 weeks work minimum - 7 weeks maximum))
 	✔	18) Add parameters so that the user can tweak the probabilities of Pfp, Ptp, Plink, Pinit, Pterm @done (14-07-20 13:49) @project(Cell tracker (1 week work minimum - 3 weeks maximum))
 	✔	23) Make everything use a global store @done (14-07-19 23:46) @project(Today)
 	✔	T36 @done (14-07-19 23:45) @project(Today)
