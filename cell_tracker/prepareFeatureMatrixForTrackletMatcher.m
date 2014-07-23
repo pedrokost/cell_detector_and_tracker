@@ -75,6 +75,8 @@ end
 % findall possible tracklets combinations
 trackletCombos = combnk(1:numTracklets, 2);
 
+% I = [I; [1 18 3 5 28 1]];
+% Y = [Y; 0];
 % TODO make sure that the tracklets ordering makes sense
 for i=1:size(trackletCombos, 1)
 	trackletA = tracklets(trackletCombos(i, 1), :);

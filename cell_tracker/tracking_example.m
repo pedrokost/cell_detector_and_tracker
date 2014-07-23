@@ -13,9 +13,12 @@ params = loadDatasetInfo(2);
 DSIN = DataStore(params.dataFolder, false);
 DSOUT = DataStore(params.outFolder, false);
 
-% run prepareFeatureMatrixForTrackletMatcher;
+run prepareFeatureMatrixForTrackletMatcher;
 % run trainLinkerClassifierNB;
-% run trainLinkerClassifierANN;
+run trainLinkerClassifierANN;
+
+
+% Test tracklets 5, 6, 8, 9
 
 classifierParams = params.linkerClassifierParams;
 maxGaps = params.maxGaps;
@@ -39,12 +42,16 @@ axis(f1, ax)
 options = struct('matcher', classifierParams.algorithm, 'imageDimensions', params.imageDimensions, 'Kfp', params.Kfp, 'Klink', params.Klink, 'Kinit', params.Kinit, 'Kterm', params.Kterm);
 for i=1:numel(maxGaps)
 	[M, hypTypes] = generateHypothesisMatrix(tracklets, struct('maxGap', maxGaps(i)));
+
+	% tracklets([5 6 8 9], :)
+	% tr = trackletsToPosition(tracklets([5 6 8 9], :), 'out')
+	% permute(tr(:, find(sum(sum(tr, 3), 1)), :), [2 3 1])
 	
 	Liks = computeLikelihoods(tracklets, M, hypTypes, options);
 
 	Iopt = getGlobalOpimalAssociation(M, Liks);
 
-	hypothesisPrint(M, Liks, Iopt, 'fulltable');
+	hypothesisPrint(M, Liks, Iopt, 'table');
 
 	Mopt = M(find(Iopt), :);
 	tracks = updateTracklets(tracklets, Mopt);

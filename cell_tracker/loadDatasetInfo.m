@@ -18,12 +18,18 @@ function dataParams = loadDatasetInfo(dataset)
 imPrefix = 'im';
 imExt = 'pgm';
 imDigits = 3;
-maxGaps = [1 5 9]; % for the linker
+maxGaps = [1 3 6 9]; % for the linker
 rootFolder = fullfile('..', 'data');
-Kinit = 1.5;
-Kterm = 1.5;
-Kfp = 1.3;
+% Kinit = 1.5;
+% Kterm = 1.5;
+% Kfp = 1.3;
+% Klink = 1;
+
+Kinit = 1;
+Kterm = 1;
+Kfp = 1;
 Klink = 1;
+
 
 switch dataset
     case 1 %PhaseContrast

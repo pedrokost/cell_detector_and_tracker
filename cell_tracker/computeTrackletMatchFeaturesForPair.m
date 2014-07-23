@@ -180,9 +180,6 @@ function features = computeTrackletMatchFeaturesForPair(trackletA, trackletB, I,
 			else
 				meanDiff = zeros(1, featParams.posDimensions);
 			end
-			if isnan(meanDiff)
-				keyboard
-			end
 
 			features(idx:(idx + featParams.posDimensions-1)) = meanDiff;
 			idx = idx + featParams.posDimensions;
@@ -197,6 +194,70 @@ function features = computeTrackletMatchFeaturesForPair(trackletA, trackletB, I,
 			features(idx:(idx + featParams.posDimensions-1)) = stdDiff;
 			idx = idx + featParams.posDimensions;
 		end
+	end
+
+	%----------------------------------Features that extrapolate the tracklets
+
+	if featParams.addGaussianBroadeningEstimate
+		trackA = trackletA2D;
+		if lenTrackletA > 1
+			[trackA, nonzeroIdx] = eliminateZeroRows(trackletA2D);
+
+			if any(nonzeroIdx == 0)
+				trackA = interp1(find(nonzeroIdx), trackA, (1:lenTrackletA)');
+			end
+		end
+
+		trackB = trackletB2D;
+		if lenTrackletB > 1
+			[trackB, nonzeroIdx] = eliminateZeroRows(trackletB2D);
+
+			if any(nonzeroIdx == 0)
+				trackB = interp1(find(nonzeroIdx), trackB, (1:lenTrackletB)');
+			end
+		end
+
+		trackA = getTail(trackA, featParams.numCellsForGaussianBroadeningVelocityEstimation);
+		trackB = getHead(trackB, featParams.numCellsForGaussianBroadeningVelocityEstimation);
+
+		gapSize = frameB - frameA;
+		% TODO: redefine the 10, use the actual max gap between frames
+		% TODO: the model generation could be performed before, so it is not recomputed several times
+		model = gaussianBroadeningModel(trackA, featParams.maxClosingGap);
+		val = evaluateGaussianBroadeningModel(model, trackB);
+
+		features(idx:idx) = val;
+		idx = idx + 1;
+
+		if isfield(dataParams, 'showGaussianBroadening')
+			% minx = min(trackA(:, 1)) - 50;
+			% maxx = max(trackA(:, 1)) + 50;
+			% miny = min(trackA(:, 2)) - 50;
+			% maxy = max(trackA(:, 2)) + 50;
+
+			% resolution = 150;
+			% [X1,X2] = meshgrid(linspace(minx, maxx,resolution)',...
+			% 				   linspace(miny, maxy,resolution)');
+			% X = [X1(:) X2(:)];
+
+			% [val, pointsVals] = evaluateGaussianBroadeningModel(model, X);
+			% clf;
+			% contour(X1, X2, reshape(pointsVals,resolution, resolution)); axis equal; axis tight;
+			% hold on;
+			% plot(trackA(:, 1), trackA(:, 2), 'ro-');  axis equal; axis tight; 
+			% hold on;
+			% plot(model.mus(:, 1), model.mus(:, 2), 'rx--');  axis equal; axis tight;
+			% hold on;
+			% plot(trackB(:, 1), trackB(:, 2), 'bo-');  axis equal; axis tight;
+	 
+			% xlabel('x');
+			% ylabel('y');
+
+			% pause
+		end
+
+
+
 	end
 
 	function dists = computeBetweenFrameDistances(tracklet2D)

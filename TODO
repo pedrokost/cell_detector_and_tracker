@@ -1,12 +1,11 @@
 Today:
+	✔	T37: define which gap distance to use. Fix bugs. Try to log because of small value @done (14-07-23 17:21)
+	☐	T26
 	☐	W5
-	✔	W8 @done (14-07-22 10:01)
 	☐	W7
-	☐	T37
-	☐	A1
-	☐	A4
 Cell tracker (1 week work minimum - 3 weeks maximum):
-	☐	37) Feature linker: gaussian broadening idea
+	✔	37) Feature linker: gaussian broadening idea @done (14-07-23 17:21)
+	☐	25) Train ANN and NB with much more data, possibly of all different datasets combined (reqs: T26)
 	☐	39) Implement cell tracking quality metrics
 	☐	40) Render getTrackletHeadTailDescriptors fully obsolete 
 	☐	34) Solve the unbalanced learning sets problem
@@ -18,45 +17,23 @@ Cell tracker (1 week work minimum - 3 weeks maximum):
 	☐	50) Robust tracker config in loadDatasetInfo
 	☐	17) Correctly estimate then number of missedetections of the detector
 	☐	29) Run data through PCA or other first
-	☐	25) Train ANN and NB with much more data, possibly of all different datasets combined (reqs: T26)
 	☐	41) Linker could rely on 'average/median' descriptor for matching, instead of just the tail or head. First remove outliers, them compute average or median (if neeeded just of a few frames)
 	☐	26) Annotate more datasets
 	☐	33) Best feature subset analysis
 	☐	7) Skip blurred frames, and leave an annotation that you skipped a frame (reqs: S4)
 	☐	42) Feature linker: Overlapp area of broadened gaussians
 	☐	43) Feature linker: Distance of interpolated tracklets to midpoint
-Cell detector (3 days work minimum - 1 week maximum):
-	☐ If any detector NaN, in the end don't show average NaN.
-	☐ Read Pylon stuff
-	☐ New features to try:
-		☐ Histeq + Laplacian(0.2) creates empty places in maximums, noise everywhere else
-		☐ use the builtin canny edge detector, with params 0.6+
-	☐	Make it clear in the headers of the files which belong to Arteta, which have some of my changes, which are completely mine
-	☐	Detect cells in all datasets (reqs: T6)
+	☐	44) Feature linker: Add length of tracklets (difference or such) so that it learn that short tracklets are hard to guess
+	☐	45) (extendend?) Kalman filter to predict direction
 Writing thesis (4 weeks work minimum - 7 weeks maximum):
 	☐	3) Analyse headings of the cell_detector part
 	☐	4) Analyse headings of the cell_tracker part
 	☐	5) Review past best dissertations for section and writing style inspiration
 	☐	6) cell_detection introduction
 	☐	7) Write something (if no focus: cell_tracking)
-	✔	8) Review relevant papers and see what sections could be added @done (14-07-22 10:01)
-Cell annotator (3 days work minimum - 1 week maximum):
-	☐ 1) Larger marker for detections
-	☐ 2) Copy anotations over
-	☐ 3) Copy links over
-	☐ 4) Diplay links in different colors
-	☐ 5) New tab/window that displays the tracklets in 3d
-	☐ 6) Elimintate uncessary filters
-	☐ 7) Colormap: change marker colors for best visibility
-	☐ 8) Help window
-	☐ 11) Menu bar for basic tools (load dets...)
-	☐ 12) Show dots should only toggle annotation dots
-	☐	13) Add a button show generated tracks to complement show links
-Cell stabilizer (1 week minimum - 2 weeks maximum):
-	☐	1) Read how to easily do image stabilization in matlab (instaed of SIFT, RANSAC, homography, etc, which might take too long)
-	☐	2) Eliminate all detected cells from the images and extract sifts of the remaining regions (or extract sifts everywhere, elimintae those close to the detected cells)
-	☐	3) Given the number of SIFTs detected, or their distribution (eg only bottom part of image), it may be possible to detect bad frames. Just analyse. (reqs: S2)
-	☐	4) Store the names of bad or correct frames in a file, so they can be skipped in the tracker (reqs: S3)
+	☐	9) Compare performance with different features
+	☐	10) Try the performance of the tool with added noise to data
+	☐	11) Train classifier on just the single dataset vs all datasets
 Evaluations (2 week minimum - 3 weeks maximum):
 	☐ Evaluations of detector with single type of cells (red/green)
 	☐ Evaluations of tracker with single type of cells (red/green)
@@ -70,6 +47,31 @@ Biological statics (3 days minimum - 1 week maximum):
 Final GUI (1 week minimum - 2 weeks maximum):
 	☐	plan design/workflow on paper
 	☐	Ask Leo if we also need the option to train a new model
+Cell annotator (3 days work minimum - 1 week maximum):
+	☐ 1) Larger marker for detections
+	☐ 2) Copy anotations over
+	☐ 3) Copy links over
+	☐ 4) Diplay links in different colors
+	☐ 5) New tab/window that displays the tracklets in 3d
+	☐ 6) Elimintate uncessary filters
+	☐ 7) Colormap: change marker colors for best visibility
+	☐ 8) Help window
+	☐ 11) Menu bar for basic tools (load dets...)
+	☐ 12) Show dots should only toggle annotation dots
+	☐	13) Add a button show generated tracks to complement show links
+Cell detector (3 days work minimum - 1 week maximum):
+	☐ If any detector NaN, in the end don't show average NaN.
+	☐ Read Pylon stuff
+	☐ New features to try:
+		☐ Histeq + Laplacian(0.2) creates empty places in maximums, noise everywhere else
+		☐ use the builtin canny edge detector, with params 0.6+
+	☐	Make it clear in the headers of the files which belong to Arteta, which have some of my changes, which are completely mine
+	☐	Detect cells in all datasets (reqs: T6)
+Cell stabilizer (0 week minimum - 2 weeks maximum):
+	☐	1) Read how to easily do image stabilization in matlab (instaed of SIFT, RANSAC, homography, etc, which might take too long)
+	☐	2) Eliminate all detected cells from the images and extract sifts of the remaining regions (or extract sifts everywhere, elimintae those close to the detected cells)
+	☐	3) Given the number of SIFTs detected, or their distribution (eg only bottom part of image), it may be possible to detect bad frames. Just analyse. (reqs: S2)
+	☐	4) Store the names of bad or correct frames in a file, so they can be skipped in the tracker (reqs: S3)
 Approaches to solve the MAP problem of connecting tracklets:
 	☐ Hungarian algorithm (cannot handle division)
 	☐ Linear programming (handles division)
@@ -91,6 +93,11 @@ Track evaluation metrics:
 	☐	8) ID switches (IDS): the number of times two trajectories switch their ID
 ＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿
 Archive:
+	✔	8) Review relevant papers and see what sections could be added @done (14-07-23 15:34) @project(Writing thesis (4 weeks work minimum - 7 weeks maximum))
+	✔	W9 @done (14-07-22 14:15) @project(Today)
+	✔	9) Speed up latex compiles @done (14-07-22 14:15) @project(Writing thesis (4 weeks work minimum - 7 weeks maximum))
+	✔	W8 @done (14-07-22 10:01) @project(Today)
+	✔	8) Review relevant papers and see what sections could be added @done (14-07-22 10:01) @project(Writing thesis (4 weeks work minimum - 7 weeks maximum))
 	✔ W7 @done (14-07-21 13:50) @project(Today)
 	✔	W2 @done (14-07-21 13:50) @project(Today)
 	✔	7) Thesis todos @done (14-07-21 13:50) @project(Writing thesis (4 weeks work minimum - 7 weeks maximum))

@@ -10,11 +10,12 @@
 % TODO: load rom config
 load(fullfile('..', 'data', 'series30greenOUT', 'linkerClassifierTrainMatrix.mat'))
 
-
+size(X)
+size(Y)
 X = double(X');
 Y = double(Y');
 % Create a Pattern Recognition Network
-hiddenLayerSize = 4;
+hiddenLayerSize = 3;
 net = patternnet(hiddenLayerSize);
 
 % Choose Input and Output Pre/Post-Processing Functions

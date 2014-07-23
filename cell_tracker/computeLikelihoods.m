@@ -19,6 +19,8 @@ function Liks = computeLikelihoods(tracklets, hypothesis, hypTypes, options)
 
 
 	matcher = 'ANN';
+
+	% TODO: Move the Hypothesis likelihood rescaling outside, to be separate from the heavy computation
 	Kfp = 1;
 	Kinit = 1;
 	Kterm = 1;
@@ -115,7 +117,7 @@ function Liks = computeLikelihoods(tracklets, hypothesis, hypTypes, options)
 			[~, J] = find(linkHypothesis(i, :));
 			trackletPairs(i, :) = [J(1) J(2)-numTracklets];
 		end
-
+		% options.showGaussianBroadening = 1;
 		X = computeTrackletMatchFeatures(tracklets, trackletPairs, options);
 
 		%---------------------------------------------------Evaluate the Plink
