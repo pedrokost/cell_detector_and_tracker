@@ -1,10 +1,8 @@
 Today:
-	✔	T37: define which gap distance to use. Fix bugs. Try to log because of small value @done (14-07-23 17:21)
 	☐	T26
 	☐	W5
 	☐	W7
 Cell tracker (1 week work minimum - 3 weeks maximum):
-	✔	37) Feature linker: gaussian broadening idea @done (14-07-23 17:21)
 	☐	25) Train ANN and NB with much more data, possibly of all different datasets combined (reqs: T26)
 	☐	39) Implement cell tracking quality metrics
 	☐	40) Render getTrackletHeadTailDescriptors fully obsolete 
@@ -48,10 +46,8 @@ Final GUI (1 week minimum - 2 weeks maximum):
 	☐	plan design/workflow on paper
 	☐	Ask Leo if we also need the option to train a new model
 Cell annotator (3 days work minimum - 1 week maximum):
-	☐ 1) Larger marker for detections
 	☐ 2) Copy anotations over
 	☐ 3) Copy links over
-	☐ 4) Diplay links in different colors
 	☐ 5) New tab/window that displays the tracklets in 3d
 	☐ 6) Elimintate uncessary filters
 	☐ 7) Colormap: change marker colors for best visibility
@@ -93,6 +89,11 @@ Track evaluation metrics:
 	☐	8) ID switches (IDS): the number of times two trajectories switch their ID
 ＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿
 Archive:
+	✔	A4 @done (14-07-23 23:10) @project(Today)
+	✔ 1) Larger marker for detections @done (14-07-23 22:59) @project(Cell annotator (3 days work minimum - 1 week maximum))
+	✔ 4) Diplay links in different colors @done (14-07-23 23:10) @project(Cell annotator (3 days work minimum - 1 week maximum))
+	✔	T37: define which gap distance to use. Fix bugs. Try to log because of small value @done (14-07-23 17:21) @project(Today)
+	✔	37) Feature linker: gaussian broadening idea @done (14-07-23 17:21) @project(Cell tracker (1 week work minimum - 3 weeks maximum))
 	✔	8) Review relevant papers and see what sections could be added @done (14-07-23 15:34) @project(Writing thesis (4 weeks work minimum - 7 weeks maximum))
 	✔	W9 @done (14-07-22 14:15) @project(Today)
 	✔	9) Speed up latex compiles @done (14-07-22 14:15) @project(Writing thesis (4 weeks work minimum - 7 weeks maximum))
