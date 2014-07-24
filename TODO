@@ -1,7 +1,7 @@
 Today:
 	☐	T26
-	☐	W5
-	☐	W7
+  ✔  W7 @done (14-07-24 14:31)
+  ☐ W5
 Cell tracker (1 week work minimum - 3 weeks maximum):
 	☐	25) Train ANN and NB with much more data, possibly of all different datasets combined (reqs: T26)
 	☐	39) Implement cell tracking quality metrics
@@ -23,12 +23,13 @@ Cell tracker (1 week work minimum - 3 weeks maximum):
 	☐	43) Feature linker: Distance of interpolated tracklets to midpoint
 	☐	44) Feature linker: Add length of tracklets (difference or such) so that it learn that short tracklets are hard to guess
 	☐	45) (extendend?) Kalman filter to predict direction
+  ☐ 51) Use a kalman filter to refine position and size of its direction responses and estimate their velocities (everywhere I use velocity)
 Writing thesis (4 weeks work minimum - 7 weeks maximum):
 	☐	3) Analyse headings of the cell_detector part
 	☐	4) Analyse headings of the cell_tracker part
 	☐	5) Review past best dissertations for section and writing style inspiration
 	☐	6) cell_detection introduction
-	☐	7) Write something (if no focus: cell_tracking)
+  ✔  7) Write something (if no focus: cell_tracking) @done (14-07-24 14:31)
 	☐	9) Compare performance with different features
 	☐	10) Try the performance of the tool with added noise to data
 	☐	11) Train classifier on just the single dataset vs all datasets
