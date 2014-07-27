@@ -62,6 +62,7 @@ Cell detector (3 days work minimum - 1 week maximum):
 	☐ New features to try:
 		☐ Histeq + Laplacian(0.2) creates empty places in maximums, noise everywhere else
 		☐ use the builtin canny edge detector, with params 0.6+
+		☐	Contrast + Log 3 creates empties indised cell, dinstinct border, rest hight noise
 	☐	Make it clear in the headers of the files which belong to Arteta, which have some of my changes, which are completely mine
 	☐	Detect cells in all datasets (reqs: T6)
 Cell stabilizer (0 week minimum - 2 weeks maximum):
