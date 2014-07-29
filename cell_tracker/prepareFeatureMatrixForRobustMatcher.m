@@ -10,7 +10,6 @@ function prepareFeatureMatrixForRobustMatcher(outputFile)
 
 	global DSIN DSOUT;
 
-
 	matAnnotationsIndices = DSIN.getMatfileIndices();
 	numFrames = numel(matAnnotationsIndices);
 	X = [];

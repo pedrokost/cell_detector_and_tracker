@@ -1,4 +1,4 @@
-function trainRobustTrackerModel(storeID, options)
+function trainLinkerTrackerModel(storeID, options)
 	% Generates a training matrix and trains the robust tracklet model for
 	% generating robust tracklets
 	% Input:
@@ -9,19 +9,19 @@ function trainRobustTrackerModel(storeID, options)
 	% 		outputFileModel = where to store the learned model
 	% Output: /
 
+	linkerOptions = options.linkerClassifierParams;
 
-	options = options.robustClassifierParams;
-	
-	prepareFeatureMatrixForRobustMatcher(options.outputFileMatrix)
 
-	dataFile = options.outputFileMatrix;
-	modelFile = options.outputFileModel;
+	dataFile = linkerOptions.outputFileMatrix
+	% modelFile = options.outputFileModel;
 
-	switch options.algorithm
+	prepareFeatureMatrixForLinkerMatcher(dataFile, options)
+
+	switch linkerOptions.algorithm
 		case 'ANN'
-			trainMatcherRobustClassifierANN(dataFile)
-		case 'NB'
-			trainMatcherRobustClassifierNB(dataFile, modelFile)
+			trainLinkerClassifierANN(dataFile)
+		% case 'NB'
+			% trainLinkerClassifierNB(dataFile, modelFile)
 		otherwise
 			error('Please specify a robust trackler training algorithm in the configuration file')
 	end

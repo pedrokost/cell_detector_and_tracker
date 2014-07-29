@@ -1,4 +1,7 @@
 Today:
+  ☐	T49
+  ☐	T55
+  ✔	T50 @done (14-07-29 16:18)
   ☐	T54
   ☐	T39
 Cell tracker (1 week work minimum - 3 weeks maximum):
@@ -12,7 +15,7 @@ Cell tracker (1 week work minimum - 3 weeks maximum):
 	☐	47) The cellIndex is uneccessary information in I, it's included in tracklets already and accessible with remaining data of I
 	☐	49) PrepareMatrix... to use data store
 	☐	48) Lean a linker model for each of the possible closing gaps, because otherwise I connect gaps prematurely
-	☐	50) Robust tracker config in loadDatasetInfo
+	✔	50) Robust tracker config in loadDatasetInfo @done (14-07-29 16:18)
 	☐	17) Correctly estimate then number of missedetections of the detector
 	☐	29) Run data through PCA or other first
 	☐	41) Linker could rely on 'average/median' descriptor for matching, instead of just the tail or head. First remove outliers, them compute average or median (if neeeded just of a few frames)
@@ -26,6 +29,7 @@ Cell tracker (1 week work minimum - 3 weeks maximum):
 	☐	52) Do not add as negative examples tracklets that are at very similar x-y coordinates, because it might be an actual continuations should a cell be visible in between the tracklets
 	☐	52) Make the thresold for robust tracklet linking load from a config files
 	☐	53) To prevent unsafe robust tracklet, do not link them if there is a similiar strong link to another tracklet (define another threshold)
+	☐	55) Streamline the cell tracking process
 Writing thesis (4 weeks work minimum - 7 weeks maximum):
 	☐	3) Analyse headings of the cell_detector part
 	☐	4) Analyse headings of the cell_tracker part
