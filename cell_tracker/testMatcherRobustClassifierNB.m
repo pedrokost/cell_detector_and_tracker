@@ -1,5 +1,5 @@
-function P = testMatcherRobustClassifierNB(x)
-	data = load('match_predictor_nb.mat');
+function P = testMatcherRobustClassifierNB(modelFile, x)
+	data = load(modelFile);
 
 
 	x = x(:, data.idx);

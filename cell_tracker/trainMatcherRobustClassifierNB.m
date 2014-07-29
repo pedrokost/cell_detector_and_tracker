@@ -1,18 +1,19 @@
-clear all;
-load(fullfile('..', 'data', 'seriesdumy30greenOUT', 'matcherTrainRobustJoinerMatrix.mat'))
+function trainMatcherRobustClassifierNB(dataFile, modelFile)
 
-% FIXME: name of data matrix
-x = X(:, 1:end-1);
-t = X(:, end);
-idx = std(x) > 0.005;
-x = x(:, idx);
+	load(dataFile);
 
-[x minimum maximum] = normalizeRange(x);
+	x = X(:, 1:end-1);
+	t = X(:, end);
+	idx = std(x) > 0.005;
+	x = x(:, idx);
 
-NB = fitNaiveBayes(x,t);
+	[x minimum maximum] = normalizeRange(x);
 
-save('match_predictor_nb.mat', 'NB', 'idx', 'minimum', 'maximum');
+	NB = fitNaiveBayes(x,t);
 
-Y = testMatcherRobustClassifierNB(X(:, 1:end-1));
+	save(modelFile, 'NB', 'idx', 'minimum', 'maximum');
 
-cMat1 = confusionmat(t, double(Y>0.9))
+	Y = testMatcherRobustClassifierNB(modelFile, X(:, 1:end-1));
+	cMat1 = confusionmat(t, double(Y>0.9))
+end
+
