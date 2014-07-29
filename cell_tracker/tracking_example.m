@@ -39,6 +39,7 @@ axis(f1, ax)
 % tracklets 52x66x2            54912
 
 
+% TODO: convert this to a function
 options = struct('matcher', classifierParams.algorithm, 'imageDimensions', params.imageDimensions, 'Kfp', params.Kfp, 'Klink', params.Klink, 'Kinit', params.Kinit, 'Kterm', params.Kterm);
 for i=1:numel(maxGaps)
 	[M, hypTypes] = generateHypothesisMatrix(tracklets, struct('maxGap', maxGaps(i)));
@@ -64,6 +65,8 @@ for i=1:numel(maxGaps)
 	drawnow update;
 	pause(1)
 end
+
+% TODO save trajectories to disk
 
 if doProfile
 	profile off
