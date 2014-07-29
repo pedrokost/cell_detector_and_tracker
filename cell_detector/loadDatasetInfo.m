@@ -36,7 +36,7 @@ MaxVariation = 1;
 MinDiversity = 0.1;
 imPrefix = 'im';
 imExt = 'pgm';
-trainsplit = 0.7;  % percentage of data to be used for training 
+trainsplit = 1;  % percentage of data to be used for training 
 features = []; % Use default from setFeatures
 rootFolder = fullfile('..', 'data');
 
@@ -65,10 +65,10 @@ switch dataset
         %    meanRecall: 0.9082
     case 3 %LungRed
         %-TRAINING DATA SET-%
-        dataFolder = fullfile(rootFolder, 'lungredIN');
-        outFolder = fullfile(rootFolder, 'lungredOUT');
-        minPixels = 10;
-        maxPixels = 100;
+        dataFolder = fullfile(rootFolder, 'series13redcropped');
+        outFolder = fullfile(rootFolder, 'series13redcroppedOUT');
+        minPixels = 100;
+        maxPixels = 300;
         Delta = 2;
         tol = 8; %Tolerance (pixels) for evaluation only
     case 4 %KidneyGreen
@@ -112,6 +112,7 @@ end
 
 
 files = dir(fullfile(dataFolder,[imPrefix, '*.' imExt]));
+% files = files(1:7)
 [~,files] = cellfun(@fileparts, {files.name}, 'UniformOutput',false);
 
 

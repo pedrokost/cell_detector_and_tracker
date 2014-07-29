@@ -1,13 +1,14 @@
 Today:
-	☐	T26
-  ✔  W7 @done (14-07-24 14:31)
   ☐ W5
+  ☐	T54
+  ☐	T39
 Cell tracker (1 week work minimum - 3 weeks maximum):
-	☐	25) Train ANN and NB with much more data, possibly of all different datasets combined (reqs: T26)
+	☐	54) Save the computed linked to disk in the OUT folder
 	☐	39) Implement cell tracking quality metrics
+	☐	25) Train ANN and NB with much more data, possibly of all different datasets combined (reqs: T26)
 	☐	40) Render getTrackletHeadTailDescriptors fully obsolete 
 	☐	34) Solve the unbalanced learning sets problem
-	☐	43) Feature linker: tracklet quality (number of gaps within the track)
+	☐	43) Feature linker: tracklet purity (number of gaps within the track (sum and difference for both tracklet))
 	☐	45) Feature Linker: add euclidean distance (even if we have position already)
 	☐	47) The cellIndex is uneccessary information in I, it's included in tracklets already and accessible with remaining data of I
 	☐	49) PrepareMatrix... to use data store
@@ -16,7 +17,6 @@ Cell tracker (1 week work minimum - 3 weeks maximum):
 	☐	17) Correctly estimate then number of missedetections of the detector
 	☐	29) Run data through PCA or other first
 	☐	41) Linker could rely on 'average/median' descriptor for matching, instead of just the tail or head. First remove outliers, them compute average or median (if neeeded just of a few frames)
-	☐	26) Annotate more datasets
 	☐	33) Best feature subset analysis
 	☐	7) Skip blurred frames, and leave an annotation that you skipped a frame (reqs: S4)
 	☐	42) Feature linker: Overlapp area of broadened gaussians
@@ -24,12 +24,14 @@ Cell tracker (1 week work minimum - 3 weeks maximum):
 	☐	44) Feature linker: Add length of tracklets (difference or such) so that it learn that short tracklets are hard to guess
 	☐	45) (extendend?) Kalman filter to predict direction
   ☐ 51) Use a kalman filter to refine position and size of its direction responses and estimate their velocities (everywhere I use velocity)
+	☐	52) Do not add as negative examples tracklets that are at very similar x-y coordinates, because it might be an actual continuations should a cell be visible in between the tracklets
+	☐	52) Make the thresold for robust tracklet linking load from a config files
+	☐	53) To prevent unsafe robust tracklet, do not link them if there is a similiar strong link to another tracklet (define another threshold)
 Writing thesis (4 weeks work minimum - 7 weeks maximum):
 	☐	3) Analyse headings of the cell_detector part
 	☐	4) Analyse headings of the cell_tracker part
 	☐	5) Review past best dissertations for section and writing style inspiration
 	☐	6) cell_detection introduction
-  ✔  7) Write something (if no focus: cell_tracking) @done (14-07-24 14:31)
 	☐	9) Compare performance with different features
 	☐	10) Try the performance of the tool with added noise to data
 	☐	11) Train classifier on just the single dataset vs all datasets
@@ -91,6 +93,10 @@ Track evaluation metrics:
 	☐	8) ID switches (IDS): the number of times two trajectories switch their ID
 ＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿
 Archive:
+	✔	T26 @done (14-07-29 13:31) @project(Today)
+	✔  W7 @done (14-07-24 14:31) @project(Today)
+	✔	26) Annotate more datasets @done (14-07-29 13:31) @project(Cell tracker (1 week work minimum - 3 weeks maximum))
+	✔  7) Write something (if no focus: cell_tracking) @done (14-07-24 14:31) @project(Writing thesis (4 weeks work minimum - 7 weeks maximum))
 	✔	A4 @done (14-07-23 23:10) @project(Today)
 	✔ 1) Larger marker for detections @done (14-07-23 22:59) @project(Cell annotator (3 days work minimum - 1 week maximum))
 	✔ 4) Diplay links in different colors @done (14-07-23 23:10) @project(Cell annotator (3 days work minimum - 1 week maximum))

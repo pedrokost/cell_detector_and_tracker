@@ -22,8 +22,11 @@ if ~exist('vl_setup','file')
     error('To run this example you also need to install the vl_feat toolbox.');
 end
 
+addpath('dependencies')
+addpath('dependencies/matlab')
+
 %Load an Image
-imgFull = imread('../data/series30green/im040.pgm');
+imgFull = imread('../data/series13redcropped/im001.pgm');
 
 %Smooth the image
 img = imgFull;
@@ -32,12 +35,12 @@ img = imgFull;
 %Setup for the MSER algorithm
 numPixels = size(img,1)*size(img,2);
 minPixels = 100;
-maxPixels = 200;
+maxPixels = 300;
 BoD = 1; %Bright on Dark
 DoB = 0; %Dark on Bright
-Delta = 4;
+Delta = 2;
 MaxVariation = 1;
-MinDiversity = 0.1;
+MinDiversity = 0.4;
 
 %Convert to gray-scale, UINT8
 if size(img,3) == 3
@@ -50,7 +53,7 @@ if ~strcmp(imgClass,'uint8')
     img = uint8(img);
 end
 
-profile on;
+% profile on;
 
 %Compute MSERs
 [r,ell] = vl_mser(img,'MaxArea',maxPixels/numPixels,...
@@ -88,6 +91,6 @@ img = cat(3,R,G,B);
 subplot(1,2,2),imshow(img);
 title('Boundaries');
 
-profile off;
+% profile off;
 
-profile viewer
+% profile viewer

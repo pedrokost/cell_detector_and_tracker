@@ -6,6 +6,7 @@ data/lung*OUT
 data/kidney*OUT
 data/*/feats_*.mat
 README.html
+!data/README.html
 thesis/*.log
 thesis/*.aux
 thesis/*.bbl

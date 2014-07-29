@@ -79,8 +79,6 @@ if nCellsA == 0 || nCellsB == 0
 end
 
 dists = pdist2(XA, XB, @classifierDistance);
-% sigma = std(dists')'; % Not sure the original authors meant this
-% dists = exp(-bsxfun(@rdivide, dists, sigma));
 
 if testing
 	figure(2)
