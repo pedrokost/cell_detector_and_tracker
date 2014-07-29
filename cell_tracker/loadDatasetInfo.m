@@ -6,7 +6,7 @@ function dataParams = loadDatasetInfo(dataset)
 %   dataSet = identifier of the data set as set in the switch-case
 % OUTPUT
 %   dataParams = a struct containing
-%         imExt      =  image extension
+%         imExts      =  image extension
 %         imPrefix   =  image prefix
 %         imDigits   =  number of digits in image name
 %         dataFolder =  folder that contains the data (if training data, it must contain the both the images and the annotations)
@@ -16,7 +16,7 @@ function dataParams = loadDatasetInfo(dataset)
     
 %Defaults
 imPrefix = 'im';
-imExt = 'pgm';
+imExts = {'pgm', 'png', 'jpg'};
 imDigits = 3;
 maxGaps = [1 3 6 9]; % for the linker
 rootFolder = fullfile('..', 'data');
@@ -36,31 +36,37 @@ switch dataset
         %-TRAINING DATA SET-%
         dataFolder = fullfile(rootFolder, 'phasecontrastIN');
         outFolder = fullfile(rootFolder, 'phasecontrastOUT');
+        imExts = {'pgm'};
         imageDims = [];  % TODO [height width]
     case 2 %LungGreen
         %-TRAINING DATA SET-%
         dataFolder = fullfile(rootFolder, 'series30green');
         outFolder = fullfile(rootFolder, 'series30greenOUT');
+        imExts = {'pgm'};
         imageDims = [512 512];  % TODO [height width]
     case 3 %LungRed
         %-TRAINING DATA SET-%
         dataFolder = fullfile(rootFolder, 'lungredIN');
         outFolder = fullfile(rootFolder, 'lungredOUT');
+        imExts = {'pgm'};
         imageDims = [512 512];  % TODO [height width]
     case 4 %KidneyGreen
         %-TRAINING DATA SET-%
         dataFolder = fullfile(rootFolder, 'kidneygreenIN');
         outFolder = fullfile(rootFolder, 'kidneygreenOUT');
+        imExts = {'pgm'};
         imageDims = [512 512];  % TODO [height width]
     case 5 %KidneyRed
         %-TRAINING DATA SET-%
         dataFolder = fullfile(rootFolder, 'kidneyredIN');
         outFolder = fullfile(rootFolder, 'kidneyredOUT');
+        imExts = {'pgm'};
         imageDims = [512 512];  % TODO [height width]
     case 6 %KidneyRed
         %-TRAINING DATA SET-%
         dataFolder = fullfile(rootFolder, 'dumy');
         outFolder = fullfile(rootFolder, 'dumyOUT');
+        imExts = {'pgm'};
         imageDims = [512 512];  % TODO [height width]
 end
 
@@ -68,9 +74,19 @@ end
 linkerClassifierParams = struct(...
     'MIN_TRACKLET_LENGTH', 0,...
     'MAX_GAP', max(horzcat(5, maxGaps)),...
-    'outputFile', fullfile(outFolder, 'linkerClassifierTrainMatrix.mat'),...
-    'algorithm', 'ANN'...
+    'outputFileMatrix', fullfile(outFolder, 'linkerClassifierModelMatrix.mat'),...
+    'outputFileModel', fullfile(outFolder, 'linkerClassifierModel.m'),...
+    'algorithm', 'ANN'...  % 'NB', 'ANN'
 );
+
+% Parameters for training the classifier for creating robust tracklets
+robustClassifierParams = struct(...
+    'outputFileMatrix', fullfile(outFolder, 'robustClassifierModelMatrix.mat'),...
+    'outputFileModel', fullfile(outFolder, 'robustClassifierModel.mat'),...
+    'algorithm', 'ANN'...  % 'ANN', 'NB'
+);
+
+outputTrackletsFile = fullfile(outFolder, 'trajectories.mat');
 
 if exist(dataFolder,'dir') ~= 7
     error('Data folder not found')
@@ -80,16 +96,19 @@ if exist(outFolder,'dir') ~= 7
     error('Data OUT folder not found')
 end
 
-dataParams.imExt      =      imExt;
+dataParams.imExts      =      imExts;
 dataParams.imPrefix   =   imPrefix;
 dataParams.imDigits   =   imDigits;
 dataParams.dataFolder = dataFolder;
 dataParams.outFolder  =  outFolder;
 dataParams.maxGaps  =  maxGaps;
 dataParams.linkerClassifierParams = linkerClassifierParams;
+dataParams.robustClassifierParams = robustClassifierParams;
 dataParams.imageDimensions = imageDims;
 dataParams.Kinit = Kinit;
 dataParams.Kterm = Kterm;
 dataParams.Kfp = Kfp;
 dataParams.Klink = Klink;
+dataParams.outputTrackletsFile = outputTrackletsFile;
+
 end

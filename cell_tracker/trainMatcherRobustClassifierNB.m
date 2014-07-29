@@ -4,6 +4,8 @@ function trainMatcherRobustClassifierNB(dataFile, modelFile)
 
 	x = X(:, 1:end-1);
 	t = X(:, end);
+
+	% Eliminate cols with insignificant data variation
 	idx = std(x) > 0.005;
 	x = x(:, idx);
 

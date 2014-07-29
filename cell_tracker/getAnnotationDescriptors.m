@@ -17,10 +17,6 @@ function [descriptorsGt, perm, I] = getAnnotationDescriptors(dotsGt, dotsDet, de
 	% This computes for each GT dot, the closest Det dot.
 	[D, perm] = pdist2(dotsDet, dotsGt, 'euclidean', 'Smallest', 1);
 
-	% dotsDet
-	% dotsGt
-	% perm
-
 	descriptorsGt = descriptorsDet(perm, :);
 
 	I = ones(size(perm));

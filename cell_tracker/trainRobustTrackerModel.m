@@ -9,8 +9,6 @@ function trainRobustTrackerModel(storeID, options)
 	% 		outputFileModel = where to store the learned model
 	% Output: /
 
-	rng(1234);
-
 	prepareFeatureMatrixForRobustMatcher(options.outputFileMatrix)
 
 	dataFile = options.outputFileMatrix;
@@ -18,7 +16,7 @@ function trainRobustTrackerModel(storeID, options)
 
 	switch options.algorithm
 		case 'ANN'
-			trainMatcherRobustClassifierANN(dataFile, modelFile)
+			trainMatcherRobustClassifierANN(dataFile)
 		case 'NB'
 			trainMatcherRobustClassifierNB(dataFile, modelFile)
 		otherwise
