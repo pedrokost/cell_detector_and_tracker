@@ -10,7 +10,7 @@ function trainLinkerClassifierANN(dataFile)
   X = double(X');
   Y = double(Y');
   % Create a Pattern Recognition Network
-  hiddenLayerSize = 3;
+  hiddenLayerSize = 2;
   net = patternnet(hiddenLayerSize);
 
   % Choose Input and Output Pre/Post-Processing Functions

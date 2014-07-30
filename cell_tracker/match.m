@@ -9,6 +9,7 @@ function [symm right left selectedRight selectedLeft] = match(XA, XB, dotsA, dot
 % 	- dotsB: coordinates of cells in image B
 %	- options: an optinal struct containing these options
 %		- match_thresh = match threshold
+% 		- modelFile 
 % OUTPUTS:
 % 	- symm: a vector containing the corresponding robust matches.
 % 		symm(i) = 0 when that cell does not have a best match
@@ -78,7 +79,8 @@ if nCellsA == 0 || nCellsB == 0
 	return
 end
 
-dists = pdist2(XA, XB, @classifierDistance);
+classifier = getClassifier(options.modelFile);
+dists = pdist2(XA, XB, classifier);
 
 if testing
 	figure(2)
@@ -124,11 +126,13 @@ symm(~selectedRight) = 0;
 
 end
 
-function Y = classifierDistance(featsA, featsB)
-	% Given 2 feature vectors, returns the similarity given by the trained classifier. The similarity is a metric between 0 and 1.
+function classifier = getClassifier(modelFile)
+	classifier = @classifierDistance;
 
-	% This distance function must be the same as the one used in the classifier
-	D = euclideanDistance(featsA, featsB)';
-	Y = testMatcherRobustClassifierNB(D');
-
+	function Y = classifierDistance(featsA, featsB)
+		% Given 2 feature vectors, returns the similarity given by the trained classifier. The similarity is a metric between 0 and 1.
+		% This distance function must be the same as the one used in the classifier
+		D = euclideanDistance(featsA, featsB)';
+		Y = testMatcherRobustClassifierNB(D', modelFile);
+	end
 end

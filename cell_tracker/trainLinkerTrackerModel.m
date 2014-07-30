@@ -12,7 +12,7 @@ function trainLinkerTrackerModel(storeID, options)
 	linkerOptions = options.linkerClassifierParams;
 
 
-	dataFile = linkerOptions.outputFileMatrix
+	dataFile = linkerOptions.outputFileMatrix;
 	% modelFile = options.outputFileModel;
 
 	prepareFeatureMatrixForLinkerMatcher(dataFile, options)

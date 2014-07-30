@@ -2,7 +2,7 @@ function dataParams = loadDatasetInfo(dataset)
 %This is used to setup (and load) the parameters of the dataset; use as
 %template for new datasets.
 %
-%INPUT
+% INPUT
 %   dataSet = identifier of the data set as set in the switch-case
 % OUTPUT
 %   dataParams = a struct containing
@@ -18,15 +18,14 @@ function dataParams = loadDatasetInfo(dataset)
 imPrefix = 'im';
 imExts = {'pgm', 'png', 'jpg'};
 imDigits = 3;
-maxGaps = [1 3 6 9]; % for the linker
+maxGaps = [1 2 3 4 5 6 7 8 9]; % for the linker
 rootFolder = fullfile('..', 'data');
-% Kinit = 1.5;
-% Kterm = 1.5;
+
+Kinit = 1.3;
+Kterm = 1.3;
 % Kfp = 1.3;
 % Klink = 1;
 
-Kinit = 1;
-Kterm = 1;
 Kfp = 1;
 Klink = 1;
 
@@ -83,10 +82,12 @@ linkerClassifierParams = struct(...
 robustClassifierParams = struct(...
     'outputFileMatrix', fullfile(outFolder, 'robustClassifierModelMatrix.mat'),...
     'outputFileModel', fullfile(outFolder, 'robustClassifierModel.mat'),...
-    'algorithm', 'ANN'...  % 'ANN', 'NB'
+    'algorithm', 'NB'...  % 'ANN', 'NB'
 );
 
-outputTrackletsFile = fullfile(outFolder, 'trajectories.mat');
+saveTrajectoryGenerationInterimResults = true;
+trajectoryGenerationToFilePrefix = fullfile(outFolder, 'tracklets');
+verbose = true;
 
 if exist(dataFolder,'dir') ~= 7
     error('Data folder not found')
@@ -109,6 +110,8 @@ dataParams.Kinit = Kinit;
 dataParams.Kterm = Kterm;
 dataParams.Kfp = Kfp;
 dataParams.Klink = Klink;
-dataParams.outputTrackletsFile = outputTrackletsFile;
+dataParams.saveTrajectoryGenerationInterimResults = saveTrajectoryGenerationInterimResults;
+dataParams.trajectoryGenerationToFilePrefix = trajectoryGenerationToFilePrefix;
+dataParams.verbose = verbose;
 
 end

@@ -56,9 +56,15 @@ function features = computeTrackletMatchFeaturesForPair(trackletA, trackletB, I,
 	end
 
 	if featParams.addPosDistanceSquared
-		features(idx:(idx+featParams.posDimensions-1)) = (dotsA - dotsB).^4;
+		features(idx:(idx+featParams.posDimensions-1)) = (dotsA - dotsB).^2;
 
 		idx = idx + featParams.posDimensions;
+	end
+
+	if featParams.addEuclidianDistance
+		features(idx) = pointsDistance(dotsA, dotsB);
+
+		idx = idx + 1;
 	end
 
 	if featParams.addDistanceFromEdge

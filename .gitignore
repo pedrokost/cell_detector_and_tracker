@@ -4,6 +4,7 @@
 cell_tracking_papers/code/arteta12_tests/CellDetect_v1.0/*/out*
 data/lung*OUT
 data/kidney*OUT
+data/*OUT/tracklets*.mat
 data/*/feats_*.mat
 README.html
 !data/README.html

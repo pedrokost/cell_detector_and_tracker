@@ -6,13 +6,14 @@ function [params, numFeatures] = setFeatures()
 
 CELL_DESCRIPTOR_SIZE = 100;
 %------------------------------------------------------------------Features
-params.addCellDescriptors = 1;  % descriptor from the detector
-params.addGapSize         = 1;  % number of frames between the tail and head of 2 tracklets
-params.addPosDistance     = 1;   % euclidean x-y distance between tail of tracklet A and head of tracklet B
-params.addPosDistanceSquared = 1;   % square euclidean x-y distance between tail of tracklet A and head of tracklet B
-params.addDirectionTheta  = 1;   % angle between the direction of 2 tracklets
+params.addCellDescriptors = 0;  % descriptor from the detector
+params.addGapSize         = 0;  % number of frames between the tail and head of 2 tracklets
+params.addPosDistance     = 0;   % euclidean x-y distance between tail of tracklet A and head of tracklet B
+params.addPosDistanceSquared = 0;   % square euclidean x-y distance between tail of tracklet A and head of tracklet B
+params.addEuclidianDistance = 1; % eclidian distance between 2 points 
+params.addDirectionTheta  = 0;   % angle between the direction of 2 tracklets
 params.addDirectionVariances = 0;  % variance of direction over last N frames
-params.addMeanDisplacement = 1;  % mean displacement between frames (same as velocity per frame)
+params.addMeanDisplacement = 0;  % mean displacement between frames (same as velocity per frame)
 params.addStdDisplacement = 0;  % std of displacement between frames
 params.addDistanceFromEdge = 0; % Distance from the closest image edge for each tracklet
 params.addGaussianBroadeningEstimate = 0; % How much the tracklet is within the broadened gaussian from the original tracklet 
@@ -30,6 +31,7 @@ if nargout > 1
 			+ params.addGapSize ...
 			+ params.addPosDistance * params.posDimensions ...
 			+ params.addPosDistanceSquared * params.posDimensions ...
+			+ params.addEuclidianDistance ...
 			+ params.addDirectionTheta ...
 			+ params.addDirectionVariances * params.posDimensions ...
 			+ params.addMeanDisplacement * params.posDimensions ...

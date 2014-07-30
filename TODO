@@ -1,8 +1,8 @@
 Today:
-  ☐	T49
-  ☐	T55
+  ✔	T49 @done (14-07-30 12:46)
+  ✔	T55 @done (14-07-30 12:47)
   ✔	T50 @done (14-07-29 16:18)
-  ☐	T54
+  ✔	T54 @done (14-07-30 12:46)
   ☐	T39
 Cell tracker (1 week work minimum - 3 weeks maximum):
 	☐	54) Save the computed linked to disk in the OUT folder
@@ -11,7 +11,7 @@ Cell tracker (1 week work minimum - 3 weeks maximum):
 	☐	40) Render getTrackletHeadTailDescriptors fully obsolete 
 	☐	34) Solve the unbalanced learning sets problem
 	☐	43) Feature linker: tracklet purity (number of gaps within the track (sum and difference for both tracklet))
-	☐	45) Feature Linker: add euclidean distance (even if we have position already)
+	✔	45) Feature Linker: add euclidean distance (even if we have position already) @done (14-07-30 12:46)
 	☐	47) The cellIndex is uneccessary information in I, it's included in tracklets already and accessible with remaining data of I
 	☐	49) PrepareMatrix... to use data store
 	☐	48) Lean a linker model for each of the possible closing gaps, because otherwise I connect gaps prematurely
@@ -29,7 +29,8 @@ Cell tracker (1 week work minimum - 3 weeks maximum):
 	☐	52) Do not add as negative examples tracklets that are at very similar x-y coordinates, because it might be an actual continuations should a cell be visible in between the tracklets
 	☐	52) Make the thresold for robust tracklet linking load from a config files
 	☐	53) To prevent unsafe robust tracklet, do not link them if there is a similiar strong link to another tracklet (define another threshold)
-	☐	55) Streamline the cell tracking process
+	✔	55) Streamline the cell tracking process @done (14-07-30 12:47)
+	☐	56) The false positive likelihood should not be the length but the numeber of cell detections in the tracklet
 Writing thesis (4 weeks work minimum - 7 weeks maximum):
 	☐	3) Analyse headings of the cell_detector part
 	☐	4) Analyse headings of the cell_tracker part

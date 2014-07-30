@@ -12,10 +12,9 @@ function trainMatcherRobustClassifierNB(dataFile, modelFile)
 	[x minimum maximum] = normalizeRange(x);
 
 	NB = fitNaiveBayes(x,t);
-
 	save(modelFile, 'NB', 'idx', 'minimum', 'maximum');
 
-	Y = testMatcherRobustClassifierNB(modelFile, X(:, 1:end-1));
+	Y = testMatcherRobustClassifierNB(X(:, 1:end-1), modelFile);
 	cMat1 = confusionmat(t, double(Y>0.9))
 end
 

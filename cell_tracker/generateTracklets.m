@@ -8,6 +8,7 @@ function tracklets = generateTracklets(folderData, options)
 % 	- options = a struct containing options
 %	 	withAnnotations = [false] boolean saying if the metadata files have links annotations.
 %		numericFormat = [single] Use uint16 if more than 255 cells per image
+%		modelFile = string string to the path to the model data files for a NB classifier
 % Output:
 % 	- tracklets = a matrix of tracklets. Each row belongs to one 
 %		tracklet
@@ -86,7 +87,7 @@ function tracklets = generateTracklets(folderData, options)
 			selectedLeft = zeros(nCellsB, 1);
 			selectedLeft(linksA(linksA~=0)) = 1;
 		else
-			[permutation right left selectedRight selectedLeft] = match(XA, XB, dotsA, dotsB);
+			[permutation right left selectedRight selectedLeft] = match(XA, XB, dotsA, dotsB, struct('modelFile', options.modelFile));
 		end
 
 		[globalPremutation, currNumTracklets] = updateGlobalPermutation(globalPremutation, currNumTracklets, permutation, selectedLeft);

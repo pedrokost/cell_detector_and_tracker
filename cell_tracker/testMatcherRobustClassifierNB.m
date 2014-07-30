@@ -1,7 +1,6 @@
-function P = testMatcherRobustClassifierNB(modelFile, x)
+function P = testMatcherRobustClassifierNB(x, modelFile)
+
 	data = load(modelFile);
-
-
 	x = x(:, data.idx);
 	
 	x = normalizeRange(x, data.minimum, data.maximum);
