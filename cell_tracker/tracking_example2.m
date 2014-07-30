@@ -39,7 +39,7 @@ numFiles = numel(files);
 for i=1:numFiles
 	load(fullfile(params.outFolder, files{i}));
 	subplot(1,numFiles, iteration+1);
-	trackletViewer(tracklets, 'out', struct('animate', false, 'showLabels',true));
+	trackletViewer(tracklets, 'out', struct('animate', false, 'showLabels',true, 'minLength', 0));
 	title(sprintf('tracklets. Min gap: %d', closedGaps));
 end
 

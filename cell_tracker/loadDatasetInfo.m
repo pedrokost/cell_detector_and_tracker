@@ -18,14 +18,12 @@ function dataParams = loadDatasetInfo(dataset)
 imPrefix = 'im';
 imExts = {'pgm', 'png', 'jpg'};
 imDigits = 3;
-maxGaps = [1 2 3 4 5 6 7 8 9]; % for the linker
+maxGaps = [1 3 9]; % for the linker
 rootFolder = fullfile('..', 'data');
 
-Kinit = 1.3;
-Kterm = 1.3;
-% Kfp = 1.3;
-% Klink = 1;
 
+Kinit = 1;
+Kterm = 1;
 Kfp = 1;
 Klink = 1;
 
@@ -73,6 +71,7 @@ end
 linkerClassifierParams = struct(...
     'MIN_TRACKLET_LENGTH', 0,...
     'MAX_GAP', max(horzcat(5, maxGaps)),...
+    'notNegativeIfPossibleContinuation', true, ...
     'outputFileMatrix', fullfile(outFolder, 'linkerClassifierModelMatrix.mat'),...
     'outputFileModel', fullfile(outFolder, 'linkerClassifierModel.m'),...
     'algorithm', 'ANN'...  %  'ANN'

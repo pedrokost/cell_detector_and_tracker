@@ -16,7 +16,6 @@ function trainLinkerTrackerModel(storeID, options)
 	% modelFile = options.outputFileModel;
 
 	prepareFeatureMatrixForLinkerMatcher(dataFile, options)
-
 	switch linkerOptions.algorithm
 		case 'ANN'
 			trainLinkerClassifierANN(dataFile)

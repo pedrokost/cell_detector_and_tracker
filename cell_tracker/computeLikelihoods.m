@@ -127,6 +127,17 @@ function Liks = computeLikelihoods(tracklets, hypothesis, hypTypes, options)
 		else
 			matchP = testLinkerClassifierNB(X);
 		end
+
+		if any(isnan(matchP))
+			warning('you have nan values, fix me.')
+			keyboard
+		end
+
+		X
+		pause
+		matchP
+		pause
+
 		for i=1:numLinkHypothesis
 			P(trackletPairs(i, 1), trackletPairs(i, 2)) = matchP(i);
 		end
@@ -141,7 +152,7 @@ function Liks = computeLikelihoods(tracklets, hypothesis, hypTypes, options)
 		% 	TP = corresponding true positive probability
 		
 		len = sum(max(tracklets(trackletIdx, :, :), [], 3) ~= 0, 2);
-		FP = MISS_DETECTION_RATE .^ len;
+		FP = MISS_DETECTION_RATE .^ (len / 2);
 		TP = 1 - FP;
 	end
 

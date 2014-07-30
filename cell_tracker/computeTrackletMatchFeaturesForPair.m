@@ -14,12 +14,17 @@ function features = computeTrackletMatchFeaturesForPair(trackletA, trackletB, I,
 	% Outputs:
 	% 	features = a feature vector of the two intracting tracklets
 
+	% Compting with uint16 or other returns wrong answers to many math problems
+	trackletA = single(trackletA);
+	trackletB = single(trackletB);
+
 	global DSOUT;
 
 	frameA   = I(2);
 	frameB   = I(5);
 	cellIdxA = I(3);
 	cellIdxB = I(6);
+
 
 	[dotsA, desA] = DSOUT.get(frameA, cellIdxA);
 	[dotsB, desB] = DSOUT.get(frameB, cellIdxB);
@@ -118,7 +123,6 @@ function features = computeTrackletMatchFeaturesForPair(trackletA, trackletB, I,
 	end
 
 	if featParams.addDirectionVariances
-
 		trackA = getTail(trackletA2D, featParams.numCellsForDirectionVariances);
 		trackB = getHead(trackletB2D, featParams.numCellsForDirectionVariances);
 
@@ -129,16 +133,20 @@ function features = computeTrackletMatchFeaturesForPair(trackletA, trackletB, I,
 		cB = diag(cov(trackB));
 
 		if numel(cA) < 2
+
+			% FIXME: set to mean value, not 0 0 
 			cA = [0;0];
+		else
+			cA = cA / norm(cA);
 		end
 		if numel(cB) < 2
+			% FIXME: set to mean value, not 0 0 
 			cB = [0;0];
+		else
+			cB = cB / norm(cB);
 		end
 
-		cA = cA / norm(cA);
-		cB = cB / norm(cB);
-
-		features(idx:(idx + featParams.posDimensions-1)) = abs(cB - cB)';
+		features(idx:(idx + featParams.posDimensions-1)) = abs(cA - cB)';
 		idx = idx + featParams.posDimensions;
 	end
 
@@ -153,6 +161,8 @@ function features = computeTrackletMatchFeaturesForPair(trackletA, trackletB, I,
 			else
 				trackA = trackletA2D;
 			end
+		else
+			trackA = trackletA2D;
 		end
 
 		if lenTrackletB > 1
@@ -163,6 +173,8 @@ function features = computeTrackletMatchFeaturesForPair(trackletA, trackletB, I,
 			else
 				trackB = trackletB2D;
 			end
+		else
+			trackB = trackletB2D;
 		end
 
 		trackA = getTail(trackA, featParams.numCellsForMeanAndStdDisplacement);
@@ -184,6 +196,7 @@ function features = computeTrackletMatchFeaturesForPair(trackletA, trackletB, I,
 			if lenTrackletA > 1
 				meanDiff = mean(trackA, 1) - mean(trackB, 1);
 			else
+				% FIXME: Instead, mark it as special, and set it to the mean value
 				meanDiff = zeros(1, featParams.posDimensions);
 			end
 
@@ -195,6 +208,7 @@ function features = computeTrackletMatchFeaturesForPair(trackletA, trackletB, I,
 			if lenTrackletA > 1
 				stdDiff = std(trackA, 1) - std(trackB, 1);
 			else
+				% FIXME: instead set it to the mean value
 				stdDiff = zeros(1, featParams.posDimensions);
 			end
 			features(idx:(idx + featParams.posDimensions-1)) = stdDiff;
@@ -263,6 +277,10 @@ function features = computeTrackletMatchFeaturesForPair(trackletA, trackletB, I,
 		end
 
 
+		if any(isnan(features))
+			fprintf('There are NaN feature, why dont you fix it?\n');
+			keyboard
+		end
 
 	end
 

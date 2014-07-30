@@ -3,9 +3,11 @@ Today:
   ✔	T55 @done (14-07-30 12:47)
   ✔	T50 @done (14-07-29 16:18)
   ✔	T54 @done (14-07-30 12:46)
+	✔	T45 @done (14-07-30 12:49)
+	✔	T56 @done (14-07-30 18:40)
   ☐	T39
 Cell tracker (1 week work minimum - 3 weeks maximum):
-	☐	54) Save the computed linked to disk in the OUT folder
+	✔	54) Save the computed linked to disk in the OUT folder @done (14-07-30 12:48)
 	☐	39) Implement cell tracking quality metrics
 	☐	25) Train ANN and NB with much more data, possibly of all different datasets combined (reqs: T26)
 	☐	40) Render getTrackletHeadTailDescriptors fully obsolete 
@@ -13,7 +15,7 @@ Cell tracker (1 week work minimum - 3 weeks maximum):
 	☐	43) Feature linker: tracklet purity (number of gaps within the track (sum and difference for both tracklet))
 	✔	45) Feature Linker: add euclidean distance (even if we have position already) @done (14-07-30 12:46)
 	☐	47) The cellIndex is uneccessary information in I, it's included in tracklets already and accessible with remaining data of I
-	☐	49) PrepareMatrix... to use data store
+	✔	49) PrepareMatrix... to use data store @done (14-07-30 12:49)
 	☐	48) Lean a linker model for each of the possible closing gaps, because otherwise I connect gaps prematurely
 	✔	50) Robust tracker config in loadDatasetInfo @done (14-07-29 16:18)
 	☐	17) Correctly estimate then number of missedetections of the detector
@@ -30,7 +32,9 @@ Cell tracker (1 week work minimum - 3 weeks maximum):
 	☐	52) Make the thresold for robust tracklet linking load from a config files
 	☐	53) To prevent unsafe robust tracklet, do not link them if there is a similiar strong link to another tracklet (define another threshold)
 	✔	55) Streamline the cell tracking process @done (14-07-30 12:47)
-	☐	56) The false positive likelihood should not be the length but the numeber of cell detections in the tracklet
+	✔	56) Make sure I am not doing any floating point math with uint/uint16 numbers, because it get the results completely wrong!!!! @done (14-07-30 18:40)
+	☐ 57) Add a boolean feature if the distance apart < 50pixels, or < 100 pixels, etc.(not too many)	 --- should be relative to cell size relative to image width
+	☐	58) Uknown values in feature computation: Make then NaN, and then replace with the mean value, or first try learning with only rows without NaNs.
 Writing thesis (4 weeks work minimum - 7 weeks maximum):
 	☐	3) Analyse headings of the cell_detector part
 	☐	4) Analyse headings of the cell_tracker part

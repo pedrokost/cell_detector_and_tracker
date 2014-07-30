@@ -1,17 +1,17 @@
-function tracklets2 = trackletsToPosition(tracklets, folderData)
+function tracklets2 = trackletsToPosition(tracklets, store)
 	% trackletsToPosition converts the tracklets matrix to contain x-y positions
 	% instread of global indices
 	% Inputs:
 	% 	tracklets = a tracklet matrix containing global mappings
-	% 	folderData = {in, out} to indicate which store to use
+	% 	store = {'in', 'out'} to indicate which store to use
 	% 	DSIN or DSOUT are global store of data
 	% Outputs:
 	% 	tracklets2 = a matrix similar to tracklets but with x-y positions instead of indices
 
-	if strcmp(folderData, 'in');
+	if strcmp(store, 'in');
 		global DSIN;
 		store = DSIN;
-	elseif strcmp(folderData, 'out')
+	elseif strcmp(store, 'out')
 		global DSOUT;
 		store = DSOUT;
 	end

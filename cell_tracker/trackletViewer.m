@@ -7,12 +7,14 @@ function trackletViewer(tracklets, folderData, options)
 	% 		animate = [true] annimated the visualization
 	% 		animationSpeed = [100] speed of animation
 	% 		showLabels = [true] whether to show the index label of each tracklet
+	% 		minLength = [1] only display tracklet of length N or longer
 	% Outputs: /
 
 	%-----------------------------------------------------------------Defaults
 	animate = false;
 	animationSpeed = 100; % pause is 1/animationSpeed
 	showLabels = true;
+	minLength = 1;
 	%------------------------------------------------------------------Options
 	if nargin < 3; options = struct; end
 
@@ -21,13 +23,21 @@ function trackletViewer(tracklets, folderData, options)
 	if isfield(options, 'animationSpeed');
 		animationSpeed = options.animationSpeed;
 	end
+	if isfield(options, 'minLength')
+		minLength = options.minLength;
+	end
 	%-----------------------------------------------------------Initialization
 
 	trackletDim = 1;
 	framesDim = 2;
 
 	numTracklets = size(tracklets, trackletDim);
+	trackletIDs = 1:numTracklets;
+	[tracklets, idx] = filterTrackletsByLength(tracklets, minLength);
+	trackletIDs = trackletIDs(idx);
+
 	numFrames = size(tracklets, framesDim);
+	numTracklets = size(tracklets, trackletDim);
 
 	colors = hsv(numTracklets);
 	colors = colors(randperm(numTracklets), :);
@@ -56,7 +66,7 @@ function trackletViewer(tracklets, folderData, options)
 
 		if showLabels
 
-			text(double(x(1)), double(y(1)), double(z(1)), num2str(t));
+			text(double(x(1)), double(y(1)), double(z(1)), num2str(trackletIDs(t)));
 		end
 		% color=1:length(x);
 		% surface([x;x],[y;y],[z;z],[color;color], 'facecol','no','edgecol','interp');

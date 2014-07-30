@@ -17,11 +17,9 @@ function prepareFeatureMatrixForLinkerMatcher(outputFile, params)
 
 	tracklets = generateTracklets('in', struct('withAnnotations', true));
 
-	% Only bother working with tracklets of length > N
-	cnt = sum(min(tracklets, 1), 2);
-	% FIXING THIS THING HERE
-	[cnt cnt > classifierParams.MIN_TRACKLET_LENGTH];
-	tracklets = tracklets(cnt > classifierParams.MIN_TRACKLET_LENGTH, :);
+	tracklets = filterTrackletsByLength(tracklets, classifierParams.MIN_TRACKLET_LENGTH);
+
+	figure(1); clf; trackletViewer(tracklets, 'in', struct('animate', false, 'showLabels',true));
 
 	[numTracklets, numFrames] = size(tracklets);
 	% subplot(1,2,1); trackletViewer(tracklets, params.dataFolder)
@@ -61,8 +59,13 @@ function prepareFeatureMatrixForLinkerMatcher(outputFile, params)
 	% findall possible tracklets combinations
 	trackletCombos = combnk(1:numTracklets, 2);
 
+	if classifierParams.notNegativeIfPossibleContinuation
+		trackletCombos = eliminateAmbiguousRows(tracklets, trackletCombos, classifierParams);
+	end
+
 	% I = [I; [1 18 3 5 28 1]];
 	% Y = [Y; 0];
+
 	% TODO make sure that the tracklets ordering makes sense
 	for i=1:size(trackletCombos, 1)
 		trackletA = tracklets(trackletCombos(i, 1), :);
@@ -129,5 +132,35 @@ function prepareFeatureMatrixForLinkerMatcher(outputFile, params)
 		profile off
 		profile viewer
 	end
+end
 
+
+function trackletCombos2 = eliminateAmbiguousRows(tracklets, trackletCombos, linkerParams)
+	% Elimintate tracklet pairs if they are more than max distance apart
+	% Elimintate tracklet pairs if the tracklets are in very close locations
+	trackletCombos2 = zeros(0, 2);
+	tracklets2 = single(trackletsToPosition(tracklets, 'out'));
+	for i=1:size(trackletCombos, 1)
+		trackA = tracklets(trackletCombos(i, 1), :);
+		trackB = tracklets(trackletCombos(i, 2), :);
+		trackAidx = find(trackA);
+		trackBidx = find(trackB);
+
+		% Skip tracklets that can't be linked anyway, because I never evaluate such examples
+		if trackAidx(end) >= trackBidx(1); continue; end
+
+		tailA = tracklets2(trackletCombos(i, 1), trackAidx(end), :);
+		headB = tracklets2(trackletCombos(i, 2), trackBidx(1), :);
+		tailA = permute(tailA, [2 3 1]);
+		headB = permute(headB, [2 3 1]);
+		dist = pointsDistance(tailA, headB);
+
+		% fprintf('Dist between %d (%d, %d) and %d (%d, %d) is %f\n', trackletCombos(i, 1), tailA, trackletCombos(i, 2), headB, dist);
+
+		if dist > 50
+			trackletCombos2 = vertcat(trackletCombos2, trackletCombos(i, :));
+		end
+	end
+	%For each tracklet pair get the tail and gea
+	% and OK it only if the distance is ok
 end

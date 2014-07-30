@@ -12,8 +12,6 @@ function gFrameCell = getCellTrackletsFrame(dots, globalPremutation, currNumTrac
 	gFrameCell = zeros(currNumTracklets, 2, 'uint16');
 	gPermIdx = find(globalPremutation);
 
-	% globalPremutation(gPermIdx)
-	% dots
-	% dots(globalPremutation(gPermIdx), :)
-	gFrameCell(gPermIdx, :) = dots(globalPremutation(gPermIdx), :);
+	q = globalPremutation(gPermIdx);
+	gFrameCell(gPermIdx, :) = dots(q, :);
 end
