@@ -1,23 +1,16 @@
 Today:
-  ✔	T49 @done (14-07-30 12:46)
-  ✔	T55 @done (14-07-30 12:47)
-  ✔	T50 @done (14-07-29 16:18)
-  ✔	T54 @done (14-07-30 12:46)
-	✔	T45 @done (14-07-30 12:49)
-	✔	T56 @done (14-07-30 18:40)
+  ☐	W3
   ☐	T39
+  ☐	T59
 Cell tracker (1 week work minimum - 3 weeks maximum):
-	✔	54) Save the computed linked to disk in the OUT folder @done (14-07-30 12:48)
-	☐	39) Implement cell tracking quality metrics
+	☐	59) Basic linear interpolation of tracklets so that I can compute quality metrics
+	☐	39) Implement cell tracking quality metrics (reqs: T59)
 	☐	25) Train ANN and NB with much more data, possibly of all different datasets combined (reqs: T26)
-	☐	40) Render getTrackletHeadTailDescriptors fully obsolete 
+	☐	40) Render getTrackletHeadTailDescriptors fully obsolete
 	☐	34) Solve the unbalanced learning sets problem
 	☐	43) Feature linker: tracklet purity (number of gaps within the track (sum and difference for both tracklet))
-	✔	45) Feature Linker: add euclidean distance (even if we have position already) @done (14-07-30 12:46)
 	☐	47) The cellIndex is uneccessary information in I, it's included in tracklets already and accessible with remaining data of I
-	✔	49) PrepareMatrix... to use data store @done (14-07-30 12:49)
 	☐	48) Lean a linker model for each of the possible closing gaps, because otherwise I connect gaps prematurely
-	✔	50) Robust tracker config in loadDatasetInfo @done (14-07-29 16:18)
 	☐	17) Correctly estimate then number of missedetections of the detector
 	☐	29) Run data through PCA or other first
 	☐	41) Linker could rely on 'average/median' descriptor for matching, instead of just the tail or head. First remove outliers, them compute average or median (if neeeded just of a few frames)
@@ -31,18 +24,17 @@ Cell tracker (1 week work minimum - 3 weeks maximum):
 	☐	52) Do not add as negative examples tracklets that are at very similar x-y coordinates, because it might be an actual continuations should a cell be visible in between the tracklets
 	☐	52) Make the thresold for robust tracklet linking load from a config files
 	☐	53) To prevent unsafe robust tracklet, do not link them if there is a similiar strong link to another tracklet (define another threshold)
-	✔	55) Streamline the cell tracking process @done (14-07-30 12:47)
-	✔	56) Make sure I am not doing any floating point math with uint/uint16 numbers, because it get the results completely wrong!!!! @done (14-07-30 18:40)
 	☐ 57) Add a boolean feature if the distance apart < 50pixels, or < 100 pixels, etc.(not too many)	 --- should be relative to cell size relative to image width
 	☐	58) Uknown values in feature computation: Make then NaN, and then replace with the mean value, or first try learning with only rows without NaNs.
 Writing thesis (4 weeks work minimum - 7 weeks maximum):
 	☐	3) Analyse headings of the cell_detector part
-	☐	4) Analyse headings of the cell_tracker part
 	☐	5) Review past best dissertations for section and writing style inspiration
 	☐	6) cell_detection introduction
 	☐	9) Compare performance with different features
 	☐	10) Try the performance of the tool with added noise to data
 	☐	11) Train classifier on just the single dataset vs all datasets
+	☐	13) linker classifier feautres
+	☐	14) gaussian broadening feature
 Evaluations (2 week minimum - 3 weeks maximum):
 	☐ Evaluations of detector with single type of cells (red/green)
 	☐ Evaluations of tracker with single type of cells (red/green)
@@ -101,13 +93,29 @@ Track evaluation metrics:
 	☐	8) ID switches (IDS): the number of times two trajectories switch their ID
 ＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿
 Archive:
+	✔	W14 @done (14-07-31 17:43) @project(Today)
+	✔	W13 @done (14-07-31 17:43) @project(Today)
+	✔	W12 @done (14-07-31 11:30) @project(Today)
+	✔	12) compting the likelihooods @done (14-07-31 11:30) @project(Writing thesis (4 weeks work minimum - 7 weeks maximum))
+	✔	T56 @done (14-07-30 18:40) @project(Today)
+	✔	56) Make sure I am not doing any floating point math with uint/uint16 numbers, because it get the results completely wrong!!!! @done (14-07-30 18:40) @project(Cell tracker (1 week work minimum - 3 weeks maximum))
+	✔	T45 @done (14-07-30 12:49) @project(Today)
+	✔	49) PrepareMatrix... to use data store @done (14-07-30 12:49) @project(Cell tracker (1 week work minimum - 3 weeks maximum))
+	✔	54) Save the computed linked to disk in the OUT folder @done (14-07-30 12:48) @project(Cell tracker (1 week work minimum - 3 weeks maximum))
+	✔	T55 @done (14-07-30 12:47) @project(Today)
+	✔	55) Streamline the cell tracking process @done (14-07-30 12:47) @project(Cell tracker (1 week work minimum - 3 weeks maximum))
+	✔	T54 @done (14-07-30 12:46) @project(Today)
+	✔	T49 @done (14-07-30 12:46) @project(Today)
+	✔	45) Feature Linker: add euclidean distance (even if we have position already) @done (14-07-30 12:46) @project(Cell tracker (1 week work minimum - 3 weeks maximum))
+	✔	T50 @done (14-07-29 16:18) @project(Today)
+	✔	50) Robust tracker config in loadDatasetInfo @done (14-07-29 16:18) @project(Cell tracker (1 week work minimum - 3 weeks maximum))
 	✔	T26 @done (14-07-29 13:31) @project(Today)
-	✔  W7 @done (14-07-24 14:31) @project(Today)
 	✔	26) Annotate more datasets @done (14-07-29 13:31) @project(Cell tracker (1 week work minimum - 3 weeks maximum))
+	✔  W7 @done (14-07-24 14:31) @project(Today)
 	✔  7) Write something (if no focus: cell_tracking) @done (14-07-24 14:31) @project(Writing thesis (4 weeks work minimum - 7 weeks maximum))
+	✔ 4) Diplay links in different colors @done (14-07-23 23:10) @project(Cell annotator (3 days work minimum - 1 week maximum))
 	✔	A4 @done (14-07-23 23:10) @project(Today)
 	✔ 1) Larger marker for detections @done (14-07-23 22:59) @project(Cell annotator (3 days work minimum - 1 week maximum))
-	✔ 4) Diplay links in different colors @done (14-07-23 23:10) @project(Cell annotator (3 days work minimum - 1 week maximum))
 	✔	T37: define which gap distance to use. Fix bugs. Try to log because of small value @done (14-07-23 17:21) @project(Today)
 	✔	37) Feature linker: gaussian broadening idea @done (14-07-23 17:21) @project(Cell tracker (1 week work minimum - 3 weeks maximum))
 	✔	8) Review relevant papers and see what sections could be added @done (14-07-23 15:34) @project(Writing thesis (4 weeks work minimum - 7 weeks maximum))

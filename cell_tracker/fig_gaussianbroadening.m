@@ -209,7 +209,7 @@ axis off;
 
 fprintf('Press any key to save plot and show second graphic\n')
 pause
-export_fig ../thesis/images/fig_gaussianbroadening1 -pdf -transparent -painters
+export_fig ../thesis/images/fig_gaussianbroadening1 -eps -transparent -painters
 
 cla; clf;
 
@@ -244,7 +244,7 @@ axis off;
 
 fprintf('Press any key to save plot\n')
 pause
-export_fig ../thesis/images/fig_gaussianbroadening2 -pdf -transparent -painters
+export_fig ../thesis/images/fig_gaussianbroadening2 -eps -transparent -painters
 
 
 if prof
