@@ -26,7 +26,7 @@ addpath('dependencies')
 addpath('dependencies/matlab')
 
 %Load an Image
-imgFull = imread('../data/series13redcropped/im001.pgm');
+imgFull = imread('../../data/series13redcropped/im001.pgm');
 
 %Smooth the image
 img = imgFull;
@@ -34,11 +34,11 @@ img = imgFull;
 
 %Setup for the MSER algorithm
 numPixels = size(img,1)*size(img,2);
-minPixels = 100;
-maxPixels = 300;
+minPixels = 30;
+maxPixels = 200;
 BoD = 1; %Bright on Dark
 DoB = 0; %Dark on Bright
-Delta = 2;
+Delta = 4;
 MaxVariation = 1;
 MinDiversity = 0.4;
 

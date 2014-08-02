@@ -29,75 +29,46 @@ if ~isfield(options, 'testAll'); options.testAll = false; end
 %Defaults
 BoD = 1;
 DoB = 1;
-minPixels = 10;
-maxPixels = [];
-Delta = 1;
+minPixels = 30;
+maxPixels = 200;
+Delta = 4;
 MaxVariation = 1;
 MinDiversity = 0.1;
 imPrefix = 'im';
 imExt = 'pgm';
-trainsplit = 1;  % percentage of data to be used for training 
-features = []; % Use default from setFeatures
-rootFolder = fullfile('..', 'data');
+tol = 8;  %Tolerance (pixels) for evaluation only
+trainsplit = 0.7;  % percentage of data to be used for training 
+features = [1 1 1 1 1 1 1]; % Use default from setFeatures
+maxTrainImgs = 30; % maximum number of images used to train detector
+rootInFolder = fullfile('..','..', 'data');
+rootOutFolder = fullfile('..','..', 'dataout');
+
 
 switch dataset
-    case 1 %PhaseContrast
-        %-TRAINING DATA SET-%
-        dataFolder = fullfile(rootFolder, 'phasecontrastIN');
-        outFolder = fullfile(rootFolder, 'phasecontrastOUT');
-        minPixels =  10;
-        maxPixels = 10000;
-        BoD = 0;
-        DoB = 1;
-        tol = 8; %Tolerance (pixels) for evaluation only
+    case 1 %LungGreen
+        dataFolder = fullfile(rootInFolder, 'series13greencropped');
+        outFolder = fullfile(rootOutFolder, 'series13greencropped');
+        annotatedFrames = 55;
     case 2 %LungGreen
-        %-TRAINING DATA SET-%
-        dataFolder = fullfile(rootFolder, 'series30green');
-        outFolder = fullfile(rootFolder, 'series30greenOUT');
-        minPixels = 100;
-        maxPixels = 500;
-        Delta = 4;
-        tol = 8; %Tolerance (pixels) for evaluation only
-        features = [1 0 1 1 1 1 0];
-        %      features: [1 0 1 1 1 1 0]
-        %  timePerImage: 1.6950
-        % meanPrecision: 0.8907
-        %    meanRecall: 0.9082
+        dataFolder = fullfile(rootInFolder, 'series14croppedcleaned');
+        outFolder = fullfile(rootOutFolder, 'series14croppedcleaned');
+        annotatedFrames = 55;
     case 3 %LungRed
-        %-TRAINING DATA SET-%
-        dataFolder = fullfile(rootFolder, 'series13redcropped');
-        outFolder = fullfile(rootFolder, 'series13redcroppedOUT');
-        minPixels = 100;
-        maxPixels = 300;
-        Delta = 2;
-        tol = 8; %Tolerance (pixels) for evaluation only
+        dataFolder = fullfile(rootInFolder, 'series30green');
+        outFolder = fullfile(rootOutFolder, 'series30green');
+        annotatedFrames = 60;
     case 4 %KidneyGreen
-        %-TRAINING DATA SET-%
-        dataFolder = fullfile(rootFolder, 'kidneygreenIN');
-        outFolder = fullfile(rootFolder, 'kidneygreenOUT');
-        minPixels = 100;
-        maxPixels = 1000;
-        Delta = 2;
-        tol = 8; %Tolerance (pixels) for evaluation only
-        features = [1 1 0 0 0 1 0];
-        %      features: [1 1 0 0 0 0 0]
-        %  timePerImage: 0.5353
-        % meanPrecision: 0.6833
-        %    meanRecall: 0.9600
+        dataFolder = fullfile(rootInFolder, 'series30red');
+        outFolder = fullfile(rootOutFolder, 'series30red');
+        annotatedFrames = 60;
     case 5 %KidneyRed
-        %-TRAINING DATA SET-%
-        dataFolder = fullfile(rootFolder, 'kidneyredIN');
-        outFolder = fullfile(rootFolder, 'kidneyredOUT');
-        minPixels = 100;
-        maxPixels = 500;
-        Delta = 5;
-        MaxVariation = 0.5;
-        tol = 8; %Tolerance (pixels) for evaluation only
-        features =  [1 0 0 1 1 0 1];
-        %      features: [1 0 0 1 1 0 1]
-        %  timePerImage: 0.8688
-        % meanPrecision: 0.6920
-        %    meanRecall: 0.9577
+        dataFolder = fullfile(rootInFolder, 'seriesm170_13cropped');
+        outFolder = fullfile(rootOutFolder, 'seriesm170_13cropped');
+        annotatedFrames = 67;
+    case 6 %KidneyRed
+        dataFolder = fullfile(rootInFolder, 'series13redcropped');
+        outFolder = fullfile(rootOutFolder, 'series13redcropped');
+        annotatedFrames = 12;
 end
 
 if exist(dataFolder,'dir') ~= 7
@@ -109,15 +80,13 @@ if exist(outFolder,'dir') ~= 7
     fprintf('Created folder "%s"', outFolder);
 end
 
-
-
 files = dir(fullfile(dataFolder,[imPrefix, '*.' imExt]));
 % files = files(1:7)
 [~,files] = cellfun(@fileparts, {files.name}, 'UniformOutput',false);
 
-
-trainFiles = datasample(files, ...
-    round(trainsplit * numel(files)),...
+trainImgs = round(trainsplit * annotatedFrames);
+trainFiles = datasample(files(1:annotatedFrames), ...
+    trainImgs,...
     'Replace', false);
 trainFiles = sort(trainFiles);
 if options.testAll

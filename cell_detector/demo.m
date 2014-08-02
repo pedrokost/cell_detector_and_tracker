@@ -24,9 +24,9 @@ end
 
 %---------------------------------------------------------------------Setup
 %Choose parameters for the training/testing
-dataset = 3;  %Identifier of the training/testing data as set in loadDatasetInfo
-train = 1;%---->Do train
-test = 0;%----->Do test
+dataset = 1;  %Identifier of the training/testing data as set in loadDatasetInfo
+train = 0;%---->Do train
+test = 1;%----->Do test
 
 inspectResults = 0; %1: Shows detected cells. 
 %2:A view on the results: MSERs found and selected

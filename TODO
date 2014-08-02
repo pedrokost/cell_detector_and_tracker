@@ -4,6 +4,7 @@ Today:
   ☐	T59
 Cell tracker (1 week work minimum - 3 weeks maximum):
 	☐	59) Basic linear interpolation of tracklets so that I can compute quality metrics
+	☐	60) List a few simple tracking metrics to compute
 	☐	39) Implement cell tracking quality metrics (reqs: T59)
 	☐	25) Train ANN and NB with much more data, possibly of all different datasets combined (reqs: T26)
 	☐	40) Render getTrackletHeadTailDescriptors fully obsolete
