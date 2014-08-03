@@ -1,4 +1,4 @@
-function params = ctrlParms()
+function params = ctrlParams()
 	% Sets control parameters for testing/training
 	%OUTPUT
 	%   ctrlParms = structure with some control parameters
@@ -23,3 +23,4 @@ function params = ctrlParms()
 
 	%----------------------------------------------------------------Detection
 	params.testAll = true;  % Test on complete dataset, or only fraction
+	params.measureTime = true;  % Time the testing function

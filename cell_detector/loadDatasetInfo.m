@@ -37,9 +37,8 @@ MinDiversity = 0.1;
 imPrefix = 'im';
 imExt = 'pgm';
 tol = 8;  %Tolerance (pixels) for evaluation only
-trainsplit = 0.7;  % percentage of data to be used for training 
+trainsplit = 0.9;  % percentage of data to be used for training 
 features = [1 1 1 1 1 1 1]; % Use default from setFeatures
-maxTrainImgs = 30; % maximum number of images used to train detector
 rootInFolder = fullfile('..','..', 'data');
 rootOutFolder = fullfile('..','..', 'dataout');
 
@@ -52,7 +51,7 @@ switch dataset
     case 2 %LungGreen
         dataFolder = fullfile(rootInFolder, 'series14croppedcleaned');
         outFolder = fullfile(rootOutFolder, 'series14croppedcleaned');
-        annotatedFrames = 55;
+        annotatedFrames = 54;
     case 3 %LungRed
         dataFolder = fullfile(rootInFolder, 'series30green');
         outFolder = fullfile(rootOutFolder, 'series30green');
@@ -85,10 +84,12 @@ files = dir(fullfile(dataFolder,[imPrefix, '*.' imExt]));
 [~,files] = cellfun(@fileparts, {files.name}, 'UniformOutput',false);
 
 trainImgs = round(trainsplit * annotatedFrames);
+
 trainFiles = datasample(files(1:annotatedFrames), ...
     trainImgs,...
     'Replace', false);
 trainFiles = sort(trainFiles);
+
 if options.testAll
     testFiles = files;
 else
