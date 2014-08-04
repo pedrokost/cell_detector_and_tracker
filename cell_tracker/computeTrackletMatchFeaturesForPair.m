@@ -200,6 +200,11 @@ function features = computeTrackletMatchFeaturesForPair(trackletA, trackletB, I,
 				meanDiff = zeros(1, featParams.posDimensions);
 			end
 
+			if isnan(meanDiff)
+				warning('Nan values in mean diff, check it out')
+				keyboard
+			end
+
 			features(idx:(idx + featParams.posDimensions-1)) = meanDiff;
 			idx = idx + featParams.posDimensions;
 		end

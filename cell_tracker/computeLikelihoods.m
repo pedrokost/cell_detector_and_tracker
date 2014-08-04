@@ -129,14 +129,9 @@ function Liks = computeLikelihoods(tracklets, hypothesis, hypTypes, options)
 		end
 
 		if any(isnan(matchP))
-			warning('you have nan values, fix me.')
+			warning('you have nan values in Plink, fix me.')
 			keyboard
 		end
-
-		X
-		pause
-		matchP
-		pause
 
 		for i=1:numLinkHypothesis
 			P(trackletPairs(i, 1), trackletPairs(i, 2)) = matchP(i);

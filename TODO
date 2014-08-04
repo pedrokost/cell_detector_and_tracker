@@ -1,5 +1,11 @@
 Today:
-  ☐	W3
+  ☐	Fix any remaining NaN issues in the tracker
+  ☐	Make sure the nw load dataset for tracking works
+  ☐	Evaluate a tracklet
+  ☐	Makes sure to train only on annotated images
+  ☐	Make sure to test on all images
+  ☐	Manual identify a annotation-detector trajectory pair that is similar
+  ☐	Send these 2 pairs to the the function that compute the number of missetection pairs
   ☐	T39
   ☐	T59
 Cell tracker (1 week work minimum - 3 weeks maximum):

@@ -5,5 +5,6 @@ function [RowMatrix2D2 nonzeroIdx] = eliminateZeroRows(RowMatrix2D);
 	% Outputs:
 	% 	RowMatrix2D2 = RowMatrix2D without the zero rows
 	% 	nonzeroIdx = a logical vector with the non-zero indices of the original matrix
-	RowMatrix2D2 = RowMatrix2D(findNonZeroIdx(RowMatrix2D), :);
+	nonzeroIdx = findNonZeroIdx(RowMatrix2D);
+	RowMatrix2D2 = RowMatrix2D(nonzeroIdx, :);
 end

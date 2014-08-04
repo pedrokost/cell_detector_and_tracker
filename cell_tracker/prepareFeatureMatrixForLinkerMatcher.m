@@ -15,6 +15,8 @@ function prepareFeatureMatrixForLinkerMatcher(outputFile, params)
 
 	global DSIN DSOUT;
 
+	fprintf('Identifying all tracklets pairs for the feature matrix to train Linker')
+
 	tracklets = generateTracklets('in', struct('withAnnotations', true));
 
 	tracklets = filterTrackletsByLength(tracklets, classifierParams.MIN_TRACKLET_LENGTH);
@@ -39,9 +41,11 @@ function prepareFeatureMatrixForLinkerMatcher(outputFile, params)
 		vals = tracklets(t, idx);
 
 		% Do not try to split tracklets with only 1 element, don't add those
-		if numel(idx) == 1
+		if numel(idx) < 2
 			continue
 		end
+
+		% if isempty(idx); continue; end
 
 		C = combnk(idx, 2);
 		D = C(:, 2) - C(:, 1);
@@ -109,6 +113,9 @@ function prepareFeatureMatrixForLinkerMatcher(outputFile, params)
 
 	tracklets2 = trackletsToPosition(tracklets, 'out');
 
+
+	fprintf('Preparing large matrix with training data for linker')
+
 	for i=1:n
 		% [trackletA, frameA, cellindexA, trackletB, frameB, cellindexB],
 
@@ -145,6 +152,10 @@ function trackletCombos2 = eliminateAmbiguousRows(tracklets, trackletCombos, lin
 		trackB = tracklets(trackletCombos(i, 2), :);
 		trackAidx = find(trackA);
 		trackBidx = find(trackB);
+
+		if numel(trackAidx) < 2 || numel(trackBidx) < 2
+			continue;
+		end
 
 		% Skip tracklets that can't be linked anyway, because I never evaluate such examples
 		if trackAidx(end) >= trackBidx(1); continue; end

@@ -10,7 +10,10 @@ function prepareFeatureMatrixForRobustMatcher(outputFile)
 
 	global DSIN DSOUT;
 
+	fprintf('Preparing the feature matrix to train Robust linker\n')
+
 	matAnnotationsIndices = DSIN.getMatfileIndices();
+
 	numFrames = numel(matAnnotationsIndices);
 	X = [];
 
@@ -21,6 +24,9 @@ function prepareFeatureMatrixForRobustMatcher(outputFile)
 	% Load annotations and detections for first image
 	[dotsGtA, linksA] = DSIN.getDotsAndLinks(startIdx);
 	[dotsDetA, descriptorsA] = DSOUT.get(startIdx);
+
+
+	% FIXME: I have a bug: I am filtering descriptorsA, but not dotsGtA. This means Some dotsGtA could have no descriptor
 
 	[descriptorsA, permA, IA] = getAnnotationDescriptors(dotsGtA, dotsDetA, descriptorsA);
 	[descriptorsA, ~] = combineDescriptorsWithDots(descriptorsA, dotsGtA);
@@ -37,7 +43,16 @@ function prepareFeatureMatrixForRobustMatcher(outputFile)
 		[dotsGtB, linksB] = DSIN.getDotsAndLinks(matIdx);
 		[dotsDetB, descriptorsB] = DSOUT.get(matIdx);
 		
-		[descriptorsB, permB, IB] = getAnnotationDescriptors(dotsGtB, dotsDetB, descriptorsB);
+		[~, permB, IB] = getAnnotationDescriptors(dotsGtB, dotsDetB, descriptorsB);
+
+		% if size(descriptorsB, 1) ~= size(dotsGtB, 1)
+		% 	fprintf('1\n')
+		% 	keyboard
+		% end
+
+		dotsGtBwithMatch = dotsGtB(IB, :);
+
+		% TODOif there is a matching descritor for the dot, process, else
 		[descriptorsB, ~] = combineDescriptorsWithDots(descriptorsB, dotsGtB);
 		descriptorsB = descriptorsB(find(IB), :); dotsGtB = dotsGtB(find(IB), :); linksB = linksB(find(IB), :);
 
@@ -56,9 +71,19 @@ function prepareFeatureMatrixForRobustMatcher(outputFile)
 			badVals = badVals - 1;
 		end
 
-		M = buildTrainMatrixForFramePair(descriptorsA, descriptorsB, linksA);
-		X = vertcat(X, M);
+		if ~any([isempty(descriptorsA), isempty(descriptorsB)])
+
+			M = buildTrainMatrixForFramePair(descriptorsA, descriptorsB, linksA);
+
+			size(X)
+			size(M)
+			if isempty(M)
+				fprintf('2\n')
+				keyboard
+			end
+			X = vertcat(X, M);
 		
+		end
 		linksA = linksB; descriptorsA = descriptorsB;
 		dotsGtA = dotsGtB; dotsDetA = dotsGtB;
 	end
