@@ -37,8 +37,8 @@ MinDiversity = 0.1;
 imPrefix = 'im';
 imExt = 'pgm';
 tol = 8;  %Tolerance (pixels) for evaluation only
-trainsplit = 0.9;  % percentage of data to be used for training 
-features = [1 1 1 1 1 1 1]; % Use default from setFeatures
+trainsplit = 1;  % percentage of data to be used for training 
+features = [1 0 1 1 1 1 0]; % Use default from setFeatures
 rootInFolder = fullfile('..','..', 'data');
 rootOutFolder = fullfile('..','..', 'dataout');
 

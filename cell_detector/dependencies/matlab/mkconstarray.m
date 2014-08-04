@@ -1,4 +1,4 @@
-function out = mkconstarraymkconstarray(class, value, size)
+function out = mkconstarray(class, value, size)
 %MKCONSTARRAY creates a constant array of a specified numeric class.
 %   A = MKCONSTARRAY(CLASS, VALUE, SIZE) creates a constant array 
 %   of value VALUE and of size SIZE.
