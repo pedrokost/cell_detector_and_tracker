@@ -67,7 +67,7 @@ switch dataset
     case 6 %KidneyRed
         dataFolder = fullfile(rootInFolder, 'series13redcropped');
         outFolder = fullfile(rootOutFolder, 'series13redcropped');
-        annotatedFrames = 12;
+        annotatedFrames = 32;
 end
 
 if exist(dataFolder,'dir') ~= 7

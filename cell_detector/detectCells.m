@@ -15,6 +15,7 @@ function detectCells(dataset, ctrlParams)
 	%-------------------------------------------------------Load data and model
 
 	inspectResults = 0; %1: Shows detected cells. 
+	isSequence = 0;
 	%2:A view on the results: MSERs found and selected
 
 	%-Features and control parameters-%
@@ -102,7 +103,7 @@ function detectCells(dataset, ctrlParams)
 	fprintf('Completed in %2.3f CPU seconds (~%2.3f seconds per frame)\n', elapsedTime, elapsedTime / numel(testFiles));
 
 
-	if test && isSequence
+	if isSequence
 	    plotDotsSequence(outFolder);
 	end
 
