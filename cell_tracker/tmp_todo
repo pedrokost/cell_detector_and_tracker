@@ -1,0 +1,37 @@
+Given two tracklets
+
+- find the number of false detections (too far away)
+
+
+1) average number of frames successfully trackend in each sequence is calculated. For each cell, the numbere fo frames trackind isi recodedi and hteserresults anre averaged using number of cells tracked in each frame. A frame is considered as successfully trakcied if the meaussted cell center is within one cell radius of the manually recordere cell center
+
+2) The root means quare errose (rmse) of the cell center position in tracked framed are estimated within respect ot the ground truth provided by human 
+
+------------
+
+3) Percentage of nuclei tracked: Number of nuclei tracked withotu termination through the entire sequence divided by the totaol number of nuclei in the beginning
+
+----------------
+
+5) correct measurment-to-track assignment
+
+--------------
+
+tracking: cells that appear in the initial frames were manuall tracked. The manuall and atomaticall tracked trajecotries were paied  in the initial frame of each sequence, and they were compared in the remaining frames. An automaticall tracked cell trajecotry is considered valude only if it followes the same cell through all the frames that the cell appears. Any swapping of dientities between two neirby cells will invalidate the trajectories of both cells and their progeny. 
+
+7)  	☐	1) MOTA: Multiple Object Tracking Accuracy, calculated from the number of false alarms, missed detections, and identity switches;
+	☐	2) FGTIM: Fraction of Ground Truth Instances Missed; and
+	☐	3) FAPF: False Alarm Per Frame.
+	☐	4) Mostly tracked trajectories (MT): The number of tracjectories that are successfully tracked for more than 80%
+	☐	5) Mostly lost trajectories (ML): The number of trajectories that are tracked for less than 20%
+	☐	6) Partially tracked trajectories (PT): the number of trajectories that are tracked between 20% and 80%
+	☐	7) Fragmentation (FRMT): the number of times a trajectory is interrupted
+	☐	8) ID switches (IDS): the number of times two trajectories switch their ID
+
+
+8)
+track purity
+target effectiveness 
+
+
+To compute target efectiveness we first assign each traget (human annotated) to a track(computed generated) that containes the most observations from that ground truth. Then traged effectivness is computed as the number of the assigned track observations over the total number of frames of the traget. It indicated how many frame of the target are followed by computed generated tracks. Similarly we define track purity as how well tracks are followed by targets.

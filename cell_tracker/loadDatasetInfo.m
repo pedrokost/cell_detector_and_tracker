@@ -20,6 +20,7 @@ imExts = {'pgm', 'png', 'jpg'};
 imDigits = 3;
 maxGaps = [1 3 9]; % for the linker
 rootFolder = fullfile('..', 'data');
+imageDims = [512 512];  % TODO [height width]
 
 
 Kinit = 1;
@@ -27,44 +28,34 @@ Kterm = 1;
 Kfp = 1;
 Klink = 1;
 
+rootInFolder = fullfile('..','..', 'data');
+rootOutFolder = fullfile('..','..', 'dataout');
 
 switch dataset
-    case 1 %PhaseContrast
-        %-TRAINING DATA SET-%
-        dataFolder = fullfile(rootFolder, 'phasecontrastIN');
-        outFolder = fullfile(rootFolder, 'phasecontrastOUT');
-        imExts = {'pgm'};
-        imageDims = [];  % TODO [height width]
+    case 1 %LungGreen
+        dataFolder = fullfile(rootInFolder, 'series13greencropped');
+        outFolder = fullfile(rootOutFolder, 'series13greencropped');
+        annotatedFrames = 55;
     case 2 %LungGreen
-        %-TRAINING DATA SET-%
-        dataFolder = fullfile(rootFolder, 'series30green');
-        outFolder = fullfile(rootFolder, 'series30greenOUT');
-        imExts = {'pgm'};
-        imageDims = [512 512];  % TODO [height width]
+        dataFolder = fullfile(rootInFolder, 'series14croppedcleaned');
+        outFolder = fullfile(rootOutFolder, 'series14croppedcleaned');
+        annotatedFrames = 54;
     case 3 %LungRed
-        %-TRAINING DATA SET-%
-        dataFolder = fullfile(rootFolder, 'lungredIN');
-        outFolder = fullfile(rootFolder, 'lungredOUT');
-        imExts = {'pgm'};
-        imageDims = [512 512];  % TODO [height width]
+        dataFolder = fullfile(rootInFolder, 'series30green');
+        outFolder = fullfile(rootOutFolder, 'series30green');
+        annotatedFrames = 60;
     case 4 %KidneyGreen
-        %-TRAINING DATA SET-%
-        dataFolder = fullfile(rootFolder, 'kidneygreenIN');
-        outFolder = fullfile(rootFolder, 'kidneygreenOUT');
-        imExts = {'pgm'};
-        imageDims = [512 512];  % TODO [height width]
+        dataFolder = fullfile(rootInFolder, 'series30red');
+        outFolder = fullfile(rootOutFolder, 'series30red');
+        annotatedFrames = 60;
     case 5 %KidneyRed
-        %-TRAINING DATA SET-%
-        dataFolder = fullfile(rootFolder, 'kidneyredIN');
-        outFolder = fullfile(rootFolder, 'kidneyredOUT');
-        imExts = {'pgm'};
-        imageDims = [512 512];  % TODO [height width]
+        dataFolder = fullfile(rootInFolder, 'seriesm170_13cropped');
+        outFolder = fullfile(rootOutFolder, 'seriesm170_13cropped');
+        annotatedFrames = 67;
     case 6 %KidneyRed
-        %-TRAINING DATA SET-%
-        dataFolder = fullfile(rootFolder, 'dumy');
-        outFolder = fullfile(rootFolder, 'dumyOUT');
-        imExts = {'pgm'};
-        imageDims = [512 512];  % TODO [height width]
+        dataFolder = fullfile(rootInFolder, 'series13redcropped');
+        outFolder = fullfile(rootOutFolder, 'series13redcropped');
+        annotatedFrames = 32;
 end
 
 % Parameters for training the classifier for joining tracklets
