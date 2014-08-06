@@ -97,6 +97,9 @@ else
 end
 
 
+% randomize the order of train files
+% trainFiles = {trainFiles{randperm(numel(trainFiles))}};
+
 mserParms.bod = BoD;
 mserParms.dob = DoB;
 mserParms.minPix = minPixels;

@@ -1,7 +1,7 @@
 % -------------------------------------------------------------------Configure
 
 % dataset 2, 4 failsex
-datasets = [3];  %Identifier of the training/testing data as set in loadDatasetInfo
+datasets = [2];  %Identifier of the training/testing data as set in loadDatasetInfo
 train = 1;%---->Do train
 test = 1;%----->Do test
 

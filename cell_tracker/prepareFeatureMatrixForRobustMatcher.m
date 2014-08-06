@@ -12,10 +12,11 @@ function prepareFeatureMatrixForRobustMatcher(outputFile)
 
 	fprintf('Preparing the feature matrix to train Robust linker\n')
 
-	matAnnotationsIndices = DSIN.getMatfileIndices();
+	matAnnotationsIndices = DSIN.getMatfileIndices()
 
 	numFrames = numel(matAnnotationsIndices);
 	X = [];
+
 
 	% First, associate each annotation with the corresponding feature vector
 	% Drop any detected cells that don't have annotation, or annotations with missing detections
@@ -30,6 +31,7 @@ function prepareFeatureMatrixForRobustMatcher(outputFile)
 
 	[descriptorsA, permA, IA] = getAnnotationDescriptors(dotsGtA, dotsDetA, descriptorsA);
 	[descriptorsA, ~] = combineDescriptorsWithDots(descriptorsA, dotsGtA);
+	% keyboard
 
 	descriptorsA = descriptorsA(find(IA), :);
 	dotsGtA = dotsGtA(find(IA), :);
@@ -37,20 +39,25 @@ function prepareFeatureMatrixForRobustMatcher(outputFile)
 
 
 	for i=1:(numFrames-1)
+		% i
 		matIdx = matAnnotationsIndices(i+1);
 
 		% Load annotations and detections for next image
 		[dotsGtB, linksB] = DSIN.getDotsAndLinks(matIdx);
 		[dotsDetB, descriptorsB] = DSOUT.get(matIdx);
 		
-		[~, permB, IB] = getAnnotationDescriptors(dotsGtB, dotsDetB, descriptorsB);
 
+		[descriptorsB, permB, IB] = getAnnotationDescriptors(dotsGtB, dotsDetB, descriptorsB);
+
+		% dotsGtB
+		% dotsDetB
+		% permB
+		% IB
+		% if i==8; keyboard; end
 		% if size(descriptorsB, 1) ~= size(dotsGtB, 1)
 		% 	fprintf('1\n')
 		% 	keyboard
 		% end
-
-		dotsGtBwithMatch = dotsGtB(IB, :);
 
 		% TODOif there is a matching descritor for the dot, process, else
 		[descriptorsB, ~] = combineDescriptorsWithDots(descriptorsB, dotsGtB);
@@ -71,19 +78,19 @@ function prepareFeatureMatrixForRobustMatcher(outputFile)
 			badVals = badVals - 1;
 		end
 
-		if ~any([isempty(descriptorsA), isempty(descriptorsB)])
+		% if ~any([isempty(descriptorsA), isempty(descriptorsB)])
 
-			M = buildTrainMatrixForFramePair(descriptorsA, descriptorsB, linksA);
+		M = buildTrainMatrixForFramePair(descriptorsA, descriptorsB, linksA);
 
-			size(X)
-			size(M)
-			if isempty(M)
-				fprintf('2\n')
-				keyboard
-			end
-			X = vertcat(X, M);
+		% ['X ', num2str(size(X))]
+		% ['M ' num2str(size(M))]
+		% if isempty(M)
+		% 	fprintf('2\n')
+		% 	keyboard
+		% end
+		X = vertcat(X, M);
 		
-		end
+		% end
 		linksA = linksB; descriptorsA = descriptorsB;
 		dotsGtA = dotsGtB; dotsDetA = dotsGtB;
 	end

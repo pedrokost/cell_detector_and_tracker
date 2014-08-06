@@ -5,7 +5,7 @@ rng(1234)
 %------------------------------------------Options
 doTrainRobustTrackerModel = 1;
 doTrainLinkerTrackerModel = 1;
-dataset = 3;
+dataset = 2;   % FIx numero 3
 %------------------------------------------Load dataset
 params = loadDatasetInfo(dataset);  % This is the only use input
 %------------------------------------------Generate the datastores

@@ -39,7 +39,7 @@ switch dataset
     case 2 %LungGreen
         dataFolder = fullfile(rootInFolder, 'series14croppedcleaned');
         outFolder = fullfile(rootOutFolder, 'series14croppedcleaned');
-        annotatedFrames = 54;
+        annotatedFrames = 50;
     case 3 %LungRed
         dataFolder = fullfile(rootInFolder, 'series30green');
         outFolder = fullfile(rootOutFolder, 'series30green');
@@ -56,6 +56,10 @@ switch dataset
         dataFolder = fullfile(rootInFolder, 'series13redcropped');
         outFolder = fullfile(rootOutFolder, 'series13redcropped');
         annotatedFrames = 32;
+    case 7 %KidneyRed
+        dataFolder = fullfile(rootInFolder, 'dumy');
+        outFolder = fullfile(rootOutFolder, 'dumy');
+        annotatedFrames = 30;
 end
 
 % Parameters for training the classifier for joining tracklets

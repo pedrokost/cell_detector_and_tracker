@@ -26,7 +26,7 @@ addpath('dependencies')
 addpath('dependencies/matlab')
 
 %Load an Image
-imgFull = imread('../../data/series13redcropped/im001.pgm');
+imgFull = imread('../../data/series30green/im002.pgm');
 
 %Smooth the image
 img = imgFull;

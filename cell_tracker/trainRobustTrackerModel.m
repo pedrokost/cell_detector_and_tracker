@@ -13,7 +13,6 @@ function trainRobustTrackerModel(storeID, options)
 	options = options.robustClassifierParams;
 	
 	prepareFeatureMatrixForRobustMatcher(options.outputFileMatrix)
-
 	dataFile = options.outputFileMatrix;
 	modelFile = options.outputFileModel;
 

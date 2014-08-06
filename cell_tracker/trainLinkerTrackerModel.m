@@ -16,12 +16,15 @@ function trainLinkerTrackerModel(storeID, options)
 	% modelFile = options.outputFileModel;
 
 	prepareFeatureMatrixForLinkerMatcher(dataFile, options)
+
+	fprintf('Training model for linking tracklets\n')
+	
 	switch linkerOptions.algorithm
 		case 'ANN'
 			trainLinkerClassifierANN(dataFile)
 		% case 'NB'
 			% trainLinkerClassifierNB(dataFile, modelFile)
 		otherwise
-			error('Please specify a robust trackler training algorithm in the configuration file')
+			error('Please specify a robust trackler training algorithm in the configuration file\n')
 	end
 end

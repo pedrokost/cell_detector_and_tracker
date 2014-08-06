@@ -114,7 +114,7 @@ function prepareFeatureMatrixForLinkerMatcher(outputFile, params)
 	tracklets2 = trackletsToPosition(tracklets, 'out');
 
 
-	fprintf('Preparing large matrix with training data for linker')
+	fprintf('Preparing large matrix with training data for linker\n')
 
 	for i=1:n
 		% [trackletA, frameA, cellindexA, trackletB, frameB, cellindexB],
