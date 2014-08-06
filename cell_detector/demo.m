@@ -1,7 +1,7 @@
 % -------------------------------------------------------------------Configure
 
 % dataset 2, 4 failsex
-datasets = [2];  %Identifier of the training/testing data as set in loadDatasetInfo
+datasets = [4];  %Identifier of the training/testing data as set in loadDatasetInfo
 train = 1;%---->Do train
 test = 1;%----->Do test
 
@@ -11,6 +11,7 @@ opts = ctrlParams();
 
 if train
 	for dataset=datasets
+		fprintf('Training dataset %d\n', dataset);
 		trainCellDetector(dataset, opts);
 	end
 end

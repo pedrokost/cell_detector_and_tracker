@@ -110,7 +110,10 @@ end
                       'Delta',mserParms.delta,...
                       'BrightOnDark',mserParms.bod,...
                       'DarkOnBright',mserParms.dob);
-ell = ell([2 1 5 4 3],:);
+
+ell = vl_ertr(ell);
+
+% vl_plotframe(ell(:,:),'color','g') ;
 
 %feature Vector
 X = zeros(length(r), nFeatures);

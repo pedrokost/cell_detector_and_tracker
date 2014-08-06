@@ -14,6 +14,7 @@ function [MSERtree] = buildPylonMSER(img, r, areas)
 %   r = the output structure from vl_mser
 %   areas = the area of each region in 'r'
 
+numRegions = length(r);
 forest = cell(round(length(r)),1);
 references = cell(round(length(r)),1);
 pixelIndx = cell(round(length(r)),20);
@@ -24,7 +25,7 @@ positions = 2*ones(round(length(r)), 1);
 mask = zeros(size(img,1), size(img,2), 'uint16'); %asd = mask;
 newSector = 1;
 %Now lets check every region and build the trees
-for k=1:length(r)
+for k=1:numRegions
     
 %    auxMask = uint8(zeros(size(img,1), size(img,2)));
     sel = vl_erfill(img,r(index(k))) ; %get the pixels of the region
@@ -37,6 +38,15 @@ for k=1:length(r)
     end
     
     [sector,uniqCount] = count_unique(mask(sel)); %check which sector it overlaps
+
+    % if length(sector) > 1
+    %     sector = sector(find(uniqCount == max(uniqCount)));
+
+    %     if length(sector) > 1
+    %         disp(['An MSER overlaps equally with ' num2str(length(sector)) ' regions']);
+    %         sector = sector(end);
+    %     end
+    % end
     %add the index r to the sector it belongs to, or create a new sector if there is nothing there yet..
     if sector == 0 %This is a new sector!
         %references{newSector} = [r(index(k)) prediction(index(k))];
@@ -46,8 +56,9 @@ for k=1:length(r)
         newSector = newSector + 1;
     else %The region belongs to a pre-defined sector
         
-        if length(sector) > 1            
+        if length(sector) > 1
             sector = sector(find(uniqCount == max(uniqCount)));
+            if sector == 0; continue; end
             if length(sector) > 1
                 disp(['An MSER overlaps equally with ' num2str(length(sector)) ' regions']);
                 sector = sector(end);
@@ -66,8 +77,12 @@ for k=1:length(r)
                     else
                         tree = forest{sector};
                         findParent = find(tree(:,2) == i);
+
                         level = tree(findParent,3)+1;
                     end
+                    % keyboard
+
+
                     forest{sector} = [forest{sector} ; i positions(sector) level];
                     break;
                 end

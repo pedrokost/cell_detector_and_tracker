@@ -42,6 +42,9 @@ function detectCells(dataset, ctrlParams)
 
 	t = tic;
 
+	prec = [];
+	rec = [];
+
 	for imNum = 1:numel(testFiles)
 		tim = tic;
 		
@@ -67,11 +70,6 @@ function detectCells(dataset, ctrlParams)
 		%--------------------------------------------------------Save masks to file
 		
 		if ~isempty(gt)
-			if imNum == 1
-				prec = zeros(numel(testFiles),1);
-				rec = zeros(numel(testFiles),1);
-			end
-
 			[prec(imNum), rec(imNum)] = evalDetect(dots(:,2),dots(:,1),...
 				gt(:,2), gt(:,1), ones(size(img)),tol);
 
