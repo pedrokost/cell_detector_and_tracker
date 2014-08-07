@@ -2,7 +2,7 @@ function features = computeTrackletMatchFeaturesForPair(trackletA, trackletB, I,
 	% COMPUTETRACKLETMATCHFEATURESFORPAIR Compute a spatio-temporal feature vector for two possibly interacting tracklets.
 	% Inputs:
 	% 	trackletA/trackletB = the row of the tracklets matrix concerning these two descriptors, BUT with POSITION information instead of indices
-	%	I = a vector of the form [trackletA, frameA, cellIdxA, trackletB, frameB, cellindexB]
+	%	I = a vector of the form [trackletA, frameA, fileA, cellIndexA, trackletB, frameB, fileB, cellIndexB]
 	%		trackletA/trackletB = the index of the tracklet
 	%		frameA/frameB = the frame number where trackletA ends and trackletB starts
 	%		cellIdxA/cellindexB = the indices of the cells within the corresponding frames
@@ -21,19 +21,25 @@ function features = computeTrackletMatchFeaturesForPair(trackletA, trackletB, I,
 	global DSOUT;
 
 	frameA   = I(2);
-	frameB   = I(5);
-	cellIdxA = I(3);
-	cellIdxB = I(6);
+	fileA    = I(3);
+	frameB   = I(6);
+	fileB    = I(7);
+	cellIdxA = I(4);
+	cellIdxB = I(8);
 
-
-	[dotsA, desA] = DSOUT.get(frameA, cellIdxA);
-	[dotsB, desB] = DSOUT.get(frameB, cellIdxB);
+	[dotsA, desA] = DSOUT.get(fileA, cellIdxA);
+	[dotsB, desB] = DSOUT.get(fileB, cellIdxB);
 	dotsA = single(dotsA);
 	dotsB = single(dotsB);
 
 	% Tells you the ration of movement in the X and Y direction
 	trackletA2D = single(permute(trackletA, [2 3 1]));
 	trackletB2D = single(permute(trackletB, [2 3 1]));
+
+	% I am not sure why I allow rows with zero values, instead of cropping. 
+	% So I will crop here and see if its all still fine
+	trackletA2DTrimmed = trimZeros(trackletA2D);
+	trackletB2DTrimmed = trimZeros(trackletB2D);
 
 	lenTrackletA = size(trackletA2D, 1);
 	lenTrackletB = size(trackletB2D, 1);
@@ -123,6 +129,7 @@ function features = computeTrackletMatchFeaturesForPair(trackletA, trackletB, I,
 	end
 
 	if featParams.addDirectionVariances
+
 		trackA = getTail(trackletA2D, featParams.numCellsForDirectionVariances);
 		trackB = getHead(trackletB2D, featParams.numCellsForDirectionVariances);
 
@@ -132,18 +139,23 @@ function features = computeTrackletMatchFeaturesForPair(trackletA, trackletB, I,
 		cA = diag(cov(trackA));
 		cB = diag(cov(trackB));
 
-		if numel(cA) < 2
-
+		if numel(cA) < 2 || isempty(find(cA))
 			% FIXME: set to mean value, not 0 0 
 			cA = [0;0];
 		else
 			cA = cA / norm(cA);
 		end
-		if numel(cB) < 2
+		if numel(cB) < 2 || isempty(find(cB))
 			% FIXME: set to mean value, not 0 0 
 			cB = [0;0];
 		else
 			cB = cB / norm(cB);
+		end
+
+		if any(isnan(abs(cA - cB)))
+			% TODO: can safely removes this at the end
+			warning('A direction variance is NaN, why dont you fixe it?')
+			keyboard
 		end
 
 		features(idx:(idx + featParams.posDimensions-1)) = abs(cA - cB)';
@@ -153,29 +165,8 @@ function features = computeTrackletMatchFeaturesForPair(trackletA, trackletB, I,
 	if featParams.addMeanDisplacement || featParams.addStdDisplacement
 
 		% Linearly Interpolate the value where there are gaps
-		if lenTrackletA > 1
-			[trackA, nonzeroIdx] = eliminateZeroRows(trackletA2D);
-
-			if any(nonzeroIdx == 0)
-				trackA = interp1(find(nonzeroIdx), trackA, (1:lenTrackletA)');
-			else
-				trackA = trackletA2D;
-			end
-		else
-			trackA = trackletA2D;
-		end
-
-		if lenTrackletB > 1
-			[trackB, nonzeroIdx] = eliminateZeroRows(trackletB2D);
-
-			if any(nonzeroIdx == 0)
-				trackB = interp1(find(nonzeroIdx), trackB, (1:lenTrackletB)');
-			else
-				trackB = trackletB2D;
-			end
-		else
-			trackB = trackletB2D;
-		end
+		trackA = interpolateTracklet(trackletA2D);
+		trackB = interpolateTracklet(trackletB2D);
 
 		trackA = getTail(trackA, featParams.numCellsForMeanAndStdDisplacement);
 		trackB = getHead(trackB, featParams.numCellsForMeanAndStdDisplacement);
@@ -216,6 +207,12 @@ function features = computeTrackletMatchFeaturesForPair(trackletA, trackletB, I,
 				% FIXME: instead set it to the mean value
 				stdDiff = zeros(1, featParams.posDimensions);
 			end
+
+			if isnan(stdDiff)
+				warning('Nan values in std diff, check it out')
+				keyboard
+			end
+
 			features(idx:(idx + featParams.posDimensions-1)) = stdDiff;
 			idx = idx + featParams.posDimensions;
 		end
@@ -224,23 +221,8 @@ function features = computeTrackletMatchFeaturesForPair(trackletA, trackletB, I,
 	%----------------------------------Features that extrapolate the tracklets
 
 	if featParams.addGaussianBroadeningEstimate
-		trackA = trackletA2D;
-		if lenTrackletA > 1
-			[trackA, nonzeroIdx] = eliminateZeroRows(trackletA2D);
-
-			if any(nonzeroIdx == 0)
-				trackA = interp1(find(nonzeroIdx), trackA, (1:lenTrackletA)');
-			end
-		end
-
-		trackB = trackletB2D;
-		if lenTrackletB > 1
-			[trackB, nonzeroIdx] = eliminateZeroRows(trackletB2D);
-
-			if any(nonzeroIdx == 0)
-				trackB = interp1(find(nonzeroIdx), trackB, (1:lenTrackletB)');
-			end
-		end
+		trackA = interpolateTracklet(trackletA2D);
+		trackB = interpolateTracklet(trackletB2D);
 
 		trackA = getTail(trackA, featParams.numCellsForGaussianBroadeningVelocityEstimation);
 		trackB = getHead(trackB, featParams.numCellsForGaussianBroadeningVelocityEstimation);
@@ -248,6 +230,9 @@ function features = computeTrackletMatchFeaturesForPair(trackletA, trackletB, I,
 		gapSize = frameB - frameA;
 		% TODO: redefine the 10, use the actual max gap between frames
 		% TODO: the model generation could be performed before, so it is not recomputed several times
+
+		% Use the actual gap between frames, but first make sure that it is better
+
 		model = gaussianBroadeningModel(trackA, featParams.maxClosingGap);
 		val = evaluateGaussianBroadeningModel(model, trackB);
 
@@ -280,13 +265,12 @@ function features = computeTrackletMatchFeaturesForPair(trackletA, trackletB, I,
 
 			% pause
 		end
+	end
 
 
-		if any(isnan(features))
-			fprintf('There are NaN feature, why dont you fix it?\n');
-			keyboard
-		end
-
+	if any(isnan(features))
+		fprintf('There are NaN feature, why dont you fix it?\n');
+		keyboard
 	end
 
 	function dists = computeBetweenFrameDistances(tracklet2D)

@@ -21,7 +21,9 @@ function model = gaussianBroadeningModel(track, extrudeLength)
 		weights = logspace(0, 1, numObs-1)';
 		displacement = sum(dist .* [weights weights], 1);
 		weightedVel = displacement / sum(weights);
-		weightedVel = weightedVel / norm(weightedVel);
+		if weightedVel ~= [0 0]
+			weightedVel = weightedVel / norm(weightedVel);
+		end
 	else
 		vel = [0 0];
 		weightedVel = vel;
@@ -37,7 +39,13 @@ function model = gaussianBroadeningModel(track, extrudeLength)
 		C = eye(2) * cellSpeed;
 		Capport = (0.5 ^ numObs);
 
+		% s1 = C * Capport
+		% s2 = abs(cov(track, 1))
+		% s3 = VEL_SIGMA_WEIGHT*diag(abs(weightedVel))
+		% sigma = s1 + s2 + s3;
+
 		sigma = C * Capport + abs(cov(track, 1)) + VEL_SIGMA_WEIGHT*diag(abs(weightedVel));
+
 		% sigma = sigma / norm(sigma)  % This makes it worse if the distances are not unit-scale
 
 		% If its not positive definete, add a small number to make it be.
@@ -51,8 +59,7 @@ function model = gaussianBroadeningModel(track, extrudeLength)
 	velVecCum = cumsum(velVec, 1);
 	muHist = bsxfun(@plus, velVecCum, track(end, :));
 
-
-	sigVec = repmat(sigma, 1, 1, extrudeLength);
+	sigVec = repmat(sigma, [1, 1, extrudeLength]);
 	sigmaHist = cumsum(sigVec, 3);
 
 	model = struct('mus', muHist, 'sigmas', sigmaHist, 'normalize', true);

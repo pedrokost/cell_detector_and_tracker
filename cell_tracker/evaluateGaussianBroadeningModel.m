@@ -12,6 +12,7 @@ function [val, pointsVals] = evaluateGaussianBroadeningModel(model, points)
 	pointsVals = zeros(numObs, 1);
 	
 	for i=1:extrudeLength
+		% model.sigmas(:, :, i)
 		p = mvnpdf(points, model.mus(i, :), model.sigmas(:, :, i));
 
 		% p = mvnormpdf(points, model.mus(i, :)', [], model.sigmas(:, :, i));

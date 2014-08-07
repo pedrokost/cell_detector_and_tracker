@@ -69,10 +69,9 @@ function prepareFeatureMatrixForLinkerMatcher(outputFile, params)
 		trackletCombos = eliminateAmbiguousRows(tracklets, trackletCombos, classifierParams);
 	end
 
-	% I = [I; [1 18 3 5 28 1]];
+	% I = [I; [1 18 5 28]];
 	% Y = [Y; 0];
 
-	% TODO make sure that the tracklets ordering makes sense
 	for i=1:size(trackletCombos, 1)
 		trackletA = tracklets(trackletCombos(i, 1), :);
 		trackletB = tracklets(trackletCombos(i, 2), :);
@@ -119,25 +118,24 @@ function prepareFeatureMatrixForLinkerMatcher(outputFile, params)
 	fprintf('Preparing large matrix with training data for linker\n')
 
 	I = convertIToContainTheCellIndices(tracklets, I);
-	I = convertIToContainActualFileIndices(I);
+	I = addActualFileIndices(I);
 
 	for i=1:n
-		% [trackletA, frameA, cellIndexA, trackletB, frameB, cellIndexB]
+		% [trackletA, frameA, fileA, cellIndexA, trackletB, frameB, fileB cellIndexB]
 
 		trackletAPos = tracklets(I(i, 1),  :);
-		trackletBPos = tracklets(I(i, 4), :);
+		trackletBPos = tracklets(I(i, 5), :);
 
 		trackletAIdx = find(trackletAPos);
 		trackletBIdx = find(trackletBPos);
-
+		
 		trackletA = tracklets2(I(i, 1), trackletAIdx(1):I(i, 2), :);
-		trackletB = tracklets2(I(i, 4), I(i, 5):trackletBIdx(end), :);
+		trackletB = tracklets2(I(i, 5), I(i, 6):trackletBIdx(end), :);
 
 		features = computeTrackletMatchFeaturesForPair(trackletA, trackletB, I(i, :), featParams, numFeatures, params);
 
 		X(i, :) = features;
 	end
-
 
 	save(outputFile, 'X', 'Y')
 
@@ -147,16 +145,22 @@ function prepareFeatureMatrixForLinkerMatcher(outputFile, params)
 	end
 end
 
-function I = convertIToContainActualFileIndices(I)
+function I2 = addActualFileIndices(I)
 	% I is of the form [trackletA, frameA, cellIndexA trackletB, frameB, cellIndexB] where frameA and
 	% frameB correspond to the indices of frame in the tracklets matrix. However,
 	% these indices do not directly map to the index of the files, because some very
 	% bad frames could have been deleted. This function corrects this indeces to
 	% point to the correct file name
+	% Outputs [trackletA, frameA, fileA, cellIndexA, trackletB, frameB, fileB cellIndexB]
 	global DSOUT;
+	
+	numObs = size(I, 1);
+	I2 = zeros(numObs, 6);
+	I2(:, [1 2 4 5 6 8]) = I;
+
 	matAnnotationsIndices = DSOUT.getMatfileIndices();
-	I(:, 2) = matAnnotationsIndices(I(:, 2))';
-	I(:, 5) = matAnnotationsIndices(I(:, 5))';
+	I2(:, 3) = matAnnotationsIndices(I(:, 2))';
+	I2(:, 7) = matAnnotationsIndices(I(:, 5))';
 end
 
 function I2 = convertIToContainTheCellIndices(tracklets, I)
