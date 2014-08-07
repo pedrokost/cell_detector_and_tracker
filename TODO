@@ -1,8 +1,8 @@
 Today:
   ✔	T63 @done (14-08-07 15:35)
-  ☐	T64
-  ☐	T65
-  ☐	T66
+  ✔	T64 @done (14-08-07 17:34)ẗop
+  ✔	T65 @done (14-08-07 17:49)
+  ✔	T66 @done (14-08-07 18:00)
   ☐	T67
   ☐	T68
   ☐	T69
@@ -36,9 +36,9 @@ Cell tracker (1 week work minimum - 3 weeks maximum):
 	☐	61) Feature tracker: direction momentum. if it went straight to one direction, it unlikely to change (so some kind of comparison between momentum and the actual change: tendency to change - change)
 	☐	62) I notice that the init likelihood is too small, becaue the link value is too large. The init value should be a small value if there is nothing before it, but only be 1-plink if the by looking at no more than the distance we are trying to close backwards
 	✔	63)Fix any remaining NaN issues in the tracker @done (14-08-07 15:35)
-  ☐	64)Make sure the new load dataset for tracking works
-  ☐	65)Evaluate a tracklet
-  ☐	66)Makes sure to train only on annotated images
+  ✔	64)Make sure the new load dataset for tracking works @done (14-08-07 17:34)
+  ✔	65)Evaluate a tracklet @done (14-08-07 17:48)
+  ✔	66)Makes sure to train only on annotated images @done (14-08-07 18:00)
   ☐	67)Make sure to test on all images
   ☐	68)Manual identify a annotation-detector trajectory pair that is similar
   ☐	69)Send these 2 pairs to the the function that compute the number of missetection pairs

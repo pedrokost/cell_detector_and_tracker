@@ -18,6 +18,10 @@ function prepareFeatureMatrixForLinkerMatcher(outputFile, params)
 	fprintf('Identifying all tracklets pairs for the feature matrix to train Linker\n')
 
 	tracklets = generateTracklets('in', struct('withAnnotations', true));
+
+	% Only use the correctly annoated frames for training: trim the matrix
+	tracklets = tracklets(:, 1:params.numAnnotatedFrames);
+
 	tracklets = filterTrackletsByLength(tracklets, classifierParams.MIN_TRACKLET_LENGTH);
 
 	% figure(1); clf; trackletViewer(tracklets, 'in', struct('animate', false, 'showLabels',true));

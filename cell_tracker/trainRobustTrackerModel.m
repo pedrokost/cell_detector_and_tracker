@@ -10,13 +10,13 @@ function trainRobustTrackerModel(storeID, options)
 	% Output: /
 
 
-	options = options.robustClassifierParams;
+	classifierOpts = options.robustClassifierParams;
 	
-	prepareFeatureMatrixForRobustMatcher(options.outputFileMatrix);
-	dataFile = options.outputFileMatrix;
-	modelFile = options.outputFileModel;
+	prepareFeatureMatrixForRobustMatcher(options.numAnnotatedFrames, classifierOpts.outputFileMatrix);
+	dataFile = classifierOpts.outputFileMatrix;
+	modelFile = classifierOpts.outputFileModel;
 
-	switch options.algorithm
+	switch classifierOpts.algorithm
 		case 'ANN'
 			trainMatcherRobustClassifierANN(dataFile)
 		case 'NB'

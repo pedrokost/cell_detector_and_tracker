@@ -1,4 +1,4 @@
-function prepareFeatureMatrixForRobustMatcher(outputFile)
+function prepareFeatureMatrixForRobustMatcher(numAnnotatedFrames, outputFile)
 
 	%{
 		This script prepares a matrix containing pairs of cell descriptors and a third objective column indicating if they are the same (that is if the cells are DIRECTLY linked)
@@ -13,8 +13,11 @@ function prepareFeatureMatrixForRobustMatcher(outputFile)
 	fprintf('Preparing the feature matrix to train Robust linker\n')
 
 	matAnnotationsIndices = DSIN.getMatfileIndices();
+	matAnnotationsIndices = matAnnotationsIndices(1:numAnnotatedFrames);
 
-	numFrames = numel(matAnnotationsIndices);
+
+
+	numFrames = numel(matAnnotationsIndices)
 	X = [];
 
 	% First, associate each annotation with the corresponding feature vector

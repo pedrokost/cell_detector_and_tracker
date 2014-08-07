@@ -26,7 +26,7 @@ imageDims = [512 512];  % TODO [height width]
 Kinit = 1;
 Kterm = 1;
 Kfp = 1;
-Klink = 1;
+Klink = 0.5;
 
 rootInFolder = fullfile('..','..', 'data');
 rootOutFolder = fullfile('..','..', 'dataout');
@@ -35,31 +35,31 @@ switch dataset
     case 1 %LungGreen
         dataFolder = fullfile(rootInFolder, 'series13greencropped');
         outFolder = fullfile(rootOutFolder, 'series13greencropped');
-        annotatedFrames = 55;
+        numAnnotatedFrames = 55;
     case 2 %LungGreen
         dataFolder = fullfile(rootInFolder, 'series14croppedcleaned');
         outFolder = fullfile(rootOutFolder, 'series14croppedcleaned');
-        annotatedFrames = 50;
+        numAnnotatedFrames = 50;
     case 3 %LungRed
         dataFolder = fullfile(rootInFolder, 'series30green');
         outFolder = fullfile(rootOutFolder, 'series30green');
-        annotatedFrames = 60;
+        numAnnotatedFrames = 60;
     case 4 %KidneyGreen
         dataFolder = fullfile(rootInFolder, 'series30red');
         outFolder = fullfile(rootOutFolder, 'series30red');
-        annotatedFrames = 60;
+        numAnnotatedFrames = 60;
     case 5 %KidneyRed
         dataFolder = fullfile(rootInFolder, 'seriesm170_13cropped');
         outFolder = fullfile(rootOutFolder, 'seriesm170_13cropped');
-        annotatedFrames = 67;
+        numAnnotatedFrames = 67;
     case 6 %KidneyRed
         dataFolder = fullfile(rootInFolder, 'series13redcropped');
         outFolder = fullfile(rootOutFolder, 'series13redcropped');
-        annotatedFrames = 32;
+        numAnnotatedFrames = 32;
     case 7 %KidneyRed
         dataFolder = fullfile(rootInFolder, 'dumy');
         outFolder = fullfile(rootOutFolder, 'dumy');
-        annotatedFrames = 30;
+        numAnnotatedFrames = 30;
 end
 
 % Parameters for training the classifier for joining tracklets
@@ -107,5 +107,6 @@ dataParams.Klink = Klink;
 dataParams.saveTrajectoryGenerationInterimResults = saveTrajectoryGenerationInterimResults;
 dataParams.trajectoryGenerationToFilePrefix = trajectoryGenerationToFilePrefix;
 dataParams.verbose = verbose;
+dataParams.numAnnotatedFrames = numAnnotatedFrames;
 
 end

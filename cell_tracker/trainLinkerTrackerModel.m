@@ -11,7 +11,6 @@ function trainLinkerTrackerModel(storeID, options)
 
 	linkerOptions = options.linkerClassifierParams;
 
-
 	dataFile = linkerOptions.outputFileMatrix;
 	% modelFile = options.outputFileModel;
 
