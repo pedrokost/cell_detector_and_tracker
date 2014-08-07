@@ -1,13 +1,13 @@
 Today:
-  ☐	Fix any remaining NaN issues in the tracker
-  ☐	Make sure the nw load dataset for tracking works
-  ☐	Evaluate a tracklet
-  ☐	Makes sure to train only on annotated images
-  ☐	Make sure to test on all images
-  ☐	Manual identify a annotation-detector trajectory pair that is similar
-  ☐	Send these 2 pairs to the the function that compute the number of missetection pairs
-  ☐	T39
+  ☐	T63
+  ☐	T64
+  ☐	T65
+  ☐	T66
+  ☐	T67
+  ☐	T68
+  ☐	T69
   ☐	T59
+  ☐	T39
 Cell tracker (1 week work minimum - 3 weeks maximum):
 	☐	59) Basic linear interpolation of tracklets so that I can compute quality metrics
 	☐	60) List a few simple tracking metrics to compute
@@ -35,6 +35,13 @@ Cell tracker (1 week work minimum - 3 weeks maximum):
 	☐	58) Uknown values in feature computation: Make then NaN, and then replace with the mean value, or first try learning with only rows without NaNs.
 	☐	61) Feature tracker: direction momentum. if it went straight to one direction, it unlikely to change (so some kind of comparison between momentum and the actual change: tendency to change - change)
 	☐	62) I notice that the init likelihood is too small, becaue the link value is too large. The init value should be a small value if there is nothing before it, but only be 1-plink if the by looking at no more than the distance we are trying to close backwards
+	☐	63)Fix any remaining NaN issues in the tracker
+  ☐	64)Make sure the new load dataset for tracking works
+  ☐	65)Evaluate a tracklet
+  ☐	66)Makes sure to train only on annotated images
+  ☐	67)Make sure to test on all images
+  ☐	68)Manual identify a annotation-detector trajectory pair that is similar
+  ☐	69)Send these 2 pairs to the the function that compute the number of missetection pairs
 Writing thesis (4 weeks work minimum - 7 weeks maximum):
 	☐	3) Analyse headings of the cell_detector part
 	☐	5) Review past best dissertations for section and writing style inspiration
