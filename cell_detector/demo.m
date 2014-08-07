@@ -2,7 +2,7 @@
 
 % dataset 2, 4 failsex
 datasets = [4];  %Identifier of the training/testing data as set in loadDatasetInfo
-train = 1;%---->Do train
+train = 0;%---->Do train
 test = 1;%----->Do test
 
 % ---------------------------------------------------No need to touch the rest

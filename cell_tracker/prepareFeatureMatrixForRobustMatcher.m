@@ -43,14 +43,8 @@ function prepareFeatureMatrixForRobustMatcher(outputFile)
 		[dotsGtB, linksB] = DSIN.getDotsAndLinks(matIdx);
 		[dotsDetB, descriptorsB] = DSOUT.get(matIdx);
 		
-		[~, permB, IB] = getAnnotationDescriptors(dotsGtB, dotsDetB, descriptorsB);
 
-		% if size(descriptorsB, 1) ~= size(dotsGtB, 1)
-		% 	fprintf('1\n')
-		% 	keyboard
-		% end
-
-		dotsGtBwithMatch = dotsGtB(IB, :);
+		[descriptorsB, permB, IB] = getAnnotationDescriptors(dotsGtB, dotsDetB, descriptorsB);
 
 		% TODOif there is a matching descritor for the dot, process, else
 		[descriptorsB, ~] = combineDescriptorsWithDots(descriptorsB, dotsGtB);
@@ -71,19 +65,19 @@ function prepareFeatureMatrixForRobustMatcher(outputFile)
 			badVals = badVals - 1;
 		end
 
-		if ~any([isempty(descriptorsA), isempty(descriptorsB)])
+		% if ~any([isempty(descriptorsA), isempty(descriptorsB)])
 
-			M = buildTrainMatrixForFramePair(descriptorsA, descriptorsB, linksA);
+		M = buildTrainMatrixForFramePair(descriptorsA, descriptorsB, linksA);
 
-			size(X)
-			size(M)
-			if isempty(M)
-				fprintf('2\n')
-				keyboard
-			end
-			X = vertcat(X, M);
+		% ['X ', num2str(size(X))]
+		% ['M ' num2str(size(M))]
+		% if isempty(M)
+		% 	fprintf('2\n')
+		% 	keyboard
+		% end
+		X = vertcat(X, M);
 		
-		end
+		% end
 		linksA = linksB; descriptorsA = descriptorsB;
 		dotsGtA = dotsGtB; dotsDetA = dotsGtB;
 	end
