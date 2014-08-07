@@ -43,6 +43,7 @@ Cell tracker (1 week work minimum - 3 weeks maximum):
   ☐	68)Manual identify a annotation-detector trajectory pair that is similar
   ☐	69)Send these 2 pairs to the the function that compute the number of missetection pairs
   ☐	70) Make sure all features work
+  ☐	71) Identify features that are slow to compute
 Writing thesis (4 weeks work minimum - 7 weeks maximum):
 	☐	3) Analyse headings of the cell_detector part
 	☐	5) Review past best dissertations for section and writing style inspiration

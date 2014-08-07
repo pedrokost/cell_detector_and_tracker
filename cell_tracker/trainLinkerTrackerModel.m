@@ -17,7 +17,6 @@ function trainLinkerTrackerModel(storeID, options)
 
 	prepareFeatureMatrixForLinkerMatcher(dataFile, options)
 
-	return
 	fprintf('Training model for linking tracklets\n')
 	
 	switch linkerOptions.algorithm

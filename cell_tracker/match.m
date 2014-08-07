@@ -128,11 +128,12 @@ end
 
 function classifier = getClassifier(modelFile)
 	classifier = @classifierDistance;
+	NBdata = load(modelFile);
 
 	function Y = classifierDistance(featsA, featsB)
 		% Given 2 feature vectors, returns the similarity given by the trained classifier. The similarity is a metric between 0 and 1.
 		% This distance function must be the same as the one used in the classifier
 		D = euclideanDistance(featsA, featsB)';
-		Y = testMatcherRobustClassifierNB(D', modelFile);
+		Y = testMatcherRobustClassifierNB(D', NBdata.NB, NBdata.idx, NBdata.minimum, NBdata.maximum);
 	end
 end

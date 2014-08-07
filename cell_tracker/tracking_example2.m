@@ -1,11 +1,11 @@
 clear all;
 rng(1234)
 
-
+addpath('somelightspeed')
 %------------------------------------------Options
 doTrainRobustTrackerModel = 0;
-doTrainLinkerTrackerModel = 1;
-dataset = 2;   % FIx numero 3
+doTrainLinkerTrackerModel = 0;
+dataset = 7;   % FIx numero 3
 %------------------------------------------Load dataset
 params = loadDatasetInfo(dataset);  % This is the only use input
 %------------------------------------------Generate the datastores
@@ -19,7 +19,7 @@ end
 if doTrainLinkerTrackerModel
 	trainLinkerTrackerModel('in', params);
 end
-return
+% return
 %------------------------------------------Generate trajectories
 tracklets = generateTrajectories('out', params);
 %------------------------------------------Save trajectories to disk

@@ -3,7 +3,8 @@ function tracklet2D = trimZeros(tracklet2D)
 
 	if isempty(tracklet2D); return; end;
 
-	nonzero = findNonZeroIdx(tracklet2D);
+	% nonzero = findNonZeroIdx(tracklet2D);
+	nonzero = any(tracklet2D, 2);
 
 	% find zeros in the head
 	idxendzeroshead = 1;

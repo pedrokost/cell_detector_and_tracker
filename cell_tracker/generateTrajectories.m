@@ -11,6 +11,8 @@ function tracklets = generateTrajectories(storeID, params)
 	classifierParams = params.linkerClassifierParams;
 	robustClassifierParams = params.robustClassifierParams;
 
+
+	fprintf('Generating robust tracklets\n')
 	tracklets = generateTracklets(storeID, struct('withAnnotations', false, 'modelFile', robustClassifierParams.outputFileModel));
 
 	if params.saveTrajectoryGenerationInterimResults
@@ -23,6 +25,7 @@ function tracklets = generateTrajectories(storeID, params)
 	options = struct('matcher', classifierParams.algorithm, 'imageDimensions', params.imageDimensions, 'Kfp', params.Kfp, 'Klink', params.Klink, 'Kinit', params.Kinit, 'Kterm', params.Kterm);
 	
 	for i=1:numel(maxGaps)
+		fprintf('Closing gaps of size: %d\n', maxGaps(i));
 		[M, hypTypes] = generateHypothesisMatrix(tracklets, struct('maxGap', maxGaps(i)));
 
 		% tracklets([5 6 8 9], :)

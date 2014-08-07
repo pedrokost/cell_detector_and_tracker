@@ -4,7 +4,7 @@ function [params, numFeatures] = setFeatures()
 % 	Outputs:
 %   	params = strucutre with learning params
 
-CELL_DESCRIPTOR_SIZE = 101;
+CELL_DESCRIPTOR_SIZE = 100;
 %------------------------------------------------------------------Features
 params.addCellDescriptors = 1;  % descriptor from the detector
 params.addGapSize         = 1;  % number of frames between the tail and head of 2 tracklets

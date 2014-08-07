@@ -13,9 +13,18 @@ function [val, pointsVals] = evaluateGaussianBroadeningModel(model, points)
 	
 	for i=1:extrudeLength
 		% model.sigmas(:, :, i)
-		p = mvnpdf(points, model.mus(i, :), model.sigmas(:, :, i));
+		% p = mvnpdf(points, model.mus(i, :), model.sigmas(:, :, i))
+		p = mvnpdffast(points, model.mus(i, :), model.sigmas(:, :, i));
 
-		% p = mvnormpdf(points, model.mus(i, :)', [], model.sigmas(:, :, i));
+
+		% size(points)
+		% size(model.mus(i, :)')
+		% size(model.sigmas(:, :, i))
+		% p = mvnormpdf(points', model.mus(i, :)', [], model.sigmas(:, :, i))'
+		% if any(isnan(p))
+		% 	warning('A p value is NaN. Why dont you fix it?');
+		% 	keyboard
+		% end
 		pointsVals = pointsVals + p;
 	end
 
@@ -23,4 +32,9 @@ function [val, pointsVals] = evaluateGaussianBroadeningModel(model, points)
 		pointsVals = pointsVals / extrudeLength;
 	end
 	val = sum(pointsVals);
+
+	if isnan(val)
+		warning('The evalutaion gaussian breadening is NaN. Why dont you fixed it?')
+		keyboard
+	end
 end

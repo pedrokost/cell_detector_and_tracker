@@ -11,6 +11,7 @@ classdef DataStore
 	properties(SetAccess = private, GetAccess = private)
 		dataFolder  % Folder containing mat files with descriptors
 		dotsCache
+		annotationIndices
 		descriptorsCache
 		filePathsCache
 		imPrefix = 'im';
@@ -27,11 +28,22 @@ classdef DataStore
 				'ValueType', 'any');
 			obj.filePathsCache = containers.Map('KeyType', 'uint32',...
 				'ValueType', 'char');
+			obj.annotationIndices = computeMatfileIndices();
 
 			if nargin > 1
 				obj.verbose = verbose;
 			end
 			% TODO Precompute file names because fullfile is too slow otherwise
+
+			function idx = computeMatfileIndices()
+				% Checks the available mat files on disk and returns their frame numbers
+
+				matfiles = dir(fullfile(dataFolder, [obj.imPrefix '*.mat']));
+				idx = zeros(numel(matfiles), 1);
+
+				name2frame = @(name) str2num(name(length(obj.imPrefix)+1:end-4));
+				idx = cellfun(name2frame, {matfiles.name});
+			end
 		end
 
 		function [dots, descriptors] = get(obj, frameNumber, cellIndices)
@@ -126,12 +138,7 @@ classdef DataStore
 
 		function idx = getMatfileIndices(obj)
 			% Checks the available mat files on disk and returns their frame numbers
-
-			matfiles = dir(fullfile(obj.dataFolder, [obj.imPrefix '*.mat']));
-			idx = zeros(numel(matfiles), 1);
-
-			name2frame = @(name) str2num(name(length(obj.imPrefix)+1:end-4));
-			idx = cellfun(name2frame, {matfiles.name});
+			idx = obj.annotationIndices;
 		end
 	end
 end

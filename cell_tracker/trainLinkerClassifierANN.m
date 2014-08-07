@@ -43,6 +43,7 @@ function trainLinkerClassifierANN(dataFile)
   net.trainParam.epochs = 50;
   % Train the Network
   [net,tr] = train(net,X,Y);
+  % weights = getwb(net);
 
   % Test the Network
   y = net(X);

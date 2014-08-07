@@ -9,7 +9,7 @@ function X = computeTrackletMatchFeatures(tracklets, trackletPairs, dataParams)
 	X = zeros(numPairs, numFeatures);
 
 	for i=1:numPairs
-		% Create vector of shape [trackletA, frameA, cellindexA, trackletB, frameB, cellindexB]
+		% Create vector of shape [trackletA, frameA, fileA, cellindexA, trackletB, frameB, fileB, cellindexB]
 		trackletAPos = tracklets(trackletPairs(i, 1),  :);
 		trackletBPos = tracklets(trackletPairs(i, 2), :);
 
@@ -24,8 +24,10 @@ function X = computeTrackletMatchFeatures(tracklets, trackletPairs, dataParams)
 		I(5) = trackletBIdx(1); % first frame of tracklet B
 		I(6) = trackletBPos(trackletBIdx(1));
 
+		I = addActualFileIndices(I);
+
 		trackletA = tracklets2(I(1), trackletAIdx(1):trackletAIdx(end), :);
-		trackletB = tracklets2(I(4), trackletBIdx(1):trackletBIdx(end), :);
+		trackletB = tracklets2(I(5), trackletBIdx(1):trackletBIdx(end), :);
 		features = computeTrackletMatchFeaturesForPair(trackletA, trackletB, I, featParams, numFeatures, dataParams);
 
 		X(i, :) = features;
