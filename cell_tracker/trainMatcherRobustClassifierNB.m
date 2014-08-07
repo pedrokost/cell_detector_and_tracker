@@ -11,7 +11,8 @@ function trainMatcherRobustClassifierNB(dataFile, modelFile)
 
 	[x minimum maximum] = normalizeRange(x);
 
-	NB = fitNaiveBayes(x,t);
+	% NB = fitNaiveBayes(x,t);  % Matlab 2014 only
+	NB = NaiveBayes.fit(x, t);
 	save(modelFile, 'NB', 'idx', 'minimum', 'maximum');
 
 	Y = testMatcherRobustClassifierNB(X(:, 1:end-1), modelFile);

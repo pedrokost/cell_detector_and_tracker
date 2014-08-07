@@ -18,6 +18,8 @@ function tracklets2 = convertAnnotationToDetectionIdx(tracklets, options)
 		thresholdDinstace = options.thresholdDinstace;
 	end
 
+	annotationMatIdx = DSIN.getMatfileIndices();
+
 	[numTracklets, numFrames] = size(tracklets);
 
 	tracklets2 = zeros(numTracklets, numFrames, class(tracklets));
@@ -25,11 +27,11 @@ function tracklets2 = convertAnnotationToDetectionIdx(tracklets, options)
 	matPrefix = 'im';  % TODO load from outside
 
 	for i=1:numFrames
-		dotsGt = DSIN.getDots(i);
+		dotsGt = DSIN.getDots(annotationMatIdx(i));
 		% Permute this dots with the tracklets matrix
 		dotsGt = getCellTrackletsFrame(dotsGt, tracklets(:, i));
 
-		dotsDet = DSOUT.getDots(i);
+		dotsDet = DSOUT.getDots(annotationMatIdx(i));
 		% This computes for each GT dot, the closest Det dot.
 		[D, perm] = pdist2(single(dotsDet), single(dotsGt), 'euclidean', 'Smallest', 1);
 

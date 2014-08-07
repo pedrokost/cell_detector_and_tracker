@@ -3,7 +3,7 @@ rng(1234)
 
 
 %------------------------------------------Options
-doTrainRobustTrackerModel = 1;
+doTrainRobustTrackerModel = 0;
 doTrainLinkerTrackerModel = 1;
 dataset = 2;   % FIx numero 3
 %------------------------------------------Load dataset
@@ -19,6 +19,7 @@ end
 if doTrainLinkerTrackerModel
 	trainLinkerTrackerModel('in', params);
 end
+return
 %------------------------------------------Generate trajectories
 tracklets = generateTrajectories('out', params);
 %------------------------------------------Save trajectories to disk

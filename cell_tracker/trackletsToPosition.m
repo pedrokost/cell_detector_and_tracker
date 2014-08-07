@@ -16,11 +16,13 @@ function tracklets2 = trackletsToPosition(tracklets, store)
 		store = DSOUT;
 	end
 
+	idx = store.getMatfileIndices();
+
 	[numTracklets, numFrames] = size(tracklets);
 	tracklets2 = zeros(numTracklets, numFrames, 2, 'uint16');
 
 	for i=1:numFrames
-		dots = store.getDots(i);
+		dots = store.getDots(idx(i));
 		tracklets2(:, i, :) = getCellTrackletsFrame(dots, tracklets(:, i)); 
 	end
 end

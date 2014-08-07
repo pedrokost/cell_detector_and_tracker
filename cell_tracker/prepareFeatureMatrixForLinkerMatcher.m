@@ -15,24 +15,25 @@ function prepareFeatureMatrixForLinkerMatcher(outputFile, params)
 
 	global DSIN DSOUT;
 
-	fprintf('Identifying all tracklets pairs for the feature matrix to train Linker')
+	fprintf('Identifying all tracklets pairs for the feature matrix to train Linker\n')
 
 	tracklets = generateTracklets('in', struct('withAnnotations', true));
-
 	tracklets = filterTrackletsByLength(tracklets, classifierParams.MIN_TRACKLET_LENGTH);
 
-	figure(1); clf; trackletViewer(tracklets, 'in', struct('animate', false, 'showLabels',true));
-
+	% figure(1); clf; trackletViewer(tracklets, 'in', struct('animate', false, 'showLabels',true));
 	[numTracklets, numFrames] = size(tracklets);
 	% subplot(1,2,1); trackletViewer(tracklets, params.dataFolder)
 
 	% For each tracklets, find the corresponding dots in the OUT folder
 	tracklets = convertAnnotationToDetectionIdx(tracklets);
 
-	% subplot(1,2,2); trackletViewer(tracklets, params.outFolder)
+	% hold on; trackletViewer(tracklets, 'out')
 
 	Y = zeros(0, 1, 'uint8'); %[match/no-match]
-	I = zeros(0, 6, 'uint16'); % [trackletA, frameA, cellindexA, trackletB, frameB, cellindexB]
+	I = zeros(0, 4, 'uint16'); % [trackletA, frameA, trackletB, frameB]
+	% Note: the frameA and frameB are as put in the matrix tracklets, they have to be 
+	% mapped tot the correct filenames before their values can be read from disk, 
+	% because some frames can be skipped
 
 	% First append all positive examples:
 	% cells in same tracklets with max distance of MAX_GAP
@@ -47,15 +48,16 @@ function prepareFeatureMatrixForLinkerMatcher(outputFile, params)
 
 		% if isempty(idx); continue; end
 
-		C = combnk(idx, 2);
-		D = C(:, 2) - C(:, 1);
-		C = C(D <= classifierParams.MAX_GAP, :);
+		% only keep frames that are not to far apart
+		C = combnk(idx, 2); D = C(:, 2) - C(:, 1);
+		keepIdx = D <= classifierParams.MAX_GAP;
+		C = C(keepIdx, :);
 
 		% TODO: random sample just a portion of the cases
 		n = size(C, 1);
 		tVec = repmat(t, n, 1);
 
-		new = [tVec C(:, 1) tracklets(t, C(:, 1))' tVec C(:, 2) tracklets(t, C(:, 2))'];
+		new = [tVec C(:, 1) tVec C(:, 2)];
 		I = [I; new];
 		Y = [Y; ones(size(C, 1), 1)];
 	end
@@ -84,16 +86,16 @@ function prepareFeatureMatrixForLinkerMatcher(outputFile, params)
 		tVecB = repmat(trackletCombos(i, 2), 1, n);
 
 		% TODO random sample
-		new = [tVecA; C(1, :); trackletA(C(1, :)); tVecB; C(2, :); trackletB(C(2, :))]';
+		new = [tVecA; C(1, :); tVecB; C(2, :)]';
 
 		I = [I; new];
 		Y = [Y; zeros(size(C, 2), 1)];
 		% and set it a negative example
-
 	end
 
 	clear new C D cnt i idx idxA idxB t trackletA trackletB vals;
 
+	% % FIXME: remove this
 	% I = I(1:100, :);
 	% Y = Y(1:100, :);
 
@@ -116,8 +118,11 @@ function prepareFeatureMatrixForLinkerMatcher(outputFile, params)
 
 	fprintf('Preparing large matrix with training data for linker\n')
 
+	I = convertIToContainTheCellIndices(tracklets, I);
+	I = convertIToContainActualFileIndices(I);
+
 	for i=1:n
-		% [trackletA, frameA, cellindexA, trackletB, frameB, cellindexB],
+		% [trackletA, frameA, cellIndexA, trackletB, frameB, cellIndexB]
 
 		trackletAPos = tracklets(I(i, 1),  :);
 		trackletBPos = tracklets(I(i, 4), :);
@@ -133,11 +138,40 @@ function prepareFeatureMatrixForLinkerMatcher(outputFile, params)
 		X(i, :) = features;
 	end
 
+
 	save(outputFile, 'X', 'Y')
 
 	if doProfile
 		profile off
 		profile viewer
+	end
+end
+
+function I = convertIToContainActualFileIndices(I)
+	% I is of the form [trackletA, frameA, cellIndexA trackletB, frameB, cellIndexB] where frameA and
+	% frameB correspond to the indices of frame in the tracklets matrix. However,
+	% these indices do not directly map to the index of the files, because some very
+	% bad frames could have been deleted. This function corrects this indeces to
+	% point to the correct file name
+	global DSOUT;
+	matAnnotationsIndices = DSOUT.getMatfileIndices();
+	I(:, 2) = matAnnotationsIndices(I(:, 2))';
+	I(:, 5) = matAnnotationsIndices(I(:, 5))';
+end
+
+function I2 = convertIToContainTheCellIndices(tracklets, I)
+	% Explands I=[trackletA, frameA, trackletB, frameB] to be:
+	% I=[trackletA, frameA, cellIndexA trackletB, frameB, cellIndexB]
+
+	% Note: must be called with the frameA and frameB ampping to the tracklets matrix, not the files indices
+
+	numObs = size(I, 1);
+	I2 = zeros(numObs, 6);
+	I2(:, [1 2 4 5]) = I;
+
+	for i=1:numObs
+		I2(i, 3) = tracklets(I(i, 1), I(i, 2));
+		I2(i, 6) = tracklets(I(i, 3), I(i, 4));
 	end
 end
 
