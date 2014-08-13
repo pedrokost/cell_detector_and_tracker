@@ -2,11 +2,18 @@ function trainMatcherRobustClassifierNB(dataFile, modelFile)
 
 	load(dataFile);
 
+
 	x = X(:, 1:end-1);
 	t = X(:, end);
 
-	% Eliminate cols with insignificant data variation
-	idx = std(x) > 0.005;
+
+	% Eliminate cols with insignificant data variation for each class
+	x0 = x(t==0, :);
+	x1 = x(t==1, :);
+	idx0 = std(x0) < 0.005;
+	idx1 = std(x1) < 0.005;
+	
+	idx = ~(idx0 | idx1);
 	x = x(:, idx);
 
 	[x minimum maximum] = normalizeRange(x);

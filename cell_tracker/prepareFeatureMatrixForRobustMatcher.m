@@ -16,71 +16,73 @@ function prepareFeatureMatrixForRobustMatcher(numAnnotatedFrames, outputFile)
 	matAnnotationsIndices = matAnnotationsIndices(1:numAnnotatedFrames);
 
 
-
-	numFrames = numel(matAnnotationsIndices)
+	numFrames = numel(matAnnotationsIndices);
 	X = [];
 
 	% First, associate each annotation with the corresponding feature vector
 	% Drop any detected cells that don't have annotation, or annotations with missing detections
-	startIdx = matAnnotationsIndices(1);
+	metaStartIdx = 1;
+	startIdx = matAnnotationsIndices(metaStartIdx);
 
-	% Load annotations and detections for first image
-	[dotsGtA, linksA] = DSIN.getDotsAndLinks(startIdx);
-	[dotsDetA, descriptorsA] = DSOUT.get(startIdx);
+	% Initialize the tracklets with the first frame that has a detection result
 
+	while true
+		% Load annotations and detections for first image
+		[dotsGtA, linksA] = DSIN.getDotsAndLinks(startIdx);
+		[dotsDetA, descriptorsA] = DSOUT.get(startIdx);
 
-	% FIXME: I have a bug: I am filtering descriptorsA, but not dotsGtA. This means Some dotsGtA could have no descriptor
+		if isempty(dotsDetA)
+			metaStartIdx = metaStartIdx + 1;
+			startIdx = matAnnotationsIndices(metaStartIdx);
+			continue
+		end
+			
+		[descriptorsA, permA, IA] = getAnnotationDescriptors(dotsGtA, dotsDetA, descriptorsA);
+		[descriptorsA, ~] = combineDescriptorsWithDots(descriptorsA, dotsGtA);
 
-	[descriptorsA, permA, IA] = getAnnotationDescriptors(dotsGtA, dotsDetA, descriptorsA);
-	[descriptorsA, ~] = combineDescriptorsWithDots(descriptorsA, dotsGtA);
+		descriptorsA = descriptorsA(find(IA), :);
+		dotsGtA = dotsGtA(find(IA), :);
+		linksA = linksA(find(IA));
 
-	descriptorsA = descriptorsA(find(IA), :);
-	dotsGtA = dotsGtA(find(IA), :);
-	linksA = linksA(find(IA));
+		break
+	end
 
-
-	for i=1:(numFrames-1)
+	for i=metaStartIdx:(numFrames-1)
 		matIdx = matAnnotationsIndices(i+1);
 
 		% Load annotations and detections for next image
 		[dotsGtB, linksB] = DSIN.getDotsAndLinks(matIdx);
 		[dotsDetB, descriptorsB] = DSOUT.get(matIdx);
+
+		if ~isempty(dotsDetB)
+			[descriptorsB, permB, IB] = getAnnotationDescriptors(dotsGtB, dotsDetB, descriptorsB);
+
+			% TODOif there is a matching descritor for the dot, process, else
+			[descriptorsB, ~] = combineDescriptorsWithDots(descriptorsB, dotsGtB);
+			descriptorsB = descriptorsB(find(IB), :); dotsGtB = dotsGtB(find(IB), :); linksB = linksB(find(IB), :);
+
+			%% Clean linksA:
+			% For each value in linksA that matches a find(IB), I need to elimintate it,
+			% and all the bigger values decrease by 1.
+			badVals = find(~IB); % Eliminte this values from linksA
+			for j=1:numel(badVals)
+				badVal = badVals(j);
+				% Elimintae the value from LinksA by placing a 0 in its location
+				linksA(find(linksA == badVal)) = 0;
+				% Find all in linksA bigger than badVal and decrease them by 1
+				biggerIdx = find(linksA > badVal);
+				linksA(biggerIdx) = linksA(biggerIdx) - 1;
+				% decrease all values of badVal by 1
+				badVals = badVals - 1;
+			end
+
+			if ~any([isempty(descriptorsA) isempty(descriptorsB)])
+
+				M = buildTrainMatrixForFramePair(descriptorsA, descriptorsB, linksA);
+				X = vertcat(X, M);
+			end
 		
-
-		[descriptorsB, permB, IB] = getAnnotationDescriptors(dotsGtB, dotsDetB, descriptorsB);
-
-		% TODOif there is a matching descritor for the dot, process, else
-		[descriptorsB, ~] = combineDescriptorsWithDots(descriptorsB, dotsGtB);
-		descriptorsB = descriptorsB(find(IB), :); dotsGtB = dotsGtB(find(IB), :); linksB = linksB(find(IB), :);
-
-		%% Clean linksA:
-		% For each value in linksA that matches a find(IB), I need to elimintate it,
-		% and all the bigger values decrease by 1.
-		badVals = find(~IB); % Eliminte this values from linksA
-		for j=1:numel(badVals)
-			badVal = badVals(j);
-			% Elimintae the value from LinksA by placing a 0 in its location
-			linksA(find(linksA == badVal)) = 0;
-			% Find all in linksA bigger than badVal and decrease them by 1
-			biggerIdx = find(linksA > badVal);
-			linksA(biggerIdx) = linksA(biggerIdx) - 1;
-			% decrease all values of badVal by 1
-			badVals = badVals - 1;
 		end
-
-		% if ~any([isempty(descriptorsA), isempty(descriptorsB)])
-
-		M = buildTrainMatrixForFramePair(descriptorsA, descriptorsB, linksA);
-
-		% ['X ', num2str(size(X))]
-		% ['M ' num2str(size(M))]
-		% if isempty(M)
-		% 	fprintf('2\n')
-		% 	keyboard
-		% end
-		X = vertcat(X, M);
-		
-		% end
 		linksA = linksB; descriptorsA = descriptorsB;
 		dotsGtA = dotsGtB; dotsDetA = dotsGtB;
 	end

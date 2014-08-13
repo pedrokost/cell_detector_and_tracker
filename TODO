@@ -1,9 +1,6 @@
 Today:
-  ✔	T63 @done (14-08-07 15:35)
-  ✔	T64 @done (14-08-07 17:34)ẗop
-  ✔	T65 @done (14-08-07 17:49)
-  ✔	T66 @done (14-08-07 18:00)
-  ☐	T67
+  ✔	T73 @done (14-08-13 16:00)
+  ✔	T74 @done (14-08-13 16:00)
   ☐	T68
   ☐	T69
   ☐	T59
@@ -17,7 +14,7 @@ Cell tracker (1 week work minimum - 3 weeks maximum):
 	☐	34) Solve the unbalanced learning sets problem
 	☐	43) Feature linker: tracklet purity (number of gaps within the track (sum and difference for both tracklet))
 	☐	47) The cellIndex is uneccessary information in I, it's included in tracklets already and accessible with remaining data of I
-	☐	48) Lean a linker model for each of the possible closing gaps, because otherwise I connect gaps prematurely
+	☐	48) Learn a linker model for each of the possible closing gaps, because otherwise I connect gaps prematurely
 	☐	17) Correctly estimate then number of missedetections of the detector
 	☐	29) Run data through PCA or other first
 	☐	41) Linker could rely on 'average/median' descriptor for matching, instead of just the tail or head. First remove outliers, them compute average or median (if neeeded just of a few frames)
@@ -35,15 +32,13 @@ Cell tracker (1 week work minimum - 3 weeks maximum):
 	☐	58) Uknown values in feature computation: Make then NaN, and then replace with the mean value, or first try learning with only rows without NaNs.
 	☐	61) Feature tracker: direction momentum. if it went straight to one direction, it unlikely to change (so some kind of comparison between momentum and the actual change: tendency to change - change)
 	☐	62) I notice that the init likelihood is too small, becaue the link value is too large. The init value should be a small value if there is nothing before it, but only be 1-plink if the by looking at no more than the distance we are trying to close backwards
-	✔	63)Fix any remaining NaN issues in the tracker @done (14-08-07 15:35)
-  ✔	64)Make sure the new load dataset for tracking works @done (14-08-07 17:34)
-  ✔	65)Evaluate a tracklet @done (14-08-07 17:48)
-  ✔	66)Makes sure to train only on annotated images @done (14-08-07 18:00)
-  ☐	67)Make sure to test on all images
-  ☐	68)Manual identify a annotation-detector trajectory pair that is similar
-  ☐	69)Send these 2 pairs to the the function that compute the number of missetection pairs
+  ☐	68) Manual identify a annotation-detector trajectory pair that is similar.. why not use the software to do it? I need to convert annotations to detections, and then find the tracklets containing those detections :D
+  ☐	69) Send these 2 pairs to the the function that compute the number of missetection pairs
   ☐	70) Make sure all features work
   ☐	71) Identify features that are slow to compute
+  ☐	72) Elimintate hypothesis that are below a certain margin of likelihood. Eg 0.5 for linking, 0.1 for FP
+  ✔	73) Fix the bug of in preparing the matrix to learn the robust tracker @done (14-08-13 16:00)
+  ✔	74) Fix bug in trainMatcherRobustClassifierNB that did not remove all columns that have zero variance in EITHER class @done (14-08-13 16:01)
 Writing thesis (4 weeks work minimum - 7 weeks maximum):
 	☐	3) Analyse headings of the cell_detector part
 	☐	5) Review past best dissertations for section and writing style inspiration
@@ -111,6 +106,18 @@ Track evaluation metrics:
 	☐	8) ID switches (IDS): the number of times two trajectories switch their ID
 ＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿
 Archive:
+	✔ REview the reviewed datasets @done (14-08-13 14:37) @project(Today)
+	✔	Sync the trained detections @done (14-08-13 14:37) @project(Today)
+	✔	Make the cell annotator display potentitally wrong links @done (14-08-13 14:37) @project(Today)
+	✔	Make a copy of them and create trajectory annotations @done (14-08-13 14:37) @project(Today)
+	✔	T66 @done (14-08-07 18:00) @project(Today)
+	✔	66)Makes sure to train only on annotated images @done (14-08-07 18:00) @project(Cell tracker (1 week work minimum - 3 weeks maximum))
+	✔	T65 @done (14-08-07 17:49) @project(Today)
+	✔	65)Evaluate a tracklet @done (14-08-07 17:48) @project(Cell tracker (1 week work minimum - 3 weeks maximum))
+	✔	T64 @done (14-08-07 17:34)ẗop @project(Today)
+	✔	64)Make sure the new load dataset for tracking works @done (14-08-07 17:34) @project(Cell tracker (1 week work minimum - 3 weeks maximum))
+	✔	T63 @done (14-08-07 15:35) @project(Today)
+	✔	63)Fix any remaining NaN issues in the tracker @done (14-08-07 15:35) @project(Cell tracker (1 week work minimum - 3 weeks maximum))
 	✔	Detect cells in all datasets (reqs: T6) @done (14-08-05 10:40) @project(Cell detector (3 days work minimum - 1 week maximum))
 	✔	Test why the detector works so poorly today, try going to the code of yesteday, before modfying demo: Make sure data is randomized before training>>> nothing worked :S @done (14-08-04 22:28) @project(Today)
 	✔	W14 @done (14-07-31 17:43) @project(Today)
