@@ -22,16 +22,18 @@ function prepareFeatureMatrixForLinkerMatcher(outputFile, params)
 	% Only use the correctly annoated frames for training: trim the matrix
 	tracklets = tracklets(:, 1:params.numAnnotatedFrames);
 
-	tracklets = filterTrackletsByLength(tracklets, classifierParams.MIN_TRACKLET_LENGTH);
 
-	% figure(1); clf; trackletViewer(tracklets, 'in', struct('animate', false, 'showLabels',true));
+	tracklets = filterTrackletsByLength(tracklets, classifierParams.MIN_TRACKLET_LENGTH);
+	
+	clf;
+	% trackletViewer(tracklets, 'in'); fprintf('Press any key to continue\n');pause;
 	[numTracklets, numFrames] = size(tracklets);
-	% subplot(1,2,1); trackletViewer(tracklets, params.dataFolder)
 
 	% For each tracklets, find the corresponding dots in the OUT folder
 	tracklets = convertAnnotationToDetectionIdx(tracklets);
 
-	% hold on; trackletViewer(tracklets, 'out')
+	hold on; trackletViewer(tracklets, 'out'); fprintf('Press any key to continue\n'); pause;
+
 
 	Y = zeros(0, 1, 'uint8'); %[match/no-match]
 	I = zeros(0, 4, 'uint16'); % [trackletA, frameA, trackletB, frameB]
@@ -41,6 +43,8 @@ function prepareFeatureMatrixForLinkerMatcher(outputFile, params)
 
 	% First append all positive examples:
 	% cells in same tracklets with max distance of MAX_GAP
+	fprintf('Positive examples include tracklets pairs less than %d frames apart\n\n', classifierParams.MAX_GAP);
+
 	for t=1:numTracklets
 		idx = find(tracklets(t, :));
 		vals = tracklets(t, idx);
@@ -50,14 +54,14 @@ function prepareFeatureMatrixForLinkerMatcher(outputFile, params)
 			continue
 		end
 
-		% if isempty(idx); continue; end
-
 		% only keep frames that are not to far apart
 		C = combnk(idx, 2); D = C(:, 2) - C(:, 1);
 		keepIdx = D <= classifierParams.MAX_GAP;
+
 		C = C(keepIdx, :);
 
 		% TODO: random sample just a portion of the cases
+
 		n = size(C, 1);
 		tVec = repmat(t, n, 1);
 
@@ -73,12 +77,31 @@ function prepareFeatureMatrixForLinkerMatcher(outputFile, params)
 		trackletCombos = eliminateAmbiguousRows(tracklets, trackletCombos, classifierParams);
 	end
 
+	pause
+
+
+	% TODO: train also on parallel tracklets, on the segments that make sense.
+
 	% I = [I; [1 18 5 28]];
 	% Y = [Y; 0];
 
 	for i=1:size(trackletCombos, 1)
 		trackletA = tracklets(trackletCombos(i, 1), :);
 		trackletB = tracklets(trackletCombos(i, 2), :);
+
+		clf;
+		subplot(1,2,1);trackletViewer([trackletA;trackletB], 'out');
+		
+		[trackletA, trackletB] = getUsefulTrackletsPair(trackletA, trackletB);
+
+		% TODO check length ok
+		% TODO check not too close here
+
+		subplot(1,2,2);trackletViewer([trackletA;trackletB], 'out');
+
+
+		% only take the non overlapping instances
+
 		idxA = find(trackletA);
 		idxB = find(trackletB);
 		% For each cell in each tracklet
@@ -88,8 +111,11 @@ function prepareFeatureMatrixForLinkerMatcher(outputFile, params)
 		tVecA = repmat(trackletCombos(i, 1), 1, n);
 		tVecB = repmat(trackletCombos(i, 2), 1, n);
 
-		% TODO random sample
-		new = [tVecA; C(1, :); tVecB; C(2, :)]';
+		% TODO random sample, to prevent overfitting
+
+		new = [tVecA; C(1, :); tVecB; C(2, :)]'
+
+		pauseIt();
 
 		I = [I; new];
 		Y = [Y; zeros(size(C, 2), 1)];
@@ -108,6 +134,14 @@ function prepareFeatureMatrixForLinkerMatcher(outputFile, params)
 	Y = Y(perm);
 
 	fprintf('There are %d positive and %d negative examples.\nThe ratio of positive to negative examples is 1:%.1f.\n', sum(Y==1), sum(Y==0), sum(Y==0)/sum(Y==1))
+
+	if sum(Y==1)==0
+		error('The training data is bad. There are not positive examples');
+	end
+
+	if sum(Y==0)==0
+		error('The training data is bad. There are not negative examples');
+	end
 
 	% Using the matrix, create a new matrix containing the difference of histograms
 	% with the objective function
@@ -149,6 +183,112 @@ function prepareFeatureMatrixForLinkerMatcher(outputFile, params)
 	end
 end
 
+function [trackletA, trackletB, discard] = getUsefulTrackletsPair(trackletA, trackletB)
+	% Only select the tracklet portions that do not overlap, that is if:
+	% 1. |
+	% 2. |
+	% 3. |
+	% 4. |
+	% 5. | |
+	% 6. | | 
+	% 7. | |
+	% 8. | |
+	% 9. | |
+	% 10.  |
+	% Select for the first tracklets the longer first part until the beginning of the second tracklet
+	% and for the second tracklet all of it
+	%
+
+	idxA = find(trackletA ~= 0);
+	idxB = find(trackletB ~= 0);
+
+	% Cases:
+
+	% 1) One tracklet after the other
+	% -----
+	%         -----
+	% Resolution: take both tracklets as they are
+
+	if noOverlap(idxA, idxB)
+		return;
+	end
+
+	% 2) One tracklet partially cover the head/tail of the other
+	%  ------
+	%     ------
+	% Resolution: take the shortest tracklet as it is, trim the longer one
+
+	if partialOverlap(idxA, idxB)
+		[min_len, selected] = min([numel(idxA), numel(idxB)]);
+		% 'partialOverlap'
+
+		if selected == 1  % shortest is trackletA
+			if idxA(1) < idxB(1) % A is before B
+				trackletB(idxB(1):idxA(end)) = 0;
+			else % B is before A
+				trackletB(idxA(1):idxB(end)) = 0;
+			end
+		else % shortest is trackletB
+			if idxA(1) < idxB(1) % A is before B
+				trackletA(idxB(1):idxA(end)) = 0;
+			else % B is before A
+				trackletA(idxA(1):idxB(end)) = 0;
+			end
+		end
+			
+		return;
+	end
+
+
+	% 3) One tracklet covers all of the other tracklet
+	% -----------------------
+	%     ----------
+	% Resolution: keep the shorter tracklet as it is, from the longer one only take the longest part that is not covered
+
+	if fullOverlap(idxA, idxB)
+		[min_len, selected] = min([numel(idxA), numel(idxB)]);
+
+		if selected == 1  % shortest is trackletA
+			bottomPart = numel(trackletB(idxB(1):idxA(1)))
+			topPart = numel(trackletB(idxA(end):idxB(end)))
+
+			if bottomPart >= topPart
+				trackletB(idxA(1):idxB(end)) = 0;
+			else
+				trackletB(idxB(1):idxA(end)) = 0;
+			end
+		else % shortest is trackletB
+			bottomPart = numel(trackletA(idxA(1):idxB(1)))
+			topPart = numel(trackletA(idxB(end):idxA(end)))
+
+			if bottomPart >= topPart
+				trackletA(idxB(1):idxA(end)) = 0;
+			else
+				trackletA(idxA(1):idxB(end)) = 0;
+			end
+		end
+		
+		return;
+	end
+
+	function yesno = noOverlap(idxA, idxB)
+		yesno = (idxA(end) < idxB(1)) || (idxB(end) < idxA(1));
+	end
+
+	function yesno = partialOverlap(idxA, idxB)
+		yesno = ((idxA(1)<idxB(1)) && (idxA(end) < idxB(end))) || ...
+				((idxB(1)<idxA(1)) && (idxB(end) < idxA(end)));
+	end
+
+	function yesno = fullOverlap(idxA, idxB)
+		yesno = ((idxA(1)<=idxB(1)) && (idxA(end) >= idxB(end))) || ...
+				((idxB(1)<=idxA(1)) && (idxB(end) >= idxA(end)));
+	end
+
+	
+
+end
+
 function I2 = convertIToContainTheCellIndices(tracklets, I)
 	% Explands I=[trackletA, frameA, trackletB, frameB] to be:
 	% I=[trackletA, frameA, cellIndexA trackletB, frameB, cellIndexB]
@@ -167,10 +307,17 @@ end
 
 
 function trackletCombos2 = eliminateAmbiguousRows(tracklets, trackletCombos, linkerParams)
+
+	trackletViewer(tracklets, 'out')
 	% Elimintate tracklet pairs if they are more than max distance apart
 	% Elimintate tracklet pairs if the tracklets are in very close locations
 	trackletCombos2 = zeros(0, 2);
 	tracklets2 = single(trackletsToPosition(tracklets, 'out'));
+
+	numEliminatedDueToShortness = 0;
+	numEliminatedDueToParallelism = 0;
+	numEliminatedDueToProximity = 0;
+
 	for i=1:size(trackletCombos, 1)
 		trackA = tracklets(trackletCombos(i, 1), :);
 		trackB = tracklets(trackletCombos(i, 2), :);
@@ -178,11 +325,15 @@ function trackletCombos2 = eliminateAmbiguousRows(tracklets, trackletCombos, lin
 		trackBidx = find(trackB);
 
 		if numel(trackAidx) < 2 || numel(trackBidx) < 2
+			numEliminatedDueToShortness = numEliminatedDueToShortness + 1;
 			continue;
 		end
 
-		% Skip tracklets that can't be linked anyway, because I never evaluate such examples
-		if trackAidx(end) >= trackBidx(1); continue; end
+		% % Skip tracklets that can't be linked anyway, because I never evaluate such examples
+		% if trackAidx(end) >= trackBidx(1);
+		% 	numEliminatedDueToParallelism = numEliminatedDueToParallelism + 1;
+		% 	continue;
+		% end
 
 		tailA = tracklets2(trackletCombos(i, 1), trackAidx(end), :);
 		headB = tracklets2(trackletCombos(i, 2), trackBidx(1), :);
@@ -192,10 +343,16 @@ function trackletCombos2 = eliminateAmbiguousRows(tracklets, trackletCombos, lin
 
 		% fprintf('Dist between %d (%d, %d) and %d (%d, %d) is %f\n', trackletCombos(i, 1), tailA, trackletCombos(i, 2), headB, dist);
 
-		if dist > 50
+		if dist > linkerParams.MIN_TRACKLET_SEPARATION
 			trackletCombos2 = vertcat(trackletCombos2, trackletCombos(i, :));
+		else
+			numEliminatedDueToProximity = numEliminatedDueToProximity + 1;
 		end
 	end
-	%For each tracklet pair get the tail and gea
+
+	fprintf('Dicarded %d tracklet combinations as negative results due to their shortness, %d due to them not being follow-up tracklets (are parallel), and %d because their head/tail where too close\n\n', numEliminatedDueToShortness, numEliminatedDueToParallelism, numEliminatedDueToProximity);
+
+	% pause
+	% For each tracklet pair get the tail and gea
 	% and OK it only if the distance is ok
 end
