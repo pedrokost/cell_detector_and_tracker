@@ -7,6 +7,7 @@ function prepareFeatureMatrixForLinkerMatcher(outputFile, params)
 		The objective column is obtained from the user annotations of links in the dataset. It is important for the purpose of learning a good matcher that the annotations are as complete possible. 
 	%}
 	doProfile = false;
+	trainWithAllCombos = false;
 
 	if doProfile
 		profile on % -memory 
@@ -26,13 +27,13 @@ function prepareFeatureMatrixForLinkerMatcher(outputFile, params)
 	tracklets = filterTrackletsByLength(tracklets, classifierParams.MIN_TRACKLET_LENGTH);
 	
 	clf;
-	% trackletViewer(tracklets, 'in'); fprintf('Press any key to continue\n');pause;
+	trackletViewer(tracklets, 'in');
 	[numTracklets, numFrames] = size(tracklets);
 
 	% For each tracklets, find the corresponding dots in the OUT folder
 	tracklets = convertAnnotationToDetectionIdx(tracklets);
 
-	hold on; trackletViewer(tracklets, 'out'); fprintf('Press any key to continue\n'); pause;
+	hold on; trackletViewer(tracklets, 'out');
 
 
 	Y = zeros(0, 1, 'uint8'); %[match/no-match]
@@ -60,67 +61,119 @@ function prepareFeatureMatrixForLinkerMatcher(outputFile, params)
 
 		C = C(keepIdx, :);
 
-		% TODO: random sample just a portion of the cases
+		% INFO: This is experimental:
+		% Only adds the combination if the max displacement is below a certain threshold
+		% This might become uneccessary if I use a kalman filter to predict location
 
 		n = size(C, 1);
 		tVec = repmat(t, n, 1);
+		old = [tVec C(:, 1) tVec C(:, 2)];
 
-		new = [tVec C(:, 1) tVec C(:, 2)];
-		I = [I; new];
-		Y = [Y; ones(size(C, 1), 1)];
+
+		news = zeros(0, 4, 'uint16');
+
+		for i=1:size(C, 1)
+			tail = DSOUT.getDots(C(i, 1), tracklets(t, C(i, 1)));
+			head = DSOUT.getDots(C(i, 2), tracklets(t, C(i, 2)));
+
+			dist = pointsDistance(tail, head);
+			if dist <= classifierParams.MAX_TRAINING_DISPLACEMENT
+				new = [t C(i, 1) t C(i, 2)];
+				news = vertcat(news, new);
+			% else
+			% 	disp([t C(i, 1) t C(i, 2)])
+			end
+		end
+		I = [I; news];
+		Y = [Y; ones(size(news, 1), 1)];
+		pauseIt()
 	end
 
 	% findall possible tracklets combinations
 	trackletCombos = combnk(1:numTracklets, 2);
-
-	if classifierParams.notNegativeIfPossibleContinuation
-		trackletCombos = eliminateAmbiguousRows(tracklets, trackletCombos, classifierParams);
-	end
-
-	pause
-
-
-	% TODO: train also on parallel tracklets, on the segments that make sense.
-
+return
 	% I = [I; [1 18 5 28]];
 	% Y = [Y; 0];
+
+	% Elimintate tracklet pairs if they are more than max distance apart
+	% Elimintate tracklet pairs if the tracklets are in very close locations
+	numEliminatedDueToShortness = 0;
+	numEliminatedDueToProximity = 0;
+
+	% TODO: shold i train to both saides? A -> B and B-> A?
 
 	for i=1:size(trackletCombos, 1)
 		trackletA = tracklets(trackletCombos(i, 1), :);
 		trackletB = tracklets(trackletCombos(i, 2), :);
 
-		clf;
-		subplot(1,2,1);trackletViewer([trackletA;trackletB], 'out');
 		
+		% only take the non overlapping parts
 		[trackletA, trackletB] = getUsefulTrackletsPair(trackletA, trackletB);
 
-		% TODO check length ok
-		% TODO check not too close here
-
-		subplot(1,2,2);trackletViewer([trackletA;trackletB], 'out');
-
-
-		% only take the non overlapping instances
 
 		idxA = find(trackletA);
 		idxB = find(trackletB);
+
+		% If necessary adjust such that trackletA is before trackletB always
+		if idxA(1) > idxB(1)
+			tmp = trackletA;
+			trackletA = trackletB;
+			trackletB = tmp;
+
+			tmp = idxA;
+			idxA = idxB;
+			idxB = tmp;
+
+			tmp = trackletCombos(i, :);
+			trackletCombos(i, :) = [tmp(2) tmp(1)];
+		end 
+
+		% TODO: I would like to plot the connections I put as negative
+
+		if numel(idxA) < 2 || numel(idxB) < 2
+			% 'too short'
+			numEliminatedDueToShortness = numEliminatedDueToShortness + 1;
+			continue;
+		end
+
+		trackletATail = DSOUT.getDots(idxA(end), trackletA(idxA(end)));
+		trackletBHead = DSOUT.getDots(idxB(1), trackletB(idxB(1)));
+		dist = pointsDistance(trackletATail, trackletBHead);
+
+		if dist < classifierParams.MIN_TRACKLET_SEPARATION
+			% 'too close'
+			numEliminatedDueToProximity = numEliminatedDueToProximity + 1;
+			continue;
+		end
+
+		% clf;
+		% trackletViewer([trackletA;trackletB], 'out');
+
+
 		% For each cell in each tracklet
 		% take all other cells in opposite tracklet
-		C = combvec(idxA, idxB);
-		n = size(C, 2);
-		tVecA = repmat(trackletCombos(i, 1), 1, n);
-		tVecB = repmat(trackletCombos(i, 2), 1, n);
 
-		% TODO random sample, to prevent overfitting
+		% TODO: instead of computing all the combos, try to compute using only the actualy tracklets
 
-		new = [tVecA; C(1, :); tVecB; C(2, :)]'
+		if trainWithAllCombos
 
-		pauseIt();
+			C = combvec(idxA, idxB);
+			n = size(C, 2);
+			tVecA = repmat(trackletCombos(i, 1), 1, n);
+			tVecB = repmat(trackletCombos(i, 2), 1, n);
 
-		I = [I; new];
-		Y = [Y; zeros(size(C, 2), 1)];
-		% and set it a negative example
+			% TODO random sample, to prevent overfitting
+
+			new = [tVecA; C(1, :); tVecB; C(2, :)]';
+
+			I = [I; new];
+			Y = [Y; zeros(size(C, 2), 1)];
+			% and set it a negative example
+		else
+		end
 	end
+
+	fprintf('Dicarded %d tracklet combinations as negative results due to their shortness, and %d because their head/tail where too close\n\n', numEliminatedDueToShortness, numEliminatedDueToProximity);
 
 	clear new C D cnt i idx idxA idxB t trackletA trackletB vals;
 
@@ -151,7 +204,6 @@ function prepareFeatureMatrixForLinkerMatcher(outputFile, params)
 	X = zeros(n, numFeatures, 'single');
 
 	tracklets2 = trackletsToPosition(tracklets, 'out');
-
 
 	fprintf('Preparing large matrix with training data for linker\n')
 
@@ -249,8 +301,8 @@ function [trackletA, trackletB, discard] = getUsefulTrackletsPair(trackletA, tra
 		[min_len, selected] = min([numel(idxA), numel(idxB)]);
 
 		if selected == 1  % shortest is trackletA
-			bottomPart = numel(trackletB(idxB(1):idxA(1)))
-			topPart = numel(trackletB(idxA(end):idxB(end)))
+			bottomPart = numel(trackletB(idxB(1):idxA(1)));
+			topPart = numel(trackletB(idxA(end):idxB(end)));
 
 			if bottomPart >= topPart
 				trackletB(idxA(1):idxB(end)) = 0;
@@ -258,8 +310,8 @@ function [trackletA, trackletB, discard] = getUsefulTrackletsPair(trackletA, tra
 				trackletB(idxB(1):idxA(end)) = 0;
 			end
 		else % shortest is trackletB
-			bottomPart = numel(trackletA(idxA(1):idxB(1)))
-			topPart = numel(trackletA(idxB(end):idxA(end)))
+			bottomPart = numel(trackletA(idxA(1):idxB(1)));
+			topPart = numel(trackletA(idxB(end):idxA(end)));
 
 			if bottomPart >= topPart
 				trackletA(idxB(1):idxA(end)) = 0;
@@ -267,7 +319,7 @@ function [trackletA, trackletB, discard] = getUsefulTrackletsPair(trackletA, tra
 				trackletA(idxA(1):idxB(end)) = 0;
 			end
 		end
-		
+
 		return;
 	end
 
@@ -303,56 +355,4 @@ function I2 = convertIToContainTheCellIndices(tracklets, I)
 		I2(i, 3) = tracklets(I(i, 1), I(i, 2));
 		I2(i, 6) = tracklets(I(i, 3), I(i, 4));
 	end
-end
-
-
-function trackletCombos2 = eliminateAmbiguousRows(tracklets, trackletCombos, linkerParams)
-
-	trackletViewer(tracklets, 'out')
-	% Elimintate tracklet pairs if they are more than max distance apart
-	% Elimintate tracklet pairs if the tracklets are in very close locations
-	trackletCombos2 = zeros(0, 2);
-	tracklets2 = single(trackletsToPosition(tracklets, 'out'));
-
-	numEliminatedDueToShortness = 0;
-	numEliminatedDueToParallelism = 0;
-	numEliminatedDueToProximity = 0;
-
-	for i=1:size(trackletCombos, 1)
-		trackA = tracklets(trackletCombos(i, 1), :);
-		trackB = tracklets(trackletCombos(i, 2), :);
-		trackAidx = find(trackA);
-		trackBidx = find(trackB);
-
-		if numel(trackAidx) < 2 || numel(trackBidx) < 2
-			numEliminatedDueToShortness = numEliminatedDueToShortness + 1;
-			continue;
-		end
-
-		% % Skip tracklets that can't be linked anyway, because I never evaluate such examples
-		% if trackAidx(end) >= trackBidx(1);
-		% 	numEliminatedDueToParallelism = numEliminatedDueToParallelism + 1;
-		% 	continue;
-		% end
-
-		tailA = tracklets2(trackletCombos(i, 1), trackAidx(end), :);
-		headB = tracklets2(trackletCombos(i, 2), trackBidx(1), :);
-		tailA = permute(tailA, [2 3 1]);
-		headB = permute(headB, [2 3 1]);
-		dist = pointsDistance(tailA, headB);
-
-		% fprintf('Dist between %d (%d, %d) and %d (%d, %d) is %f\n', trackletCombos(i, 1), tailA, trackletCombos(i, 2), headB, dist);
-
-		if dist > linkerParams.MIN_TRACKLET_SEPARATION
-			trackletCombos2 = vertcat(trackletCombos2, trackletCombos(i, :));
-		else
-			numEliminatedDueToProximity = numEliminatedDueToProximity + 1;
-		end
-	end
-
-	fprintf('Dicarded %d tracklet combinations as negative results due to their shortness, %d due to them not being follow-up tracklets (are parallel), and %d because their head/tail where too close\n\n', numEliminatedDueToShortness, numEliminatedDueToParallelism, numEliminatedDueToProximity);
-
-	% pause
-	% For each tracklet pair get the tail and gea
-	% and OK it only if the distance is ok
 end
