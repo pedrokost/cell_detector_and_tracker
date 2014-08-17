@@ -4,12 +4,15 @@ Today:
   ✔	T75 @done (14-08-14 16:46)
   ✔	T76 @done (14-08-15 16:46)
   ✔	T78 @done (14-08-17 09:55)
+  ✔	T72 @done (14-08-17 11:27)
+  ☐	T71
   ☐	T68
   ☐	T69
   ☐	T59
   ☐	T39
 Cell tracker (1 week work minimum - 3 weeks maximum):
-  ☐	72) Elimintate hypothesis that are below a certain margin of likelihood. Eg 0.5 for linking, 0.1 for FP
+  ✔	72) Elimintate hypothesis that are below a certain margin of likelihood. Eg 0.5 for linking, 0.1 for FP @done (14-08-17 11:27)
+ 	☐	71) Identify features that are slow to compute
 	☐	59) Basic linear interpolation of tracklets so that I can compute quality metrics
 	☐	60) List a few simple tracking metrics to compute
 	☐	39) Implement cell tracking quality metrics (reqs: T59)
@@ -39,7 +42,6 @@ Cell tracker (1 week work minimum - 3 weeks maximum):
   ☐	68) Manual identify a annotation-detector trajectory pair that is similar.. why not use the software to do it? I need to convert annotations to detections, and then find the tracklets containing those detections :D
   ☐	69) Send these 2 pairs to the the function that compute the number of missetection pairs
   ☐	70) Make sure all features work
-  ☐	71) Identify features that are slow to compute
   ✔	73) Fix the bug of in preparing the matrix to learn the robust tracker @done (14-08-13 16:00)
   ✔	74) Fix bug in trainMatcherRobustClassifierNB that did not remove all columns that have zero variance in EITHER class @done (14-08-13 16:01)
   ✔	75) train linker also on parallel tracklets, on the segments that make sense (such as long enough) @done (14-08-15 16:46)
@@ -58,6 +60,9 @@ Writing thesis (4 weeks work minimum - 7 weeks maximum):
 	☐	14) gaussian broadening feature
 	☐	15) Explain the difficulties of computing spatio-temporal featres for tracklets of length 1... and that this causes them to be useless in fact
 	☐	16) vl_mser requires linking to their paper. make sure you do.
+	☐	17) Write that scalaing parameters are applied after the computation of the probs. Need to update the formuals in the report
+	☐	18) Write about the problem of defining the probabilities. Eg for pinit we assume independence of any other aciton, but in reality, the value depends on the previous tracklets, so its value would change if another tracklet would be chosen. THIS IS AN IMPORTANT ASSUMPTION I NEED TO WRITE DOWN.
+	☐	19) Write about the pruning of linking likelihoods to only link higly likely tracklets
 Evaluations (2 week minimum - 3 weeks maximum):
 	☐	Theoretical maximimum tracking accuracy: directly map detections over annotations: This is a measure of how well the tracker detects all the things
 	☐ Evaluations of detector with single type of cells (red/green)

@@ -4,7 +4,7 @@ rng(1234)
 addpath('somelightspeed')
 %------------------------------------------Options
 doTrainRobustTrackerModel = 0;
-doTrainLinkerTrackerModel = 1;
+doTrainLinkerTrackerModel = 0;
 dataset = 4;   % FIx numero 3
 %------------------------------------------Load dataset
 params = loadDatasetInfo(dataset);  % This is the only use input

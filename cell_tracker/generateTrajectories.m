@@ -22,7 +22,14 @@ function tracklets = generateTrajectories(storeID, params)
 		save(file, 'tracklets', 'iteration', 'closedGaps');
 	end
 
-	options = struct('matcher', classifierParams.algorithm, 'imageDimensions', params.imageDimensions, 'Kfp', params.Kfp, 'Klink', params.Klink, 'Kinit', params.Kinit, 'Kterm', params.Kterm);
+
+	options = struct('matcher', classifierParams.algorithm,...
+					 'imageDimensions', params.imageDimensions,...
+	    			 'Kfp', params.Kfp,...
+	    			 'Klink', params.Klink,...
+	    			 'Kinit', params.Kinit,...
+	    			 'Kterm', params.Kterm,...
+	    			 'minPlink', params.minPlink);
 	
 	for i=1:numel(maxGaps)
 		if params.verbose; fprintf('Closing gaps of size: %d\n', maxGaps(i)); end
@@ -39,6 +46,15 @@ function tracklets = generateTrajectories(storeID, params)
 		if params.verbose; fprintf('	Computing hypothesis likelihoods...\n'); end
 		Liks = computeLikelihoods(tracklets, M, hypTypes, options);
 
+		Iunlikely = elimintateUnlikelyHypothesis(hypTypes, Liks, options);
+		preDims = numel(Liks);
+		M = M(~Iunlikely, :);
+		Liks = Liks(~Iunlikely);
+		if params.verbose
+			postDims = numel(Liks);
+			fprintf('	%.1f%s (%d) of hypothesis were elimintated because they were unlikely\n', 100*(preDims - postDims)/preDims, '%', preDims - postDims);
+		end
+
 		if params.verbose; fprintf('	Computing optimal association...\n'); end
 		Iopt = getGlobalOpimalAssociation(M, Liks);
 
@@ -49,7 +65,6 @@ function tracklets = generateTrajectories(storeID, params)
 		if params.verbose; fprintf('	Updating tracklets...\n'); end
 		Mopt = M(find(Iopt), :);
 		tracklets = updateTracklets(tracklets, Mopt);
-
 		if params.saveTrajectoryGenerationInterimResults
 			if params.verbose; fprintf('	Saving tracklets for iteration %d to disk\n', i); end
 			file = sprintf('%s%d.mat', params.trajectoryGenerationToFilePrefix, i);

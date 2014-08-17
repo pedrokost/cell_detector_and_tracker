@@ -23,10 +23,15 @@ rootFolder = fullfile('..', 'data');
 imageDims = [512 512];  % TODO [height width]
 
 
-Kinit = 2;
-Kterm = 2;
+Kinit = 1;
+Kterm = 1;
 Kfp = 1;
-Klink = 0.7;
+Klink = 1;
+% Elimate hypothesis that are below thes log-likelihoods
+minPlink = log(0.51);
+% minPinit = log(0.1);
+% minPterm = log(0.1);
+% minPfp = log(0.1);
 
 rootInFolder = fullfile('..','..', 'data');
 rootOutFolder = fullfile('..','..', 'dataout');
@@ -109,5 +114,9 @@ dataParams.saveTrajectoryGenerationInterimResults = saveTrajectoryGenerationInte
 dataParams.trajectoryGenerationToFilePrefix = trajectoryGenerationToFilePrefix;
 dataParams.verbose = verbose;
 dataParams.numAnnotatedFrames = numAnnotatedFrames;
+dataParams.minPlink = minPlink;
+% dataParams.minPinit = minPinit;
+% dataParams.minPterm = minPterm;
+% dataParams.minPfp   = minPfp;
 
 end

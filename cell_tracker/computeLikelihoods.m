@@ -54,7 +54,8 @@ function Liks = computeLikelihoods(tracklets, hypothesis, hypTypes, options)
 		error('Options should have imageDimensions field set.')
 	end
 
-	% This should mirror the types in generateHypothesisMatrix()
+	% This should mirror the types in generateHypothesisMatrix() and
+	% eliminateUnlikelyHypothesis()
 	TYPE_INIT = 1;
 	TYPE_TERM = 2;
 	TYPE_FP = 3;
