@@ -75,12 +75,19 @@ function Liks = computeLikelihoods(tracklets, hypothesis, hypTypes, options)
 	linkHypothesisIdx = find(hypTypes == TYPE_LINK);
 	numLinkHypothesis = size(linkHypothesisIdx);
 	linkHypothesis = hypothesis(linkHypothesisIdx, :);
-	pLinks = computePlink() * Klink;
+	pLinks = computePlink();
 	[pFPs, pTPs] = computeTruthnessProbs(1:numTracklets);
+
+	pInit = computePinit();
+	pTerm = computePterm();
+
+
+	% Perform the scaling of values
+	pLinks = pLinks * Klink;
 	pFPs = pFPs * Kfp;
-	pTPs = pTPs / Kfp;
-	pInit = computePinit() * Kinit;
-	pTerm = computePterm() * Kterm;
+	pTPs = max(1-pFPs, 0);
+	pInit = pInit.*Kinit;
+	pTerm = pTerm.*Kterm;
 
 	%------------------------------------------------------Compute likelihoods
 
