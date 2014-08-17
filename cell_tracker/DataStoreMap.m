@@ -1,8 +1,14 @@
-classdef DataStore < handle
-	% DataStore Store for dots and desciptors. Manage all possible access to the
+classdef DataStoreMap < handle
+	% DataStoreMap Store for dots and desciptors. Manage all possible access to the
 	% data through this store
+
+	% This datastoreMap used containers.Map for caching the data. This is much slower
+	% than caching the data in matrices in contigius space.
+	% However, it might be needed if there is not enough contigious space, so
+	% we keep it just in case
+
 	% Usages:
-	% 			DS = DataStore(folderPath)
+	% 			DS = DataStoreMap(folderPath)
 	% 			DS.get(frameNumber, [cellIndices])
 	% 			DS.getDots(frameNumber, [cellIndices])
 	% 			DS.getDescriptors(frameNumber, [cellIndices])
@@ -10,9 +16,7 @@ classdef DataStore < handle
 
 	properties(SetAccess = private, GetAccess = private)
 		descriptorsCache
-		dotsCache  % a 2D matrix containing rows with all dots
-		dotsPos  % a 2D matrix containing indices to dotsCaches for start and end of the part containing the dots of a given frame number
-		descriptorsPos
+		dotsCache
 		annotationIndices
 		filePathsCache
 		dataFolder  % Folder containing mat files with descriptors
@@ -22,23 +26,17 @@ classdef DataStore < handle
  	end
 
 	methods
-		function obj = DataStore(dataFolder, verbose)
-			initCacheSize = 100;
-			obj.dotsCache = zeros(initCacheSize, 2, 'uint16');
+		function obj = DataStoreMap(dataFolder, verbose)
+			obj.descriptorsCache = containers.Map('KeyType','uint32',...
+				'ValueType', 'any');
+			obj.dotsCache = containers.Map('KeyType','uint32','ValueType', 'any');
 			obj.filePathsCache = containers.Map('KeyType', 'uint32',...
 				'ValueType', 'char');
 			obj.dataFolder = dataFolder;
 
 			obj.annotationIndices = computeMatfileIndices();
-			obj.dotsPos = zeros(numel(obj.annotationIndices), 2, 'uint16');
-			obj.descriptorsPos = zeros(numel(obj.annotationIndices), 2, 'uint16');
 			% TODO: Precomputes file names because fullfile is too slow otherwise
 
-			% Check the size of the descriptors
-			data = load(obj.frameFile(obj.annotationIndices(1)));
-			if isfield(data, 'descriptors')
-				obj.descriptorsCache = zeros(initCacheSize, size(data.descriptors, 2), 'single');
-			end
 			if nargin > 1
 				obj.verbose = verbose;
 			end
@@ -71,7 +69,7 @@ classdef DataStore < handle
 			if isKey(obj.filePathsCache, frameNumber)
 				p = obj.filePathsCache(frameNumber);
 			else
-				fmt = ['im%0' int2str(obj.imDigets) 'd.mat'];
+				fmt = ['im%0' num2str(obj.imDigets) 'd.mat'];
 				imName = sprintf(fmt, frameNumber);
 				p = fullfile(obj.dataFolder, imName);
 				obj.filePathsCache(frameNumber) = p;
@@ -80,31 +78,18 @@ classdef DataStore < handle
 
 		function dots = getDots(obj, frameNumber, cellIndices)
 			% Returns the dots of cells indicated by cellIndices in frame frameNumberd
-			q = obj.dotsPos(frameNumber, :);
-			if q
-				dots = obj.dotsCache(q(1):q(2), :);
+
+			if isKey(obj.dotsCache, frameNumber)
+				dots = obj.dotsCache(frameNumber);
 			else
 				if obj.verbose;
 					fprintf('GETDOTS:       Accessing %s on disk\n', obj.frameFile(frameNumber));
 				end
-				data = load(obj.frameFile(frameNumber));
-
+				data = load(obj.frameFile(frameNumber), 'dots');
 				dots = data.dots;
-				n = size(dots, 1);
-				nextIdx = max(obj.dotsPos(:, 2));
-				obj.dotsPos(frameNumber, :) = [nextIdx+1, nextIdx+n];
-
-				if nextIdx + n >= size(obj.dotsCache, 1)
-					% Allocate more space. Duplicate values don't matter since
-					% I will overwrite them
-					if obj.verbose
-						fprintf('GETDOTS:       Dots cache size has been increased to %d.\n', size(obj.dotsCache, 1))
-					end
-					obj.dotsCache = repmat(obj.dotsCache, 2, 1);
-				end
-
-				obj.dotsCache((nextIdx+1):(nextIdx+n), :) = dots;
+				obj.dotsCache(frameNumber) = dots;
 			end
+
 			if nargin == 3
 				dots = dots(cellIndices, :);
 			end
@@ -112,36 +97,21 @@ classdef DataStore < handle
 
 		function descriptors = getDescriptors(obj, frameNumber, cellIndices)
 			% Returns the descriptors of cells indicated by cellIndices in frame frameNumber
-
-			q = obj.descriptorsPos(frameNumber, :);
-			if q
-				descriptors = obj.descriptorsCache(q(1):q(2), :);
+			if isKey(obj.descriptorsCache, frameNumber)
+				descriptors = obj.descriptorsCache(frameNumber);
 			else
 				if obj.verbose;
 					fprintf('GETDETECTIONS: Accessing %s on disk\n', obj.frameFile(frameNumber));
 				end
 				data = load(obj.frameFile(frameNumber));
-
 				if isfield(data, 'descriptors')
 					descriptors = data.descriptors;
-					n = size(descriptors, 1);
-					nextIdx = max(obj.descriptorsPos(:, 2));
-					obj.descriptorsPos(frameNumber, :) = [nextIdx+1, nextIdx+n];
-
-					if nextIdx + n >= size(obj.descriptorsCache, 1)
-						% Allocate more space. Duplicate values don't matter since
-						% I will overwrite them
-						if obj.verbose
-							fprintf('GETDETECTIONS: Descriptors cache size has been increased to %d.\n', size(obj.descriptorsCache, 1))
-						end
-						obj.descriptorsCache = repmat(obj.descriptorsCache, 2, 1);
-					end
-
-					obj.descriptorsCache((nextIdx+1):(nextIdx+n), :) = descriptors;
+					obj.descriptorsCache(frameNumber) = descriptors;
 				else
 					error('No key "descriptors" in %s', obj.frameFile(frameNumber));
 				end
 			end
+
 			if nargin == 3
 				descriptors = descriptors(cellIndices, :);
 			end

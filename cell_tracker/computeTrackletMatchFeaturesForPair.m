@@ -27,8 +27,8 @@ function features = computeTrackletMatchFeaturesForPair(trackletA, trackletB, I,
 	cellIdxA = I(4);
 	cellIdxB = I(8);
 
-	[dotsA, desA] = DSOUT.get(fileA, cellIdxA);
-	[dotsB, desB] = DSOUT.get(fileB, cellIdxB);
+	dotsA = DSOUT.getDots(fileA, cellIdxA);
+	dotsB = DSOUT.getDots(fileB, cellIdxB);
 	dotsA = single(dotsA);
 	dotsB = single(dotsB);
 
@@ -48,6 +48,8 @@ function features = computeTrackletMatchFeaturesForPair(trackletA, trackletB, I,
 	idx = 1;
 
 	if featParams.addCellDescriptors
+		desA = DSOUT.getDescriptors(fileA, cellIdxA);
+		desB = DSOUT.getDescriptors(fileB, cellIdxB);
 		features(idx:(idx+featParams.descriptorSize-1)) = euclideanDistance(desA, desB);
 		idx = idx + featParams.descriptorSize;
 	end
