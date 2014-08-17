@@ -25,26 +25,33 @@ function tracklets = generateTrajectories(storeID, params)
 	options = struct('matcher', classifierParams.algorithm, 'imageDimensions', params.imageDimensions, 'Kfp', params.Kfp, 'Klink', params.Klink, 'Kinit', params.Kinit, 'Kterm', params.Kterm);
 	
 	for i=1:numel(maxGaps)
-		fprintf('Closing gaps of size: %d\n', maxGaps(i));
+		if params.verbose; fprintf('Closing gaps of size: %d\n', maxGaps(i)); end
+
+		if params.verbose; fprintf('	Generating hypothesis matrix...\n'); end
 		[M, hypTypes] = generateHypothesisMatrix(tracklets, struct('maxGap', maxGaps(i)));
+
+		if params.verbose; fprintf('	There are %d hypothesis between %d tracklets\n', size(M, 1), size(tracklets, 1)); end
 
 		% tracklets([5 6 8 9], :)
 		% tr = trackletsToPosition(tracklets([5 6 8 9], :), 'out')
 		% permute(tr(:, find(sum(sum(tr, 3), 1)), :), [2 3 1])
 		
+		if params.verbose; fprintf('	Computing hypothesis likelihoods...\n'); end
 		Liks = computeLikelihoods(tracklets, M, hypTypes, options);
 
+		if params.verbose; fprintf('	Computing optimal association...\n'); end
 		Iopt = getGlobalOpimalAssociation(M, Liks);
 
 		if params.verbose
 			hypothesisPrint(M, Liks, Iopt, 'table');
 		end
 
+		if params.verbose; fprintf('	Updating tracklets...\n'); end
 		Mopt = M(find(Iopt), :);
 		tracklets = updateTracklets(tracklets, Mopt);
 
 		if params.saveTrajectoryGenerationInterimResults
-			fprintf('Saving tracklet for iteration %d to disk\n', i)
+			if params.verbose; fprintf('	Saving tracklets for iteration %d to disk\n', i); end
 			file = sprintf('%s%d.mat', params.trajectoryGenerationToFilePrefix, i);
 			iteration = i;
 			closedGaps = maxGaps(i);

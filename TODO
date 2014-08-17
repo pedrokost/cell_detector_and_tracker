@@ -1,11 +1,15 @@
 Today:
   ✔	T73 @done (14-08-13 16:00)
   ✔	T74 @done (14-08-13 16:00)
+  ✔	T75 @done (14-08-14 16:46)
+  ✔	T76 @done (14-08-15 16:46)
+  ✔	T78 @done (14-08-17 09:55)
   ☐	T68
   ☐	T69
   ☐	T59
   ☐	T39
 Cell tracker (1 week work minimum - 3 weeks maximum):
+  ☐	72) Elimintate hypothesis that are below a certain margin of likelihood. Eg 0.5 for linking, 0.1 for FP
 	☐	59) Basic linear interpolation of tracklets so that I can compute quality metrics
 	☐	60) List a few simple tracking metrics to compute
 	☐	39) Implement cell tracking quality metrics (reqs: T59)
@@ -36,9 +40,13 @@ Cell tracker (1 week work minimum - 3 weeks maximum):
   ☐	69) Send these 2 pairs to the the function that compute the number of missetection pairs
   ☐	70) Make sure all features work
   ☐	71) Identify features that are slow to compute
-  ☐	72) Elimintate hypothesis that are below a certain margin of likelihood. Eg 0.5 for linking, 0.1 for FP
   ✔	73) Fix the bug of in preparing the matrix to learn the robust tracker @done (14-08-13 16:00)
   ✔	74) Fix bug in trainMatcherRobustClassifierNB that did not remove all columns that have zero variance in EITHER class @done (14-08-13 16:01)
+  ✔	75) train linker also on parallel tracklets, on the segments that make sense (such as long enough) @done (14-08-15 16:46)
+  ✔	76) positive example do no longer include tracklet segemetns if their displacement is too large (>30 pixels or so). This is to force the tracker to learn than large displacements are bad -- these should be linked by closing small gaps, not large. @done (14-08-15 16:46)
+  ✔	78) Linker classifier: negative training examples only plausible, not all combinations. @done (14-08-17 09:55)
+  ☐	79) Feature linker: Add the created angle between the tracklets (rate of change)
+  ☐	80) Feature linker: 3D distance between x, y, gap where the value are somehow normalized to be comparable
 Writing thesis (4 weeks work minimum - 7 weeks maximum):
 	☐	3) Analyse headings of the cell_detector part
 	☐	5) Review past best dissertations for section and writing style inspiration
@@ -48,7 +56,10 @@ Writing thesis (4 weeks work minimum - 7 weeks maximum):
 	☐	11) Train classifier on just the single dataset vs all datasets
 	☐	13) linker classifier feautres
 	☐	14) gaussian broadening feature
+	☐	15) Explain the difficulties of computing spatio-temporal featres for tracklets of length 1... and that this causes them to be useless in fact
+	☐	16) vl_mser requires linking to their paper. make sure you do.
 Evaluations (2 week minimum - 3 weeks maximum):
+	☐	Theoretical maximimum tracking accuracy: directly map detections over annotations: This is a measure of how well the tracker detects all the things
 	☐ Evaluations of detector with single type of cells (red/green)
 	☐ Evaluations of tracker with single type of cells (red/green)
 	☐ Evaluations of detector with different number of training/testing examples

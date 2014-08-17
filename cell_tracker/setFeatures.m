@@ -6,17 +6,17 @@ function [params, numFeatures] = setFeatures()
 
 CELL_DESCRIPTOR_SIZE = 101;
 %------------------------------------------------------------------Features
-params.addCellDescriptors = 1;  % descriptor from the detector
-params.addGapSize         = 1;  % number of frames between the tail and head of 2 tracklets
-params.addPosDistance     = 1;   % euclidean x-y distance between tail of tracklet A and head of tracklet B
+params.addCellDescriptors = 0;  % descriptor from the detector
+params.addGapSize         = 0;  % number of frames between the tail and head of 2 tracklets
+params.addPosDistance     = 0;   % euclidean x-y distance between tail of tracklet A and head of tracklet B
 params.addPosDistanceSquared = 1;   % square euclidean x-y distance between tail of tracklet A and head of tracklet B
-params.addEuclidianDistance = 1; % eclidian distance between head and tail of mergin tracklets 
-params.addDirectionTheta  = 1;   % angle between the direction of 2 tracklets
-params.addDirectionVariances = 1;  % variance of direction over last N frames
-params.addMeanDisplacement = 1;  % mean displacement between frames (same as velocity per frame)
-params.addStdDisplacement = 1;  % std of displacement between frames
-params.addDistanceFromEdge = 1; % Distance from the closest image edge for each tracklet
-params.addGaussianBroadeningEstimate = 1; % How much the tracklet is within the broadened gaussian from the original tracklet 
+params.addEuclidianDistance = 0; % eclidian distance between head and tail of mergin tracklets 
+params.addDirectionTheta  = 0;   % angle between the direction of 2 tracklets
+params.addDirectionVariances = 0;  % variance of direction over last N frames
+params.addMeanDisplacement = 0;  % mean displacement between frames (same as velocity per frame)
+params.addStdDisplacement = 0;  % std of displacement between frames
+params.addDistanceFromEdge = 0; % Distance from the closest image edge for each tracklet
+params.addGaussianBroadeningEstimate = 0; % How much the tracklet is within the broadened gaussian from the original tracklet 
 
 params.descriptorSize = CELL_DESCRIPTOR_SIZE;
 params.posDimensions = 2;   % x y

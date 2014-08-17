@@ -18,15 +18,15 @@ function dataParams = loadDatasetInfo(dataset)
 imPrefix = 'im';
 imExts = {'pgm', 'png', 'jpg'};
 imDigits = 3;
-maxGaps = [1 3 9]; % for the linker
+maxGaps = [9]; % for the linker
 rootFolder = fullfile('..', 'data');
 imageDims = [512 512];  % TODO [height width]
 
 
-Kinit = 1;
-Kterm = 1;
+Kinit = 2;
+Kterm = 2;
 Kfp = 1;
-Klink = 0.5;
+Klink = 0.7;
 
 rootInFolder = fullfile('..','..', 'data');
 rootOutFolder = fullfile('..','..', 'dataout');
@@ -64,9 +64,10 @@ end
 
 % Parameters for training the classifier for joining tracklets
 linkerClassifierParams = struct(...
-    'MIN_TRACKLET_LENGTH', 0,...
+    'MIN_TRACKLET_LENGTH', 10,...
+    'MIN_TRACKLET_SEPARATION', 20,... %  min distance between head tail of 2 tracklets to be considered as negative examples
+    'MAX_TRAINING_DISPLACEMENT', 30, ... % Positive examples: only add 2 tracklets if their displacement is less than this
     'MAX_GAP', max(horzcat(5, maxGaps)),...
-    'notNegativeIfPossibleContinuation', true, ...
     'outputFileMatrix', fullfile(outFolder, 'linkerClassifierModelMatrix.mat'),...
     'outputFileModel', fullfile(outFolder, 'linkerClassifierModel.m'),...
     'algorithm', 'ANN'...  %  'ANN'
