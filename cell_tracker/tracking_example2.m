@@ -3,9 +3,9 @@ rng(1234)
 
 addpath('somelightspeed')
 %------------------------------------------Options
-doTrainRobustTrackerModel = 1;
+doTrainRobustTrackerModel = 0;
 doTrainLinkerTrackerModel = 1;
-dataset = 7;   % FIx numero 3
+dataset = 4;   % FIx numero 3
 %------------------------------------------Load dataset
 params = loadDatasetInfo(dataset);  % This is the only use input
 %------------------------------------------Generate the datastores
@@ -39,7 +39,7 @@ numFiles = numel(files);
 for i=1:numFiles
 	load(fullfile(params.outFolder, files{i}));
 	subplot(1,numFiles, iteration+1);
-	trackletViewer(tracklets, 'out', struct('animate', false, 'showLabels',true, 'minLength', 0));
+	trackletViewer(tracklets, 'out', struct('animate', false, 'showLabels',true, 'minLength', 2));
 	title(sprintf('tracklets. Min gap: %d', closedGaps));
 end
 

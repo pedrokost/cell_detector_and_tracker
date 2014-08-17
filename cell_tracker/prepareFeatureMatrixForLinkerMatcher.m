@@ -7,6 +7,7 @@ function prepareFeatureMatrixForLinkerMatcher(outputFile, params)
 		The objective column is obtained from the user annotations of links in the dataset. It is important for the purpose of learning a good matcher that the annotations are as complete possible. 
 	%}
 	doProfile = false;
+	doPlot = false;
 	trainWithAllCombos = false;
 
 	if doProfile
@@ -16,7 +17,7 @@ function prepareFeatureMatrixForLinkerMatcher(outputFile, params)
 
 	global DSIN DSOUT;
 
-	fprintf('Identifying all tracklets pairs for the feature matrix to train Linker\n')
+	fprintf('Combining tracklets for training linker classifier\n')
 
 	tracklets = generateTracklets('in', struct('withAnnotations', true));
 
@@ -26,15 +27,16 @@ function prepareFeatureMatrixForLinkerMatcher(outputFile, params)
 
 	tracklets = filterTrackletsByLength(tracklets, classifierParams.MIN_TRACKLET_LENGTH);
 	
-	clf;
-	trackletViewer(tracklets, 'in');
+	if doPlot; clf; end
+	% trackletViewer(tracklets, 'in');
 	[numTracklets, numFrames] = size(tracklets);
 
 	% For each tracklets, find the corresponding dots in the OUT folder
 	tracklets = convertAnnotationToDetectionIdx(tracklets);
 
-	hold on; trackletViewer(tracklets, 'out');
-
+	if doPlot
+		hold on; trackletViewer(tracklets, 'out');
+	end
 
 	Y = zeros(0, 1, 'uint8'); %[match/no-match]
 	I = zeros(0, 4, 'uint16'); % [trackletA, frameA, trackletB, frameB]
@@ -44,7 +46,7 @@ function prepareFeatureMatrixForLinkerMatcher(outputFile, params)
 
 	% First append all positive examples:
 	% cells in same tracklets with max distance of MAX_GAP
-	fprintf('Positive examples include tracklets pairs less than %d frames apart\n\n', classifierParams.MAX_GAP);
+	fprintf('	Positive examples include tracklets pairs less than %d frames apart\n\n', classifierParams.MAX_GAP);
 
 	for t=1:numTracklets
 		idx = find(tracklets(t, :));
@@ -63,13 +65,7 @@ function prepareFeatureMatrixForLinkerMatcher(outputFile, params)
 
 		% INFO: This is experimental:
 		% Only adds the combination if the max displacement is below a certain threshold
-		% This might become uneccessary if I use a kalman filter to predict location
-
-		n = size(C, 1);
-		tVec = repmat(t, n, 1);
-		old = [tVec C(:, 1) tVec C(:, 2)];
-
-
+		% This might become uneccessary if I use a kalman filter to predict location, since large displacement would probably return worse results
 		news = zeros(0, 4, 'uint16');
 
 		for i=1:size(C, 1)
@@ -86,12 +82,11 @@ function prepareFeatureMatrixForLinkerMatcher(outputFile, params)
 		end
 		I = [I; news];
 		Y = [Y; ones(size(news, 1), 1)];
-		pauseIt()
 	end
 
 	% findall possible tracklets combinations
 	trackletCombos = combnk(1:numTracklets, 2);
-return
+
 	% I = [I; [1 18 5 28]];
 	% Y = [Y; 0];
 
@@ -100,21 +95,17 @@ return
 	numEliminatedDueToShortness = 0;
 	numEliminatedDueToProximity = 0;
 
-	% TODO: shold i train to both saides? A -> B and B-> A?
-
 	for i=1:size(trackletCombos, 1)
 		trackletA = tracklets(trackletCombos(i, 1), :);
 		trackletB = tracklets(trackletCombos(i, 2), :);
 
-		
-		% only take the non overlapping parts
+		% only take the non overlapping segments of the tracklet pairs
 		[trackletA, trackletB] = getUsefulTrackletsPair(trackletA, trackletB);
-
 
 		idxA = find(trackletA);
 		idxB = find(trackletB);
 
-		% If necessary adjust such that trackletA is before trackletB always
+		%  Makus sure that trackletA is before trackletB always
 		if idxA(1) > idxB(1)
 			tmp = trackletA;
 			trackletA = trackletB;
@@ -124,14 +115,10 @@ return
 			idxA = idxB;
 			idxB = tmp;
 
-			tmp = trackletCombos(i, :);
-			trackletCombos(i, :) = [tmp(2) tmp(1)];
-		end 
-
-		% TODO: I would like to plot the connections I put as negative
+			trackletCombos(i, :) = fliplr(trackletCombos(i, :));
+		end
 
 		if numel(idxA) < 2 || numel(idxB) < 2
-			% 'too short'
 			numEliminatedDueToShortness = numEliminatedDueToShortness + 1;
 			continue;
 		end
@@ -164,36 +151,55 @@ return
 
 			% TODO random sample, to prevent overfitting
 
+			% TODO: dont add if distance more than MAX_GAP
 			new = [tVecA; C(1, :); tVecB; C(2, :)]';
 
 			I = [I; new];
 			Y = [Y; zeros(size(C, 2), 1)];
 			% and set it a negative example
 		else
+			% Train with possibly connecting tracklets,
+			% and segments that could connect (instead of all combinations)
+
+			% Add the end of TA and start of TB as negative examples
+
+			% TODO: dont add if distance more than MAX_GAP: Why not, I only 
+			% loose an example. Maybe MAX_GAP is not a good training feature
+
+			new = [trackletCombos(i, 1), idxA(end), trackletCombos(i, 2), idxB(1)];
+			I = [I; new];
+			Y = [Y; 0];
+
+			tail = DSOUT.getDots(idxA(end), tracklets(trackletCombos(i, 1), idxA(end)));
+			head = DSOUT.getDots(idxB(1), tracklets(trackletCombos(i, 2), idxB(1)));
+
+			% if trackletCombos(i, 1)==5
+			% 	hold on;
+			% 	plot3([tail(1);head(1)],...
+			% 		  [tail(2);head(2)],...
+			% 		  [idxA(end); idxB(1)],'--');
+			% end
+
 		end
 	end
 
-	fprintf('Dicarded %d tracklet combinations as negative results due to their shortness, and %d because their head/tail where too close\n\n', numEliminatedDueToShortness, numEliminatedDueToProximity);
+	fprintf('	Dicarded %d tracklet combinations as negative results due to their shortness, and %d because their head/tail where too close\n', numEliminatedDueToShortness, numEliminatedDueToProximity);
 
 	clear new C D cnt i idx idxA idxB t trackletA trackletB vals;
-
-	% % FIXME: remove this
-	% I = I(1:100, :);
-	% Y = Y(1:100, :);
 
 	n = numel(Y);
 	perm = randperm(n);
 	I = I(perm, :);
 	Y = Y(perm);
 
-	fprintf('There are %d positive and %d negative examples.\nThe ratio of positive to negative examples is 1:%.1f.\n', sum(Y==1), sum(Y==0), sum(Y==0)/sum(Y==1))
+	fprintf('	There are %d positive and %d negative examples.\n\tThe ratio of positive to negative examples is 1:%.1f.\n', sum(Y==1), sum(Y==0), sum(Y==0)/sum(Y==1))
 
 	if sum(Y==1)==0
-		error('The training data is bad. There are not positive examples');
+		error('The training data is bad. There are no positive examples');
 	end
 
 	if sum(Y==0)==0
-		error('The training data is bad. There are not negative examples');
+		error('The training data is bad. There are no negative examples');
 	end
 
 	% Using the matrix, create a new matrix containing the difference of histograms
@@ -205,7 +211,7 @@ return
 
 	tracklets2 = trackletsToPosition(tracklets, 'out');
 
-	fprintf('Preparing large matrix with training data for linker\n')
+	fprintf('	Preparing large matrix with training data for linker\n')
 
 	I = convertIToContainTheCellIndices(tracklets, I);
 	I = addActualFileIndices(I);
