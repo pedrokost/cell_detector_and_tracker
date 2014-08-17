@@ -25,8 +25,8 @@ function tracklets2 = convertAnnotationToDetectionIdx(tracklets, options)
 	tracklets2 = zeros(numTracklets, numFrames, class(tracklets));
 
 	matPrefix = 'im';  % TODO load from outside
-
 	for i=1:numFrames
+
 		dotsGt = DSIN.getDots(annotationMatIdx(i));
 		% Permute this dots with the tracklets matrix
 		dotsGt = getCellTrackletsFrame(dotsGt, tracklets(:, i));
@@ -36,9 +36,13 @@ function tracklets2 = convertAnnotationToDetectionIdx(tracklets, options)
 		[D, perm] = pdist2(single(dotsDet), single(dotsGt), 'euclidean', 'Smallest', 1);
 
 		perm(D > thresholdDinstace) = 0;
+
 		if ~isempty(perm)
 			tracklets2(:, i) = perm;
 		end
-
 	end
+
+	% The places with not detection should remain without detection!!
+	% The 'bug' is introduct by perm from pdist2
+	tracklets2(tracklets == 0) = 0;
 end
