@@ -47,6 +47,8 @@ function prepareFeatureMatrixForRobustMatcher(numAnnotatedFrames, outputFile)
 		break
 	end
 
+	numLinks = 0;
+
 	for i=metaStartIdx:(numFrames-1)
 		matIdx = matAnnotationsIndices(i+1);
 
@@ -77,7 +79,7 @@ function prepareFeatureMatrixForRobustMatcher(numAnnotatedFrames, outputFile)
 			end
 
 			if ~any([isempty(descriptorsA) isempty(descriptorsB)])
-
+				numLinks = numLinks + numel(find(linksA));
 				M = buildTrainMatrixForFramePair(descriptorsA, descriptorsB, linksA);
 				X = vertcat(X, M);
 			end
@@ -87,6 +89,11 @@ function prepareFeatureMatrixForRobustMatcher(numAnnotatedFrames, outputFile)
 		dotsGtA = dotsGtB; dotsDetA = dotsGtB;
 	end
 
+	if numLinks == 0
+		error('Please annotate the dataset with links. I cannot learn if you dont teach me properly')
+	end
+
+	fprintf('Trained robust matcher classier on %d links\n', numLinks)
 	save(outputFile, 'X')
 
 	% X = normalizeRange(X, {1:2});
