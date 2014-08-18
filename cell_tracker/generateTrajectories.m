@@ -7,7 +7,7 @@ function tracklets = generateTrajectories(storeID, params)
 	end
 
 	maxGaps = params.maxGaps;
-	numGaps = numel(maxGaps)+2;  % FIXME, why + 2 ?
+	numGaps = numel(maxGaps)+2;  % FIXME, why + 2 ? It was becase 1 is for original, 1 for final or so...
 	classifierParams = params.linkerClassifierParams;
 	robustClassifierParams = params.robustClassifierParams;
 

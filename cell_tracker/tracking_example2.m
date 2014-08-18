@@ -3,9 +3,9 @@ rng(1234)
 
 addpath('somelightspeed')
 %------------------------------------------Options
-doTrainRobustTrackerModel = 0;
-doTrainLinkerTrackerModel = 0;
-dataset = 4;   % FIx numero 3
+doTrainRobustTrackerModel = 1;
+doTrainLinkerTrackerModel = 1;
+dataset = 6;   % FIx numero 3
 %------------------------------------------Load dataset
 params = loadDatasetInfo(dataset);  % This is the only use input
 %------------------------------------------Generate the datastores

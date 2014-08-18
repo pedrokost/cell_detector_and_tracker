@@ -1,22 +1,16 @@
 Today:
-  ✔	T73 @done (14-08-13 16:00)
-  ✔	T74 @done (14-08-13 16:00)
-  ✔	T75 @done (14-08-14 16:46)
-  ✔	T76 @done (14-08-15 16:46)
-  ✔	T78 @done (14-08-17 09:55)
-  ✔	T72 @done (14-08-17 11:27)
   ☐	T71
   ☐	T68
   ☐	T69
   ☐	T59
   ☐	T39
 Cell tracker (1 week work minimum - 3 weeks maximum):
-  ✔	72) Elimintate hypothesis that are below a certain margin of likelihood. Eg 0.5 for linking, 0.1 for FP @done (14-08-17 11:27)
  	☐	71) Identify features that are slow to compute
 	☐	59) Basic linear interpolation of tracklets so that I can compute quality metrics
 	☐	60) List a few simple tracking metrics to compute
 	☐	39) Implement cell tracking quality metrics (reqs: T59)
 	☐	25) Train ANN and NB with much more data, possibly of all different datasets combined (reqs: T26)
+	☐	82) testLinkerClassifierANN.m is overwritten for each new dataset... it should be saved into the correct outfolder instead.
 	☐	40) Render getTrackletHeadTailDescriptors fully obsolete
 	☐	34) Solve the unbalanced learning sets problem
 	☐	43) Feature linker: tracklet purity (number of gaps within the track (sum and difference for both tracklet))
@@ -42,13 +36,9 @@ Cell tracker (1 week work minimum - 3 weeks maximum):
   ☐	68) Manual identify a annotation-detector trajectory pair that is similar.. why not use the software to do it? I need to convert annotations to detections, and then find the tracklets containing those detections :D
   ☐	69) Send these 2 pairs to the the function that compute the number of missetection pairs
   ☐	70) Make sure all features work
-  ✔	73) Fix the bug of in preparing the matrix to learn the robust tracker @done (14-08-13 16:00)
-  ✔	74) Fix bug in trainMatcherRobustClassifierNB that did not remove all columns that have zero variance in EITHER class @done (14-08-13 16:01)
-  ✔	75) train linker also on parallel tracklets, on the segments that make sense (such as long enough) @done (14-08-15 16:46)
-  ✔	76) positive example do no longer include tracklet segemetns if their displacement is too large (>30 pixels or so). This is to force the tracker to learn than large displacements are bad -- these should be linked by closing small gaps, not large. @done (14-08-15 16:46)
-  ✔	78) Linker classifier: negative training examples only plausible, not all combinations. @done (14-08-17 09:55)
   ☐	79) Feature linker: Add the created angle between the tracklets (rate of change)
   ☐	80) Feature linker: 3D distance between x, y, gap where the value are somehow normalized to be comparable
+  ☐	81) When linking tracklets, add them a score of the product of link probabilities... the map score... to see how confident is the tracker of each connection at then end
 Writing thesis (4 weeks work minimum - 7 weeks maximum):
 	☐	3) Analyse headings of the cell_detector part
 	☐	5) Review past best dissertations for section and writing style inspiration
@@ -122,6 +112,20 @@ Track evaluation metrics:
 	☐	8) ID switches (IDS): the number of times two trajectories switch their ID
 ＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿
 Archive:
+	✔	T72 @done (14-08-17 11:27) @project(Today)
+	✔	72) Elimintate hypothesis that are below a certain margin of likelihood. Eg 0.5 for linking, 0.1 for FP @done (14-08-17 11:27) @project(Cell tracker (1 week work minimum - 3 weeks maximum))
+	✔	T81 @done (14-08-17 09:58) @project(Today)
+	✔	81) Improve DataStore performance @done (14-08-17 09:57) @project(Cell tracker (1 week work minimum - 3 weeks maximum))
+	✔	T78 @done (14-08-17 09:55) @project(Today)
+	✔	78) Linker classifier: negative training examples only plausible, not all combinations. @done (14-08-17 09:55) @project(Cell tracker (1 week work minimum - 3 weeks maximum))
+	✔	T76 @done (14-08-15 16:46) @project(Today)
+	✔	76) positive example do no longer include tracklet segemetns if their displacement is too large (>30 pixels or so). This is to force the tracker to learn than large displacements are bad -- these should be linked by closing small gaps, not large. @done (14-08-15 16:46) @project(Cell tracker (1 week work minimum - 3 weeks maximum))
+	✔	75) train linker also on parallel tracklets, on the segments that make sense (such as long enough) @done (14-08-15 16:46) @project(Cell tracker (1 week work minimum - 3 weeks maximum))
+	✔	T75 @done (14-08-14 16:46) @project(Today)
+	✔	74) Fix bug in trainMatcherRobustClassifierNB that did not remove all columns that have zero variance in EITHER class @done (14-08-13 16:01) @project(Cell tracker (1 week work minimum - 3 weeks maximum))
+	✔	T74 @done (14-08-13 16:00) @project(Today)
+	✔	T73 @done (14-08-13 16:00) @project(Today)
+	✔	73) Fix the bug of in preparing the matrix to learn the robust tracker @done (14-08-13 16:00) @project(Cell tracker (1 week work minimum - 3 weeks maximum))
 	✔ REview the reviewed datasets @done (14-08-13 14:37) @project(Today)
 	✔	Sync the trained detections @done (14-08-13 14:37) @project(Today)
 	✔	Make the cell annotator display potentitally wrong links @done (14-08-13 14:37) @project(Today)
