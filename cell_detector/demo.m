@@ -1,8 +1,8 @@
 % -------------------------------------------------------------------Configure
 
 % dataset 2, 4 failsex
-datasets = [1 2 3 4 5 6];  %Identifier of the training/testing data as set in loadDatasetInfo
-train = 1;%---->Do train
+datasets = [6];  %Identifier of the training/testing data as set in loadDatasetInfo
+train = 0;%---->Do train
 test = 1;%----->Do test
 
 % ---------------------------------------------------No need to touch the rest
@@ -18,6 +18,7 @@ end
 
 if test
 	for dataset=datasets
+		fprintf('Testing dataset %d\n', dataset);
 		detectCells(dataset, opts);
 	end
 end
