@@ -13,11 +13,11 @@ done = 0;
 additionalU = 0;
 outerIter = 0;
 
-dataParams = loadDatasetInfo(dataset);
+dataParams = detector.loadDatasetInfo(dataset);
 trainFiles = dataParams.trainFiles;
 testFiles  = dataParams.testFiles;
 imExt      = dataParams.imExt;
-dataFolder = dataParams.dataFolder;
+dataFolder = dataParams.dotFolder;
 outFolder  = dataParams.outFolder;
 mserParms  = dataParams.mserParms;
 
@@ -62,13 +62,13 @@ while ~done
         
         clear img gt X Y r sizeMSER gtInMSER nFeatures MSERtree
         
-        if exist([dataFolder '/feats_' trainFiles{d} '.mat'],'file') == 0
+        if exist([outFolder '/feats_' trainFiles{d} '.mat'],'file') == 0
             [img, gt, X, Y, r, ell, MSERtree, gtInMSER, sizeMSER, nFeatures] = ...
-                encodeImage(dataFolder, trainFiles{d}, imExt, withGT, parameters, mserParms);
-            save([dataFolder '/feats_' trainFiles{d} '.mat']...
+                detector.encodeImage(dataFolder, trainFiles{d}, imExt, withGT, parameters, mserParms);
+            save([outFolder '/feats_' trainFiles{d} '.mat']...
                 ,'img', 'gt', 'X', 'Y', 'r', 'ell', 'gtInMSER', 'sizeMSER', 'MSERtree', 'nFeatures');
         else
-            load([dataFolder '/feats_' trainFiles{d} '.mat']);
+            load([outFolder '/feats_' trainFiles{d} '.mat']);
         end
         
         % Skip ahead if the frame has no images to train on.
@@ -95,12 +95,12 @@ while ~done
             prediction = (w'*X' + 1).*Y'-0.01;
             
             if exist('MSERtree','var')
-                [mask,Y, MSERtree] = PylonInference(img, prediction',...
+                [mask,Y, MSERtree] = detector.PylonInference(img, prediction',...
                     sizeMSER, r, additionalU, MSERtree);
             else
-                [mask,Y, MSERtree] = PylonInference(img, prediction',...
+                [mask,Y, MSERtree] = detector.PylonInference(img, prediction',...
                     sizeMSER, r, additionalU);
-                save([dataFolder '/feats_' trainFiles{d} '.mat'],'MSERtree', '-append');
+                save([outFolder '/feats_' trainFiles{d} '.mat'],'MSERtree', '-append');
             end
             
             patterns{p} = [X p*ones(size(X,1),1)]; 
@@ -180,8 +180,8 @@ end
 %---------------------------------------------------------------------Clean
 disp('Cleaning...');
 for d = 1:numel(trainFiles)
-    if ~exist([dataFolder '/feats_' trainFiles{d} '.mat'],'file') == 0
-        delete([dataFolder '/feats_' trainFiles{d} '.mat']);
+    if ~exist([outFolder '/feats_' trainFiles{d} '.mat'],'file') == 0
+        delete([outFolder '/feats_' trainFiles{d} '.mat']);
     end
 end
 
@@ -268,7 +268,7 @@ nFeatures = param.dimension;
 
 unary = x(:,1:nFeatures)*model.w + abs(double(gtInside)-1) - double(gtInside) - param.alpha*(gtInside == 0);
 
-[~,yhat] = PylonInference(param.images{sampleNum}, unary, ...
+[~,yhat] = detector.PylonInference(param.images{sampleNum}, unary, ...
     param.sizes{sampleNum}, param.rVector{sampleNum},0,param.trees{sampleNum});
 
 end

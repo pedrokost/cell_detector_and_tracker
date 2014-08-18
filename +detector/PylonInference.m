@@ -25,7 +25,7 @@ idMask = zeros(size(img));
 svmTH = 0.001;
 
 if nargin < 7
-     MSERtree = buildPylonMSER(img,r,sizeMSER);
+     MSERtree = detector.buildPylonMSER(img,r,sizeMSER);
 end
 
 if nargin < 6

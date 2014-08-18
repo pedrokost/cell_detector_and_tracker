@@ -1,4 +1,4 @@
-function dataParams = loadDatasetInfo(dataset, options)
+function params = loadDatasetInfo(dataset, options)
 %This is used to setup (and load) the parameters of the dataset; use as
 %template for new datasets.
 %
@@ -34,64 +34,20 @@ maxPixels = 200;
 Delta = 4;
 MaxVariation = 1;
 MinDiversity = 0.1;
-imPrefix = 'im';
-imExt = 'pgm';
 tol = 8;  %Tolerance (pixels) for evaluation only
 trainsplit = 1;  % percentage of data to be used for training 
 features = [1 0 1 1 1 1 0]; % Use default from setFeatures
-rootInFolder = fullfile('..','..', 'data');
-rootOutFolder = fullfile('..','..', 'dataout');
 
+params = dataFolders(dataset);
 
-switch dataset
-    case 1 %LungGreen
-        dataFolder = fullfile(rootInFolder, 'series13greencropped');
-        outFolder = fullfile(rootOutFolder, 'series13greencropped');
-        annotatedFrames = 55;
-    case 2 %LungGreen
-        dataFolder = fullfile(rootInFolder, 'series14croppedcleaned');
-        outFolder = fullfile(rootOutFolder, 'series14croppedcleaned');
-        annotatedFrames = 54;
-    case 3 %LungRed
-        dataFolder = fullfile(rootInFolder, 'series30green');
-        outFolder = fullfile(rootOutFolder, 'series30green');
-        annotatedFrames = 60;
-    case 4 %KidneyGreen
-        dataFolder = fullfile(rootInFolder, 'series30red');
-        outFolder = fullfile(rootOutFolder, 'series30red');
-        annotatedFrames = 60;
-    case 5 %KidneyRed
-        dataFolder = fullfile(rootInFolder, 'seriesm170_13cropped');
-        outFolder = fullfile(rootOutFolder, 'seriesm170_13cropped');
-        annotatedFrames = 67;
-    case 6 %KidneyRed
-        dataFolder = fullfile(rootInFolder, 'series13redcropped');
-        outFolder = fullfile(rootOutFolder, 'series13redcropped');
-        annotatedFrames = 32;
-    case 7 %KidneyRed
-        dataFolder = fullfile(rootInFolder, 'dumy');
-        outFolder = fullfile(rootOutFolder, 'dumy');
-        annotatedFrames = 30;
-end
+files = dir(fullfile(params.dotFolder,[params.imPrefix, '*.' params.imExt]));
 
-if exist(dataFolder,'dir') ~= 7
-    error('Data folder not found')
-end
-
-if exist(outFolder,'dir') ~= 7
-    mkdir(outFolder);
-    fprintf('Created folder "%s"', outFolder);
-end
-
-files = dir(fullfile(dataFolder,[imPrefix, '*.' imExt]));
-% files = files(1:7)
 [~,files] = cellfun(@fileparts, {files.name}, 'UniformOutput',false);
 
-trainImgs = round(trainsplit * annotatedFrames);
+trainImgs = round(trainsplit * params.numAnnotatedFrames);
 
-trainFiles = datasample(files(1:annotatedFrames), ...
-    trainImgs,...
-    'Replace', false);
+trainFiles = datasample(files(1:params.numAnnotatedFrames), ...
+    trainImgs, 'Replace', false);
 trainFiles = sort(trainFiles);
 
 if options.testAll
@@ -99,7 +55,6 @@ if options.testAll
 else
     testFiles = setdiff(files, trainFiles);
 end
-
 
 % randomize the order of train files
 % trainFiles = {trainFiles{randperm(numel(trainFiles))}};
@@ -113,14 +68,11 @@ mserParms.delta = Delta;
 mserParms.maxVar = MaxVariation;
 
 
-dataParams.trainFiles = trainFiles;
-dataParams.testFiles  =  testFiles;
-dataParams.imExt      =      imExt;
-dataParams.dataFolder = dataFolder;
-dataParams.outFolder  =  outFolder;
-dataParams.mserParms  =  mserParms;
-dataParams.tol        =        tol;
-dataParams.features   =   features;
+params.trainFiles = trainFiles;
+params.testFiles  =  testFiles;
+params.mserParms  =  mserParms;
+params.tol        =        tol;
+params.features   =   features;
 
 
 end

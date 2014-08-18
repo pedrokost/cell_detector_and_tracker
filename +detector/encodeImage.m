@@ -153,7 +153,7 @@ if withGT %Ground Truth available = train image
             cellDescriptors(k,:) = zeros(1, nDescriptor);
             gtInMSER(k,:) = 0;
         else
-            [xx, des] = encodeMSER(img, colorImg, edgeImg, gradImg,...
+            [xx, des] = detector.encodeMSER(img, colorImg, edgeImg, gradImg,...
                 orientGrad, sel, ell(:,k), parms);
 
             X(k,:) = xx;
@@ -196,7 +196,7 @@ if withGT %Ground Truth available = train image
     %    areaBins = logspace(log10(minArea),log10(maxArea),nBinsArea);
     
     %Lets build the MSERtree right here
-    MSERtree = buildPylonMSER(img,r,sizeMSER);
+    MSERtree = detector.buildPylonMSER(img,r,sizeMSER);
     
     if parms.addArea
         for k = 1:length(r);
