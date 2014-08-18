@@ -14,7 +14,7 @@ function [val, pointsVals] = evaluateGaussianBroadeningModel(model, points)
 	for i=1:extrudeLength
 		% model.sigmas(:, :, i)
 		% p = mvnpdf(points, model.mus(i, :), model.sigmas(:, :, i))
-		p = mvnpdffast(points, model.mus(i, :), model.sigmas(:, :, i));
+		p = tracker.mvnpdffast(points, model.mus(i, :), model.sigmas(:, :, i));
 
 
 		% size(points)

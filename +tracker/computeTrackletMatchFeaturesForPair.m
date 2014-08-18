@@ -38,8 +38,8 @@ function features = computeTrackletMatchFeaturesForPair(trackletA, trackletB, I,
 
 	% I am not sure why I allow rows with zero values, instead of cropping. 
 	% So I will crop here and see if its all still fine
-	trackletA2DTrimmed = trimZeros(trackletA2D);
-	trackletB2DTrimmed = trimZeros(trackletB2D);
+	trackletA2DTrimmed = tracker.trimZeros(trackletA2D);
+	trackletB2DTrimmed = tracker.trimZeros(trackletB2D);
 
 	lenTrackletA = size(trackletA2D, 1);
 	lenTrackletB = size(trackletB2D, 1);
@@ -50,7 +50,7 @@ function features = computeTrackletMatchFeaturesForPair(trackletA, trackletB, I,
 	if featParams.addCellDescriptors
 		desA = DSOUT.getDescriptors(fileA, cellIdxA);
 		desB = DSOUT.getDescriptors(fileB, cellIdxB);
-		features(idx:(idx+featParams.descriptorSize-1)) = euclideanDistance(desA, desB);
+		features(idx:(idx+featParams.descriptorSize-1)) = tracker.euclideanDistance(desA, desB);
 		idx = idx + featParams.descriptorSize;
 	end
 
@@ -63,7 +63,7 @@ function features = computeTrackletMatchFeaturesForPair(trackletA, trackletB, I,
 	%---------------------Features that look at the tail and head of tracklets
 
 	if featParams.addPosDistance
-		features(idx:(idx+featParams.posDimensions-1)) = euclideanDistance(dotsA, dotsB);
+		features(idx:(idx+featParams.posDimensions-1)) = tracker.euclideanDistance(dotsA, dotsB);
 
 		idx = idx + featParams.posDimensions;
 	end
@@ -75,7 +75,7 @@ function features = computeTrackletMatchFeaturesForPair(trackletA, trackletB, I,
 	end
 
 	if featParams.addEuclidianDistance
-		features(idx) = pointsDistance(dotsA, dotsB);
+		features(idx) = tracker.pointsDistance(dotsA, dotsB);
 
 		idx = idx + 1;
 	end
@@ -97,8 +97,8 @@ function features = computeTrackletMatchFeaturesForPair(trackletA, trackletB, I,
 		trackA = getTail(trackletA2D, featParams.numCellsToEstimateDirectionTheta);
 		trackB = getHead(trackletB2D, featParams.numCellsToEstimateDirectionTheta);
 
-		[trackA nonzeroIdxA] = eliminateZeroRows(trackA);
-		[trackB nonzeroIdxB] = eliminateZeroRows(trackB);
+		[trackA nonzeroIdxA] = tracker.eliminateZeroRows(trackA);
+		[trackB nonzeroIdxB] = tracker.eliminateZeroRows(trackB);
 
 		% REVIEW: Define what to say about the angle when an item has length of 1. Should it be assumed perfect match? angleDiff = 0? NaN?;
 
@@ -132,11 +132,11 @@ function features = computeTrackletMatchFeaturesForPair(trackletA, trackletB, I,
 
 	if featParams.addDirectionVariances
 
-		trackA = getTail(trackletA2D, featParams.numCellsForDirectionVariances);
-		trackB = getHead(trackletB2D, featParams.numCellsForDirectionVariances);
+		trackA = tracker.getTail(trackletA2D, featParams.numCellsForDirectionVariances);
+		trackB = tracker.getHead(trackletB2D, featParams.numCellsForDirectionVariances);
 
-		trackA = eliminateZeroRows(trackA);
-		trackB = eliminateZeroRows(trackB);
+		trackA = tracker.eliminateZeroRows(trackA);
+		trackB = tracker.eliminateZeroRows(trackB);
 
 		cA = diag(cov(trackA));
 		cB = diag(cov(trackB));
@@ -167,11 +167,11 @@ function features = computeTrackletMatchFeaturesForPair(trackletA, trackletB, I,
 	if featParams.addMeanDisplacement || featParams.addStdDisplacement
 
 		% Linearly Interpolate the value where there are gaps
-		trackA = interpolateTracklet(trackletA2D);
-		trackB = interpolateTracklet(trackletB2D);
+		trackA = tracker.interpolateTracklet(trackletA2D);
+		trackB = tracker.interpolateTracklet(trackletB2D);
 
-		trackA = getTail(trackA, featParams.numCellsForMeanAndStdDisplacement);
-		trackB = getHead(trackB, featParams.numCellsForMeanAndStdDisplacement);
+		trackA = tracker.getTail(trackA, featParams.numCellsForMeanAndStdDisplacement);
+		trackB = tracker.getHead(trackB, featParams.numCellsForMeanAndStdDisplacement);
 
 		% Compute successive distances
 		trackA = computeBetweenFrameDistances(trackA);
@@ -223,11 +223,11 @@ function features = computeTrackletMatchFeaturesForPair(trackletA, trackletB, I,
 	%----------------------------------Features that extrapolate the tracklets
 
 	if featParams.addGaussianBroadeningEstimate
-		trackA = interpolateTracklet(trackletA2D);
-		trackB = interpolateTracklet(trackletB2D);
+		trackA = tracker.interpolateTracklet(trackletA2D);
+		trackB = tracker.interpolateTracklet(trackletB2D);
 
-		trackA = getTail(trackA, featParams.numCellsForGaussianBroadeningVelocityEstimation);
-		trackB = getHead(trackB, featParams.numCellsForGaussianBroadeningVelocityEstimation);
+		trackA = tracker.getTail(trackA, featParams.numCellsForGaussianBroadeningVelocityEstimation);
+		trackB = tracker.getHead(trackB, featParams.numCellsForGaussianBroadeningVelocityEstimation);
 
 		gapSize = frameB - frameA;
 		% TODO: redefine the 10, use the actual max gap between frames
@@ -235,8 +235,8 @@ function features = computeTrackletMatchFeaturesForPair(trackletA, trackletB, I,
 
 		% Use the actual gap between frames, but first make sure that it is better
 
-		model = gaussianBroadeningModel(trackA, featParams.maxClosingGap);
-		val = evaluateGaussianBroadeningModel(model, trackB);
+		model = tracker.gaussianBroadeningModel(trackA, featParams.maxClosingGap);
+		val = tracker.evaluateGaussianBroadeningModel(model, trackB);
 
 		features(idx:idx) = val;
 		idx = idx + 1;

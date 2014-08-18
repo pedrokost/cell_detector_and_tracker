@@ -14,13 +14,13 @@ function trainLinkerTrackerModel(storeID, options)
 	dataFile = linkerOptions.outputFileMatrix;
 	% modelFile = options.outputFileModel;
 
-	prepareFeatureMatrixForLinkerMatcher(dataFile, options)
+	tracker.prepareFeatureMatrixForLinkerMatcher(dataFile, options)
 
 	fprintf('Training model for linking tracklets\n')
 	
 	switch linkerOptions.algorithm
 		case 'ANN'
-			trainLinkerClassifierANN(dataFile)
+			tracker.trainLinkerClassifierANN(dataFile)
 		% case 'NB'
 			% trainLinkerClassifierNB(dataFile, modelFile)
 		otherwise

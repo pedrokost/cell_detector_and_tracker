@@ -24,13 +24,13 @@
 %                                                                Configuration
 %============================================================================%
 
-datasetIDs    = [5];     % Look into loadDatasetInfo
+datasetIDs    = [5];     % Look into dataFolders.m
 
 trainDetector = false;
 trainTracker  = false;
 
-testDetector  = true;
-testTracker   = false;
+testDetector  = false;
+testTracker   = true;
 
 % If you are not satisfied with the results of the tracker, you can use the
 % `tweak` tool to adjust the trajectories.
@@ -59,7 +59,6 @@ if trainDetector
 	for dataset=datasetIDs
 		fsectionf('Training detector on dataset %d', dataset);
 		detector.trainDetector(dataset);
-		clear all;
 	end
 end
 
@@ -67,7 +66,6 @@ if testDetector
 	for dataset=datasetIDs
 		fsectionf('Detecting cells in dataset %d', dataset);
 		detector.detectCells(dataset);
-		clear all;
 	end
 end
 
@@ -75,7 +73,6 @@ if trainTracker
 	for dataset=datasetIDs
 		fsectionf('Training tracker on dataset %d', dataset);
 		tracker.trainTracker(dataset);
-		clear all;
 	end
 end
 
@@ -83,6 +80,5 @@ if testTracker
 	for dataset=datasetIDs
 		fsectionf('Tracking cells in dataset %d', dataset);
 		tracker.trackCells(dataset);
-		clear all;
 	end
 end

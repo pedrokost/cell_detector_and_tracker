@@ -27,7 +27,7 @@ function M = buildTrainMatrixForFramePair(descriptorsA, descriptorsB, links)
 			% detected dot descriptor
 			detB = descriptorsB(iB, :);
 
-			M(cur_idx, 1:end-1) = euclideanDistance(detA, detB);
+			M(cur_idx, 1:end-1) = tracker.euclideanDistance(detA, detB);
 
 			% If there is a link between the cells, mark it in the objective column
 			if links(iA) == iB

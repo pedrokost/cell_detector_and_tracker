@@ -12,15 +12,15 @@ function trainRobustTrackerModel(storeID, options)
 
 	classifierOpts = options.robustClassifierParams;
 	
-	prepareFeatureMatrixForRobustMatcher(options.numAnnotatedFrames, classifierOpts.outputFileMatrix);
+	tracker.prepareFeatureMatrixForRobustMatcher(options.numAnnotatedFrames, classifierOpts.outputFileMatrix);
 	dataFile = classifierOpts.outputFileMatrix;
 	modelFile = classifierOpts.outputFileModel;
 
 	switch classifierOpts.algorithm
 		case 'ANN'
-			trainMatcherRobustClassifierANN(dataFile)
+			tracker.trainMatcherRobustClassifierANN(dataFile)
 		case 'NB'
-			trainMatcherRobustClassifierNB(dataFile, modelFile)
+			tracker.trainMatcherRobustClassifierNB(dataFile, modelFile)
 		otherwise
 			error('Please specify a robust trackler training algorithm in the configuration file')
 	end

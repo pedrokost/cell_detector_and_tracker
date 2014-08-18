@@ -29,7 +29,7 @@ function tracklets2 = convertAnnotationToDetectionIdx(tracklets, options)
 
 		dotsGt = DSIN.getDots(annotationMatIdx(i));
 		% Permute this dots with the tracklets matrix
-		dotsGt = getCellTrackletsFrame(dotsGt, tracklets(:, i));
+		dotsGt = tracker.getCellTrackletsFrame(dotsGt, tracklets(:, i));
 
 		dotsDet = DSOUT.getDots(annotationMatIdx(i));
 		% This computes for each GT dot, the closest Det dot.

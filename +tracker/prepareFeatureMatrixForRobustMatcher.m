@@ -37,8 +37,8 @@ function prepareFeatureMatrixForRobustMatcher(numAnnotatedFrames, outputFile)
 			continue
 		end
 			
-		[descriptorsA, permA, IA] = getAnnotationDescriptors(dotsGtA, dotsDetA, descriptorsA);
-		[descriptorsA, ~] = combineDescriptorsWithDots(descriptorsA, dotsGtA);
+		[descriptorsA, permA, IA] = tracker.getAnnotationDescriptors(dotsGtA, dotsDetA, descriptorsA);
+		[descriptorsA, ~] = tracker.combineDescriptorsWithDots(descriptorsA, dotsGtA);
 
 		descriptorsA = descriptorsA(find(IA), :);
 		dotsGtA = dotsGtA(find(IA), :);
@@ -57,10 +57,10 @@ function prepareFeatureMatrixForRobustMatcher(numAnnotatedFrames, outputFile)
 		[dotsDetB, descriptorsB] = DSOUT.get(matIdx);
 
 		if ~isempty(dotsDetB)
-			[descriptorsB, permB, IB] = getAnnotationDescriptors(dotsGtB, dotsDetB, descriptorsB);
+			[descriptorsB, permB, IB] = tracker.getAnnotationDescriptors(dotsGtB, dotsDetB, descriptorsB);
 
 			% TODOif there is a matching descritor for the dot, process, else
-			[descriptorsB, ~] = combineDescriptorsWithDots(descriptorsB, dotsGtB);
+			[descriptorsB, ~] = tracker.combineDescriptorsWithDots(descriptorsB, dotsGtB);
 			descriptorsB = descriptorsB(find(IB), :); dotsGtB = dotsGtB(find(IB), :); linksB = linksB(find(IB), :);
 
 			%% Clean linksA:
@@ -80,7 +80,7 @@ function prepareFeatureMatrixForRobustMatcher(numAnnotatedFrames, outputFile)
 
 			if ~any([isempty(descriptorsA) isempty(descriptorsB)])
 				numLinks = numLinks + numel(find(linksA));
-				M = buildTrainMatrixForFramePair(descriptorsA, descriptorsB, linksA);
+				M = tracker.buildTrainMatrixForFramePair(descriptorsA, descriptorsB, linksA);
 				X = vertcat(X, M);
 			end
 		
@@ -93,7 +93,7 @@ function prepareFeatureMatrixForRobustMatcher(numAnnotatedFrames, outputFile)
 		error('Please annotate the dataset with links. I cannot learn if you dont teach me properly')
 	end
 
-	fprintf('Trained robust matcher classier on %d links\n', numLinks)
+	fprintf('Done training robust matcher classier on %d links\n', numLinks)
 	save(outputFile, 'X')
 
 	% X = normalizeRange(X, {1:2});

@@ -72,6 +72,9 @@ if exist(linkFolder,'dir') ~= 7
 end
 
 if exist(outFolder,'dir') ~= 7
+    % TODO: Prompt to create one
+    % If use confirms: create it
+    % Else throw error
     error('Out folder not found')
 end
 

@@ -19,23 +19,23 @@ function prepareFeatureMatrixForLinkerMatcher(outputFile, params)
 
 	fprintf('Combining tracklets for training linker classifier\n')
 
-	tracklets = generateTracklets('in', struct('withAnnotations', true));
+	tracklets = tracker.generateTracklets('in', struct('withAnnotations', true));
 
 	% Only use the correctly annoated frames for training: trim the matrix
 	tracklets = tracklets(:, 1:params.numAnnotatedFrames);
 
 
-	tracklets = filterTrackletsByLength(tracklets, classifierParams.MIN_TRACKLET_LENGTH);
+	tracklets = tracker.filterTrackletsByLength(tracklets, classifierParams.MIN_TRACKLET_LENGTH);
 	
 	if doPlot; clf; end
 	% trackletViewer(tracklets, 'in');
 	[numTracklets, numFrames] = size(tracklets);
 
 	% For each tracklets, find the corresponding dots in the OUT folder
-	tracklets = convertAnnotationToDetectionIdx(tracklets);
+	tracklets = tracker.convertAnnotationToDetectionIdx(tracklets);
 
 	if doPlot
-		hold on; trackletViewer(tracklets, 'out');
+		hold on; tracker.trackletViewer(tracklets, 'out');
 	end
 
 	Y = zeros(0, 1, 'uint8'); %[match/no-match]
@@ -72,7 +72,7 @@ function prepareFeatureMatrixForLinkerMatcher(outputFile, params)
 			tail = DSOUT.getDots(C(i, 1), tracklets(t, C(i, 1)));
 			head = DSOUT.getDots(C(i, 2), tracklets(t, C(i, 2)));
 
-			dist = pointsDistance(tail, head);
+			dist = tracker.pointsDistance(tail, head);
 			if dist <= classifierParams.MAX_TRAINING_DISPLACEMENT
 				new = [t C(i, 1) t C(i, 2)];
 				news = vertcat(news, new);
@@ -125,7 +125,7 @@ function prepareFeatureMatrixForLinkerMatcher(outputFile, params)
 
 		trackletATail = DSOUT.getDots(idxA(end), trackletA(idxA(end)));
 		trackletBHead = DSOUT.getDots(idxB(1), trackletB(idxB(1)));
-		dist = pointsDistance(trackletATail, trackletBHead);
+		dist = tracker.pointsDistance(trackletATail, trackletBHead);
 
 		if dist < classifierParams.MIN_TRACKLET_SEPARATION
 			% 'too close'
@@ -205,16 +205,16 @@ function prepareFeatureMatrixForLinkerMatcher(outputFile, params)
 	% Using the matrix, create a new matrix containing the difference of histograms
 	% with the objective function
 
-	[featParams, numFeatures] = setFeatures();
+	[featParams, numFeatures] = tracker.setFeatures();
 
 	X = zeros(n, numFeatures, 'single');
 
-	tracklets2 = trackletsToPosition(tracklets, 'out');
+	tracklets2 = tracker.trackletsToPosition(tracklets, 'out');
 
 	fprintf('	Preparing large matrix with training data for linker\n')
 
 	I = convertIToContainTheCellIndices(tracklets, I);
-	I = addActualFileIndices(I);
+	I = tracker.addActualFileIndices(I);
 
 	for i=1:n
 		% [trackletA, frameA, fileA, cellIndexA, trackletB, frameB, fileB cellIndexB]
@@ -228,7 +228,7 @@ function prepareFeatureMatrixForLinkerMatcher(outputFile, params)
 		trackletA = tracklets2(I(i, 1), trackletAIdx(1):I(i, 2), :);
 		trackletB = tracklets2(I(i, 5), I(i, 6):trackletBIdx(end), :);
 
-		features = computeTrackletMatchFeaturesForPair(trackletA, trackletB, I(i, :), featParams, numFeatures, params);
+		features = tracker.computeTrackletMatchFeaturesForPair(trackletA, trackletB, I(i, :), featParams, numFeatures, params);
 
 		X(i, :) = features;
 	end

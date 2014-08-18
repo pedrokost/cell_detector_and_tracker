@@ -5,7 +5,7 @@ function P = testMatcherRobustClassifierNB(x, classifier, idx, minimum, maximum)
 	x = x(:, idx);
 	
 	% x = normalizeRange(x, data.minimum, data.maximum);
-	x = normalizeRange(x, minimum, maximum);
+	x = tracker.normalizeRange(x, minimum, maximum);
 	% Y = data.NB.predict(x);
 
 	% P = posterior(data.NB, x);

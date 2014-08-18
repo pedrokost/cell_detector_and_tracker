@@ -23,6 +23,6 @@ function tracklets2 = trackletsToPosition(tracklets, store)
 
 	for i=1:numFrames
 		dots = store.getDots(idx(i));
-		tracklets2(:, i, :) = getCellTrackletsFrame(dots, tracklets(:, i)); 
+		tracklets2(:, i, :) = tracker.getCellTrackletsFrame(dots, tracklets(:, i)); 
 	end
 end
