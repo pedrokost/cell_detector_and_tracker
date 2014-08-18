@@ -47,6 +47,7 @@ Cell tracker (1 week work minimum - 3 weeks maximum):
 		☐	48) Learn a linker model for each of the possible closing gaps, because otherwise I connect gaps prematurelys
 		☐	47) The cellIndex is uneccessary information in I, it's included in tracklets already and accessible with remaining data of I
 		☐	40) Render getTrackletHeadTailDescriptors fully obsolete
+		☐	85) Tweak tool
 
 	Linker features:
 		☐	58) Unknown values in feature computation: Make then NaN, and then replace with the mean/median value, or first try learning with only rows without NaNs.
