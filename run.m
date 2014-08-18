@@ -15,15 +15,17 @@
 %   __ _ _ __   __| | | |_ _ __ __ _  ___| | _____ _ __ 
 %  / _` | '_ \ / _` | | __| '__/ _` |/ __| |/ / _ \ '__|
 % | (_| | | | | (_| | | |_| | | (_| | (__|   <  __/ |   
-%  \__,_|_| |_|\__,_|  \__|_|  \__,_|\___|_|\_\___|_|   
+%  \__,_|_| |_|\__,_|  \__|_|  \__,_|\___|_|\_\___|_|    
 
+% Author: Pedro Damian Kostelec
+% Large parts of the detector were written by Arteta et al.
 %============================================================================%
 %                                                                Configuration
 %============================================================================%
 
 datasetIDs    = [5];     % Look into loadDatasetInfo
 
-trainDetector = false;
+trainDetector = true;
 trainTracker  = false;
 
 testDetector  = false;
@@ -47,37 +49,36 @@ title = [...
 '|__/ |___  |  |___ \\__,  |  \\__/ |  \\    /~~\\ | \\| |__/\n' ...
 '___  __        __        ___  __ \n' ...
 ' |  |__)  /\\  /  ` |__/ |__  |__)\n' ...
-' |  |  \\ /~~\\ \\__, |  \\ |___ |  \\\n\n' ...
+' |  |  \\ /~~\\ \\__, |  \\ |___ |  \\ v1.0\n\n' ...
 ];
 fprintf(title);
 
 
 if trainDetector
 	for dataset=datasetIDs
-
 		fsectionf('Training detector on dataset %d', dataset);
-		% detector.trainDetector(dataset);
+		detector.trainDetector(dataset);
 	end
 end
 
 if testDetector
 	for dataset=datasetIDs
 		fsectionf('Detecting cells in dataset %d', dataset);
-		% detector.detectCells(dataset);
+		detector.detectCells(dataset);
 	end
 end
 
 if trainTracker
 	for dataset=datasetIDs
 		fsectionf('Training tracker on dataset %d', dataset);
-		% tracker.trainTracker(dataset);
+		tracker.trainTracker(dataset);
 	end
 end
 
 if testTracker
 	for dataset=datasetIDs
 		fsectionf('Tracking cells in dataset %d', dataset);
-		% tracker.trackCells(dataset);
+		tracker.trackCells(dataset);
 	end
 end
 
