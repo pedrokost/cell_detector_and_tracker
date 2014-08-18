@@ -1,83 +1,110 @@
 Today:
-  ☐	T71
-  ☐	T68
-  ☐	T69
-  ☐	T59
-  ☐	T39
+
+Combine detector and tracker:
+	☐	1) Combine load data set info
+	☐	2) Rename cell_detector -> detector
+	☐	3) Rename cell_tracker -> tracker
+	☐	4) Treat cell_detector and cell_tracker as modules
+	☐	5) Single script to call detection and tracking
+
+Evaluation (2 week minimum - 3 weeks maximum):
+	☐	1) Identify a annotation-detector trajectory pair that is similar
+		I need to convert annotations to detections, and then find the tracklets containing those detections :D
+	☐	2) Send these 2 pairs to the the function that compute the number of missetection pairs (returns struct with values)
+	☐	3) Implement 1 basic cell tracking metric
+	☐	4) Theoretical maximimum tracking accuracy: directly map detections over annotations: This is a measure of how well the tracker detects all the things and what best results can we expect given the used detector
+	☐	5) Basic linear interpolation of tracklets so that I can compute quality metrics
+	☐	6) Implement other tracking quality metrics (reqs: T82)
+	Track evaluation metrics:
+		☐	1) MOTA: Multiple Object Tracking Accuracy, calculated from the number of false alarms, missed detections, and identity switches;
+		☐	2) FGTIM: Fraction of Ground Truth Instances Missed; and
+		☐	3) FAPF: False Alarm Per Frame.
+		☐	4) Mostly tracked trajectories (MT): The number of tracjectories that are successfully tracked for more than 80%
+		☐	5) Mostly lost trajectories (ML): The number of trajectories that are tracked for less than 20%
+		☐	6) Partially tracked trajectories (PT): the number of trajectories that are tracked between 20% and 80%
+		☐	7) Fragmentation (FRMT): the number of times a trajectory is interrupted
+		☐	8) ID switches (IDS): the number of times two trajectories switch their ID
+	☐	7) Accuracy of detector trained on single dataset
+	☐	8) Accuracy of detector trained on combined datasets
+	☐	9) Accuracy of tracker trained on single dataset
+	☐	10) Accuracy of tracker trained on combined dataset
+	☐	11) Accuracy of tracker if frames are skipped: what is the max number of frames that can be skipped while still obtaining good enough tracks
+	☐	12) Show example of detector detecting 2 cells as 1 due to the nonoverlap constraint
+	☐	13) Show example of all bad cases (linking too much, 3 tracklets middle skipped, ...)
+
 Cell tracker (1 week work minimum - 3 weeks maximum):
- 	☐	71) Identify features that are slow to compute
-	☐	59) Basic linear interpolation of tracklets so that I can compute quality metrics
-	☐	60) List a few simple tracking metrics to compute
-	☐	39) Implement cell tracking quality metrics (reqs: T59)
-	☐	25) Train ANN and NB with much more data, possibly of all different datasets combined (reqs: T26)
-	☐	82) testLinkerClassifierANN.m is overwritten for each new dataset... it should be saved into the correct outfolder instead.
-	☐	40) Render getTrackletHeadTailDescriptors fully obsolete
-	☐	34) Solve the unbalanced learning sets problem
-	☐	43) Feature linker: tracklet purity (number of gaps within the track (sum and difference for both tracklet))
-	☐	47) The cellIndex is uneccessary information in I, it's included in tracklets already and accessible with remaining data of I
-	☐	48) Learn a linker model for each of the possible closing gaps, because otherwise I connect gaps prematurely
-	☐	17) Correctly estimate then number of missedetections of the detector
-	☐	29) Run data through PCA or other first
-	☐	41) Linker could rely on 'average/median' descriptor for matching, instead of just the tail or head. First remove outliers, them compute average or median (if neeeded just of a few frames)
-	☐	33) Best feature subset analysis
-	☐	7) Skip blurred frames, and leave an annotation that you skipped a frame (reqs: S4)
-	☐	42) Feature linker: Overlapp area of broadened gaussians
-	☐	43) Feature linker: Distance of interpolated tracklets to midpoint
-	☐	44) Feature linker: Add length of tracklets (difference or such) so that it learn that short tracklets are hard to guess
-	☐	45) (extendend?) Kalman filter to predict direction
-  ☐ 51) Use a kalman filter to refine position and size of its direction responses and estimate their velocities (everywhere I use velocity)
-	☐	52) Do not add as negative examples tracklets that are at very similar x-y coordinates, because it might be an actual continuations should a cell be visible in between the tracklets
-	☐	52) Make the thresold for robust tracklet linking load from a config files
-	☐	53) To prevent unsafe robust tracklet, do not link them if there is a similiar strong link to another tracklet (define another threshold)
-	☐ 57) Add a boolean feature if the distance apart < 50pixels, or < 100 pixels, etc.(not too many)	 --- should be relative to cell size relative to image width
-	☐	58) Uknown values in feature computation: Make then NaN, and then replace with the mean value, or first try learning with only rows without NaNs.
-	☐	61) Feature tracker: direction momentum. if it went straight to one direction, it unlikely to change (so some kind of comparison between momentum and the actual change: tendency to change - change)
-	☐	62) I notice that the init likelihood is too small, becaue the link value is too large. The init value should be a small value if there is nothing before it, but only be 1-plink if the by looking at no more than the distance we are trying to close backwards
-  ☐	68) Manual identify a annotation-detector trajectory pair that is similar.. why not use the software to do it? I need to convert annotations to detections, and then find the tracklets containing those detections :D
-  ☐	69) Send these 2 pairs to the the function that compute the number of missetection pairs
-  ☐	70) Make sure all features work
-  ☐	79) Feature linker: Add the created angle between the tracklets (rate of change)
-  ☐	80) Feature linker: 3D distance between x, y, gap where the value are somehow normalized to be comparable
-  ☐	81) When linking tracklets, add them a score of the product of link probabilities... the map score... to see how confident is the tracker of each connection at then end
+
+	Linker classifier:
+		☐	71) Identify features that are slow to compute for linker, and see if they can be sped up
+		☐	82) testLinkerClassifierANN.m is shold be saved in the corresponding out-folder
+		☐	84) Identify a way to use loadDatasetFeatures to merge datasets without copying data
+		☐	25) Train ANN and NB with much more data, possibly of all different datasets combined (reqs T82, T84)
+		☐	34) Solve the unbalanced learning sets problem
+		☐	33) Best feature subset analysis
+		☐	83) Identify ways to reduce the number of hypothesis that need to be computed
+		☐	41) Linker could rely on 'average/median' descriptor for matching, instead of just the tail or head. First remove outliers, them compute average or median (if neeeded just of a few frames)
+		☐	81) Linker score: When linking tracklets, add them a score of the product of link probabilities... the MAP score... to see how confident is the tracker of each connection at then end
+		☐	48) Learn a linker model for each of the possible closing gaps, because otherwise I connect gaps prematurelys
+		☐	47) The cellIndex is uneccessary information in I, it's included in tracklets already and accessible with remaining data of I
+		☐	40) Render getTrackletHeadTailDescriptors fully obsolete
+
+	Linker features:
+		☐	58) Unknown values in feature computation: Make then NaN, and then replace with the mean/median value, or first try learning with only rows without NaNs.
+		☐	70) Make sure all features work
+		☐	43) Distance of interpolated tracklets to midpoint
+		☐	45) (extendend) Kalman filter to predict direction
+		☐	79) Add the created angle between the tracklets (rate of change)
+		☐	61) Direction momentum. if it went straight to one direction, it unlikely to change (so some kind of comparison between momentum and the actual change: tendency to change - change)
+		☐	42) Overlapp area of broadened gaussians
+		☐	80) 3D distance between x, y, gap where the value are somehow normalized to be comparable
+		☐	44) Add length of tracklets (difference or such) so that it learn that short tracklets are hard to guess
+		☐	57) Add a boolean feature if the distance apart < 50pixels, or < 100 pixels, etc.(not too many)	 --- should be relative to cell size relative to image width
+		☐	51) Use a kalman filter to refine position and size of its direction responses and estimate their velocities (everywhere I use velocity -- that would slow down the things)
+		☐	43) Tracklet purity (number of gaps within the track (sum and difference for both tracklet))
+
+	Hypothesis:
+		☐	17) Pfp: Correctly estimate the number of missedetections of the detector (could be saved by the detector in the outfolder)
+		☐	62) pInit: I notice that the init likelihood is too small, becaue the link value is too large. The init value should be a large value if there is nothing before it, but only be 1-plink if the by looking at no more than the distance we are trying to close backwards
+	
+	Robust classifier:
+		☐	52) Robust classifier: Make the thresold for robust tracklet linking load from a config files
+		☐	53) Robust classifier: To prevent unsafe robust tracklet, do not link them if there is a similiar strong link to another tracklet (define another threshold)
+
 Writing thesis (4 weeks work minimum - 7 weeks maximum):
-	☐	3) Analyse headings of the cell_detector part
-	☐	5) Review past best dissertations for section and writing style inspiration
-	☐	6) cell_detection introduction
-	☐	9) Compare performance with different features
-	☐	10) Try the performance of the tool with added noise to data
-	☐	11) Train classifier on just the single dataset vs all datasets
-	☐	13) linker classifier feautres
-	☐	14) gaussian broadening feature
-	☐	15) Explain the difficulties of computing spatio-temporal featres for tracklets of length 1... and that this causes them to be useless in fact
-	☐	16) vl_mser requires linking to their paper. make sure you do.
-	☐	17) Write that scalaing parameters are applied after the computation of the probs. Need to update the formuals in the report
-	☐	18) Write about the problem of defining the probabilities. Eg for pinit we assume independence of any other aciton, but in reality, the value depends on the previous tracklets, so its value would change if another tracklet would be chosen. THIS IS AN IMPORTANT ASSUMPTION I NEED TO WRITE DOWN.
-	☐	19) Write about the pruning of linking likelihoods to only link higly likely tracklets
-Evaluations (2 week minimum - 3 weeks maximum):
-	☐	Theoretical maximimum tracking accuracy: directly map detections over annotations: This is a measure of how well the tracker detects all the things
-	☐ Evaluations of detector with single type of cells (red/green)
-	☐ Evaluations of tracker with single type of cells (red/green)
-	☐ Evaluations of detector with different number of training/testing examples
-	☐ Evaluations of tracker with different number of training/testing examples
-	☐ Train a compound model with cells of different images
-	☐	Try the tracker effectiveness if frames are skipped: what is the max number of frames that can be skipped while still obtaining good enough tracks
-	☐	Show example of detector detecting 2 cells as 1 due to the nonoverlap constraint
-Biological statics (3 days minimum - 1 week maximum):
-	☐	Discover (find in prev papers) stats that might be of interest
-	☐	Write a function that computes these stats
-Final GUI (1 week minimum - 2 weeks maximum):
-	☐	plan design/workflow on paper
-	☐	Ask Leo if we also need the option to train a new model
+
+	Introduction:
+	Detection:
+		☐	16) vl_mser requires linking to their paper. make sure you do.
+	Related work:
+	Data and annotation:
+		☐	22) Include Leo's comments into the chapter
+	Tracking:
+		☐	13) linker classifier feautres add new feautres
+		☐	15) Explain the difficulties of computing spatio-temporal featres for tracklets of length 1... and that this causes them to be useless in fact
+		☐	17) Write that scalaing parameters are applied after the computation of the probs. Need to update the formuals in the report
+		☐	18) Write about the problem of defining the probabilities. Eg for pinit we assume independence of any other aciton, but in reality, the value depends on the previous tracklets, so its value would change if another tracklet would be chosen. THIS IS AN IMPORTANT ASSUMPTION I NEED TO WRITE DOWN.
+		☐	19) Write about the pruning of linking likelihoods to only link higly likely tracklets
+	Conclusion:
+	Evaluation:
+		☐	21) Plan and discuss with Ben the possible tests
+		☐	20) Write the whole evaluation chapter
+		☐	9) Compare performance with different features
+		☐	10) Try the performance of the tool with added noise to data
+		☐	11) Train classifier on just the single dataset vs all datasets
+	General:
+		☐	5) Review past best dissertations for section and writing style inspiration
+
 Cell annotator (3 days work minimum - 1 week maximum):
-	☐ 2) Copy anotations over
-	☐ 3) Copy links over
-	☐ 5) New tab/window that displays the tracklets in 3d
-	☐ 6) Elimintate uncessary filters
-	☐ 7) Colormap: change marker colors for best visibility
-	☐ 8) Help window
-	☐ 11) Menu bar for basic tools (load dets...)
-	☐ 12) Show dots should only toggle annotation dots
+	☐	2) Copy anotations over
+	☐	3) Copy links over
+	☐	5) New tab/window that displays the tracklets in 3d
+	☐	6) Elimintate uncessary filters
+	☐	7) Colormap: change marker colors for best visibility
+	☐	8) Help window
+	☐	11) Menu bar for basic tools (load dets...)
+	☐	12) Show dots should only toggle annotation dots
 	☐	13) Add a button show generated tracks to complement show links
+
 Cell detector (3 days work minimum - 1 week maximum):
 	☐ If any detector NaN, in the end don't show average NaN.
 	☐ Read Pylon stuff
@@ -86,30 +113,29 @@ Cell detector (3 days work minimum - 1 week maximum):
 		☐ use the builtin canny edge detector, with params 0.6+
 		☐	Contrast + Log 3 creates empties indised cell, dinstinct border, rest hight noise
 	☐	Make it clear in the headers of the files which belong to Arteta, which have some of my changes, which are completely mine
-Cell stabilizer (0 week minimum - 2 weeks maximum):
+
+Biological statistics (SKIPPED):
+	☐	Discover (find in prev papers) stats that might be of interest
+	☐	Write a function that computes these stats
+
+Final GUI (SKIPPED):
+	☐	plan design/workflow on paper
+	☐	Ask Leo if we also need the option to train a new model
+
+Cell stabilizer (SKIPPED):
 	☐	1) Read how to easily do image stabilization in matlab (instaed of SIFT, RANSAC, homography, etc, which might take too long)
 	☐	2) Eliminate all detected cells from the images and extract sifts of the remaining regions (or extract sifts everywhere, elimintae those close to the detected cells)
 	☐	3) Given the number of SIFTs detected, or their distribution (eg only bottom part of image), it may be possible to detect bad frames. Just analyse. (reqs: S2)
 	☐	4) Store the names of bad or correct frames in a file, so they can be skipped in the tracker (reqs: S3)
-Approaches to solve the MAP problem of connecting tracklets:
-	☐ Hungarian algorithm (cannot handle division)
-	☐ Linear programming (handles division)
-	☐ Network flow
+
+------------------------------------------------------------------------------
+
 Data flow process:
 	☐ annotator: IN: any, OUT: dots + links # I have lost Match features
 	☐ detector train: IN: dots + [links], OUT: dots
 	☐ detector test : IN: images, OUT: dots + MatchFeatures
 	☐ tracker: IN: dots + Match features, OUT: robust tracklets
 	☐ linker : IN: dots + robust matches, OUT: dots + links
-Track evaluation metrics:
-	☐	1) MOTA: Multiple Object Tracking Accuracy, calculated from the number of false alarms, missed detections, and identity switches;
-	☐	2) FGTIM: Fraction of Ground Truth Instances Missed; and
-	☐	3) FAPF: False Alarm Per Frame.
-	☐	4) Mostly tracked trajectories (MT): The number of tracjectories that are successfully tracked for more than 80%
-	☐	5) Mostly lost trajectories (ML): The number of trajectories that are tracked for less than 20%
-	☐	6) Partially tracked trajectories (PT): the number of trajectories that are tracked between 20% and 80%
-	☐	7) Fragmentation (FRMT): the number of times a trajectory is interrupted
-	☐	8) ID switches (IDS): the number of times two trajectories switch their ID
 ＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿
 Archive:
 	✔	T72 @done (14-08-17 11:27) @project(Today)
