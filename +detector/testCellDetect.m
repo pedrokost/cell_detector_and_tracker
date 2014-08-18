@@ -24,11 +24,11 @@ withGT = 0;
 additionalU = 0;
 
 
-dataParams = loadDatasetInfo(dataset, ctrlParms);
+dataParams = detector.loadDatasetInfo(dataset, ctrlParms);
 trainFiles = dataParams.trainFiles;
 testFiles  = dataParams.testFiles;
 imExt      = dataParams.imExt;
-dataFolder = dataParams.dataFolder;
+dataFolder = dataParams.dotFolder;
 outFolder  = dataParams.outFolder;
 mserParms  = dataParams.mserParms;
 
@@ -36,7 +36,7 @@ mserParms  = dataParams.mserParms;
 if exist([outFolder '/feats_' testFiles{imNum} '_test.mat'],'file') == 0
     
     [img, gt, X, ~, r, ell, MSERtree, ~, sizeMSER, nFeatures, cellDescriptors] =...
-        encodeImage(dataFolder, testFiles{imNum}, imExt, withGT, featureParms, mserParms);
+        detector.encodeImage(dataFolder, testFiles{imNum}, imExt, withGT, featureParms, mserParms);
     %save([outFolder '/feats_' testFiles{imNum} '_test.mat']...
     %    ,'img', 'gt', 'X', 'r', 'ell', 'sizeMSER', 'MSERtree', 'nFeatures');
 
@@ -48,7 +48,7 @@ end
 prediction = w'*X';
 biasedPrediction = prediction  + ctrlParms.bias;
 %-----------------------------------------------------------------Inference
-[mask, labels, dots] = PylonInference(img, biasedPrediction',...
+[mask, labels, dots] = detector.PylonInference(img, biasedPrediction',...
     sizeMSER, r, additionalU, MSERtree);
 mask = logical(mask);
 

@@ -19,16 +19,17 @@
 
 % Author: Pedro Damian Kostelec
 % Large parts of the detector were written by Arteta et al.
+% Original development: May-August 2014
 %============================================================================%
 %                                                                Configuration
 %============================================================================%
 
 datasetIDs    = [5];     % Look into loadDatasetInfo
 
-trainDetector = true;
+trainDetector = false;
 trainTracker  = false;
 
-testDetector  = false;
+testDetector  = true;
 testTracker   = false;
 
 % If you are not satisfied with the results of the tracker, you can use the
@@ -58,6 +59,7 @@ if trainDetector
 	for dataset=datasetIDs
 		fsectionf('Training detector on dataset %d', dataset);
 		detector.trainDetector(dataset);
+		clear all;
 	end
 end
 
@@ -65,6 +67,7 @@ if testDetector
 	for dataset=datasetIDs
 		fsectionf('Detecting cells in dataset %d', dataset);
 		detector.detectCells(dataset);
+		clear all;
 	end
 end
 
@@ -72,6 +75,7 @@ if trainTracker
 	for dataset=datasetIDs
 		fsectionf('Training tracker on dataset %d', dataset);
 		tracker.trainTracker(dataset);
+		clear all;
 	end
 end
 
@@ -79,11 +83,6 @@ if testTracker
 	for dataset=datasetIDs
 		fsectionf('Tracking cells in dataset %d', dataset);
 		tracker.trackCells(dataset);
+		clear all;
 	end
 end
-
-
-
-
-
-

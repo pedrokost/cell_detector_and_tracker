@@ -243,7 +243,7 @@ else %No ground Truth = test image
             X(k,:) = zeros(1,nFeatures);
             cellDescriptors(k,:) = zeros(1,nDescriptor);
         else
-            [xx, des] = encodeMSER(img, colorImg, edgeImg, gradImg,...
+            [xx, des] = detector.encodeMSER(img, colorImg, edgeImg, gradImg,...
                 orientGrad, sel, ell(:,k), parms);
             X(k,:) = xx;
             cellDescriptors(k, :) = des;
@@ -251,7 +251,7 @@ else %No ground Truth = test image
         %X(k,1:parameters.nBinsArea) =  hist(X(k,1),areaBins); 
     end
     
-    MSERtree = buildPylonMSER(img,r,sizeMSER);
+    MSERtree = detector.buildPylonMSER(img,r,sizeMSER);
     
     if parms.addArea
         for k = 1:length(r);

@@ -1,5 +1,7 @@
-function detectCells(dataset, ctrlParams)
+function detectCells(dataset)
 	% Evaluates a trained model on a new dataset
+
+	ctrlParams = detector.ctrlParams();
 
 	%--------------------------------------------------------Load dependencies
 	addpath(fullfile('dependencies'));
@@ -19,8 +21,8 @@ function detectCells(dataset, ctrlParams)
 	%2:A view on the results: MSERs found and selected
 
 	%-Features and control parameters-%
-	dataParams = loadDatasetInfo(dataset, ctrlParams);
-	featureParms = setFeatures(dataParams.features); %Modify to select features and other parameters
+	dataParams = detector.loadDatasetInfo(dataset, ctrlParams);
+	featureParms = detector.setFeatures(dataParams.features); %Modify to select features and other parameters
 
 
 	outFolder = dataParams.outFolder;
@@ -51,7 +53,7 @@ function detectCells(dataset, ctrlParams)
 		disp(sprintf('Testing on image %d/%d (%s)', imNum, numel(testFiles), testFiles{imNum}))
 		
 		[mask, dots, prediction, img, sizeMSER, r, gt, nFeatures, descriptors] =...
-			testCellDetect(w,dataset,imNum,featureParms,ctrlParams,inspectResults);
+			detector.testCellDetect(w,dataset,imNum,featureParms,ctrlParams,inspectResults);
 
 		%----------------------------------------------------------------Save masks
 		if ctrlParams.saveMasks
@@ -70,7 +72,7 @@ function detectCells(dataset, ctrlParams)
 		%--------------------------------------------------------Save masks to file
 		
 		if ~isempty(gt)
-			[prec(imNum), rec(imNum)] = evalDetect(dots(:,2),dots(:,1),...
+			[prec(imNum), rec(imNum)] = detector.evalDetect(dots(:,2),dots(:,1),...
 				gt(:,2), gt(:,1), ones(size(img)),tol);
 
 			disp(['Precision: ' num2str(prec(imNum)) ' Recall: ' num2str(rec(imNum))]);
@@ -102,7 +104,7 @@ function detectCells(dataset, ctrlParams)
 
 
 	if isSequence
-	    plotDotsSequence(outFolder);
+	    detector.plotDotsSequence(outFolder);
 	end
 
 
