@@ -156,7 +156,25 @@ classdef DataStore < handle
 			data = load(obj.frameFile(frameNumber));
 			dots = data.dots;
 			links = data.links;
-			obj.dotsCache(frameNumber) = dots;
+			n = size(dots, 1);
+
+			q = obj.dotsPos(frameNumber, :);
+			if ~q
+				nextIdx = max(obj.dotsPos(:, 2));
+				q =[nextIdx+1, nextIdx+n];
+				obj.dotsPos(frameNumber, :) = q;
+				if nextIdx + n >= size(obj.dotsCache, 1)
+					% Allocate more space. Duplicate values don't matter since
+					% I will overwrite them
+					if obj.verbose
+						fprintf('GETDOTS:       Dots cache size has been increased to %d.\n', size(obj.dotsCache, 1))
+					end
+					obj.dotsCache = repmat(obj.dotsCache, 2, 1);
+				end
+			end
+			
+
+			obj.dotsCache(q(1):q(2), :) = dots;
 
 			if nargin == 3
 				dots = dots(cellIndices, :);
