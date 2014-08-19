@@ -24,7 +24,7 @@
 %                                                                Configuration
 %============================================================================%
 
-datasetIDs    = [1 2];     % Look into dataFolders.m
+datasetIDs    = [2];     % Look into dataFolders.m
 
 trainDetector = false;
 trainTracker  = true;
@@ -42,7 +42,7 @@ showTracks    = true;
 %============================================================================%
 %                        NO NEED DO TOUCH THIS BELOW
 
-
+% addpath('somelightspeed')
 title = [...
 '          ___  __             ___    __      __   ___             \n' ...
 ' /\\  |  |  |  /  \\  |\\/|  /\\   |  | /  `    /  ` |__  |    |      \n' ...

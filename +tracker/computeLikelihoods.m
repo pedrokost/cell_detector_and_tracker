@@ -5,6 +5,7 @@ function Liks = computeLikelihoods(tracklets, hypothesis, hypTypes, options)
 	% 	hypothesis = the hypothesis matrix generate by generateHypothesisMatrix()
 	%	hypTypes = a vector indicating the type of hypothesis, as generateb by generateHypothesisMatrix()
 	% 	options = a struct with options
+	% 		outFolder = a folder where the ANN function is stored
 	%		[matcher] = ('ANN', 'NB')  % which matcher model to use to join tracklets
 	%		imageDimensions = a 2d vector containing source images height and width
 	% 		[Kfp] = 1 % FP mutliplication factor
@@ -126,15 +127,18 @@ function Liks = computeLikelihoods(tracklets, hypothesis, hypTypes, options)
 			trackletPairs(i, :) = [J(1) J(2)-numTracklets];
 		end
 		% options.showGaussianBroadening = 1;
+		% profile on;
 		X = tracker.computeTrackletMatchFeatures(tracklets, trackletPairs, options);
-
+		% profile off;
 		%---------------------------------------------------Evaluate the Plink
 
+		addpath(options.outFolder);
 		if strcmp(matcher, 'ANN')
-			matchP = tracker.testLinkerClassifierANN(X')';
+			matchP = testLinkerClassifierANN(X')';
 		else
-			matchP = tracker.testLinkerClassifierNB(X);
+			matchP = testLinkerClassifierNB(X);
 		end
+		rmpath(options.outFolder);
 
 		if any(isnan(matchP))
 			warning('you have nan values in Plink, fix me.')

@@ -20,7 +20,7 @@ function trainLinkerTrackerModel(storeID, options)
 	
 	switch linkerOptions.algorithm
 		case 'ANN'
-			tracker.trainLinkerClassifierANN(dataFile)
+			tracker.trainLinkerClassifierANN(dataFile, options)
 		% case 'NB'
 			% trainLinkerClassifierNB(dataFile, modelFile)
 		otherwise

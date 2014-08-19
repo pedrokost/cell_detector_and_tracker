@@ -14,8 +14,12 @@ function [val, pointsVals] = evaluateGaussianBroadeningModel(model, points)
 	for i=1:extrudeLength
 		% model.sigmas(:, :, i)
 		% p = mvnpdf(points, model.mus(i, :), model.sigmas(:, :, i))
-		p = tracker.mvnpdffast(points, model.mus(i, :), model.sigmas(:, :, i));
 
+		% By not calling the function, but copying it here, I win 30% of time of
+		% calling the evaluateGaussianBroadeningModel function
+		% p = tracker.mvnpdffast(points, model.mus(i, :), model.sigmas(:, :, i));
+		r = chol(model.sigmas(:, :, i)); 
+		p = (2*pi)^(-size(points, 2)/2) * exp(-0.5 * sum(((points-repmat(model.mus(i, :), size(points, 1), 1))/r).^2,2)) / prod(diag(r)); 
 
 		% size(points)
 		% size(model.mus(i, :)')

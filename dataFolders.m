@@ -26,7 +26,7 @@ switch datasetID
     case 1 %LungRed
         dotFolder = fullfile(rootDotFolder, 'series30green');
         outFolder = fullfile(rootOutFolder, 'series30green');
-        linkFolder = dotFolder;
+        linkFolder = fullfile(rootLinkFolder, 'series30green_fortrajectories');
         numAnnotatedFrames = 60;
     case 2 %KidneyGreen
         dotFolder = fullfile(rootDotFolder, 'series30red');
@@ -36,13 +36,13 @@ switch datasetID
     case 3 %LungGreen
         dotFolder = fullfile(rootDotFolder, 'series13greencropped');
         outFolder = fullfile(rootOutFolder, 'series13greencropped');
-        linkFolder = dotFolder;
+        linkFolder = fullfile(rootLinkFolder, 'series13greencropped_fortrajectories');
         imageDims = [251 251];
         numAnnotatedFrames = 55;
     case 4 %LungGreen
         dotFolder = fullfile(rootDotFolder, 'series14croppedcleaned');
         outFolder = fullfile(rootOutFolder, 'series14croppedcleaned');
-        linkFolder = dotFolder;
+        linkFolder = fullfile(rootLinkFolder, 'series14croppedcleaned_fortrajectories');
         imageDims = [199 199];
         numAnnotatedFrames = 50;
     case 5 %KidneyRed
