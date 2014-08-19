@@ -23,28 +23,28 @@ rootLinkFolder = fullfile('..', 'data');
 rootOutFolder = fullfile('..', 'dataout');
 
 switch datasetID
-    case 1 %LungGreen
+    case 1 %LungRed
+        dotFolder = fullfile(rootDotFolder, 'series30green');
+        outFolder = fullfile(rootOutFolder, 'series30green');
+        linkFolder = dotFolder;
+        numAnnotatedFrames = 60;
+    case 2 %KidneyGreen
+        dotFolder = fullfile(rootDotFolder, 'series30red');
+        outFolder = fullfile(rootOutFolder, 'series30red');
+        linkFolder = dotFolder;
+        numAnnotatedFrames = 60;
+    case 3 %LungGreen
         dotFolder = fullfile(rootDotFolder, 'series13greencropped');
         outFolder = fullfile(rootOutFolder, 'series13greencropped');
         linkFolder = dotFolder;
         imageDims = [251 251];
         numAnnotatedFrames = 55;
-    case 2 %LungGreen
+    case 4 %LungGreen
         dotFolder = fullfile(rootDotFolder, 'series14croppedcleaned');
         outFolder = fullfile(rootOutFolder, 'series14croppedcleaned');
         linkFolder = dotFolder;
         imageDims = [199 199];
         numAnnotatedFrames = 50;
-    case 3 %LungRed
-        dotFolder = fullfile(rootDotFolder, 'series30green');
-        outFolder = fullfile(rootOutFolder, 'series30green');
-        linkFolder = dotFolder;
-        numAnnotatedFrames = 60;
-    case 4 %KidneyGreen
-        dotFolder = fullfile(rootDotFolder, 'series30red');
-        outFolder = fullfile(rootOutFolder, 'series30red');
-        linkFolder = dotFolder;
-        numAnnotatedFrames = 60;
     case 5 %KidneyRed
         dotFolder = fullfile(rootDotFolder, 'seriesm170_13cropped');
         outFolder = fullfile(rootOutFolder, 'seriesm170_13cropped');

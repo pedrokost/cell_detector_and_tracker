@@ -87,7 +87,7 @@ function tracklets = generateTracklets(folderData, options)
 			selectedLeft = zeros(nCellsB, 1);
 			selectedLeft(linksA(linksA~=0)) = 1;
 		else
-			[permutation right left selectedRight selectedLeft] = match(XA, XB, dotsA, dotsB, struct('modelFile', options.modelFile));
+			[permutation right left selectedRight selectedLeft] = tracker.match(XA, XB, dotsA, dotsB, struct('modelFile', options.modelFile));
 		end
 
 		[globalPremutation, currNumTracklets] = updateGlobalPermutation(globalPremutation, currNumTracklets, permutation, selectedLeft);

@@ -126,14 +126,14 @@ function Liks = computeLikelihoods(tracklets, hypothesis, hypTypes, options)
 			trackletPairs(i, :) = [J(1) J(2)-numTracklets];
 		end
 		% options.showGaussianBroadening = 1;
-		X = computeTrackletMatchFeatures(tracklets, trackletPairs, options);
+		X = tracker.computeTrackletMatchFeatures(tracklets, trackletPairs, options);
 
 		%---------------------------------------------------Evaluate the Plink
 
 		if strcmp(matcher, 'ANN')
-			matchP = testLinkerClassifierANN(X')';
+			matchP = tracker.testLinkerClassifierANN(X')';
 		else
-			matchP = testLinkerClassifierNB(X);
+			matchP = tracker.testLinkerClassifierNB(X);
 		end
 
 		if any(isnan(matchP))

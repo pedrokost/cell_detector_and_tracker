@@ -33,7 +33,7 @@ function trackletViewer(tracklets, folderData, options)
 
 	numTracklets = size(tracklets, trackletDim);
 	trackletIDs = 1:numTracklets;
-	[tracklets, idx] = filterTrackletsByLength(tracklets, minLength);
+	[tracklets, idx] = tracker.filterTrackletsByLength(tracklets, minLength);
 	trackletIDs = trackletIDs(idx);
 
 	numFrames = size(tracklets, framesDim);
@@ -42,7 +42,7 @@ function trackletViewer(tracklets, folderData, options)
 	colors = hsv(numTracklets);
 	colors = colors(randperm(numTracklets), :);
 
-	tracklets2 = trackletsToPosition(tracklets, folderData);
+	tracklets2 = tracker.trackletsToPosition(tracklets, folderData);
 
 	for t=1:numTracklets
 		z = 1:numFrames;

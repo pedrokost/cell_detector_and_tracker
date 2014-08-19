@@ -24,13 +24,15 @@
 %                                                                Configuration
 %============================================================================%
 
-datasetIDs    = [5];     % Look into dataFolders.m
+datasetIDs    = [1 2];     % Look into dataFolders.m
 
 trainDetector = false;
-trainTracker  = false;
+trainTracker  = true;
 
 testDetector  = false;
 testTracker   = true;
+
+showTracks    = true;
 
 % If you are not satisfied with the results of the tracker, you can use the
 % `tweak` tool to adjust the trajectories.
@@ -50,7 +52,7 @@ title = [...
 '|__/ |___  |  |___ \\__,  |  \\__/ |  \\    /~~\\ | \\| |__/\n' ...
 '___  __        __        ___  __ \n' ...
 ' |  |__)  /\\  /  ` |__/ |__  |__)\n' ...
-' |  |  \\ /~~\\ \\__, |  \\ |___ |  \\ v1.0\n\n' ...
+' |  |  \\ /~~\\ \\__, |  \\ |___ |  \\ v1.0 alpha\n\n' ...
 ];
 fprintf(title);
 
@@ -80,5 +82,12 @@ if testTracker
 	for dataset=datasetIDs
 		fsectionf('Tracking cells in dataset %d', dataset);
 		tracker.trackCells(dataset);
+	end
+end
+
+if showTracks
+	for dataset=datasetIDs
+		fsectionf('Plotting trajectories from dataset %d', dataset)
+		tracker.plotTrajectories(dataset);
 	end
 end

@@ -1,10 +1,10 @@
 function X = computeTrackletMatchFeatures(tracklets, trackletPairs, dataParams)
 	% COMPUTETRACKLETMATCHFEATURES Compute the matrix containing for each tracklet pair a feature vector
 
-	[featParams, numFeatures] = setFeatures();
+	[featParams, numFeatures] = tracker.setFeatures();
 	numPairs = size(trackletPairs, 1);
 
-	tracklets2 = trackletsToPosition(tracklets, 'out');
+	tracklets2 = tracker.trackletsToPosition(tracklets, 'out');
 
 	X = zeros(numPairs, numFeatures);
 
@@ -24,11 +24,11 @@ function X = computeTrackletMatchFeatures(tracklets, trackletPairs, dataParams)
 		I(5) = trackletBIdx(1); % first frame of tracklet B
 		I(6) = trackletBPos(trackletBIdx(1));
 
-		I = addActualFileIndices(I);
+		I = tracker.addActualFileIndices(I);
 
 		trackletA = tracklets2(I(1), trackletAIdx(1):trackletAIdx(end), :);
 		trackletB = tracklets2(I(5), trackletBIdx(1):trackletBIdx(end), :);
-		features = computeTrackletMatchFeaturesForPair(trackletA, trackletB, I, featParams, numFeatures, dataParams);
+		features = tracker.computeTrackletMatchFeaturesForPair(trackletA, trackletB, I, featParams, numFeatures, dataParams);
 
 		X(i, :) = features;
 	end

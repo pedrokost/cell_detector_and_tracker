@@ -31,7 +31,7 @@ function hypothesisPrintShort(H, P, selected, extra)
 	numRows = size(H, 1);
 	Hselected = H(find(selected), :);
 	bar = ones(sum(selected), 1) * ' | ';
-	Q = humanizeHypothesis(Hselected);
+	Q = tracker.humanizeHypothesis(Hselected);
 	if extra
 		disp([char(Q) bar num2str(exp(P(logical(selected))), '%0.2f')])
 	else
@@ -54,7 +54,7 @@ function hypothesisPrintTable(H, P, selected, fulltable)
 	SELECTED_MARKER_LEFT = 62;
 	SELECTED_MARKER_RIGHT = 60;
 
-	Q = char(humanizeHypothesis(H));
+	Q = char(tracker.humanizeHypothesis(H));
 	P = num2str(exp(P), '%.2f');
 
 	% Pwdth 

@@ -1,12 +1,13 @@
 Today:
 
 Combine detector and tracker:
-	☐	1) Combine load data set info
+	✔	1) Combine load data set info @done (14-08-19 08:52)
 	✔	2) Rename cell_detector -> +detector @done (14-08-18 17:10)
 	✔	3) Rename cell_tracker -> +tracker @done (14-08-18 17:10)
 	✔	4) Treat cell_detector and cell_tracker as modules @done (14-08-18 19:44)
 	✔	5) Single script to call detection and tracking @done (14-08-18 16:55)
-	☐	6) Make all of the training/testing work
+	✔	6) Make all of the training/testing work @done (14-08-19 09:31)
+	☐	7) Should I add the somelightspeed?
 
 Evaluation (2 week minimum - 3 weeks maximum):
 	☐	1) Identify a annotation-detector trajectory pair that is similar

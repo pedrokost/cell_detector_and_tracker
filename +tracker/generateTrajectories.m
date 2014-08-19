@@ -13,7 +13,7 @@ function tracklets = generateTrajectories(storeID, params)
 
 
 	fprintf('Generating robust tracklets\n')
-	tracklets = generateTracklets(storeID, struct('withAnnotations', false, 'modelFile', robustClassifierParams.outputFileModel));
+	tracklets = tracker.generateTracklets(storeID, struct('withAnnotations', false, 'modelFile', robustClassifierParams.outputFileModel));
 
 	if params.saveTrajectoryGenerationInterimResults
 		file = sprintf('%s0.mat', params.trajectoryGenerationToFilePrefix);
@@ -35,7 +35,7 @@ function tracklets = generateTrajectories(storeID, params)
 		if params.verbose; fprintf('Closing gaps of size: %d\n', maxGaps(i)); end
 
 		if params.verbose; fprintf('	Generating hypothesis matrix...\n'); end
-		[M, hypTypes] = generateHypothesisMatrix(tracklets, struct('maxGap', maxGaps(i)));
+		[M, hypTypes] = tracker.generateHypothesisMatrix(tracklets, struct('maxGap', maxGaps(i)));
 
 		if params.verbose; fprintf('	There are %d hypothesis between %d tracklets\n', size(M, 1), size(tracklets, 1)); end
 
@@ -44,9 +44,9 @@ function tracklets = generateTrajectories(storeID, params)
 		% permute(tr(:, find(sum(sum(tr, 3), 1)), :), [2 3 1])
 		
 		if params.verbose; fprintf('	Computing hypothesis likelihoods...\n'); end
-		Liks = computeLikelihoods(tracklets, M, hypTypes, options);
+		Liks = tracker.computeLikelihoods(tracklets, M, hypTypes, options);
 
-		Iunlikely = elimintateUnlikelyHypothesis(hypTypes, Liks, options);
+		Iunlikely = tracker.elimintateUnlikelyHypothesis(hypTypes, Liks, options);
 		preDims = numel(Liks);
 		M = M(~Iunlikely, :);
 		Liks = Liks(~Iunlikely);
@@ -56,15 +56,15 @@ function tracklets = generateTrajectories(storeID, params)
 		end
 
 		if params.verbose; fprintf('	Computing optimal association...\n'); end
-		Iopt = getGlobalOpimalAssociation(M, Liks);
+		Iopt = tracker.getGlobalOpimalAssociation(M, Liks);
 
 		if params.verbose
-			hypothesisPrint(M, Liks, Iopt, 'table');
+			tracker.hypothesisPrint(M, Liks, Iopt, 'table');
 		end
 
 		if params.verbose; fprintf('	Updating tracklets...\n'); end
 		Mopt = M(find(Iopt), :);
-		tracklets = updateTracklets(tracklets, Mopt);
+		tracklets = tracker.updateTracklets(tracklets, Mopt);
 		if params.saveTrajectoryGenerationInterimResults
 			if params.verbose; fprintf('	Saving tracklets for iteration %d to disk\n', i); end
 			file = sprintf('%s%d.mat', params.trajectoryGenerationToFilePrefix, i);

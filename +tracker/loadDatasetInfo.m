@@ -28,7 +28,7 @@ minPlink = log(0.51);
 % minPfp = log(0.1);
 
 params = dataFolders(dataset);
-params
+disp(params)
 
 % Parameters for training the classifier for joining tracklets
 linkerClassifierParams = struct(...
