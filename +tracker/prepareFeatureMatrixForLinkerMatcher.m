@@ -105,6 +105,11 @@ function prepareFeatureMatrixForLinkerMatcher(outputFile, params)
 		idxA = find(trackletA);
 		idxB = find(trackletB);
 
+		% FIXME: This is just a temporary hack until getUsefulTrackletsPair is improved
+		if any([isempty(idxA) isempty(idxB)])
+			continue;
+		end
+
 		%  Makus sure that trackletA is before trackletB always
 		if idxA(1) > idxB(1)
 			tmp = trackletA;

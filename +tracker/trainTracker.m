@@ -19,9 +19,9 @@ function trainTracker(dataset)
 
 	% TODO: make sure these models are learned on the correct datasets
 	if doTrainRobustTrackerModel
-		tracker.trainRobustTrackerModel('in', params);
+		tracker.trainRobustTrackerModel(params);
 	end
 	if doTrainLinkerTrackerModel
-		tracker.trainLinkerTrackerModel('in', params);
+		tracker.trainLinkerTrackerModel(params);
 	end
 end

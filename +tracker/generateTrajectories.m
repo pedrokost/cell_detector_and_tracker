@@ -22,6 +22,10 @@ function tracklets = generateTrajectories(storeID, params)
 		save(file, 'tracklets', 'iteration', 'closedGaps');
 	end
 
+	size(tracklets, 1)
+	tracker.trackletViewer(tracklets, storeID, struct('animate', false, 'showLabels',false));
+	pauseIt();
+
 
 	options = struct('matcher', classifierParams.algorithm,...
 					 'imageDimensions', params.imageDimensions,...

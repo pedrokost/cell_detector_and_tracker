@@ -126,7 +126,8 @@ classdef DataStore < handle
 					descriptors = data.descriptors;
 					n = size(descriptors, 1);
 					nextIdx = max(obj.descriptorsPos(:, 2));
-					obj.descriptorsPos(frameNumber, :) = [nextIdx+1, nextIdx+n];
+					q = [nextIdx+1, nextIdx+n];
+					obj.descriptorsPos(frameNumber, :) = q;
 
 					if nextIdx + n >= size(obj.descriptorsCache, 1)
 						% Allocate more space. Duplicate values don't matter since
@@ -136,8 +137,7 @@ classdef DataStore < handle
 						end
 						obj.descriptorsCache = repmat(obj.descriptorsCache, 2, 1);
 					end
-
-					obj.descriptorsCache((nextIdx+1):(nextIdx+n), :) = descriptors;
+					obj.descriptorsCache(q(1):q(2), :) = descriptors;
 				else
 					error('No key "descriptors" in %s', obj.frameFile(frameNumber));
 				end

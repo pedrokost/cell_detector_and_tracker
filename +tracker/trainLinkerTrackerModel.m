@@ -1,8 +1,8 @@
-function trainLinkerTrackerModel(storeID, options)
+function trainLinkerTrackerModel(options)
 	% Generates a training matrix and trains the robust tracklet model for
 	% generating robust tracklets
 	% Input:
-	% 	storeID = a string indicating from which dataset to load the data
+	% 	//storeID = a string indicating from which dataset to load the data
 	% 	options = a struct containing parameters such as
 	% 		algorithm = which algorithm to use to train the model
 	% 		outputFileMatrix = where to store the intermediate matrix
