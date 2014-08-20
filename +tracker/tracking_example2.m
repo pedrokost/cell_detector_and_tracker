@@ -24,13 +24,13 @@ tracklets = generateTrajectories('out', params);
 %------------------------------------------Save trajectories to disk
 
 % % Unfortunately I cannot save as links in previous parts of the algorithm, because the trajectories can skip frame, which might need to be interpolated. I don't want to generate some interpolations and save them to disk because they will be mixed with actual dot detections. I have to save the entire tracklet matrix
-finalTrackletsFile = [params.trajectoryGenerationToFilePrefix '_final.mat'];
+finalTrackletsFile = [params.trajectoriesOutputFile '_final.mat'];
 save(finalTrackletsFile, 'tracklets');
 %-----------------------------------------Plot progression
 
 f = figure(1); clf;
 
-files = dir([params.trajectoryGenerationToFilePrefix '*.mat']);
+files = dir([params.trajectoriesOutputFile '*.mat']);
 
 [~,files] = cellfun(@fileparts, {files.name}, 'UniformOutput',false);
 [~, finalTrackletsFile] = fileparts(finalTrackletsFile);

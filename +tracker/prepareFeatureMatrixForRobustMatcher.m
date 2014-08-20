@@ -15,6 +15,9 @@ function prepareFeatureMatrixForRobustMatcher(options)
 
 	tracklets = tracker.generateTracklets('in', struct('withAnnotations', true));
 
+	trackletFile = sprintf('%s_annotations.mat', options.trajectoriesOutputFile)
+	save(trackletFile, 'tracklets');
+
 	if doPlot
 		clf;
 		subplot(1,2,1); tracker.trackletViewer(tracklets, 'in', struct('minLength', 0, 'showLabels', false));
@@ -22,6 +25,9 @@ function prepareFeatureMatrixForRobustMatcher(options)
 
 	% Convert these to detection tracklets
 	tracklets = tracker.convertAnnotationToDetectionIdx(tracklets);
+
+	trackletFile = sprintf('%s_mappeddetections.mat', options.trajectoriesOutputFile)
+	save(trackletFile, 'tracklets');
 
 	% Elimintate tracklets of length 1
 	tracklets = tracker.filterTrackletsByLength(tracklets, 2);

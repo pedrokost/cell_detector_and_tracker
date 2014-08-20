@@ -30,7 +30,11 @@ classdef DataStore < handle
 			obj.dataFolder = dataFolder;
 
 			obj.annotationIndices = computeMatfileIndices();
+			
+			% FIXME: Haha lol, I must be careful when indexing into annotationIndices if the are missing images... I would request the wrong image :D
 			obj.dotsPos = zeros(numel(obj.annotationIndices), 2, 'uint16');
+
+
 			obj.descriptorsPos = zeros(numel(obj.annotationIndices), 2, 'uint16');
 			% TODO: Precomputes file names because fullfile is too slow otherwise
 

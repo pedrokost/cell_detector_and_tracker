@@ -30,12 +30,12 @@ trackletViewer(trackletsDet, 'out');
 
 %-----------------------------------------Plot progression
 
-% finalTrackletsFile = [params.trajectoryGenerationToFilePrefix '_final.mat'];
+% finalTrackletsFile = [params.trajectoriesOutputFile '_final.mat'];
 % tracklets = trackletsDet;
 % save(finalTrackletsFile, 'tracklets');
 % f = figure(1); clf;
 
-% files = dir([params.trajectoryGenerationToFilePrefix '*.mat']);
+% files = dir([params.trajectoriesOutputFile '*.mat']);
 
 % [~,files] = cellfun(@fileparts, {files.name}, 'UniformOutput',false);
 % [~, finalTrackletsFile] = fileparts(finalTrackletsFile);

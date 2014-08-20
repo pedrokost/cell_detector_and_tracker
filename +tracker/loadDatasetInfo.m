@@ -15,7 +15,7 @@ function params = loadDatasetInfo(dataset)
 %         linkerClassifierParams = a struct with parameters for the join tracklets classifier
     
 %Defaults
-nicePlot = true; % Shows a plot of annotation, mapped detection, robust tracklets, and trajectories together
+plotProgress = true; % Shows a plot of annotation, mapped detection, robust tracklets, and trajectories together
 
 maxGaps = [9]; % for the linker
 
@@ -52,7 +52,7 @@ robustClassifierParams = struct(...
 );
 
 saveTrajectoryGenerationInterimResults = true;
-trajectoryGenerationToFilePrefix = fullfile(params.outFolder, 'tracklets');
+trajectoriesOutputFile = fullfile(params.outFolder, 'tracklets');
 verbose = true;
 
 params.maxGaps  =  maxGaps;
@@ -63,12 +63,12 @@ params.Kterm = Kterm;
 params.Kfp = Kfp;
 params.Klink = Klink;
 params.saveTrajectoryGenerationInterimResults = saveTrajectoryGenerationInterimResults;
-params.trajectoryGenerationToFilePrefix = trajectoryGenerationToFilePrefix;
+params.trajectoriesOutputFile = trajectoriesOutputFile;
 params.verbose = verbose;
 params.minPlink = minPlink;
 % params.minPinit = minPinit;
 % params.minPterm = minPterm;
 % params.minPfp   = minPfp;
-params.nicePlot = nicePlot;
+params.plotProgress = plotProgress;
 
 end

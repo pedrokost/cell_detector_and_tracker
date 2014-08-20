@@ -11,6 +11,8 @@ function trainRobustTrackerModel(options)
 
 
 	classifierOpts = options.robustClassifierParams;
+
+	classifierOpts.trajectoriesOutputFile = options.trajectoriesOutputFile;
 	
 	tracker.prepareFeatureMatrixForRobustMatcher(classifierOpts);
 

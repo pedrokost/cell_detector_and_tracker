@@ -3,7 +3,21 @@ function tracklets = generateTrajectories(storeID, params)
 
 	if params.saveTrajectoryGenerationInterimResults
 		fprintf('Deleting any old interim tracklet files\n')
-		delete(sprintf('%s*.mat', params.trajectoryGenerationToFilePrefix))
+		trackletFiles = dir(sprintf('%s*.mat', params.trajectoriesOutputFile));
+
+		[~,trackletFiles] = cellfun(@fileparts, {trackletFiles.name}, 'UniformOutput',false);
+		keep1 = sprintf('%s_annotations.mat', params.trajectoriesOutputFile);
+		keep2 = sprintf('%s_mappeddetections.mat', params.trajectoriesOutputFile);
+
+		[~, keep1] = fileparts(keep1);
+		[~, keep2] = fileparts(keep2);
+
+		keep = {keep1, keep2};
+		trackletFiles = setdiff(trackletFiles, keep);
+
+		for i=1:numel(trackletFiles)
+			delete(fullfile(params.outFolder, sprintf('%s.mat', trackletFiles{i})));
+		end
 	end
 
 	maxGaps = params.maxGaps;
@@ -15,16 +29,16 @@ function tracklets = generateTrajectories(storeID, params)
 	fprintf('Generating robust tracklets\n')
 	tracklets = tracker.generateTracklets(storeID, struct('withAnnotations', false, 'modelFile', robustClassifierParams.outputFileModel));
 
-	if params.saveTrajectoryGenerationInterimResults
-		file = sprintf('%s0.mat', params.trajectoryGenerationToFilePrefix);
+	if params.saveTrajectoryGenerationInterimResults || params.plotProgress
+		file = sprintf('%s0.mat', params.trajectoriesOutputFile);
 		iteration = 0;
 		closedGaps = 0;
 		save(file, 'tracklets', 'iteration', 'closedGaps');
 	end
 
-	size(tracklets, 1)
-	tracker.trackletViewer(tracklets, storeID, struct('animate', false, 'showLabels',false));
-	pauseIt();
+	% size(tracklets, 1)
+	% tracker.trackletViewer(tracklets, storeID, struct('animate', false, 'showLabels',false));
+	% pauseIt();
 
 
 	options = struct('matcher', classifierParams.algorithm,...
@@ -72,7 +86,7 @@ function tracklets = generateTrajectories(storeID, params)
 		tracklets = tracker.updateTracklets(tracklets, Mopt);
 		if params.saveTrajectoryGenerationInterimResults
 			if params.verbose; fprintf('	Saving tracklets for iteration %d to disk\n', i); end
-			file = sprintf('%s%d.mat', params.trajectoryGenerationToFilePrefix, i);
+			file = sprintf('%s%d.mat', params.trajectoriesOutputFile, i);
 			iteration = i;
 			closedGaps = maxGaps(i);
 			save(file, 'tracklets', 'iteration', 'closedGaps');
