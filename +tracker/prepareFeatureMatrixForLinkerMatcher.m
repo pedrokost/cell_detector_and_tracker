@@ -17,7 +17,8 @@ function prepareFeatureMatrixForLinkerMatcher(outputFile, params)
 
 	global DSIN DSOUT;
 
-	fprintf('Combining tracklets for training linker classifier\n')
+
+	fprintf('Preparing data for training linker classifier.\n')
 
 	tracklets = tracker.generateTracklets('in', struct('withAnnotations', true));
 
@@ -46,7 +47,7 @@ function prepareFeatureMatrixForLinkerMatcher(outputFile, params)
 
 	% First append all positive examples:
 	% cells in same tracklets with max distance of MAX_GAP
-	fprintf('	Positive examples include tracklets pairs less than %d frames apart\n\n', classifierParams.MAX_GAP);
+	fprintf('	Positive examples include tracklets pairs less than %d frames apart.\n', classifierParams.MAX_GAP);
 
 	for t=1:numTracklets
 		idx = find(tracklets(t, :));
@@ -188,7 +189,7 @@ function prepareFeatureMatrixForLinkerMatcher(outputFile, params)
 		end
 	end
 
-	fprintf('	Dicarded %d tracklet combinations as negative results due to their shortness, and %d because their head/tail where too close\n', numEliminatedDueToShortness, numEliminatedDueToProximity);
+	fprintf('	Dicarded %d tracklet combinations as negative results due to their shortness.\n\tDiscarded %d tracklet combinations as negative because their head/tail where too close.\n', numEliminatedDueToShortness, numEliminatedDueToProximity);
 
 	clear new C D cnt i idx idxA idxB t trackletA trackletB vals;
 
@@ -200,11 +201,11 @@ function prepareFeatureMatrixForLinkerMatcher(outputFile, params)
 	fprintf('	There are %d positive and %d negative examples.\n\tThe ratio of positive to negative examples is 1:%.1f.\n', sum(Y==1), sum(Y==0), sum(Y==0)/sum(Y==1))
 
 	if sum(Y==1)==0
-		error('The training data is bad. There are no positive examples');
+		error('The training data is bad. There are no positive examples.');
 	end
 
 	if sum(Y==0)==0
-		error('The training data is bad. There are no negative examples');
+		error('The training data is bad. There are no negative examples.');
 	end
 
 	% Using the matrix, create a new matrix containing the difference of histograms
@@ -216,7 +217,7 @@ function prepareFeatureMatrixForLinkerMatcher(outputFile, params)
 
 	tracklets2 = tracker.trackletsToPosition(tracklets, 'out');
 
-	fprintf('	Preparing large matrix with training data for linker\n')
+	fprintf('	Preparing large matrix with training data for linker.\n')
 
 	I = convertIToContainTheCellIndices(tracklets, I);
 	I = tracker.addActualFileIndices(I);

@@ -12,7 +12,8 @@ function trainRobustTrackerModel(options)
 
 	classifierOpts = options.robustClassifierParams;
 	
-	tracker.prepareFeatureMatrixForRobustMatcher(options.numAnnotatedFrames, classifierOpts.outputFileMatrix);
+	tracker.prepareFeatureMatrixForRobustMatcher(classifierOpts);
+
 	dataFile = classifierOpts.outputFileMatrix;
 	modelFile = classifierOpts.outputFileModel;
 

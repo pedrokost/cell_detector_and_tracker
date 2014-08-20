@@ -24,15 +24,15 @@
 %                                                                Configuration
 %============================================================================%
 
-datasetIDs    = [1];     % Look into dataFolders.m
+datasetIDs    = [2];     % Look into dataFolders.m
 
 trainDetector = false;
 trainTracker  = true;
 
 testDetector  = false;
-testTracker   = true;
+testTracker   = false;
 
-showTracks    = true;
+showTracks    = false;
 
 % If you are not satisfied with the results of the tracker, you can use the
 % `tweak` tool to adjust the trajectories.

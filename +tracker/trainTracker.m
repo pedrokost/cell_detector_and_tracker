@@ -21,6 +21,7 @@ function trainTracker(dataset)
 	if doTrainRobustTrackerModel
 		tracker.trainRobustTrackerModel(params);
 	end
+
 	if doTrainLinkerTrackerModel
 		tracker.trainLinkerTrackerModel(params);
 	end

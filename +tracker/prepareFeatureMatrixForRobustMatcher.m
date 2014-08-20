@@ -1,5 +1,4 @@
-function prepareFeatureMatrixForRobustMatcher(numAnnotatedFrames, outputFile)
-
+function prepareFeatureMatrixForRobustMatcher(options)
 	%{
 		This script prepares a matrix containing pairs of cell descriptors and a third objective column indicating if they are the same (that is if the cells are DIRECTLY linked)
 
@@ -8,96 +7,102 @@ function prepareFeatureMatrixForRobustMatcher(numAnnotatedFrames, outputFile)
 		The objective column is obtained from the user annotations of links in the dataset. It is important for the purpose of learning a good matcher that the annotations are as complete possible. 
 	%}
 
-	% Must not train on dots that don't have links, as these may be missing value
+	global DSOUT;
 
-	global DSIN DSOUT;
+	doPlot = false;
 
-	fprintf('Preparing the feature matrix to train Robust linker\n')
+	fprintf('Preparing data for training robust classifier.\n')
 
-	matAnnotationsIndices = DSIN.getMatfileIndices();
-	matAnnotationsIndices = matAnnotationsIndices(1:numAnnotatedFrames);
+	tracklets = tracker.generateTracklets('in', struct('withAnnotations', true));
 
+	if doPlot
+		clf;
+		subplot(1,2,1); tracker.trackletViewer(tracklets, 'in', struct('minLength', 0, 'showLabels', false));
+	end
 
-	numFrames = numel(matAnnotationsIndices);
+	% Convert these to detection tracklets
+	tracklets = tracker.convertAnnotationToDetectionIdx(tracklets);
+
+	% Elimintate tracklets of length 1
+	tracklets = tracker.filterTrackletsByLength(tracklets, 2);
+
+	[~, numFrames] = size(tracklets);
+
+	[dotsA, descriptorsA] = DSOUT.get(1);
+	[descriptorsA, ~] = tracker.combineDescriptorsWithDots(descriptorsA, double(dotsA));
+	actA = tracklets(:, 1) > 0;
+
+	nFeatures = size(descriptorsA, 2);
 	X = [];
 
-	% First, associate each annotation with the corresponding feature vector
-	% Drop any detected cells that don't have annotation, or annotations with missing detections
-	metaStartIdx = 1;
-	startIdx = matAnnotationsIndices(metaStartIdx);
+	for i=2:numFrames
+		[dotsB, descriptorsB] = DSOUT.get(i);
 
-	% Initialize the tracklets with the first frame that has a detection result
+		[descriptorsB, ~] = tracker.combineDescriptorsWithDots(descriptorsB, double(dotsB));
 
-	while true
-		% Load annotations and detections for first image
-		[dotsGtA, linksA] = DSIN.getDotsAndLinks(startIdx);
-		[dotsDetA, descriptorsA] = DSOUT.get(startIdx);
+		%----------------------------------------------------Positive examples
 
-		if isempty(dotsDetA)
-			metaStartIdx = metaStartIdx + 1;
-			startIdx = matAnnotationsIndices(metaStartIdx);
-			continue
-		end
-			
-		[descriptorsA, permA, IA] = tracker.getAnnotationDescriptors(dotsGtA, dotsDetA, descriptorsA);
-		[descriptorsA, ~] = tracker.combineDescriptorsWithDots(descriptorsA, dotsGtA);
+		% each item in A that has continuation in B
+		hasContinuation = all(tracklets(:, i-1:i) > 0, 2);
+		% [tracklets(:, i-1:i) hasContinuation]
 
-		descriptorsA = descriptorsA(find(IA), :);
-		dotsGtA = dotsGtA(find(IA), :);
-		linksA = linksA(find(IA));
+		positivePairs = tracklets(hasContinuation, i-1:i);
 
-		break
-	end
+		dA = descriptorsA(positivePairs(:, 1), :);
+		dB = descriptorsB(positivePairs(:, 2), :);
 
-	numLinks = 0;
+		numPairs = numel(find(hasContinuation));
+		M = zeros(numPairs, nFeatures + 1);
 
-	for i=metaStartIdx:(numFrames-1)
-		matIdx = matAnnotationsIndices(i+1);
+		M(:, 1:end-1) = tracker.euclideanDistance(dA, dB);
+		M(:, end) = ones(numPairs, 1);
 
-		% Load annotations and detections for next image
-		[dotsGtB, linksB] = DSIN.getDotsAndLinks(matIdx);
-		[dotsDetB, descriptorsB] = DSOUT.get(matIdx);
+		X = vertcat(X, M);
 
-		if ~isempty(dotsDetB)
-			[descriptorsB, permB, IB] = tracker.getAnnotationDescriptors(dotsGtB, dotsDetB, descriptorsB);
+		%----------------------------------------------------Negative examples
 
-			% TODOif there is a matching descritor for the dot, process, else
-			[descriptorsB, ~] = tracker.combineDescriptorsWithDots(descriptorsB, dotsGtB);
-			descriptorsB = descriptorsB(find(IB), :); dotsGtB = dotsGtB(find(IB), :); linksB = linksB(find(IB), :);
-
-			%% Clean linksA:
-			% For each value in linksA that matches a find(IB), I need to elimintate it,
-			% and all the bigger values decrease by 1.
-			badVals = find(~IB); % Eliminte this values from linksA
-			for j=1:numel(badVals)
-				badVal = badVals(j);
-				% Elimintae the value from LinksA by placing a 0 in its location
-				linksA(find(linksA == badVal)) = 0;
-				% Find all in linksA bigger than badVal and decrease them by 1
-				biggerIdx = find(linksA > badVal);
-				linksA(biggerIdx) = linksA(biggerIdx) - 1;
-				% decrease all values of badVal by 1
-				badVals = badVals - 1;
-			end
-
-			if ~any([isempty(descriptorsA) isempty(descriptorsB)])
-				numLinks = numLinks + numel(find(linksA));
-				M = tracker.buildTrainMatrixForFramePair(descriptorsA, descriptorsB, linksA);
-				X = vertcat(X, M);
-			end
 		
-		end
-		linksA = linksB; descriptorsA = descriptorsB;
-		dotsGtA = dotsGtB; dotsDetA = dotsGtB;
+		actB = tracklets(:, i) > 0;
+		
+		negativePairs = combvec(tracklets(actA, i-1)', tracklets(actB, i)')';
+		[~, Locb] = ismember(positivePairs, negativePairs, 'rows');
+
+		negativePairs(Locb, :) = [];
+
+		% TODO: check that negative pairs don't contain possibly corresponding pairs (missed link)
+
+		dA = descriptorsA(negativePairs(:, 1), :);
+		dB = descriptorsB(negativePairs(:, 2), :);
+
+		numPairs = size(negativePairs, 1);
+		M = zeros(numPairs, nFeatures + 1);
+
+		M(:, 1:end-1) = tracker.euclideanDistance(dA, dB);
+		X = vertcat(X, M);
+
+
+		descriptorsA = descriptorsB; actA = actB;
 	end
 
-	if numLinks == 0
-		error('Please annotate the dataset with links. I cannot learn if you dont teach me properly')
+	% TODO: randomize order
+	cntNeg = sum(X(:, end) == 0);
+	cntPos = size(X, 1) - cntNeg;
+
+	if cntNeg == 0 || cntPos == 0
+		error('Please annotate the dataset with links. I cannot learn if you dont teach me properly.');
 	end
 
-	fprintf('Done training robust matcher classier on %d links\n', numLinks)
-	save(outputFile, 'X')
+	% go by each frame pairs
+	% and get the data descriptors
+	% and create the positive and negative example matrix
+	% by traking into account not to add as negative if the tail/head are too close
 
-	% X = normalizeRange(X, {1:2});
-	% imagesc(X)
+	if doPlot
+		subplot(1,2,2); tracker.trackletViewer(tracklets, 'out', struct('minLength', 0, 'showLabels', false));
+	end
+
+	fprintf('Done preparing robust matcher data based on %d links.\n', cntPos);
+	% options.outputFileMatrix
+	save(options.outputFileMatrix, 'X');
+
 end

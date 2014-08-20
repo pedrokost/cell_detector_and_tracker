@@ -41,7 +41,7 @@ function doPlotSequences( dotsSequence )
         xlabel('Image width [px]')
         ylabel('Image height [px]')
         zlabel('Frame number')
-        title('Time plot of detected cell locations on kidney-red dataset')
+        title('Time plot of detected cell locations on dataset')
 
         hold on;
         i = i + 1;

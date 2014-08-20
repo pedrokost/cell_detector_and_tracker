@@ -15,6 +15,8 @@ function params = loadDatasetInfo(dataset)
 %         linkerClassifierParams = a struct with parameters for the join tracklets classifier
     
 %Defaults
+nicePlot = true; % Shows a plot of annotation, mapped detection, robust tracklets, and trajectories together
+
 maxGaps = [9]; % for the linker
 
 Kinit = 1;
@@ -43,6 +45,7 @@ linkerClassifierParams = struct(...
 
 % Parameters for training the classifier for creating robust tracklets
 robustClassifierParams = struct(...
+    'MIN_TRACKLET_SEPARATION', 20,... %  min distance between head tail of 2 tracklets to be considered as negative examples
     'outputFileMatrix', fullfile(params.outFolder, 'robustClassifierModelMatrix.mat'),...
     'outputFileModel', fullfile(params.outFolder, 'robustClassifierModel.mat'),...
     'algorithm', 'NB'...  % 'ANN', 'NB'
@@ -66,5 +69,6 @@ params.minPlink = minPlink;
 % params.minPinit = minPinit;
 % params.minPterm = minPterm;
 % params.minPfp   = minPfp;
+params.nicePlot = nicePlot;
 
 end
