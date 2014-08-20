@@ -1,6 +1,3 @@
-	☐	fix the linking bug (all links completely wrong) - 
-
-
 	☐	buildTrainMatrixForFramePair seems to have been deprecated
 	☐	TODO: elimintate unbigious pairs from matrix for training robust classifier
 Things I did wrong, fixing:
