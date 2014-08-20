@@ -37,7 +37,7 @@ function doPlotSequences( dotsSequence )
         plot3(dotties(:, 1), ...
                  dotties(:, 2), ...
                  ones(numEls, 1) * i,...
-                 'b^');
+                 'r.');
         xlabel('Image width [px]')
         ylabel('Image height [px]')
         zlabel('Frame number')
@@ -46,6 +46,7 @@ function doPlotSequences( dotsSequence )
         hold on;
         i = i + 1;
     end
-    view(30, 45)
+    view(30, 45);
+    grid on;
 end
 

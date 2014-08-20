@@ -8,6 +8,8 @@ function prepareFeatureMatrixForRobustMatcher(numAnnotatedFrames, outputFile)
 		The objective column is obtained from the user annotations of links in the dataset. It is important for the purpose of learning a good matcher that the annotations are as complete possible. 
 	%}
 
+	% Must not train on dots that don't have links, as these may be missing value
+
 	global DSIN DSOUT;
 
 	fprintf('Preparing the feature matrix to train Robust linker\n')
