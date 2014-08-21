@@ -28,7 +28,9 @@ function tracklets = generateTrajectories(storeID, params)
 
 	fprintf('Generating robust tracklets\n')
 	tracklets = tracker.generateTracklets(storeID, struct('withAnnotations', false, 'modelFile', robustClassifierParams.outputFileModel));
-	tracklets = tracker.filterTrackletsByLength(tracklets, 2);
+
+	% TODO: I should keep all of this
+	% tracklets = tracker.filterTrackletsByLength(tracklets, 2);
 
 	fprintf('\tGenerated %d robust tracklets\n', size(tracklets, 1))
 	

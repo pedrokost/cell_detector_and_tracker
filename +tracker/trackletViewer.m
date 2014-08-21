@@ -13,8 +13,11 @@ function trackletViewer(tracklets, folderData, options)
 	%-----------------------------------------------------------------Defaults
 	animate = false;
 	animationSpeed = 100; % pause is 1/animationSpeed
-	showLabels = true;
+	showLabels = false;
 	minLength = 1;
+	preferredColor = -1;  % an rgb triplet [r g b]
+	lineStyle = '.-';
+	lineWidth = 1;
 	%------------------------------------------------------------------Options
 	if nargin < 3; options = struct; end
 
@@ -25,6 +28,15 @@ function trackletViewer(tracklets, folderData, options)
 	end
 	if isfield(options, 'minLength')
 		minLength = options.minLength;
+	end
+	if isfield(options, 'preferredColor')
+		preferredColor = options.preferredColor;
+	end
+	if isfield(options, 'lineStyle')
+		lineStyle = options.lineStyle;
+	end
+	if isfield(options, 'lineWidth')
+		lineWidth = options.lineWidth;
 	end
 	%-----------------------------------------------------------Initialization
 
@@ -39,8 +51,13 @@ function trackletViewer(tracklets, folderData, options)
 	numFrames = size(tracklets, framesDim);
 	numTracklets = size(tracklets, trackletDim);
 
-	colors = hsv(numTracklets);
-	colors = colors(randperm(numTracklets), :);
+	if preferredColor ~= -1
+		colors = repmat(preferredColor, numTracklets, 1);
+	else
+		% colors = distinguishable_colors(nTracklets, [0 0 0]);
+		colors = hsv(numTracklets);
+		colors = colors(randperm(numTracklets), :);
+	end
 
 	tracklets2 = tracker.trackletsToPosition(tracklets, folderData);
 
@@ -55,13 +72,13 @@ function trackletViewer(tracklets, folderData, options)
 		x = x(zs);
 		y = y(zs);
 
-		plot3(x,y,z,'.-', 'Color', colors(t, :));
+		plot3(x,y,z,lineStyle, 'Color', colors(t, :), 'LineWidth', lineWidth);
 		grid on;
 		hold on;
 		
-		xlabel('x')
-		ylabel('y')
-		zlabel('time')
+		xlabel('x [px]')
+		ylabel('y [px]')
+		zlabel('time [frame]')
 
 
 		if showLabels
@@ -73,7 +90,7 @@ function trackletViewer(tracklets, folderData, options)
 	end
 	axis tight;
 	% view(-72,8)
-	view(120,0)
+	view([150,30,30])
 
 	if animate
 		h = 0;
