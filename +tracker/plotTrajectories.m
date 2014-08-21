@@ -29,7 +29,7 @@ function plotTrajectories(dataset)
 		trackletFile = sprintf('%s0.mat', params.trajectoriesOutputFile);
 		load(trackletFile);
 		tracker.trackletViewer(tracklets, 'out', struct('showLabels',false, 'minLength', 0));
-		title(sprintf('Annotations mapped to detections', dataset));	
+		title(sprintf('Robust tracklets', dataset));	
 		axis(f3, ax);
 		f4 = subplot(1,4,4); % Trajectories
 		axis(f4, ax);

@@ -25,7 +25,7 @@ function prepareFeatureMatrixForRobustMatcher(options)
 
 	% Convert these to detection tracklets
 	tracklets = tracker.convertAnnotationToDetectionIdx(tracklets);
-
+	annotationIndices = DSOUT.getMatfileIndices();
 	trackletFile = sprintf('%s_mappeddetections.mat', options.trajectoriesOutputFile);
 	save(trackletFile, 'tracklets');
 
@@ -34,15 +34,16 @@ function prepareFeatureMatrixForRobustMatcher(options)
 
 	[~, numFrames] = size(tracklets);
 
-	[dotsA, descriptorsA] = DSOUT.get(1);
+	[dotsA, descriptorsA] = DSOUT.get(annotationIndices(1));
 	[descriptorsA, ~] = tracker.combineDescriptorsWithDots(descriptorsA, double(dotsA));
 	actA = tracklets(:, 1) > 0;
 
 	nFeatures = size(descriptorsA, 2);
 	X = [];
+	numElimintated = 0; % due to proximity
 
 	for i=2:numFrames
-		[dotsB, descriptorsB] = DSOUT.get(i);
+		[dotsB, descriptorsB] = DSOUT.get(annotationIndices(i));
 
 		[descriptorsB, ~] = tracker.combineDescriptorsWithDots(descriptorsB, double(dotsB));
 
@@ -75,7 +76,7 @@ function prepareFeatureMatrixForRobustMatcher(options)
 
 		negativePairs(Locb, :) = [];
 
-		% TODO: check that negative pairs don't contain possibly corresponding pairs (missed link)
+		filterNegativePairs();
 
 		dA = descriptorsA(negativePairs(:, 1), :);
 		dB = descriptorsB(negativePairs(:, 2), :);
@@ -87,8 +88,10 @@ function prepareFeatureMatrixForRobustMatcher(options)
 		X = vertcat(X, M);
 
 
-		descriptorsA = descriptorsB; actA = actB;
+		descriptorsA = descriptorsB; actA = actB; dotsA = dotsB;
 	end
+
+	fprintf('\tElimintated %d negative cell pairs from negative examples due to proximity.\n', numElimintated);
 
 	% TODO: randomize order
 	cntNeg = sum(X(:, end) == 0);
@@ -111,4 +114,24 @@ function prepareFeatureMatrixForRobustMatcher(options)
 	% options.outputFileMatrix
 	save(options.outputFileMatrix, 'X');
 
+	function filterNegativePairs()
+		% Given two consecutive frames A and B, and a pair of negative cell pairs
+		% indices, eliminate those that are likely to be continuation of each other
+		% in order to prevent learning bad stuff if the annoations are less than
+		% complete.
+
+		% TODO: I could speed this up by not passing any arguments, since they
+		% share the same workspace with the parent function
+
+		reorderedDotsA = dotsA(negativePairs(:, 1), :);
+		reorderedDotsB = dotsB(negativePairs(:, 2), :);
+
+		distances = tracker.pointsDistance(int16(reorderedDotsA), int16(reorderedDotsB));
+
+		lessthan50 = (distances < options.MIN_TRACKLET_SEPARATION); % use parameter
+		if any(lessthan50)
+			negativePairs(lessthan50, :) = [];
+			numElimintated = numElimintated + numel(find(lessthan50));
+		end
+	end
 end
