@@ -67,6 +67,13 @@ tracker.trackletViewer(trackletsGen, 'out', struct('preferredColor', colors(3, :
 
 legend({'annotated tracklet...', '...mapped to detections', 'generated trajectories'})
 
+%--------------------------------------------------------------Compute metrics
+
+metrics = computeAccuracyMetrics(trackletsAnn, trackletsDet, trackletsGen)
+
+
+%--------------------------------------------------------------------Terminate
+
 if doProf
 	profile off;
 	profile viewer;

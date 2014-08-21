@@ -4,10 +4,10 @@ Combine detector and tracker:
 	✔	10) Run with all datasets together and fix the errors one by one @done (14-08-21 12:48)
 
 Evaluation (1 week minimum - 2 weeks maximum):
-	☐	1) Identify a annotation-detector trajectory pair that is similar
+	✔	1) Identify a annotation-detector trajectory pair that is similar @done (14-08-21 16:56)
 		I need to convert annotations to detections, and then find the tracklets containing those detections :D
-	☐	2) Send these 2 pairs to the the function that compute the number of missetection pairs (returns struct with values)
-	☐	3) Implement 1 basic cell tracking metric
+	✔	2) Send these 2 pairs to the the function that compute the number of missetection pairs (returns struct with values) @done (14-08-21 17:32)
+	✔	3) Implement 1 basic cell tracking metric @done (14-08-21 17:34)
 	☐	4) Theoretical maximimum tracking accuracy: directly map detections over annotations: This is a measure of how well the tracker detects all the things and what best results can we expect given the used detector
 	☐	5) Basic linear interpolation of tracklets so that I can compute quality metrics
 	☐	6) Implement other tracking quality metrics (reqs: T82)
