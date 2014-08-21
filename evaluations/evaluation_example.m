@@ -9,17 +9,19 @@ because the script is dependent on certain side effects of these actions
 %}
 
 %----------------------------------------------------------Cleanup/Initizalize
-clear all; cla;
+clear all;
 rng(1234);
 cd('..')
 addpath('evaluations')
 addpath('dependencies/distinguishable_colors');
 
 %--------------------------------------------------------------------Configure
-doProf = false;
+doProf = true;
+doPlot = true;
 dataset = [1];
+numLongestTracklets = 2;
 
-figure(1); clf;
+if doPlot; figure(1); clf; end
 if doProf
 	profile on;
 end
@@ -29,28 +31,34 @@ params = tracker.loadDatasetInfo(dataset);
 global DSIN DSOUT;
 DSIN = tracker.DataStore(params.linkFolder, false);
 DSOUT = tracker.DataStore(params.outFolder, false);
-colors = distinguishable_colors(3, [1 1 1]);
+if doPlot
+	colors = distinguishable_colors(3, [1 1 1]);
+end
 
 %-------------------------------------------------------------Load annotations
 % Load the annotations tracklets
 filename = sprintf('%s_annotations.mat', params.trajectoriesOutputFile);
 load(filename);
 
-% Chose a random long tracklet (maybe the longest) of the annotations
+% Chose a few long tracklet of the annotations
 trackletsAnn = tracklets;
 lengths = trackletsLengths(tracklets);
-[maxLength, maxLengthIdx] = max(lengths);
+[lengths, sortIdx] = sort(lengths, 'descend');
+trackletsAnn = trackletsAnn(sortIdx, :);
+trackletsAnn = trackletsAnn(1:numLongestTracklets, :);
 
-trackletsAnn = tracklets(maxLengthIdx, :);
-
-tracker.trackletViewer(trackletsAnn, 'in', struct('preferredColor', colors(1, :), 'lineWidth', 2));
+if doPlot
+	tracker.trackletViewer(trackletsAnn, 'in', struct('preferredColor', colors(1, :), 'lineWidth', 2));
+end
 
 %-------------------------------------------------------Find mapped detections
 
 % Map it onto the detections, which can only return 1 tracklet
 trackletsDet = tracker.convertAnnotationToDetectionIdx(trackletsAnn);
 
-hold on; tracker.trackletViewer(trackletsDet, 'out', struct('preferredColor', colors(2, :), 'lineStyle', '.:', 'lineWidth', 2));
+if doPlot
+	hold on; tracker.trackletViewer(trackletsDet, 'out', struct('preferredColor', colors(2, :), 'lineStyle', '.:', 'lineWidth', 2));
+end
 
 %------------------------------------------------------------Subsection header
 filename = sprintf('%s_final.mat', params.trajectoriesOutputFile);
@@ -58,19 +66,21 @@ load(filename);
 
 trackletsGen = tracklets;
 
-% figure(2);
-% tracker.trackletViewer(trackletsGen, 'out', struct('preferredColor', colors(3, :)));
+trackletsGenMulti = findTrajectoriesOverlappingMappedDetections(trackletsDet, trackletsGen);
 
-trackletsGen = findTrajectoriesOverlappingMappedDetections(trackletsDet, trackletsGen);
+if doPlot
+	for t = 1:numLongestTracklets
+		tracker.trackletViewer(trackletsGenMulti{t}, 'out', struct('preferredColor', colors(3, :), 'lineStyle', '.-.', 'lineWidth', 2));
+	end
 
-tracker.trackletViewer(trackletsGen, 'out', struct('preferredColor', colors(3, :),'lineStyle', '.-.', 'lineWidth', 2));
+	% TODO: fix the legend
+	legend({'annotated tracklet...', '...mapped to detections', 'generated trajectories'})
+end
 
-legend({'annotated tracklet...', '...mapped to detections', 'generated trajectories'})
-
+cd('evaluations'); return
 %--------------------------------------------------------------Compute metrics
 
 metrics = computeAccuracyMetrics(trackletsAnn, trackletsDet, trackletsGen)
-
 
 %--------------------------------------------------------------------Terminate
 
