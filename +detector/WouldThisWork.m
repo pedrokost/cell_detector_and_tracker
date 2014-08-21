@@ -1,3 +1,5 @@
+function WouldThisWork()
+
 %Would this work on my data?
 %
 %This script should give you a good selection of candidates objects (with 
@@ -17,6 +19,9 @@
 %However, roughly modifying these parameters can considerably speed up the 
 %cell detector.
 
+
+
+
 %Check for VL_feat
 if ~exist('vl_setup','file')
     error('To run this example you also need to install the vl_feat toolbox.');
@@ -26,7 +31,7 @@ addpath('dependencies')
 addpath('dependencies/matlab')
 
 %Load an Image
-imgFull = imread('../../data/series30green/im002.pgm');
+imgFull = imread('../data/series13greencropped/im060.pgm');
 
 %Smooth the image
 img = imgFull;
@@ -34,7 +39,7 @@ img = imgFull;
 
 %Setup for the MSER algorithm
 numPixels = size(img,1)*size(img,2);
-minPixels = 30;
+minPixels = 20;
 maxPixels = 200;
 BoD = 1; %Bright on Dark
 DoB = 0; %Dark on Bright

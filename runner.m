@@ -24,13 +24,13 @@
 %                                                                Configuration
 %============================================================================%
 
-datasetIDs    = [5];     % Look into dataFolders.m
+datasetIDs    = [3];     % Look into dataFolders.m
 
 trainDetector = false;
-trainTracker  = true;
+trainTracker  = false;
 
 testDetector  = false;
-testTracker   = true;
+testTracker   = false;
 
 showTracks    = true;
 

@@ -25,6 +25,7 @@ function prepareFeatureMatrixForLinkerMatcher(outputFile, params)
 	% Only use the correctly annoated frames for training: trim the matrix
 	tracklets = tracklets(:, 1:params.numAnnotatedFrames);
 
+	annotationIndices = DSOUT.getMatfileIndices();
 
 	tracklets = tracker.filterTrackletsByLength(tracklets, classifierParams.MIN_TRACKLET_LENGTH);
 	
@@ -70,8 +71,8 @@ function prepareFeatureMatrixForLinkerMatcher(outputFile, params)
 		news = zeros(0, 4, 'uint16');
 
 		for i=1:size(C, 1)
-			tail = DSOUT.getDots(C(i, 1), tracklets(t, C(i, 1)));
-			head = DSOUT.getDots(C(i, 2), tracklets(t, C(i, 2)));
+			tail = DSOUT.getDots(annotationIndices(C(i, 1)), tracklets(t, C(i, 1)));
+			head = DSOUT.getDots(annotationIndices(C(i, 2)), tracklets(t, C(i, 2)));
 
 			dist = tracker.pointsDistance(tail, head);
 			if dist <= classifierParams.MAX_TRAINING_DISPLACEMENT
@@ -129,8 +130,8 @@ function prepareFeatureMatrixForLinkerMatcher(outputFile, params)
 			continue;
 		end
 
-		trackletATail = DSOUT.getDots(idxA(end), trackletA(idxA(end)));
-		trackletBHead = DSOUT.getDots(idxB(1), trackletB(idxB(1)));
+		trackletATail = DSOUT.getDots(annotationIndices(idxA(end)), trackletA(idxA(end)));
+		trackletBHead = DSOUT.getDots(annotationIndices(idxB(1)), trackletB(idxB(1)));
 		dist = tracker.pointsDistance(trackletATail, trackletBHead);
 
 		if dist < classifierParams.MIN_TRACKLET_SEPARATION
@@ -176,8 +177,8 @@ function prepareFeatureMatrixForLinkerMatcher(outputFile, params)
 			I = [I; new];
 			Y = [Y; 0];
 
-			tail = DSOUT.getDots(idxA(end), tracklets(trackletCombos(i, 1), idxA(end)));
-			head = DSOUT.getDots(idxB(1), tracklets(trackletCombos(i, 2), idxB(1)));
+			tail = DSOUT.getDots(annotationIndices(idxA(end)), tracklets(trackletCombos(i, 1), idxA(end)));
+			head = DSOUT.getDots(annotationIndices(idxB(1)), tracklets(trackletCombos(i, 2), idxB(1)));
 
 			% if trackletCombos(i, 1)==5
 			% 	hold on;

@@ -1,12 +1,7 @@
 	✔	T88 @done (14-08-21 10:46)
-	☐	T86
-
-Things I did wrong, fixing:
-	☐	assumed tracklte perfectly linked (thereby negative examples were damaged)
-	☐	trained tracker with single tracklets as well
 
 Combine detector and tracker:
-	☐	10) Run with all datasets together and fix the errors one by one
+	✔	10) Run with all datasets together and fix the errors one by one @done (14-08-21 12:48)
 
 Evaluation (1 week minimum - 2 weeks maximum):
 	☐	1) Identify a annotation-detector trajectory pair that is similar
@@ -51,6 +46,8 @@ Cell tracker (1 week work minimum - 3 weeks maximum):
 		☐	40) Render getTrackletHeadTailDescriptors fully obsolete
 		☐	85) Tweak tool
 		☐	87) Do I need somelightspeed?
+		☐	89) Linker could first list very robust long trackltes without using thracklets of length < 1, and in a second run include them, so as to fill in some gaps. This would reduce the number of hypothesis we aim to compute. The first run could set PFP = 0 so we don't loose tracklets of length 2 before we try linking them to other tracklets
+		☐	90) Filter the number of link hypothesis in advance.
 
 	Linker features:
 		☐	58) Unknown values in feature computation: Make then NaN, and then replace with the mean/median value, or first try learning with only rows without NaNs.
@@ -73,7 +70,6 @@ Cell tracker (1 week work minimum - 3 weeks maximum):
 	Robust classifier:
 		☐	52) Robust classifier: Make the thresold for robust tracklet linking load from a config files
 		☐	53) Robust classifier: To prevent unsafe robust tracklet, do not link them if there is a similiar strong link to another tracklet (define another threshold)
-		☐	86) I am training the classifier with negative example of all not connected tracklets? This will results in partially annotated datasets perform terrible. Test on all dataset.
 		✔	88) Do not train on possibly continuing tracklets @done (14-08-21 10:46)
 
 Writing thesis (1 weeks work minimum - 2 weeks maximum):
@@ -91,6 +87,7 @@ Writing thesis (1 weeks work minimum - 2 weeks maximum):
 		☐	18) Write about the problem of defining the probabilities. Eg for pinit we assume independence of any other aciton, but in reality, the value depends on the previous tracklets, so its value would change if another tracklet would be chosen. THIS IS AN IMPORTANT ASSUMPTION I NEED TO WRITE DOWN.
 		☐	19) Write about the pruning of linking likelihoods to only link higly likely tracklets
 		☐	23) Write about the fact that in some cases a tracklet is composed of separate dots. The trackler might be able to link them, but sometimes will decide that some of the dots in the path are false positive, so linking the tracklets with larger gaps than necessary... and less perfect. For this reason, a postprocessing step might be able to check the the large closed gaps, and see if there were tracklets (maybe harder to see) that could be defined to belong to the track.
+		☐	24) Problem of many short tracklets: too many link hypothesis to compute and condider... get slow... how we solve it.
  	Conclusion:
 	Evaluation:
 		☐	21) Plan and discuss with Ben the possible tests

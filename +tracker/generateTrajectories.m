@@ -28,14 +28,16 @@ function tracklets = generateTrajectories(storeID, params)
 
 	fprintf('Generating robust tracklets\n')
 	tracklets = tracker.generateTracklets(storeID, struct('withAnnotations', false, 'modelFile', robustClassifierParams.outputFileModel));
+	tracklets = tracker.filterTrackletsByLength(tracklets, 2);
 
+	fprintf('\tGenerated %d robust tracklets\n', size(tracklets, 1))
+	
 	if params.saveTrajectoryGenerationInterimResults || params.plotProgress
 		file = sprintf('%s0.mat', params.trajectoriesOutputFile);
 		iteration = 0;
 		closedGaps = 0;
 		save(file, 'tracklets', 'iteration', 'closedGaps');
 	end
-
 	% size(tracklets, 1)
 	% tracker.trackletViewer(tracklets, storeID, struct('animate', false, 'showLabels',false));
 	% pauseIt();
