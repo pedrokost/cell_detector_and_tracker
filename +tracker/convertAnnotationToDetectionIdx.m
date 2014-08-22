@@ -13,7 +13,9 @@ function tracklets2 = convertAnnotationToDetectionIdx(tracklets, options)
 
 	if nargin < 2; options = struct; end
 
-	thresholdDinstace = 20;
+	thresholdDinstace = 20;  % Bring this from the outside, because I use the same value in the evaluation
+
+
 	if isfield(options, 'thresholdDinstace')
 		thresholdDinstace = options.thresholdDinstace;
 	end

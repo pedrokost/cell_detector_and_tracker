@@ -1,4 +1,4 @@
-function [avgMetrics, metrics] = evaluateDataset(dataset, doPlot)
+function [avgMetricsAnn, avgMetricsDet, metrics] = evaluateDataset(dataset, doPlot)
 
 	%--------------------------------------------------------------Load parameters
 	params = tracker.loadDatasetInfo(dataset);
@@ -12,7 +12,7 @@ function [avgMetrics, metrics] = evaluateDataset(dataset, doPlot)
 		colors = distinguishable_colors(3, [1 1 1]);
 	end
 
-	%-------------------------------------------------------------Load annotations
+	%---------------------------------------------------------Load annotations
 	% Load the annotations tracklets
 	filename = sprintf('%s_annotations.mat', params.trajectoriesOutputFile);
 	load(filename);
@@ -28,7 +28,7 @@ function [avgMetrics, metrics] = evaluateDataset(dataset, doPlot)
 		handleAnn = tracker.trackletViewer(trackletsAnn, 'in', struct('preferredColor', colors(1, :), 'lineWidth', 2, 'showLabels', true));
 	end
 
-	%-------------------------------------------------------Find mapped detections
+	%---------------------------------------------------Find mapped detections
 
 	% Map it onto the detections, which can only return 1 tracklet
 	trackletsDet = tracker.convertAnnotationToDetectionIdx(trackletsAnn);
@@ -38,7 +38,7 @@ function [avgMetrics, metrics] = evaluateDataset(dataset, doPlot)
 		handleDet = tracker.trackletViewer(trackletsDet, 'out', struct('preferredColor', colors(2, :), 'lineStyle', '.:', 'lineWidth', 2));
 	end
 
-	%------------------------------------------------------------Subsection header
+	%--------------------------------------------------------Subsection header
 	filename = sprintf('%s_final.mat', params.trajectoriesOutputFile);
 	load(filename);
 
@@ -53,12 +53,28 @@ function [avgMetrics, metrics] = evaluateDataset(dataset, doPlot)
 		legend([handleAnn, handleDet, handleGen], {'annotated trajectory...', '...mapped to detections', 'generated trajectories'}, 'Location', 'NorthEast');
 	end
 
-	%--------------------------------------------------------------Compute metrics
+	%-----------------------------------------------------Prepare trajectories
+	% Converts them to x-y position matrices and interpolates any missing values
 
-	metrics = computeAccuracyMetrics(trackletsAnn, trackletsDet, trackletsGenMulti);
-	
-	%----------------------------------------------------------Average the metrics
+	% tracklets convert the tracklets to 2D position stuff.
+	trackletsAnn2D = tracker.trackletsToPosition(trackletsAnn, 'in', true);
+	trackletsDet2D = tracker.trackletsToPosition(trackletsDet, 'out', true);
 
-	avgMetrics = averageMetrics(metrics);
-	avgMetrics.Dataset = sprintf('Dataset %d', dataset);
+	for t=1:numLongestTracklets
+		trackletsGenMulti{t} = tracker.trackletsToPosition(trackletsGenMulti{t}, 'out', true);
+	end
+
+	% metricsAnn = computeAccuracyMetrics(trackletsAnn, trackletsGenMulti);
+	% metricsDet = computeAccuracyMetrics(trackletsDet, trackletsGenMulti);
+
+	% This will be some kind of theoretical maximum possle to achieve for the
+	% tracker, independent of the cell detector:
+	% metricsMax = computeAccuracyMetrics(trackletsAnn, {trackletsDet});
+	%------------------------------------------------------Average the metrics
+	avgMetricsAnn = struct;
+	avgMetricsDet = struct;
+	% avgMetricsAnn = averageMetrics(metricsAnn);
+	% avgMetricsDet = averageMetrics(metricsDet);
+	% avgMetricsAnn.Dataset = sprintf('Dataset %d', dataset);
+	% avgMetricsDet.Dataset = sprintf('Dataset %d', dataset);
 end

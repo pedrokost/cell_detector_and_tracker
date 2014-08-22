@@ -18,7 +18,7 @@ addpath('dependencies/distinguishable_colors');
 %--------------------------------------------------------------------Configure
 doPlot = false;
 doProf = false;
-datasets = [1 2];
+datasets = [1];
 mutliPlot = true;
 
 %-------------------------------------------------------------Begin evaluation
@@ -47,15 +47,13 @@ for i=1:numDataset
 	end
 end
 
+cd('evaluations'); return
+
 metricsOverview.Properties.RowNames = cellstr(metricsOverview.Dataset);
 metricsOverview.Dataset = [];
 
 fprintf('Average metrics for each dataset:\n\n')
 disp(metricsOverview)
-
-% metricsOverview
-% TODO: Display a nice table with the metrics for each dataset
-
 
 %--------------------------------------------------------------------Terminate
 
