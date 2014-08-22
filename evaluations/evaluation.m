@@ -16,7 +16,7 @@ addpath('evaluations')
 addpath('dependencies/distinguishable_colors');
 
 %--------------------------------------------------------------------Configure
-doPlot = false;
+doPlot = true;
 doProf = false;
 datasets = [1];
 mutliPlot = true;
@@ -34,7 +34,10 @@ metricsOverview = [];
 
 for i=1:numDataset
 	if doPlot; setupPlot(i, numDataset, mutliPlot); end	
-	[avgMetrics, metrics] = evaluateDataset(datasets(i), doPlot);
+	[avgMetricsAnn, avgMetricsDet, avgMetricsMax, metricsAnn, metricsDet, ...
+		metricsMax] = evaluateDataset(datasets(i), doPlot);
+
+	avgMetrics = combineMetrics(avgMetricsAnn, avgMetricsDet, avgMetricsMax);
 
 	% fprintf('Metrics for tracklets in dataset %d:\n', datasets(i));
 	% celldisp(metrics);
@@ -46,8 +49,6 @@ for i=1:numDataset
 		metricsOverview = union(metricsOverview, tab);
 	end
 end
-
-cd('evaluations'); return
 
 metricsOverview.Properties.RowNames = cellstr(metricsOverview.Dataset);
 metricsOverview.Dataset = [];

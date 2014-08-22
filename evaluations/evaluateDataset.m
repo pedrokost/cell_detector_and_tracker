@@ -1,4 +1,4 @@
-function [avgMetricsAnn, avgMetricsDet, metrics] = evaluateDataset(dataset, doPlot)
+function [avgMetricsAnn, avgMetricsDet, avgMetricsMax, metricsAnn, metricsDet, metricsMax] = evaluateDataset(dataset, doPlot)
 
 	%--------------------------------------------------------------Load parameters
 	params = tracker.loadDatasetInfo(dataset);
@@ -35,7 +35,7 @@ function [avgMetricsAnn, avgMetricsDet, metrics] = evaluateDataset(dataset, doPl
 
 	if doPlot
 		hold on;
-		handleDet = tracker.trackletViewer(trackletsDet, 'out', struct('preferredColor', colors(2, :), 'lineStyle', '.:', 'lineWidth', 2));
+		handleDet = tracker.trackletViewer(trackletsDet, 'out', struct('preferredColor', colors(2, :), 'lineStyle', '.-', 'lineWidth', 4));
 	end
 
 	%--------------------------------------------------------Subsection header
@@ -47,7 +47,7 @@ function [avgMetricsAnn, avgMetricsDet, metrics] = evaluateDataset(dataset, doPl
 
 	if doPlot
 		for t = 1:numLongestTracklets
-			h = tracker.trackletViewer(trackletsGenMulti{t}, 'out', struct('preferredColor', colors(3, :), 'lineStyle', '.-.', 'lineWidth', 2));
+			h = tracker.trackletViewer(trackletsGenMulti{t}, 'out', struct('preferredColor', colors(3, :), 'lineStyle', '.-', 'lineWidth', 2));
 			if t == 1; handleGen = h; end;
 		end
 		legend([handleAnn, handleDet, handleGen], {'annotated trajectory...', '...mapped to detections', 'generated trajectories'}, 'Location', 'NorthEast');
@@ -64,17 +64,22 @@ function [avgMetricsAnn, avgMetricsDet, metrics] = evaluateDataset(dataset, doPl
 		trackletsGenMulti{t} = tracker.trackletsToPosition(trackletsGenMulti{t}, 'out', true);
 	end
 
-	% metricsAnn = computeAccuracyMetrics(trackletsAnn, trackletsGenMulti);
-	% metricsDet = computeAccuracyMetrics(trackletsDet, trackletsGenMulti);
+	metricsAnn = computeAccuracyMetrics(trackletsAnn2D, trackletsGenMulti);
+	metricsDet = computeAccuracyMetrics(trackletsDet2D, trackletsGenMulti);
 
 	% This will be some kind of theoretical maximum possle to achieve for the
 	% tracker, independent of the cell detector:
-	% metricsMax = computeAccuracyMetrics(trackletsAnn, {trackletsDet});
+	trackletsGenMulti = cell(size(trackletsDet2D, 1), 1);
+	for i=1:size(trackletsDet2D, 1)
+		trackletsGenMulti{i} = trackletsDet2D(i, :, :);
+	end
+	metricsMax = computeAccuracyMetrics(trackletsAnn2D, trackletsGenMulti);
+
 	%------------------------------------------------------Average the metrics
-	avgMetricsAnn = struct;
-	avgMetricsDet = struct;
-	% avgMetricsAnn = averageMetrics(metricsAnn);
-	% avgMetricsDet = averageMetrics(metricsDet);
-	% avgMetricsAnn.Dataset = sprintf('Dataset %d', dataset);
-	% avgMetricsDet.Dataset = sprintf('Dataset %d', dataset);
+	avgMetricsAnn = averageMetrics(metricsAnn);
+	avgMetricsDet = averageMetrics(metricsDet);
+	avgMetricsMax = averageMetrics(metricsMax);
+	avgMetricsAnn.Dataset = sprintf('Dataset %d', dataset);
+	avgMetricsDet.Dataset = sprintf('Dataset %d', dataset);
+	avgMetricsMax.Dataset = sprintf('Dataset %d', dataset);
 end

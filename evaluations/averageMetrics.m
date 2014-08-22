@@ -14,6 +14,7 @@ function [avgMetrics, metricValues] = averageMetrics(metrics)
 		metricValues(i) = mean(cellfun(@(x) x.(metricFields{i}), metrics));
 		avgMetrics.(metricFields{i}) = metricValues(i);
 	end
+
 	avgMetrics.SampleSize = numel(metrics);
 end
 

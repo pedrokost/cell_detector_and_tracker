@@ -1,20 +1,26 @@
-function metricsMulti = computeAccuracyMetrics(trackletsAnn, trackletsDet, trackletsGenMulti);
+function metricsMulti = computeAccuracyMetrics(target, trajectories);
 	% COMPUTEACCURACYMETRICS Compute accuracy metrics for a set tracklets
 	% Inputs:
-	% 	trackletsAnn = a trackltes matrix with annotated tracklets....
-	% 	trackletsDet = ... mapped into detections
-	% 	trackletsGen = a cell array with corresponding generated trajectories (can be several)
+	% 	target = a trackltes matrix with annotated tracklets....
+	% 	trajectories = a cell array with corresponding generated trajectories (can be several)
 	% Outputs:
-	% 	metrics = a cell array of structs containing a set of different accuracy metrics for each tracklet
+	% 	metricsMulti = a cell array of structs containing a set of different accuracy metrics for each tracklet
 
-	numTracklets = size(trackletsAnn, 1);
+	numTracklets = size(target, 1);
 	metricsMulti = cell(numTracklets, 1);
 
-	% OUTLIER_DISTANCE = 20; % bring from parameters.
+	OUTLIER_DISTANCE = 20; % bring from parameters.
 
 	% Number of trajectories overlapping with the annotated tracklet
 	for t = 1:numTracklets
-		matrics = struct;
+		metrics = struct;
+
+		targetMap = max(target(t, :, :), [], 3) > 0;
+		targetMapIdx = find(targetMap);
+		trajectorySegments = trajectories{t};
+		trajectoriesMap = max(max(trajectorySegments, [], 1), [], 3) > 0;
+		trajectoriesMapIdx = find(trajectoriesMap);
+
 
 		% A lot of metrics in 
 		% ClearEval_Protocol_v5
@@ -28,11 +34,7 @@ function metricsMulti = computeAccuracyMetrics(trackletsAnn, trackletsDet, track
 		% FIXME: What is the difference between Fragmentation and ID switches?
 		%-------------------------------------------------Fragmentation (FRMT)
 		% The number of times a trajectory is interrupted
-		metrics.Fragmentation = size(trackletsGenMulti{t}, 1) - 1;
-
-		%----------------------------------------------------ID switches (IDS)
-		% The number of times two trajectories switch their ID
-		metrics.IDSwitches = size(trackletsGenMulti{t}, 1) - 1;
+		metrics.Fragmentation = size(trajectorySegments, 1) - 1;
 
 		%---------------------------------------------------------False alarms
 		% check the mota definition
@@ -71,12 +73,21 @@ function metricsMulti = computeAccuracyMetrics(trackletsAnn, trackletsDet, track
 		% check page 124 of the thesis of autoamatic tracking.
 
 		%---------------------------------Early termination of trajectory (ET)
+		% Then number of frames the trajectory finished early
+
+		metrics.EarlyTermination = max(targetMapIdx(end) - trajectoriesMapIdx(end), 0);
 
 		%------------------------------Early initialization of trajectory (EI)
 
+		metrics.EarlyInitialization = max(trajectoriesMapIdx(1) - targetMapIdx(1), 0);
+
 		%----------------------------------Late termination of trajectory (LT)
+		
+		metrics.LateTermination = max(trajectoriesMapIdx(end) - targetMapIdx(end), 0);
 
 		%-------------------------------Late initialization of trajectory (LI)
+
+		metrics.LateInitialization = max(targetMapIdx(1) - trajectoriesMapIdx(1), 0);
 
 		%----------------------------------------Root mean square error (RMSE)
 		% ... of the tracked cell center

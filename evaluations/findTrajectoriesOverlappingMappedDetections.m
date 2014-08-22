@@ -11,7 +11,7 @@ function trackletsGenMulti = findTrajectoriesOverlappingMappedDetections(trackle
 
 
 	[numTracklets, numFrames] = size(trackletsDet);
-	trackletsGenMulti = cell(numTracklets);
+	trackletsGenMulti = cell(numTracklets, 1);
 
 
 	for t=1:numTracklets

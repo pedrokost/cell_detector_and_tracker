@@ -4,7 +4,7 @@ Evaluation (1 week minimum - 2 weeks maximum):
 	✔	14) Evaluation example for multiple tracklets simultaeosly (return a set of metrics) @done (14-08-22 10:11)
 	✔	15) Combine the evaluation metrics of several tracklets by averaging @done (14-08-22 10:12)
 	✔	16) Evaluation for multiple datasets simultaneously @done (14-08-22 12:28)
-	☐	4) Theoretical maximimum tracking accuracy: directly map detections over annotations: This is a measure of how well the tracker detects all the things and what best results can we expect given the used detector
+	✔	4) Theoretical maximimum tracking accuracy: directly map detections over annotations: This is a measure of how well the tracker detects all the things and what best results can we expect given the used detector @done (14-08-22 18:02)
 	✔	5) Basic linear interpolation of tracklets so that I can compute quality metrics @done (14-08-22 16:38)
 	☐	6) Implement other tracking quality metrics (reqs: T82)
 	Track evaluation metrics:
@@ -84,6 +84,7 @@ Writing thesis (1 weeks work minimum - 2 weeks maximum):
 		☐	19) Write about the pruning of linking likelihoods to only link higly likely tracklets
 		☐	23) Write about the fact that in some cases a tracklet is composed of separate dots. The trackler might be able to link them, but sometimes will decide that some of the dots in the path are false positive, so linking the tracklets with larger gaps than necessary... and less perfect. For this reason, a postprocessing step might be able to check the the large closed gaps, and see if there were tracklets (maybe harder to see) that could be defined to belong to the track.
 		☐	24) Problem of many short tracklets: too many link hypothesis to compute and condider... get slow... how we solve it.
+		☐	25) Write that the method only cares about extracting longer trajectories... the shorter ones are often marked as false positives
  	Conclusion:
 	Evaluation:
 		☐	21) Plan and discuss with Ben the possible tests
