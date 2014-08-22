@@ -1,16 +1,22 @@
-function metrics = computeAccuracyMetrics(trackletsAnn, trackletsDet, trackletsGen);
-	% COMPUTEACCURACYMETRICS Compute accuracy metrics for a single tracklets (FIXME)
+function metricsMulti = computeAccuracyMetrics(trackletsAnn, trackletsDet, trackletsGenMulti);
+	% COMPUTEACCURACYMETRICS Compute accuracy metrics for a set tracklets
 	% Inputs:
-	% 	trackletsAnn = a single (FIXME) annotated tracklet....
+	% 	trackletsAnn = a trackltes matrix with annotated tracklets....
 	% 	trackletsDet = ... mapped into detections
-	% 	trackletsGen = corresponding generated trajectories (can be several)
+	% 	trackletsGen = a cell array with corresponding generated trajectories (can be several)
 	% Outputs:
-	% 	metrics = a struct containing a set of different accuracy metrics
+	% 	metrics = a cell array of structs containing a set of different accuracy metrics for each tracklet
 
-	metrics = struct;
-
+	numTracklets = size(trackletsAnn, 1);
+	metricsMulti = cell(numTracklets, 1);
 
 	% Number of trajectories overlapping with the annotated tracklet
-	metrics.numSplits = size(trackletsGen, 1);
+	for t = 1:numTracklets
+		matrics = struct;
+		metrics.NumSplits = size(trackletsGenMulti{t}, 1);
+		metrics.Banana = false;
+
+		metricsMulti{t} = metrics;
+	end
 
 end

@@ -28,39 +28,46 @@ switch datasetID
         outFolder = fullfile(rootOutFolder, 'series30green');
         linkFolder = fullfile(rootLinkFolder, 'series30green_fortrajectories');
         numAnnotatedFrames = 60;
+        numAnnotatedTrajectories = 2;
     case 2 %KidneyGreen
         dotFolder = fullfile(rootDotFolder, 'series30red');
         outFolder = fullfile(rootOutFolder, 'series30red');
         linkFolder = dotFolder;
         numAnnotatedFrames = 60;
+        numAnnotatedTrajectories = 3;
     case 3 %LungGreen
         dotFolder = fullfile(rootDotFolder, 'series13greencropped');
         outFolder = fullfile(rootOutFolder, 'series13greencropped');
         linkFolder = fullfile(rootLinkFolder, 'series13greencropped_fortrajectories');
         imageDims = [251 251];
         numAnnotatedFrames = 55;
+        numAnnotatedTrajectories = 2;
     case 4 %LungGreen
         dotFolder = fullfile(rootDotFolder, 'series14croppedcleaned');
         outFolder = fullfile(rootOutFolder, 'series14croppedcleaned');
         linkFolder = fullfile(rootLinkFolder, 'series14croppedcleaned_fortrajectories');
         imageDims = [199 199];
         numAnnotatedFrames = 50;
+        numAnnotatedTrajectories = 2;
     case 5 %KidneyRed
         dotFolder = fullfile(rootDotFolder, 'seriesm170_13cropped');
         outFolder = fullfile(rootOutFolder, 'seriesm170_13cropped');
         linkFolder = dotFolder;
         imageDims = [277 277];
         numAnnotatedFrames = 67;
+        numAnnotatedTrajectories = 2;
     case 6 %KidneyRed
         dotFolder = fullfile(rootDotFolder, 'series13redcropped');
         outFolder = fullfile(rootOutFolder, 'series13redcropped');
         linkFolder = dotFolder;
         numAnnotatedFrames = 32;
+        numAnnotatedTrajectories = 2;
     case 7 %KidneyRed
         dotFolder = fullfile(rootDotFolder, 'dumy');
         outFolder = fullfile(rootOutFolder, 'dumy');
         linkFolder = dotFolder;
         numAnnotatedFrames = 30;
+        numAnnotatedTrajectories = 2;
 end
 
 if exist(dotFolder,'dir') ~= 7
@@ -86,5 +93,6 @@ folders.linkFolder = linkFolder;
 folders.outFolder  =  outFolder;
 folders.imageDimensions = imageDims;
 folders.numAnnotatedFrames = numAnnotatedFrames;
+folders.numAnnotatedTrajectories = numAnnotatedTrajectories;
 
 end
