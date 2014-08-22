@@ -19,7 +19,7 @@ addpath('dependencies/distinguishable_colors');
 doProf = true;
 doPlot = true;
 dataset = [1];
-numLongestTracklets = 2;
+numLongestTracklets = 3;
 
 if doPlot; figure(1); clf; end
 if doProf
@@ -48,7 +48,7 @@ trackletsAnn = trackletsAnn(sortIdx, :);
 trackletsAnn = trackletsAnn(1:numLongestTracklets, :);
 
 if doPlot
-	tracker.trackletViewer(trackletsAnn, 'in', struct('preferredColor', colors(1, :), 'lineWidth', 2));
+	handleAnn = tracker.trackletViewer(trackletsAnn, 'in', struct('preferredColor', colors(1, :), 'lineWidth', 2));
 end
 
 %-------------------------------------------------------Find mapped detections
@@ -57,7 +57,8 @@ end
 trackletsDet = tracker.convertAnnotationToDetectionIdx(trackletsAnn);
 
 if doPlot
-	hold on; tracker.trackletViewer(trackletsDet, 'out', struct('preferredColor', colors(2, :), 'lineStyle', '.:', 'lineWidth', 2));
+	hold on;
+	handleDet = tracker.trackletViewer(trackletsDet, 'out', struct('preferredColor', colors(2, :), 'lineStyle', '.:', 'lineWidth', 2));
 end
 
 %------------------------------------------------------------Subsection header
@@ -70,11 +71,10 @@ trackletsGenMulti = findTrajectoriesOverlappingMappedDetections(trackletsDet, tr
 
 if doPlot
 	for t = 1:numLongestTracklets
-		tracker.trackletViewer(trackletsGenMulti{t}, 'out', struct('preferredColor', colors(3, :), 'lineStyle', '.-.', 'lineWidth', 2));
+		h = tracker.trackletViewer(trackletsGenMulti{t}, 'out', struct('preferredColor', colors(3, :), 'lineStyle', '.-.', 'lineWidth', 2));
+		if t == 1; handleGen = h; end;
 	end
-
-	% TODO: fix the legend
-	legend({'annotated tracklet...', '...mapped to detections', 'generated trajectories'})
+	legend([handleAnn, handleDet, handleGen], {'annotated trajectory...', '...mapped to detections', 'generated trajectories'})
 end
 
 cd('evaluations'); return

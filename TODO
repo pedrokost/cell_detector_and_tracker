@@ -1,13 +1,4 @@
-	✔	T88 @done (14-08-21 10:46)
-
-Combine detector and tracker:
-	✔	10) Run with all datasets together and fix the errors one by one @done (14-08-21 12:48)
-
 Evaluation (1 week minimum - 2 weeks maximum):
-	✔	1) Identify a annotation-detector trajectory pair that is similar @done (14-08-21 16:56)
-		I need to convert annotations to detections, and then find the tracklets containing those detections :D
-	✔	2) Send these 2 pairs to the the function that compute the number of missetection pairs (returns struct with values) @done (14-08-21 17:32)
-	✔	3) Implement 1 basic cell tracking metric @done (14-08-21 17:34)
 	☐	14) Evaluation example for multiple tracklets simultaeosly (return a set of metrics)
 	☐	15) Combine the evaluation metrics of several tracklets by averaging
 	☐	4) Theoretical maximimum tracking accuracy: directly map detections over annotations: This is a measure of how well the tracker detects all the things and what best results can we expect given the used detector
@@ -72,7 +63,6 @@ Cell tracker (1 week work minimum - 3 weeks maximum):
 	Robust classifier:
 		☐	52) Robust classifier: Make the thresold for robust tracklet linking load from a config files
 		☐	53) Robust classifier: To prevent unsafe robust tracklet, do not link them if there is a similiar strong link to another tracklet (define another threshold)
-		✔	88) Do not train on possibly continuing tracklets @done (14-08-21 10:46)
 
 Writing thesis (1 weeks work minimum - 2 weeks maximum):
 
@@ -144,6 +134,13 @@ Data flow process:
 	☐ linker : IN: dots + robust matches, OUT: dots + links
 ＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿
 Archive:
+	✔	T88 @done (14-08-21 10:46)
+	✔	10) Run with all datasets together and fix the errors one by one @done (14-08-21 12:48) @project(Combine detector and tracker)
+	✔	1) Identify a annotation-detector trajectory pair that is similar @done (14-08-21 16:56) @project(Evaluation (1 week minimum - 2 weeks maximum))
+		I need to convert annotations to detections, and then find the tracklets containing those detections :D
+	✔	2) Send these 2 pairs to the the function that compute the number of missetection pairs (returns struct with values) @done (14-08-21 17:32) @project(Evaluation (1 week minimum - 2 weeks maximum))
+	✔	3) Implement 1 basic cell tracking metric @done (14-08-21 17:34) @project(Evaluation (1 week minimum - 2 weeks maximum))
+	✔	88) Do not train on possibly continuing tracklets @done (14-08-21 10:46) @project(Cell tracker (1 week work minimum - 3 weeks maximum) / Robust classifier)
 	✔	87) Robust tracker learn without tracks of length 1 @done (14-08-20 09:41) @project(Cell tracker (1 week work minimum - 3 weeks maximum) / Robust classifier)
 	✔	82) testLinkerClassifierANN.m is shold be saved in the corresponding out-folder @done (14-08-19 10:31) @project(Cell tracker (1 week work minimum - 3 weeks maximum) / Linker classifier)
 	✔	9) Call LinkerANN from correct outfolder @done (14-08-19 10:02) @project(Combine detector and tracker)
