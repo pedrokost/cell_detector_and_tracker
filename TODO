@@ -12,7 +12,7 @@ Evaluation (1 week minimum - 2 weeks maximum):
 		☐	4) Mostly tracked trajectories (MT): The number of tracjectories that are successfully tracked for more than 80%
 		☐	5) Mostly lost trajectories (ML): The number of trajectories that are tracked for less than 20%
 		☐	6) Partially tracked trajectories (PT): the number of trajectories that are tracked between 20% and 80%
-		☐	7) Fragmentation (FRMT): the number of times a trajectory is interrupted
+		✔	7) Fragmentation (FRMT): the number of times a trajectory is interrupted @done (14-08-22 12:41)
 		☐	8) ID switches (IDS): the number of times two trajectories switch their ID
 	☐	7) Accuracy of detector trained on single dataset
 	☐	8) Accuracy of detector trained on combined datasets

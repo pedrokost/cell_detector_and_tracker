@@ -13,8 +13,29 @@ function metricsMulti = computeAccuracyMetrics(trackletsAnn, trackletsDet, track
 	% Number of trajectories overlapping with the annotated tracklet
 	for t = 1:numTracklets
 		matrics = struct;
-		metrics.NumSplits = size(trackletsGenMulti{t}, 1);
-		metrics.Banana = false;
+
+		%-------------------------------------------------Fragmentation (FRMT)
+		% The number of times a trajectory is interrupted
+		metrics.Fragmentation = size(trackletsGenMulti{t}, 1);
+
+		%----------------------------------------------------ID switches (IDS)
+		% The number of times two trajectories switch their ID
+
+		%----------------------------------Partially tracked trajectories (PT)
+		% The number of trajectories that are tracked between 20% and 80%
+
+		%----------------------------------------Mostly lost trajectories (ML)
+		% The number of trajectories that are tracked for less than 20%
+
+		%-------------------------------------Mostly tracked trajectories (MT)
+		% The number of tracjectories that are successfully tracked for more than 80%
+
+		%-----------------------------------------False Alarm Per Frame (FAPF)
+
+		%--------------------Fraction of Ground Truth Instances Missed (FGTIM)
+
+		%-----------------------------Multiple Object Tracking Accuracy (MOTA)
+		% calculated from the number of false alarms, missed detections, and identity switches;
 
 		metricsMulti{t} = metrics;
 	end
