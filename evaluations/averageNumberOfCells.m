@@ -3,6 +3,7 @@ clear all;
 datasets = 1:5;
 cd('/home/pedro/Dropbox/Imperial/project/cell_tracker');
 
+totals = zeros(numel(datasets), 1);
 means = zeros(numel(datasets), 1);
 stds  = zeros(numel(datasets), 1);
 
@@ -16,11 +17,11 @@ for d=1:numel(datasets)
 		dots = store.getDots(frames(f));
 		dotsCount(f) = size(dots, 1);
 	end
+	totals(d) = sum(dotsCount);
 	means(d) = mean(dotsCount);
 	stds(d) = std(dotsCount);
 end
 
-means
-stds
+[(1:5)' totals means stds]
 
 cd('evaluations');
