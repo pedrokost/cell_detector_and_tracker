@@ -2,25 +2,24 @@
 
 % dataset 2, 4 failsex
 datasets = [7];  %Identifier of the training/testing data as set in loadDatasetInfo
-train = 0;%---->Do train
+train = 1;%---->Do train
 test = 1;%----->Do test
 
+rng(1234);
 % ---------------------------------------------------No need to touch the rest
 
-opts = ctrlParams();
+overrides = struct('testAll', false, 'trainSplit', 0.7, 'features', [1 0 1 1 1 1 0]);
 
 if train
 	for dataset=datasets
 		fprintf('Training dataset %d\n', dataset);
-		trainCellDetector(dataset, opts);
+		detector.trainDetector(dataset, overrides);
 	end
 end
 
 if test
 	for dataset=datasets
 		fprintf('Testing dataset %d\n', dataset);
-		detectCells(dataset, opts);
+		metrics = detector.detectCells(dataset, overrides);
 	end
 end
-
-

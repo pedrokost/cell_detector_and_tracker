@@ -1,7 +1,21 @@
-function detectCells(dataset)
+function detectorPerfMetrics = detectCells(dataset, overrides)
 	% Evaluates a trained model on a new dataset
+	% Inputs:
+	% 	dataset = the id of the dataset, as set in dataFolders.m
+	% Output:
+	% 	detectorPerfMetrics = a struct containing performance detectorPerfMetrics:
+	%		dataset
+	% 		avgPrecision
+	% 		avgRecall
+	% 		stdPrecision
+	% 		stdRecall
+	% 		avgTimePerFrame
+	% 		avgTimePerAnnotatedCell
+	% 		avgTimePerCandidateRegion
+	% 		ratioAnnotationToCandidate
 
-	ctrlParams = detector.ctrlParams();
+	ctrlParams = detector.ctrlParams(overrides);
+	detectorPerfMetrics = struct('dataset', dataset);
 
 	%--------------------------------------------------------Load dependencies
 	addpath(fullfile('dependencies'));
@@ -46,6 +60,8 @@ function detectCells(dataset)
 
 	prec = [];
 	rec = [];
+	numGt = [];
+	numCand = [];
 
 	for imNum = 1:numel(testFiles)
 		tim = tic;
@@ -72,6 +88,9 @@ function detectCells(dataset)
 		%--------------------------------------------------------Save masks to file
 		
 		if ~isempty(gt)
+			numGt(imNum) = size(gt, 1);
+			numCand(imNum) = numel(prediction);
+
 			[prec(imNum), rec(imNum)] = detector.evalDetect(dots(:,2),dots(:,1),...
 				gt(:,2), gt(:,1), ones(size(img)),tol);
 
@@ -88,20 +107,30 @@ function detectCells(dataset)
 	end
 
 	%--------------------------------------------------------------------Finish
+	detectorPerfMetrics.avgPrecision = mean(prec(~isnan(prec)));
+	detectorPerfMetrics.stdPrecision = std(prec(~isnan(prec)));
+
+	detectorPerfMetrics.avgRecall = mean(rec(~isnan(rec)));
+	detectorPerfMetrics.stdRecall = std(rec(~isnan(rec)));
 
 	%Print simple evaluation results if available
 	if exist('prec','var')
 	    disp('--Evaluation results (Matching)--');
-	    disp(['Mean Precision: ' num2str(mean(prec)) ]);
-	    disp(['Mean Recall: ' num2str(mean(rec)) ]);
+	    disp(['Mean Precision: ' num2str(detectorPerfMetrics.avgPrecision) ]);
+	    disp(['Mean Recall: ' num2str(detectorPerfMetrics.avgRecall) ]);
 	    disp(' ');
-
 	end
 
 	elapsedTime = toc(t);
 
-	fprintf('Completed in %2.3f CPU seconds (~%2.3f seconds per frame)\n', elapsedTime, elapsedTime / numel(testFiles));
+	detectorPerfMetrics.avgTimePerFrame = elapsedTime / numel(testFiles);
+	detectorPerfMetrics.avgTimePerAnnotatedCell = elapsedTime / sum(numGt);
+	detectorPerfMetrics.avgTimePerCandidateRegion = elapsedTime / sum(numCand);
+	detectorPerfMetrics.ratioAnnotationToCandidate = sum(numGt) / sum(numCand);
 
+	fprintf('Completed in %2.3f seconds (~%2.3f seconds per frame, ~%2.3f seconds per annotated cell)\n', elapsedTime, detectorPerfMetrics.avgTimePerFrame, detectorPerfMetrics.avgTimePerAnnotatedCell);
+
+	save([outFolder '/detectorPerfMetrics.mat'],'detectorPerfMetrics');
 
 	if isSequence
 	    detector.plotDotsSequence(outFolder);

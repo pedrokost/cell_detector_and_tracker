@@ -1,12 +1,12 @@
-function trainDetector(dataset)
+function trainDetector(dataset, overrides)
 	% Trains the cell detector on the given dataset
-
-	ctrlParams = detector.ctrlParams();
 
 	%--------------------------------------------------------Load dependencies
 	addpath(fullfile('dependencies'));
 	addpath(fullfile('dependencies', 'matlab'));
+	addpath(fullfile('dependencies', 'catstruct'));
 
+	ctrlParams = detector.ctrlParams(overrides);
 	%-------------------------------------------------------Check dependencies
 	if exist('vl_setup','file') == 0
 	    error('vl_feat required');

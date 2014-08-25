@@ -13,7 +13,7 @@ done = 0;
 additionalU = 0;
 outerIter = 0;
 
-dataParams = detector.loadDatasetInfo(dataset);
+dataParams = detector.loadDatasetInfo(dataset,ctrl);
 trainFiles = dataParams.trainFiles;
 testFiles  = dataParams.testFiles;
 imExt      = dataParams.imExt;

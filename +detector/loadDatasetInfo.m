@@ -25,6 +25,16 @@ function params = loadDatasetInfo(dataset, options)
 
 if nargin < 2; options = struct; end
 if ~isfield(options, 'testAll'); options.testAll = false; end
+if ~isfield(options, 'trainSplit');
+	trainSplit = 1;
+else
+	trainSplit = options.trainSplit;
+end
+if ~isfield(options, 'features');
+	features = [1 0 1 1 1 1 0]; % Use default from setFeatures
+else
+	features = options.features;
+end
 
 %Defaults
 BoD = 1;
@@ -35,19 +45,16 @@ Delta = 4;
 MaxVariation = 1;
 MinDiversity = 0.1;
 tol = 8;  %Tolerance (pixels) for evaluation only
-trainsplit = 1;  % percentage of data to be used for training 
-features = [1 0 1 1 1 1 0]; % Use default from setFeatures
-
 params = dataFolders(dataset);
 
-files = dir(fullfile(params.dotFolder,[params.imPrefix, '*.' params.imExt]));
+files = dir(fullfile(params.dotFolder, [params.imPrefix, '*.' params.imExt]));
 
 [~,files] = cellfun(@fileparts, {files.name}, 'UniformOutput',false);
 
-trainImgs = round(trainsplit * params.numAnnotatedFrames);
+numTrainImgs = round(trainSplit * params.numAnnotatedFrames);
 
 trainFiles = datasample(files(1:params.numAnnotatedFrames), ...
-    trainImgs, 'Replace', false);
+    numTrainImgs, 'Replace', false);
 trainFiles = sort(trainFiles);
 
 if options.testAll
@@ -55,6 +62,9 @@ if options.testAll
 else
     testFiles = setdiff(files, trainFiles);
 end
+
+% fprintf('Training on %d/%d of the files. ', numel(trainFiles), numel(files));
+% fprintf('Testing on %d/%d of the files.\n', numel(testFiles), numel(files));
 
 % randomize the order of train files
 % trainFiles = {trainFiles{randperm(numel(trainFiles))}};

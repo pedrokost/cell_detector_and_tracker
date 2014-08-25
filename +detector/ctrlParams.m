@@ -1,4 +1,4 @@
-function params = ctrlParams()
+function params = ctrlParams(overrides)
 	% Sets control parameters for testing/training
 	%OUTPUT
 	%   ctrlParms = structure with some control parameters
@@ -23,4 +23,7 @@ function params = ctrlParams()
 
 	%----------------------------------------------------------------Detection
 	params.testAll = true;  % Test on complete dataset, or only fraction
-	params.measureTime = true;  % Time the testing function
+	%----------------------------------------------------------------Overrides
+	if nargin > 0
+		params = catstruct(params, overrides);
+	end
