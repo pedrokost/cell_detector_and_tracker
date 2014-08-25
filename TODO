@@ -1,11 +1,6 @@
 TODO: 
 
 Evaluation (1 week minimum - 2 weeks maximum):
-	✔	14) Evaluation example for multiple tracklets simultaeosly (return a set of metrics) @done (14-08-22 10:11)
-	✔	15) Combine the evaluation metrics of several tracklets by averaging @done (14-08-22 10:12)
-	✔	16) Evaluation for multiple datasets simultaneously @done (14-08-22 12:28)
-	✔	4) Theoretical maximimum tracking accuracy: directly map detections over annotations: This is a measure of how well the tracker detects all the things and what best results can we expect given the used detector @done (14-08-22 18:02)
-	✔	5) Basic linear interpolation of tracklets so that I can compute quality metrics @done (14-08-22 16:38)
 	☐	6) Implement other tracking quality metrics (reqs: T82)
 	Track evaluation metrics:
 		☐	1) MOTA: Multiple Object Tracking Accuracy, calculated from the number of false alarms, missed detections, and identity switches;
@@ -14,7 +9,6 @@ Evaluation (1 week minimum - 2 weeks maximum):
 		☐	4) Mostly tracked trajectories (MT): The number of tracjectories that are successfully tracked for more than 80%
 		☐	5) Mostly lost trajectories (ML): The number of trajectories that are tracked for less than 20%
 		☐	6) Partially tracked trajectories (PT): the number of trajectories that are tracked between 20% and 80%
-		✔	7) Fragmentation (FRMT): the number of times a trajectory is interrupted @done (14-08-22 12:41)
 		☐	8) ID switches (IDS): the number of times two trajectories switch their ID
 	☐	7) Accuracy of detector trained on single dataset
 	☐	8) Accuracy of detector trained on combined datasets
@@ -23,6 +17,32 @@ Evaluation (1 week minimum - 2 weeks maximum):
 	☐	11) Accuracy of tracker if frames are skipped: what is the max number of frames that can be skipped while still obtaining good enough tracks
 	☐	12) Show example of detector detecting 2 cells as 1 due to the nonoverlap constraint
 	☐	13) Show example of all bad cases (linking too much, 3 tracklets middle skipped, ...)
+
+Writing thesis (1 weeks work minimum - 2 weeks maximum):
+
+	Introduction:
+	Detection:
+		☐	16) vl_mser requires linking to their paper. make sure you do.
+	Related work:
+	Data and annotation:
+		✔	22) Include Leo's comments into the chapter @done (14-08-24 12:48)
+	Tracking:
+		☐	13) linker classifier feautres add new feautres
+		☐	15) Explain the difficulties of computing spatio-temporal featres for tracklets of length 1... and that this causes them to be useless in fact
+		☐	17) Write that scalaing parameters are applied after the computation of the probs. Need to update the formuals in the report
+		☐	18) Write about the problem of defining the probabilities. Eg for pinit we assume independence of any other aciton, but in reality, the value depends on the previous tracklets, so its value would change if another tracklet would be chosen. THIS IS AN IMPORTANT ASSUMPTION I NEED TO WRITE DOWN.
+		☐	19) Write about the pruning of linking likelihoods to only link higly likely tracklets
+		☐	23) Write about the fact that in some cases a tracklet is composed of separate dots. The trackler might be able to link them, but sometimes will decide that some of the dots in the path are false positive, so linking the tracklets with larger gaps than necessary... and less perfect. For this reason, a postprocessing step might be able to check the the large closed gaps, and see if there were tracklets (maybe harder to see) that could be defined to belong to the track.
+		☐	24) Problem of many short tracklets: too many link hypothesis to compute and condider... get slow... how we solve it.
+		☐	25) Write that the method only cares about extracting longer trajectories... the shorter ones are often marked as false positives
+ 	Conclusion:
+	Evaluation:
+		☐	20) Write the whole evaluation chapter
+	General:
+		✔	26) Include Ben's comments @done (14-08-24 12:48)
+		☐	5) Review past best dissertations for section and writing style inspiration
+		☐	26) Review bibliography and see if it needs any fixes
+
 
 Cell tracker (1 week work minimum - 3 weeks maximum):
 
@@ -67,35 +87,7 @@ Cell tracker (1 week work minimum - 3 weeks maximum):
 		☐	52) Robust classifier: Make the thresold for robust tracklet linking load from a config files
 		☐	53) Robust classifier: To prevent unsafe robust tracklet, do not link them if there is a similiar strong link to another tracklet (define another threshold)
 		☐	91) Try training with only a subset of the features... in order to generate longer robust tracklets
-
-Writing thesis (1 weeks work minimum - 2 weeks maximum):
-
-	Introduction:
-	Detection:
-		☐	16) vl_mser requires linking to their paper. make sure you do.
-	Related work:
-	Data and annotation:
-		☐	22) Include Leo's comments into the chapter
-	Tracking:
-		☐	13) linker classifier feautres add new feautres
-		☐	15) Explain the difficulties of computing spatio-temporal featres for tracklets of length 1... and that this causes them to be useless in fact
-		☐	17) Write that scalaing parameters are applied after the computation of the probs. Need to update the formuals in the report
-		☐	18) Write about the problem of defining the probabilities. Eg for pinit we assume independence of any other aciton, but in reality, the value depends on the previous tracklets, so its value would change if another tracklet would be chosen. THIS IS AN IMPORTANT ASSUMPTION I NEED TO WRITE DOWN.
-		☐	19) Write about the pruning of linking likelihoods to only link higly likely tracklets
-		☐	23) Write about the fact that in some cases a tracklet is composed of separate dots. The trackler might be able to link them, but sometimes will decide that some of the dots in the path are false positive, so linking the tracklets with larger gaps than necessary... and less perfect. For this reason, a postprocessing step might be able to check the the large closed gaps, and see if there were tracklets (maybe harder to see) that could be defined to belong to the track.
-		☐	24) Problem of many short tracklets: too many link hypothesis to compute and condider... get slow... how we solve it.
-		☐	25) Write that the method only cares about extracting longer trajectories... the shorter ones are often marked as false positives
- 	Conclusion:
-	Evaluation:
-		☐	21) Plan and discuss with Ben the possible tests
-		☐	20) Write the whole evaluation chapter
-		☐	9) Compare performance with different features
-		☐	10) Try the performance of the tool with added noise to data
-		☐	11) Train classifier on just the single dataset vs all datasets
-	General:
-		☐	5) Review past best dissertations for section and writing style inspiration
-
-Cell annotator (3 days work minimum - 1 week maximum):
+Cell annotator:
 	☐	2) Copy anotations over
 	☐	3) Copy links over
 	☐	5) New tab/window that displays the tracklets in 3d
@@ -139,12 +131,18 @@ Data flow process:
 	☐ linker : IN: dots + robust matches, OUT: dots + links
 ＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿
 Archive:
-	✔	T88 @done (14-08-21 10:46)
-	✔	10) Run with all datasets together and fix the errors one by one @done (14-08-21 12:48) @project(Combine detector and tracker)
+	✔	4) Theoretical maximimum tracking accuracy: directly map detections over annotations: This is a measure of how well the tracker detects all the things and what best results can we expect given the used detector @done (14-08-22 18:02) @project(Evaluation (1 week minimum - 2 weeks maximum))
+	✔	5) Basic linear interpolation of tracklets so that I can compute quality metrics @done (14-08-22 16:38) @project(Evaluation (1 week minimum - 2 weeks maximum))
+	✔	7) Fragmentation (FRMT): the number of times a trajectory is interrupted @done (14-08-22 12:41) @project(Evaluation (1 week minimum - 2 weeks maximum) / Track evaluation metrics)
+	✔	16) Evaluation for multiple datasets simultaneously @done (14-08-22 12:28) @project(Evaluation (1 week minimum - 2 weeks maximum))
+	✔	15) Combine the evaluation metrics of several tracklets by averaging @done (14-08-22 10:12) @project(Evaluation (1 week minimum - 2 weeks maximum))
+	✔	14) Evaluation example for multiple tracklets simultaeosly (return a set of metrics) @done (14-08-22 10:11) @project(Evaluation (1 week minimum - 2 weeks maximum))
+	✔	3) Implement 1 basic cell tracking metric @done (14-08-21 17:34) @project(Evaluation (1 week minimum - 2 weeks maximum))
+	✔	2) Send these 2 pairs to the the function that compute the number of missetection pairs (returns struct with values) @done (14-08-21 17:32) @project(Evaluation (1 week minimum - 2 weeks maximum))
 	✔	1) Identify a annotation-detector trajectory pair that is similar @done (14-08-21 16:56) @project(Evaluation (1 week minimum - 2 weeks maximum))
 		I need to convert annotations to detections, and then find the tracklets containing those detections :D
-	✔	2) Send these 2 pairs to the the function that compute the number of missetection pairs (returns struct with values) @done (14-08-21 17:32) @project(Evaluation (1 week minimum - 2 weeks maximum))
-	✔	3) Implement 1 basic cell tracking metric @done (14-08-21 17:34) @project(Evaluation (1 week minimum - 2 weeks maximum))
+	✔	10) Run with all datasets together and fix the errors one by one @done (14-08-21 12:48) @project(Combine detector and tracker)
+	✔	T88 @done (14-08-21 10:46)
 	✔	88) Do not train on possibly continuing tracklets @done (14-08-21 10:46) @project(Cell tracker (1 week work minimum - 3 weeks maximum) / Robust classifier)
 	✔	87) Robust tracker learn without tracks of length 1 @done (14-08-20 09:41) @project(Cell tracker (1 week work minimum - 3 weeks maximum) / Robust classifier)
 	✔	82) testLinkerClassifierANN.m is shold be saved in the corresponding out-folder @done (14-08-19 10:31) @project(Cell tracker (1 week work minimum - 3 weeks maximum) / Linker classifier)
