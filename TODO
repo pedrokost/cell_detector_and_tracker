@@ -1,14 +1,17 @@
-TODO: 
-
 Evaluation (1 week minimum - 2 weeks maximum):
 	Detection:
-		☐	19) Run detector on seriesm170_13cropped
-		☐	16) Write basic bash script to copy folders together by renaming files correctly (use the chosen faeture descriptor, I can always rerun it later)
-		☐	14) Compute detection accuracy and time (train 70, test 30) per individual dataset
+		✔	20) Make sure prec and recall correct when no cells in images @done (14-08-26 23:00)
+		✔	19) Run detector on all single datasets on the lab computers seriesm170_13cropped: on 70% of data train, 30% test @done (14-08-26 23:00)
+		✔	16) Write basic bash script to copy folders together by renaming files correctly (use the chosen faeture descriptor, I can always rerun it later) @done (14-08-26 23:00)
+		✔	14) Compute detection accuracy and time (train 70, test 30) per individual dataset @done (14-08-26 23:00)
+		☐	21) Verify the first dataset that you still get same results as reported
 		☐	15) Compute deteciton accuracy (train 70, test 30) per combined dataset
-		☐	18) Low priority: find better feature descriptor and rerun all experiments
+		☐	18) Low priority: Compare detections with annotations and improve annotations
+		☐	20) Low priority: find better feature descriptor and rerun all experiments
 		☐	12) Show example of detector detecting 2 cells as 1 due to the nonoverlap constraint
+
 	Tracking:
+		☐	19) Run detector train and test on all data
 		☐	5) Annotated seriesm170_13cropped with long links
 		☐	6) Implement other tracking quality metrics (reqs: T82)
 		Track evaluation metrics:
@@ -28,7 +31,6 @@ Writing thesis (1 weeks work minimum - 2 weeks maximum):
 		☐	16) vl_mser requires linking to their paper. make sure you do.
 	Related work:
 	Data and annotation:
-		✔	22) Include Leo's comments into the chapter @done (14-08-24 12:48)
 	Tracking:
 		☐	13) linker classifier feautres add new feautres
 		☐	15) Explain the difficulties of computing spatio-temporal featres for tracklets of length 1... and that this causes them to be useless in fact
@@ -42,7 +44,6 @@ Writing thesis (1 weeks work minimum - 2 weeks maximum):
 	Evaluation:
 		☐	20) Write the whole evaluation chapter
 	General:
-		✔	26) Include Ben's comments @done (14-08-24 12:48)
 		☐	5) Review past best dissertations for section and writing style inspiration
 		☐	26) Review bibliography and see if it needs any fixes
 
@@ -134,6 +135,9 @@ Data flow process:
 	☐ linker : IN: dots + robust matches, OUT: dots + links
 ＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿
 Archive:
+	✔	Fix matlab licence issues @done (14-08-26 16:16) @project(TODO)
+	✔	22) Include Leo's comments into the chapter @done (14-08-24 12:48) @project(Writing thesis (1 weeks work minimum - 2 weeks maximum) / Related work)
+	✔	26) Include Ben's comments @done (14-08-24 12:48) @project(Writing thesis (1 weeks work minimum - 2 weeks maximum) / General)
 	✔	4) Theoretical maximimum tracking accuracy: directly map detections over annotations: This is a measure of how well the tracker detects all the things and what best results can we expect given the used detector @done (14-08-22 18:02) @project(Evaluation (1 week minimum - 2 weeks maximum))
 	✔	5) Basic linear interpolation of tracklets so that I can compute quality metrics @done (14-08-22 16:38) @project(Evaluation (1 week minimum - 2 weeks maximum))
 	✔	7) Fragmentation (FRMT): the number of times a trajectory is interrupted @done (14-08-22 12:41) @project(Evaluation (1 week minimum - 2 weeks maximum) / Track evaluation metrics)
