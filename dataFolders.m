@@ -31,10 +31,10 @@ switch datasetID
         numAnnotatedTrajectories = 2;
     case 2 %KidneyGreen
         dotFolder = fullfile(rootDotFolder, 'series30red');
-        outFolder = fullfile(rootOutFolder, 'series30red');
+        outFolder = fullfile(rootOutFolder, 'series30red_fortrajectories');
         linkFolder = dotFolder;
         numAnnotatedFrames = 60;
-        numAnnotatedTrajectories = 3;
+        numAnnotatedTrajectories = 8;
     case 3 %LungGreen
         dotFolder = fullfile(rootDotFolder, 'series13greencropped');
         outFolder = fullfile(rootOutFolder, 'series13greencropped');

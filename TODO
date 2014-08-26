@@ -1,22 +1,25 @@
 TODO: 
 
 Evaluation (1 week minimum - 2 weeks maximum):
-	☐	6) Implement other tracking quality metrics (reqs: T82)
-	Track evaluation metrics:
-		☐	1) MOTA: Multiple Object Tracking Accuracy, calculated from the number of false alarms, missed detections, and identity switches;
-		☐	2) FGTIM: Fraction of Ground Truth Instances Missed; and
-		☐	3) FAPF: False Alarm Per Frame.
-		☐	4) Mostly tracked trajectories (MT): The number of tracjectories that are successfully tracked for more than 80%
-		☐	5) Mostly lost trajectories (ML): The number of trajectories that are tracked for less than 20%
-		☐	6) Partially tracked trajectories (PT): the number of trajectories that are tracked between 20% and 80%
-		☐	8) ID switches (IDS): the number of times two trajectories switch their ID
-	☐	7) Accuracy of detector trained on single dataset
-	☐	8) Accuracy of detector trained on combined datasets
-	☐	9) Accuracy of tracker trained on single dataset
-	☐	10) Accuracy of tracker trained on combined dataset
-	☐	11) Accuracy of tracker if frames are skipped: what is the max number of frames that can be skipped while still obtaining good enough tracks
-	☐	12) Show example of detector detecting 2 cells as 1 due to the nonoverlap constraint
-	☐	13) Show example of all bad cases (linking too much, 3 tracklets middle skipped, ...)
+	Detection:
+		☐	19) Run detector on seriesm170_13cropped
+		☐	16) Write basic bash script to copy folders together by renaming files correctly (use the chosen faeture descriptor, I can always rerun it later)
+		☐	14) Compute detection accuracy and time (train 70, test 30) per individual dataset
+		☐	15) Compute deteciton accuracy (train 70, test 30) per combined dataset
+		☐	18) Low priority: find better feature descriptor and rerun all experiments
+		☐	12) Show example of detector detecting 2 cells as 1 due to the nonoverlap constraint
+	Tracking:
+		☐	5) Annotated seriesm170_13cropped with long links
+		☐	6) Implement other tracking quality metrics (reqs: T82)
+		Track evaluation metrics:
+			☐	1) MOTA: Multiple Object Tracking Accuracy, calculated from the number of false alarms, missed detections, and identity switches;
+			☐	2) FGTIM: Fraction of Ground Truth Instances Missed; and
+			☐	3) FAPF: False Alarm Per Frame.
+			☐	8) ID switches (IDS): the number of times two trajectories switch their ID
+		☐	9) Accuracy of tracker trained on single dataset
+		☐	10) Accuracy of tracker trained on combined dataset
+		☐	11) Accuracy of tracker if frames are skipped: what is the max number of frames that can be skipped while still obtaining good enough tracks
+		☐	13) Show example of all bad cases (linking too much, 3 tracklets middle skipped, ...)
 
 Writing thesis (1 weeks work minimum - 2 weeks maximum):
 
