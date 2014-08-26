@@ -50,6 +50,9 @@ biasedPrediction = prediction  + ctrlParms.bias;
 %-----------------------------------------------------------------Inference
 [mask, labels, dots] = detector.PylonInference(img, biasedPrediction',...
     sizeMSER, r, additionalU, MSERtree);
+
+% num2str([sizeMSER r biasedPrediction'])
+
 mask = logical(mask);
 
 dots = dots(labels, :);
@@ -81,7 +84,7 @@ if verbosity > 0
     
     set(f1,'Position', [0 0 screen_size(3)/2 screen_size(4)]);
     hold on;
-    
+
     [B,L,N,A] = bwboundaries(mask);
     
     for i=1:numel(B)

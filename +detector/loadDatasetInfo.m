@@ -31,20 +31,20 @@ else
 	trainSplit = options.trainSplit;
 end
 if ~isfield(options, 'features');
-	features = [1 0 1 1 1 1 0]; % Use default from setFeatures
+	features = [1 1 0 1 1 1 0]; % Use default from setFeatures
 else
 	features = options.features;
 end
 
 %Defaults
 BoD = 1;
-DoB = 1;
-minPixels = 30;
+DoB = 0;
+minPixels = 20;
 maxPixels = 200;
 Delta = 4;
 MaxVariation = 1;
-MinDiversity = 0.1;
-tol = 8;  %Tolerance (pixels) for evaluation only
+MinDiversity = 0.4;
+tol = 20;  %Tolerance (pixels) for evaluation only
 params = dataFolders(dataset);
 
 files = dir(fullfile(params.dotFolder, [params.imPrefix, '*.' params.imExt]));
@@ -60,6 +60,7 @@ trainFiles = sort(trainFiles);
 if options.testAll
     testFiles = files;
 else
+	files = files(1:params.numAnnotatedFrames);
     testFiles = setdiff(files, trainFiles);
 end
 

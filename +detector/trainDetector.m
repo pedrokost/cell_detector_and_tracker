@@ -6,6 +6,8 @@ function trainDetector(dataset, overrides)
 	addpath(fullfile('dependencies', 'matlab'));
 	addpath(fullfile('dependencies', 'catstruct'));
 
+	if nargin < 2; overrides = struct; end
+
 	ctrlParams = detector.ctrlParams(overrides);
 	%-------------------------------------------------------Check dependencies
 	if exist('vl_setup','file') == 0

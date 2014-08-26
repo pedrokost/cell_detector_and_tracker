@@ -32,8 +32,13 @@ fp = numel(x)-sum(matching(:));
 fn = numel(xGT)-sum(matching(:));
 tp = sum(matching(:));
 
-precision = tp / (tp + fp);
-recall = tp / (tp + fn);
+if [fp fn tp] == [0 0 0]
+	precision = 1;
+	recall = 1;
+else
+	precision = tp / (tp + fp);
+	recall = tp / (tp + fn);
+end
 
 if nargin == 7
     imshow(image); hold on;

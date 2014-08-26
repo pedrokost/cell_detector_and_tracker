@@ -14,6 +14,8 @@ function detectorPerfMetrics = detectCells(dataset, overrides)
 	% 		avgTimePerCandidateRegion
 	% 		ratioAnnotationToCandidate
 
+	if nargin < 2; overrides=struct; end
+
 	ctrlParams = detector.ctrlParams(overrides);
 	detectorPerfMetrics = struct('dataset', dataset);
 
@@ -87,7 +89,7 @@ function detectorPerfMetrics = detectCells(dataset, overrides)
 
 		%--------------------------------------------------------Save masks to file
 		
-		if ~isempty(gt)
+		if imNum <= dataParams.numAnnotatedFrames
 			numGt(imNum) = size(gt, 1);
 			numCand(imNum) = numel(prediction);
 
@@ -107,11 +109,14 @@ function detectorPerfMetrics = detectCells(dataset, overrides)
 	end
 
 	%--------------------------------------------------------------------Finish
-	detectorPerfMetrics.avgPrecision = mean(prec(~isnan(prec)));
-	detectorPerfMetrics.stdPrecision = std(prec(~isnan(prec)));
+	prec(isnan(prec)) = 0;
+	rec(isnan(rec)) = 0;
 
-	detectorPerfMetrics.avgRecall = mean(rec(~isnan(rec)));
-	detectorPerfMetrics.stdRecall = std(rec(~isnan(rec)));
+	detectorPerfMetrics.avgPrecision = mean(prec);
+	detectorPerfMetrics.stdPrecision = std(prec);
+
+	detectorPerfMetrics.avgRecall = mean(rec);
+	detectorPerfMetrics.stdRecall = std(rec);
 
 	%Print simple evaluation results if available
 	if exist('prec','var')
