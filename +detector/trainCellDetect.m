@@ -1,4 +1,4 @@
-function w = trainCellDetect(dataset,ctrl,parameters)
+function w = trainCellDetect(dataset,ctrl,parameters, dataParams)
 %Learn a structured output SVM classifier to detect cells based on
 %non-overlapping extremal regions
 %OUTPUT
@@ -13,7 +13,6 @@ done = 0;
 additionalU = 0;
 outerIter = 0;
 
-dataParams = detector.loadDatasetInfo(dataset,ctrl);
 trainFiles = dataParams.trainFiles;
 testFiles  = dataParams.testFiles;
 imExt      = dataParams.imExt;

@@ -32,6 +32,8 @@ fp = numel(x)-sum(matching(:));
 fn = numel(xGT)-sum(matching(:));
 tp = sum(matching(:));
 
+[fp fn tp]
+
 if [fp fn tp] == [0 0 0]
 	precision = 1;
 	recall = 1;

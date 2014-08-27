@@ -43,8 +43,8 @@ minPixels = 20;
 maxPixels = 200;
 Delta = 4;
 MaxVariation = 1;
-MinDiversity = 0.4;
-tol = 20;  %Tolerance (pixels) for evaluation only
+MinDiversity = 0.1;
+tol = 8;  %Tolerance (pixels) for evaluation only
 params = dataFolders(dataset);
 
 files = dir(fullfile(params.dotFolder, [params.imPrefix, '*.' params.imExt]));

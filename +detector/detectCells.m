@@ -1,4 +1,4 @@
-function detectorPerfMetrics = detectCells(dataset, overrides)
+function detectorPerfMetrics = detectCells(dataset, ctrlParams, dataParams)
 	% Evaluates a trained model on a new dataset
 	% Inputs:
 	% 	dataset = the id of the dataset, as set in dataFolders.m
@@ -14,9 +14,6 @@ function detectorPerfMetrics = detectCells(dataset, overrides)
 	% 		avgTimePerCandidateRegion
 	% 		ratioAnnotationToCandidate
 
-	if nargin < 2; overrides=struct; end
-
-	ctrlParams = detector.ctrlParams(overrides);
 	detectorPerfMetrics = struct('dataset', dataset);
 
 	%--------------------------------------------------------Load dependencies
@@ -37,7 +34,6 @@ function detectorPerfMetrics = detectCells(dataset, overrides)
 	%2:A view on the results: MSERs found and selected
 
 	%-Features and control parameters-%
-	dataParams = detector.loadDatasetInfo(dataset, ctrlParams);
 	featureParms = detector.setFeatures(dataParams.features); %Modify to select features and other parameters
 
 
@@ -71,7 +67,7 @@ function detectorPerfMetrics = detectCells(dataset, overrides)
 		disp(sprintf('Testing on image %d/%d (%s)', imNum, numel(testFiles), testFiles{imNum}))
 		
 		[mask, dots, prediction, img, sizeMSER, r, gt, nFeatures, descriptors] =...
-			detector.testCellDetect(w,dataset,imNum,featureParms,ctrlParams,inspectResults);
+			detector.testCellDetect(w,dataset,imNum,featureParms,ctrlParams,inspectResults, dataParams);
 
 		%----------------------------------------------------------------Save masks
 		if ctrlParams.saveMasks

@@ -1,4 +1,4 @@
-function trainDetector(dataset, overrides)
+function trainDetector(dataset,  ctrlParams, dataParams)
 	% Trains the cell detector on the given dataset
 
 	%--------------------------------------------------------Load dependencies
@@ -6,9 +6,6 @@ function trainDetector(dataset, overrides)
 	addpath(fullfile('dependencies', 'matlab'));
 	addpath(fullfile('dependencies', 'catstruct'));
 
-	if nargin < 2; overrides = struct; end
-
-	ctrlParams = detector.ctrlParams(overrides);
 	%-------------------------------------------------------Check dependencies
 	if exist('vl_setup','file') == 0
 	    error('vl_feat required');
@@ -19,8 +16,6 @@ function trainDetector(dataset, overrides)
 	%-------------------------------------------------------Load data and cofig
 
 	%-Features and control parameters-%
-	dataParams = detector.loadDatasetInfo(dataset, ctrlParams);
-
 	featureParms = detector.setFeatures(dataParams.features); %Modify to select features and other parameters
 
 	if ctrlParams.runPar %start parallel workers
@@ -30,7 +25,7 @@ function trainDetector(dataset, overrides)
 	end
 
 	%-------------------------------------------------------Train
-	w = detector.trainCellDetect(dataset,ctrlParams,featureParms);
+	w = detector.trainCellDetect(dataset,ctrlParams,featureParms, dataParams);
 
 	%--------------------------------------------------------------------Finish
 	if ctrlParams.runPar

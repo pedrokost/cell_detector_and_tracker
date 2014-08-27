@@ -1,5 +1,5 @@
 function [mask, dots, prediction, img, sizeMSER, r, gt, nFeatures, cellDescriptors]...
-    = testCellDetect(w,dataset,imNum,featureParms,ctrlParms,verbosity)
+    = testCellDetect(w,dataset,imNum,featureParms,ctrlParms,verbosity, dataParams)
 %Detect cells in an image given the W vector
 %OUTPUT
 %   mask = logical image with the regions selected
@@ -24,7 +24,6 @@ withGT = 0;
 additionalU = 0;
 
 
-dataParams = detector.loadDatasetInfo(dataset, ctrlParms);
 trainFiles = dataParams.trainFiles;
 testFiles  = dataParams.testFiles;
 imExt      = dataParams.imExt;
