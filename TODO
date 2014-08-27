@@ -1,4 +1,6 @@
-Evaluation (1 week minimum - 2 weeks maximum):
+MAKE SMALL COMMITS ALL THE TIME:
+
+Evaluation (1 week work):
 	Detection:
 		✔	20) Make sure prec and recall correct when no cells in images @done (14-08-26 23:00)
 		✔	19) Run detector on all single datasets on the lab computers seriesm170_13cropped: on 70% of data train, 30% test @done (14-08-26 23:00)
@@ -24,7 +26,7 @@ Evaluation (1 week minimum - 2 weeks maximum):
 		☐	11) Accuracy of tracker if frames are skipped: what is the max number of frames that can be skipped while still obtaining good enough tracks
 		☐	13) Show example of all bad cases (linking too much, 3 tracklets middle skipped, ...)
 
-Writing thesis (1 weeks work minimum - 2 weeks maximum):
+Writing thesis (1 weeks work):
 
 	Introduction:
 	Detection:
@@ -91,7 +93,17 @@ Cell tracker (1 week work minimum - 3 weeks maximum):
 		☐	52) Robust classifier: Make the thresold for robust tracklet linking load from a config files
 		☐	53) Robust classifier: To prevent unsafe robust tracklet, do not link them if there is a similiar strong link to another tracklet (define another threshold)
 		☐	91) Try training with only a subset of the features... in order to generate longer robust tracklets
-Cell annotator:
+
+Cell detector (0 time left):
+	✔ If any detector NaN, in the end don't show average NaN. @done (14-08-26 09:16)
+	☐ Read Pylon stuff
+	☐ New features to try:
+		☐ Histeq + Laplacian(0.2) creates empty places in maximums, noise everywhere else
+		☐ use the builtin canny edge detector, with params 0.6+
+		☐	Contrast + Log 3 creates empties indised cell, dinstinct border, rest hight noise
+	☐	Make it clear in the headers of the files which belong to Arteta, which have some of my changes, which are completely mine
+
+Cell annotator (0 time left):
 	☐	2) Copy anotations over
 	☐	3) Copy links over
 	☐	5) New tab/window that displays the tracklets in 3d
@@ -101,15 +113,6 @@ Cell annotator:
 	☐	11) Menu bar for basic tools (load dets...)
 	☐	12) Show dots should only toggle annotation dots
 	☐	13) Add a button show generated tracks to complement show links
-
-Cell detector (3 days work minimum - 1 week maximum):
-	☐ If any detector NaN, in the end don't show average NaN.
-	☐ Read Pylon stuff
-	☐ New features to try:
-		☐ Histeq + Laplacian(0.2) creates empty places in maximums, noise everywhere else
-		☐ use the builtin canny edge detector, with params 0.6+
-		☐	Contrast + Log 3 creates empties indised cell, dinstinct border, rest hight noise
-	☐	Make it clear in the headers of the files which belong to Arteta, which have some of my changes, which are completely mine
 
 Biological statistics (SKIPPED):
 	☐	Discover (find in prev papers) stats that might be of interest

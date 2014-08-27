@@ -19,3 +19,4 @@ thesis/*.toc
 thesis/*.tdo
 thesis/imageslowres
 .dropbox
+.dropbox.attr
