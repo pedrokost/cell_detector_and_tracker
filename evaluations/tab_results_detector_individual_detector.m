@@ -1,7 +1,7 @@
 % This basic script simply retrieves and displays the performance metrics for each dataset
 
 clear all;
-datasets = [8];
+datasets = 10:14;
 cd('/home/pedro/Dropbox/Imperial/project/cell_tracker');
 
 totals = zeros(numel(datasets), 1);

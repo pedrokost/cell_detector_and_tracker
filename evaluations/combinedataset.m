@@ -7,10 +7,12 @@ clear all
 
 doDetectionOrTracking = 'det';  % one of{'det' 'track'}
 
-doTrainingOrTestingDataset = 'train';  % one of {'test', 'train'} % creates a large dataset combined of several smaller ones
+doTrainingOrTestingDataset = 'test';  % one of {'test', 'train'} % creates a large dataset combined of several smaller ones
 % on the combined model is trained, us this to generate several small datasets such that the combined model can be tested on each original dataset separately.
 
-datasets = 1:5; % Datasets to combine
+allDatasets = 1:5;  % Only the original ones. Don't touch
+
+datasets = [2,4,5]; % Datasets to combine
 
 fileInitNum = 1;
 filePrefix = 'im';
@@ -30,7 +32,7 @@ addpath('evaluations')
 if strcmp(doTrainingOrTestingDataset, 'train')
 	folders = createCombinedFolderNames(doDetectionOrTracking, doTrainingOrTestingDataset, datasets, combinedDatasetBaseName, singledDatasetBaseName);
 elseif strcmp(doTrainingOrTestingDataset, 'test')
-	folders = createCombinedFolderNames(doDetectionOrTracking, doTrainingOrTestingDataset, datasets, combinedDatasetBaseName, singledDatasetBaseName);
+	folders = createCombinedFolderNames(doDetectionOrTracking, doTrainingOrTestingDataset, allDatasets, combinedDatasetBaseName, singledDatasetBaseName);
 end
 
 createCombinedDatasetFolders(doDetectionOrTracking, doTrainingOrTestingDataset, folders);
@@ -46,30 +48,18 @@ if strcmp(doDetectionOrTracking , 'det')
 		startNum = fileInitNum;
 		for i=1:numel(datasets)
 			fprintf('Copying files from dataset %d\n', datasets(i));
-			fldr = dataFolders(datasets(i));
+			fldr = dataFolders(datasets(i));		
 
-			matfiles = dir(fullfile(fldr.dotFolder, matfilenames));
-			matfiles = matfiles(1:fldr.numAnnotatedFrames);
-
+			sourceFiles = dir(fullfile(fldr.dotFolder, matfilenames));
+			sourceFiles = sourceFiles(1:fldr.numAnnotatedFrames);
 			endNum = startNum + fldr.numAnnotatedFrames;
-			destinationNames = prepareFileNames(filePrefix, numDigits, 'mat', folders.dotFolder, startNum, endNum);
+			destFiles = prepareFileNames(filePrefix, numDigits, 'mat', startNum, endNum);
+			copyDataFilesFromTo(fldr.dotFolder, folders.dotFolder, sourceFiles, destFiles);
 
-			for i=1:fldr.numAnnotatedFrames
-				sourceFile = fullfile(fldr.dotFolder, matfiles(i).name);
-				destFile = destinationNames{i};
-				copyfile(sourceFile, destFile);
-			end
-
-			pgmfiles = dir(fullfile(fldr.dotFolder, pgmfilenames));
-			pgmfiles = pgmfiles(1:fldr.numAnnotatedFrames);
-
-			destinationNames = prepareFileNames(filePrefix, numDigits, 'pgm', folders.dotFolder, startNum, endNum);
-
-			for i=1:fldr.numAnnotatedFrames
-				sourceFile = fullfile(fldr.dotFolder, pgmfiles(i).name);
-				destFile = destinationNames{i};
-				copyfile(sourceFile, destFile);
-			end
+			sourceFiles = dir(fullfile(fldr.dotFolder, pgmfilenames));
+			sourceFiles = sourceFiles(1:fldr.numAnnotatedFrames);
+			destFiles = prepareFileNames(filePrefix, numDigits, 'pgm', startNum, endNum);
+			copyDataFilesFromTo(fldr.dotFolder, folders.dotFolder, sourceFiles, destFiles);
 
 			startNum = endNum;
 		end
@@ -78,28 +68,39 @@ if strcmp(doDetectionOrTracking , 'det')
 
 	elseif strcmp(doTrainingOrTestingDataset, 'test')
 
-		error('Not yet implemented')
-
 		if ~exist(folders.outFolder, 'dir')
 			error('You must first run the detector on the combined folder!')
 		end
 
-		requiredFiles = {...
-			'wBinary.mat'...
-			'wHistory.mat'...
-			'wStruct_alpha_0.mat'...
-		};
-
+		requiredFiles = {'wStruct_alpha_0.mat'};
 		for i=1:numel(requiredFiles)
 			if ~exist(fullfile(folders.outFolder, requiredFiles{i}))
 				error('You must first run the detector on the combined folder!')
 			end
 		end
+		for i= 1:numel(allDatasets)
+			fprintf('Copying files over for dataset %d\n', allDatasets(i));
+			fldr = dataFolders(allDatasets(i));
+			%--------------------------------------Copy images and annotations
 
-		% For each of dhe datasets
-			% create a new temporary outfolder
-			% inside put all the annotated images
-			% inside copy all the detector mat files from the combined folder
+			sourceFiles = dir(fullfile(fldr.dotFolder, matfilenames));
+			sourceFiles = sourceFiles(1:fldr.numAnnotatedFrames);
+			destFiles = prepareFileNames(filePrefix, numDigits, 'mat', 1, fldr.numAnnotatedFrames);
+			copyDataFilesFromTo(fldr.dotFolder, folders.dotFolders{i}, sourceFiles, destFiles);
+
+			sourceFiles = dir(fullfile(fldr.dotFolder, pgmfilenames));
+			sourceFiles = sourceFiles(1:fldr.numAnnotatedFrames);
+			destFiles = prepareFileNames(filePrefix, numDigits, 'pgm', 1, fldr.numAnnotatedFrames);
+			copyDataFilesFromTo(fldr.dotFolder, folders.dotFolders{i}, sourceFiles, destFiles);
+			
+			%----------------------------------------------Copy required files
+
+			for j=1:numel(requiredFiles)
+				src = fullfile(folders.outFolder, requiredFiles{j});
+				dst = fullfile(folders.outFolders{i}, requiredFiles{j});
+				copyfile(src, dst);
+			end
+		end
 	end
 
 else

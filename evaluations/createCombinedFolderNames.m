@@ -12,7 +12,7 @@ function folders = createCombinedFolderNames(doDetectionOrTracking, doTrainingOr
 	if strcmp(doDetectionOrTracking , 'det')
 
 		% Create the combined dot folder
-		folderName = sprintf('%s%s', baseNameCombined, num2str(datasets, '_%d'));
+		folderName = sprintf('%s', baseNameCombined);
 		fullDotFolderName = fullfile(folders.rootDotFolder, folderName);
 		fullOutFolderName = fullfile(folders.rootOutFolder, folderName);
 
@@ -25,7 +25,7 @@ function folders = createCombinedFolderNames(doDetectionOrTracking, doTrainingOr
 			folders.dotFolders = cell(numel(datasets), 1);
 			folders.outFolders = cell(numel(datasets), 1);
 			for i=1:numel(datasets)
-				folderName = sprintf('%s%s-%d', baseNameSingled, num2str(datasets, '_%d'), datasets(i));
+				folderName = sprintf('%s-%d', baseNameSingled, datasets(i));
 				fullDotFolderName = fullfile(folders.rootDotFolder, folderName);
 				fullOutFolderName = fullfile(folders.rootOutFolder, folderName);
 				folders.dotFolders{i} = fullDotFolderName;
