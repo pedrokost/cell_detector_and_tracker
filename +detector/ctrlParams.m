@@ -24,6 +24,7 @@ function params = ctrlParams(overrides)
 	%----------------------------------------------------------------Detection
 	params.testAll = true;  % Test on complete dataset, or only fraction
 	%----------------------------------------------------------------Overrides
+	addpath(fullfile('dependencies', 'catstruct'));
 	if nargin > 0
 		params = catstruct(params, overrides);
 	end

@@ -4,7 +4,6 @@ function trainDetector(dataset,  ctrlParams, dataParams)
 	%--------------------------------------------------------Load dependencies
 	addpath(fullfile('dependencies'));
 	addpath(fullfile('dependencies', 'matlab'));
-	addpath(fullfile('dependencies', 'catstruct'));
 
 	%-------------------------------------------------------Check dependencies
 	if exist('vl_setup','file') == 0
