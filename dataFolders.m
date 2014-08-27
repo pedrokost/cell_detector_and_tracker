@@ -69,18 +69,46 @@ switch datasetID
         linkFolder = dotFolder;
         numAnnotatedFrames = 30;
         numAnnotatedTrajectories = 2;
-    case 8 % combined datasets 1 2
-        dotFolder = fullfile(rootDotFolder, 'combineddataset_1_2');
-        outFolder = fullfile(rootOutFolder, 'combineddataset_1_2');
-        linkFolder = fullfile(rootDotFolder, 'combineddataset_1_2_fortrajectories');
-        numAnnotatedFrames = 120;
-        numAnnotatedTrajectories = 10;
     case 9 % combined datasets 1 2 3 4 5
-        dotFolder = fullfile(rootDotFolder, 'combineddataset_1_2_3_4_5');
-        outFolder = fullfile(rootOutFolder, 'combineddataset_1_2_3_4_5');
-        linkFolder = fullfile(rootDotFolder, 'combineddataset_1_2_3_4_5_fortrajectories');
-        numAnnotatedFrames = 310;
-        numAnnotatedTrajectories = 16;
+        dotFolder = fullfile(rootDotFolder, 'combineddataset');
+        outFolder = fullfile(rootOutFolder, 'combineddataset');
+        linkFolder = fullfile(rootDotFolder, 'combineddataset');
+        numAnnotatedFrames = 186;
+        numAnnotatedTrajectories = 14;
+    case 10 %LungRed
+        dotFolder = fullfile(rootDotFolder, 'singleddatasets-1');
+        linkFolder = fullfile(rootLinkFolder, 'singleddatasets-1');
+        outFolder = fullfile(rootOutFolder, 'singleddatasets-1');
+        numAnnotatedFrames = 66;
+        numAnnotatedTrajectories = 2;
+    case 11 %KidneyGreen
+        dotFolder = fullfile(rootDotFolder, 'singleddatasets-2');
+        linkFolder = fullfile(rootLinkFolder, 'singleddatasets-2');
+        outFolder = fullfile(rootOutFolder, 'singleddatasets-2');
+        numAnnotatedFrames = 66;
+        numAnnotatedTrajectories = 8;
+    case 12 %LungGreen
+        dotFolder = fullfile(rootDotFolder, 'singleddatasets-3');
+        linkFolder = fullfile(rootLinkFolder, 'singleddatasets-3');
+        outFolder = fullfile(rootOutFolder, 'singleddatasets-3');
+        imageDims = [251 251];
+        numAnnotatedFrames = 58;
+        numAnnotatedTrajectories = 2;
+    case 13 %LungGreen
+        dotFolder = fullfile(rootDotFolder, 'singleddatasets-4');
+        linkFolder = fullfile(rootLinkFolder, 'singleddatasets-4');
+        outFolder = fullfile(rootOutFolder, 'singleddatasets-4');
+        imageDims = [199 199];
+        numAnnotatedFrames = 53;
+        numAnnotatedTrajectories = 2;
+    case 14 %KidneyRed
+        dotFolder = fullfile(rootDotFolder, 'singleddatasets-5');
+        linkFolder = fullfile(rootLinkFolder, 'singleddatasets-5');
+        outFolder = fullfile(rootOutFolder, 'singleddatasets-5');
+        imageDims = [277 277];
+        numAnnotatedFrames = 67;
+        numAnnotatedTrajectories = 2;
+
 end
 
 if exist(dotFolder,'dir') ~= 7

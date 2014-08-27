@@ -57,37 +57,41 @@ title = [...
 fprintf(title);
 
 
+overrides = struct('testAll', true, 'trainSplit', 1, 'features', [1 1 0 1 1 1 0]);
+ctrlParams = detector.ctrlParams(overrides);
+dataParams = detector.loadDatasetInfo(dataset, ctrlParams);
+
 if trainDetector
 	for dataset=datasetIDs
 		fsectionf('Training detector on dataset %d', dataset);
-		detector.trainDetector(dataset);
+		detector.trainDetector(dataset,ctrlParams, dataParams);
 	end
 end
 
 if testDetector
 	for dataset=datasetIDs
 		fsectionf('Detecting cells in dataset %d', dataset);
-		detector.detectCells(dataset);
+		detector.detectCells(dataset,ctrlParams, dataParams);
 	end
 end
 
 if trainTracker
 	for dataset=datasetIDs
 		fsectionf('Training tracker on dataset %d', dataset);
-		tracker.trainTracker(dataset);
+		tracker.trainTracker(dataset,ctrlParams, dataParams);
 	end
 end
 
 if testTracker
 	for dataset=datasetIDs
 		fsectionf('Tracking cells in dataset %d', dataset);
-		tracker.trackCells(dataset);
+		tracker.trackCells(dataset,ctrlParams, dataParams);
 	end
 end
 
 if showTracks
 	for dataset=datasetIDs
 		fsectionf('Plotting trajectories from dataset %d', dataset)
-		tracker.plotTrajectories(dataset);
+		tracker.plotTrajectories(dataset,ctrlParams, dataParams);
 	end
 end
