@@ -1,5 +1,4 @@
 MAKE SMALL COMMITS ALL THE TIME:
-
 Evaluation (1 week work):
 	Detection:
 		☐	18) Low priority: Compare detections with annotations and improve annotations
@@ -7,7 +6,8 @@ Evaluation (1 week work):
 		☐	12) Show example of detector detecting 2 cells as 1 due to the nonoverlap constraint
 
 	Tracking:
-		☐	19) Run detector train and test on all data
+		✔	19) Run detector train and test on all data @done (14-08-28 10:28)
+		☐	21) Switch git branch
 		☐	5) Annotated seriesm170_13cropped with long links
 		☐	6) Implement other tracking quality metrics (reqs: T82)
 		Track evaluation metrics:

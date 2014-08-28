@@ -15,7 +15,7 @@
 
 % -------------------------------------------------------------------Configure
 
-datasets = 1:5;  %Identifier of the training/testing data as set in loadDatasetInfo
+datasets = 4:5;  %Identifier of the training/testing data as set in loadDatasetInfo
 train = 1;%---->Do train
 test = 1;%----->Do test
 
