@@ -74,13 +74,13 @@ function [M, hypTypes] = generateHypothesisMatrix(tracklets, options)
 	% total hypos: 4823
 	% link hypos: 4316
 	% then helimintated: 3971
-	% new link hypos: 2953
+	% new link hypos: 388
 
 
 	% Dataset 3:
 	% total hypos:  122402
 	% link hypos: 118820
-	% new link hypos:  8360
+	% new link hypos:  10465
 
 
 	% Dataset 4:
@@ -92,7 +92,7 @@ function [M, hypTypes] = generateHypothesisMatrix(tracklets, options)
 	% Dataset 5:
 	% total hypos: 33738
 	% link hypos: 31707
-	% new link hypos: 2601
+	% new link hypos: 3532
 
 	linkHypothesis = getLinkHypothesis(tracklets, initY, initX, termY, termX, maxGap, MAX_DISPLACEMENT_LINK);
 	numLinkHypothesis = full(sum(sum(linkHypothesis)));
@@ -184,6 +184,9 @@ function H = getLinkHypothesis(tracklets, initY, initX, termY, termX, maxGap, MA
 
 	numLinkHypothesis = 1;
 	for i=1:numTracklets
+		if mod(i, 50) == 0
+			fprintf('\tGenerating link hypothesis. Progress: %3.0f%%.\n', 100 * i / numTracklets)
+		end
 		% For each tracklet end, find the number of tracklet starting in the next
 		% maxGap frames
 		% Only consider trcklets that are not too far apart to improve speed
@@ -191,12 +194,16 @@ function H = getLinkHypothesis(tracklets, initY, initX, termY, termX, maxGap, MA
 		yEndA = termY(i);
 
 		xStartBInd = (initX >= xEndA) & (initX <= xEndA + maxGap);
-		% FIXME: intiX and initY I think are frame nubmers, not actual positions!!!
 		considered = xStartBInd;
-
-		% xEndA
-		endALoc = DSOUT.getDots(matFileIndices(xEndA), tracklets(yEndA, xEndA));
-		% notTooDistantInd = abs(tracker.pointsDistance([xEndA yEndA], [initX initY])) < MAX_DISPLACEMENT_LINK;
+		% TODO: THis should be sped up with a small cache
+		% TODO: easy: first filder by distance, then by this... otherwise I evaluate
+		% all possible tracklets combos!!!
+		% endALoc = int16(DSOUT.getDots(matFileIndices(xEndA), tracklets(yEndA, xEndA)));
+		% startBLocs = zeros(numel(initX), 2, 'int16');
+		% for f=1:numel(initX)
+		% 	startBLocs(f, :)=DSOUT.getDots(matFileIndices(initX(f)), tracklets(initY(f), initX(f)));
+		% end
+		% notTooDistantInd = abs(tracker.pointsDistance(endALoc, startBLocs)) < MAX_DISPLACEMENT_LINK;
 		% considered = xStartBInd & notTooDistantInd;
 
 		numLinks = sum(considered);

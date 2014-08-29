@@ -198,5 +198,9 @@ classdef DataStore < handle
 			% Checks the available mat files on disk and returns their frame numbers
 			idx = obj.annotationIndices;
 		end
+
+		function fldr = getDataFolder(obj)
+			fldr = obj.dataFolder;
+		end
 	end
 end

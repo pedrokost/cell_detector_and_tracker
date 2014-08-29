@@ -17,7 +17,7 @@ function params = loadDatasetInfo(dataset)
 %Defaults
 plotProgress = true; % Shows a plot of annotation, mapped detection, robust tracklets, and trajectories together
 
-maxGaps = [6]; % for the linker
+maxGaps = [9]; % for the linker
 
 Kinit = 1;
 Kterm = 1;

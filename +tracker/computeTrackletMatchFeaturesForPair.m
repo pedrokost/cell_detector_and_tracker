@@ -98,8 +98,8 @@ function features = computeTrackletMatchFeaturesForPair(trackletA, trackletB, I,
 	%---------------------------------------Features that look at past history
 	if featParams.addDirectionTheta
 
-		trackA = getTail(trackletA2D, featParams.numCellsToEstimateDirectionTheta);
-		trackB = getHead(trackletB2D, featParams.numCellsToEstimateDirectionTheta);
+		trackA = tracker.getTail(trackletA2D, featParams.numCellsToEstimateDirectionTheta);
+		trackB = tracker.getHead(trackletB2D, featParams.numCellsToEstimateDirectionTheta);
 
 		[trackA nonzeroIdxA] = tracker.eliminateZeroRows(trackA);
 		[trackB nonzeroIdxB] = tracker.eliminateZeroRows(trackB);

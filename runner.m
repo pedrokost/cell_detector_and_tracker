@@ -1,3 +1,4 @@
+clear all;
 %                _                        _   _  
 %     /\        | |                      | | (_)
 %    /  \  _   _| |_ ___  _ __ ___   __ _| |_ _  ___
@@ -63,6 +64,7 @@ ctrlParams = detector.ctrlParams(overrides);
 
 
 for dataset=datasetIDs
+	clear DSIN DSOUT;
 	dataParams = detector.loadDatasetInfo(dataset, ctrlParams);
 
 	if trainDetector
@@ -76,6 +78,7 @@ for dataset=datasetIDs
 end
 
 for dataset=datasetIDs
+	clear DSIN DSOUT;
 	dataParams = tracker.loadDatasetInfo(dataset);
 	if trainTracker
 		fsectionf('Training tracker on dataset %d', dataset);

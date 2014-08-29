@@ -67,7 +67,7 @@ switch datasetID
         dotFolder = fullfile(rootDotFolder, 'dumy');
         outFolder = fullfile(rootOutFolder, 'dumy');
         linkFolder = dotFolder;
-        numAnnotatedFrames = 30;
+        numAnnotatedFrames = 17;
         numAnnotatedTrajectories = 2;
     case 9 % combined datasets 1 2 3 4 5
         dotFolder = fullfile(rootDotFolder, 'combineddataset');

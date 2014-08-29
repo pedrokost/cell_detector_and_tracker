@@ -78,6 +78,7 @@ function tracklets = generateTrajectories(storeID, params)
 		Iunlikely = tracker.elimintateUnlikelyHypothesis(hypTypes, Liks, options);
 		preDims = numel(Liks);
 		M = M(~Iunlikely, :);
+		hypTypes = hypTypes(~Iunlikely, :);
 		Liks = Liks(~Iunlikely);
 		if params.verbose
 			postDims = numel(Liks);
@@ -90,10 +91,17 @@ function tracklets = generateTrajectories(storeID, params)
 		if params.verbose && doPrintHypothesisTable
 			tracker.hypothesisPrint(M, Liks, Iopt, 'table');
 		end
-
+		tracker.hypothesisPrint(M, Liks, Iopt, 'short')
+		pauseIt()
 		if params.verbose; fprintf('	Updating tracklets...\n'); end
+
+
 		Mopt = M(find(Iopt), :);
-		tracklets = tracker.updateTracklets(tracklets, Mopt);
+		hypTypes = hypTypes(find(Iopt), :);
+
+		profile on;
+		tracklets = tracker.updateTracklets(tracklets, Mopt, hypTypes);
+		profile off;
 		if params.saveTrajectoryGenerationInterimResults
 			if params.verbose; fprintf('	Saving tracklets for iteration %d to disk\n', i); end
 			file = sprintf('%s%d.mat', params.trajectoriesOutputFile, i);
