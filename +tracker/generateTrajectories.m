@@ -1,6 +1,8 @@
 function tracklets = generateTrajectories(storeID, params)
 	% Given a set of cell detections returns a matrix of long trajectories
 
+	doPrintHypothesisTable = true;
+
 	if params.saveTrajectoryGenerationInterimResults
 		fprintf('Deleting any old interim tracklet files\n')
 		trackletFiles = dir(sprintf('%s*.mat', params.trajectoriesOutputFile));
@@ -58,7 +60,11 @@ function tracklets = generateTrajectories(storeID, params)
 		if params.verbose; fprintf('Closing gaps of size: %d\n', maxGaps(i)); end
 
 		if params.verbose; fprintf('	Generating hypothesis matrix...\n'); end
-		[M, hypTypes] = tracker.generateHypothesisMatrix(tracklets, struct('maxGap', maxGaps(i)));
+
+		opts = struct('maxGap', maxGaps(i),...
+					  'MAX_DISPLACEMENT_LINK', classifierParams.MAX_DISPLACEMENT_LINK);
+
+		[M, hypTypes] = tracker.generateHypothesisMatrix(tracklets, opts);
 
 		if params.verbose; fprintf('	There are %d hypothesis between %d tracklets\n', size(M, 1), size(tracklets, 1)); end
 
@@ -81,7 +87,7 @@ function tracklets = generateTrajectories(storeID, params)
 		if params.verbose; fprintf('	Computing optimal association...\n'); end
 		Iopt = tracker.getGlobalOpimalAssociation(M, Liks);
 
-		if params.verbose
+		if params.verbose && doPrintHypothesisTable
 			tracker.hypothesisPrint(M, Liks, Iopt, 'table');
 		end
 

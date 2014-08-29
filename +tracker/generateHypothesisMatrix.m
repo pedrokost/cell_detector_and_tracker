@@ -26,10 +26,15 @@ function [M, hypTypes] = generateHypothesisMatrix(tracklets, options)
 
 	% Defaults
 	maxGap = 20;
+	MAX_DISPLACEMENT_LINK = 513; % a very large number, larger than the image size
 
 	% Overrides
 	if isfield(options, 'maxGap')
 		maxGap = options.maxGap;
+	end
+
+	if isfield(options, 'MAX_DISPLACEMENT_LINK')
+		MAX_DISPLACEMENT_LINK = options.MAX_DISPLACEMENT_LINK;
 	end
 	%--------------------------------------------------------Preallocate space
 
@@ -58,8 +63,35 @@ function [M, hypTypes] = generateHypothesisMatrix(tracklets, options)
 	[tI, idx] = unique(tI, 'last');
 	tJ = tJ(idx);
 
-	linkHypothesis = getLinkHypothesis(iI, iJ, tI, tJ, maxGap);
+	% This is a reduction by like 1-2 orders of magniture
+
+	% Dataset 2:
+	% total hypos: 4823
+	% link hypos: 4316
+	% then helimintated: 3971
+	% new link hypos: 2953
+
+
+	% Dataset 3:
+	% total hypos:  122402
+	% link hypos: 118820
+	% new link hypos:  8360
+
+
+	% Dataset 4:
+	% total hypos: 226916
+	% link hypos: 218339
+	% new link hypos: 6213
+
+
+	% Dataset 5:
+	% total hypos: 33738
+	% link hypos: 31707
+	% new link hypos: 2601
+
+	linkHypothesis = getLinkHypothesis(iI, iJ, tI, tJ, maxGap, MAX_DISPLACEMENT_LINK);
 	numLinkHypothesis = full(sum(sum(linkHypothesis)));
+	fprintf('\tThere are %d link hypohtesis.\n', numLinkHypothesis)
 
 	numHypothesis = numLinkHypothesis + 3 * numTracklets; % init, term, fp
 
@@ -122,7 +154,7 @@ function [M, hypTypes] = generateHypothesisMatrix(tracklets, options)
 	M = sparse(I, J, S);
 end
 
-function H = getLinkHypothesis(initializationY, initializationX, terminationY, terminationX, maxGap)
+function H = getLinkHypothesis(initializationY, initializationX, terminationY, terminationX, maxGap, MAX_DISPLACEMENT_LINK)
 	% GETLINKHYPOTHESIS return a sparse matrix of dimensions nTracklets x nTracklets with 1 indicating tracks that can be linked
 	% Inputs:
 	% 	initializationY = y coordinates of all tracklets beginnings/heads
@@ -132,6 +164,8 @@ function H = getLinkHypothesis(initializationY, initializationX, terminationY, t
 	% 	maxGap = the maximum number of frames ahead to look for poss possible linking tracklets
 	% Outputs:
 	% 	H = a sparse row matrix contaitning for each tracklet the indices of possible continuing tracklets.
+
+	global DSOUT;
 
 	numTracklets = numel(initializationX);
 
@@ -145,14 +179,18 @@ function H = getLinkHypothesis(initializationY, initializationX, terminationY, t
 	for i=1:numTracklets
 		% For each tracklet end, find the number of tracklet starting in the next
 		% maxGap frames
+		% Only consider trcklets that are not too far apart to improve speed
 		xEndA = terminationX(i);
 		yEndA = terminationY(i);
-		xStartBInd = (initializationX >= xEndA) & (initializationX <= xEndA + maxGap);
 
-		numLinks = sum(xStartBInd);
+		xStartBInd = (initializationX >= xEndA) & (initializationX <= xEndA + maxGap);
+		notTooDistantInd = tracker.pointsDistance([xEndA yEndA], [initializationX initializationX]) < MAX_DISPLACEMENT_LINK;
+		considered = xStartBInd & notTooDistantInd;
+
+		numLinks = sum(considered);
 		if numLinks > 0
 			I(numLinkHypothesis:numLinkHypothesis+numLinks-1) = repmat(yEndA, numLinks, 1);
-			J(numLinkHypothesis:numLinkHypothesis+numLinks-1) = initializationY(xStartBInd);
+			J(numLinkHypothesis:numLinkHypothesis+numLinks-1) = initializationY(considered);
 		end
 
 		numLinkHypothesis = numLinkHypothesis + numLinks;

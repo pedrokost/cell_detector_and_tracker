@@ -1,6 +1,11 @@
 function plotTrajectories(dataset, dataParams)
 	% Plots the final generated trajectories
 
+	doPlotAnnotations = false;
+	doPlotMappedDetections = false;
+	doPlotRobust = true;
+	doPlotGeneratedTrajectories = true;
+
 	%----------------------------------Load parameters and generate data store	
 	global DSIN DSOUT;
 	DSIN = tracker.DataStore(dataParams.linkFolder, false);
@@ -9,38 +14,52 @@ function plotTrajectories(dataset, dataParams)
 	%--------------------------------------------------------Plot trajectories
 
 	f = figure(dataset); clf;
-
+	numSubPlots = doPlotAnnotations + doPlotMappedDetections + doPlotRobust + doPlotGeneratedTrajectories;
+	curSubPlot = 1;
 	if dataParams.plotProgress
-		f1 = subplot(1,4,1); % Original annotations
-		trackletFile = sprintf('%s_annotations.mat', dataParams.trajectoriesOutputFile);
-		load(trackletFile)
-		tracker.trackletViewer(tracklets, 'in', struct('showLabels',false, 'minLength', 0));
-		ax = axis(f1);
-		title(sprintf('Annotations', dataset));	
-		f2 = subplot(1,4,2); % Mapped into detections
-		trackletFile = sprintf('%s_mappeddetections.mat', dataParams.trajectoriesOutputFile);
-		load(trackletFile);
-		tracker.trackletViewer(tracklets, 'out', struct('showLabels',false, 'minLength', 0));
-		axis(f2, ax);
-		title(sprintf('Annotations mapped to detections', dataset));	
-		f3 = subplot(1,4,3); % Robust tracklets
-		trackletFile = sprintf('%s0.mat', dataParams.trajectoriesOutputFile);
-		load(trackletFile);
-		tracker.trackletViewer(tracklets, 'out', struct('showLabels',false, 'minLength', 0));
-		title(sprintf('Robust tracklets', dataset));	
-		axis(f3, ax);
-		f4 = subplot(1,4,4); % Trajectories
-		axis(f4, ax);
+		if doPlotAnnotations
+			f1 = subplot(1,numSubPlots,curSubPlot); % Original annotations
+			curSubPlot = curSubPlot + 1;
+			trackletFile = sprintf('%s_annotations.mat', dataParams.trajectoriesOutputFile);
+			load(trackletFile)
+			tracker.trackletViewer(tracklets, 'in', struct('showLabels',false, 'minLength', 0));
+			% ax = axis(f1);
+			title(sprintf('Annotations', dataset));	
+		end
+		if doPlotMappedDetections
+			f2 = subplot(1,numSubPlots,curSubPlot); % Mapped into detections
+			curSubPlot = curSubPlot + 1;
+			trackletFile = sprintf('%s_mappeddetections.mat', dataParams.trajectoriesOutputFile);
+			load(trackletFile);
+			tracker.trackletViewer(tracklets, 'out', struct('showLabels',false, 'minLength', 0));
+			% axis(f2, ax);
+			title(sprintf('Annotations mapped to detections', dataset));
+		end
+		if doPlotRobust
+			f3 = subplot(1,numSubPlots,curSubPlot); % Robust tracklets
+			curSubPlot = curSubPlot + 1;
+			trackletFile = sprintf('%s0.mat', dataParams.trajectoriesOutputFile);
+			load(trackletFile);
+			tracker.trackletViewer(tracklets, 'out', struct('showLabels',true, 'minLength', 4));
+			title(sprintf('Robust tracklets', dataset));	
+			% axis(f3, ax);
+		end
+		if doPlotGeneratedTrajectories
+			f4 = subplot(1,numSubPlots,curSubPlot); % Trajectories
+			curSubPlot = curSubPlot + 1;
+		end
+		% axis(f4, ax);
 	end
 	
-	trackletFile = sprintf('%s_final.mat', dataParams.trajectoriesOutputFile);
-	load(trackletFile);
-	tracker.trackletViewer(tracklets, 'out', struct('showLabels',false, 'minLength', 0));
-	if exist('ax', 'var')
-		axis(f4, ax)
+	if doPlotGeneratedTrajectories
+		trackletFile = sprintf('%s_final.mat', dataParams.trajectoriesOutputFile);
+		load(trackletFile);
+		tracker.trackletViewer(tracklets, 'out', struct('showLabels',false, 'minLength', 0));
+		if exist('ax', 'var')
+			% axis(f4, ax)
+		end
+		title(sprintf('Generated trajectories', dataset));	
 	end
-	title(sprintf('Generated trajectories', dataset));	
-
 
 	% files = dir([dataParams.trajectoriesOutputFile '*.mat']);
 
