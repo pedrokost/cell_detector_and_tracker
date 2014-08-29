@@ -66,7 +66,7 @@ function metricsMulti = computeAccuracyMetrics(target, trajectories);
 		% count number of correctly assigned ground observations
 		cntCorrectlyAssigned = 0;
 		for i=1:numel(targetMapIdx)
-			isCorrectlyAssigned = abs(tracker.pointsDistance(curTarget2D(i, :), bestSegment2D(i, :))) < OUTLIER_DISTANCE;
+			isCorrectlyAssigned = isMatch(curTarget2D(targetMapIdx(i), :), bestSegment2D(targetMapIdx(i), :));
 			cntCorrectlyAssigned = cntCorrectlyAssigned + isCorrectlyAssigned;
 		end
 		% divide it by totaal number of frames of ground truth
@@ -75,9 +75,13 @@ function metricsMulti = computeAccuracyMetrics(target, trajectories);
 		%---------------------------------------------------------Track purity
 		% Similarly, we define track purity
 		% as how well tracks are followed by targets.
-
-
-		% check page 124 of the thesis of autoamatic tracking.
+		bestSegment2DIdx = find(any(bestSegment2D > 0, 2));
+		cntCorrectlyAssigned = 0;
+		for i=1:numel(bestSegment2DIdx)
+			isCorrectlyAssigned = isMatch(curTarget2D(bestSegment2DIdx(i), :), bestSegment2D(bestSegment2DIdx(i), :));
+			cntCorrectlyAssigned = cntCorrectlyAssigned + isCorrectlyAssigned;
+		end
+		metrics.TrackPurity = cntCorrectlyAssigned / numel(bestSegment2DIdx);
 
 		%---------------------------------Early termination of trajectory (ET)
 		% Then number of frames the trajectory finished early
@@ -119,5 +123,10 @@ function metricsMulti = computeAccuracyMetrics(target, trajectories);
 		for i=1:numTracklets
 			cnt(i) = numel(find(trackletsMap(i, :)));
 		end
+	end
+
+	function bool = isMatch(A, B)
+		if any([all(A == [0 0]), all(B == [0 0])]); bool = false; return; end
+		bool = abs(tracker.pointsDistance(A,B)) < OUTLIER_DISTANCE;
 	end
 end
