@@ -53,15 +53,15 @@ function [M, hypTypes] = generateHypothesisMatrix(tracklets, options)
 	% with increasing maxGap, which results from the fact that merged tracks
 	% can have discontinuities, thus tracks could link to themselves in the future
 	% or a discontinued track could link to a third track twice. It is fixed here below:
-	[iI, iJ] = find(Itracklets==1); % Initializations
-	[tI, tJ] = find(Itracklets==-1); % Terminations
+	[initY, initX] = find(Itracklets==1); % Initializations
+	[termY, termX] = find(Itracklets==-1); % Terminations
 
 	% Take only the first initialization and last termination of each tracklet
-	[iI, idx] = unique(iI);
-	iJ = iJ(idx);
+	[initY, idx] = unique(initY);
+	initX = initX(idx);
 
-	[tI, idx] = unique(tI, 'last');
-	tJ = tJ(idx);
+	[termY, idx] = unique(termY, 'last');
+	termX = termX(idx);
 
 	% This is a reduction by like 1-2 orders of magniture
 
@@ -89,7 +89,7 @@ function [M, hypTypes] = generateHypothesisMatrix(tracklets, options)
 	% link hypos: 31707
 	% new link hypos: 2601
 
-	linkHypothesis = getLinkHypothesis(iI, iJ, tI, tJ, maxGap, MAX_DISPLACEMENT_LINK);
+	linkHypothesis = getLinkHypothesis(tracklets, initY, initX, termY, termX, maxGap, MAX_DISPLACEMENT_LINK);
 	numLinkHypothesis = full(sum(sum(linkHypothesis)));
 	fprintf('\tThere are %d link hypohtesis.\n', numLinkHypothesis)
 
@@ -154,20 +154,21 @@ function [M, hypTypes] = generateHypothesisMatrix(tracklets, options)
 	M = sparse(I, J, S);
 end
 
-function H = getLinkHypothesis(initializationY, initializationX, terminationY, terminationX, maxGap, MAX_DISPLACEMENT_LINK)
+function H = getLinkHypothesis(tracklets, initY, initX, termY, termX, maxGap, MAX_DISPLACEMENT_LINK)
 	% GETLINKHYPOTHESIS return a sparse matrix of dimensions nTracklets x nTracklets with 1 indicating tracks that can be linked
 	% Inputs:
-	% 	initializationY = y coordinates of all tracklets beginnings/heads
-	% 	initializationX = x coordinates of all tracklets beginnings/heads
-	% 	terminationY = y coordinates of all tracklet ends/tails
-	% 	terminationX = x coordinates of all tracklet ends/tails
+	% 	tracklets = the indices tracklets matrix
+	% 	initY = y coordinates of all tracklets beginnings/heads
+	% 	initX = x coordinates of all tracklets beginnings/heads
+	% 	termY = y coordinates of all tracklet ends/tails
+	% 	termX = x coordinates of all tracklet ends/tails
 	% 	maxGap = the maximum number of frames ahead to look for poss possible linking tracklets
 	% Outputs:
 	% 	H = a sparse row matrix contaitning for each tracklet the indices of possible continuing tracklets.
 
 	global DSOUT;
 
-	numTracklets = numel(initializationX);
+	numTracklets = numel(initX);
 
 	% This is to prevent excessive dynamic reallocation of space
 	optimisticEstimateOfLinksPerTracklets = 4;
@@ -180,17 +181,20 @@ function H = getLinkHypothesis(initializationY, initializationX, terminationY, t
 		% For each tracklet end, find the number of tracklet starting in the next
 		% maxGap frames
 		% Only consider trcklets that are not too far apart to improve speed
-		xEndA = terminationX(i);
-		yEndA = terminationY(i);
+		xEndA = termX(i);
+		yEndA = termY(i);
 
-		xStartBInd = (initializationX >= xEndA) & (initializationX <= xEndA + maxGap);
-		notTooDistantInd = tracker.pointsDistance([xEndA yEndA], [initializationX initializationX]) < MAX_DISPLACEMENT_LINK;
-		considered = xStartBInd & notTooDistantInd;
+		xStartBInd = (initX >= xEndA) & (initX <= xEndA + maxGap);
+		% FIXME: intiX and initY I think are frame nubmers, not actual positions!!!
+		considered = xStartBInd;
+
+		% notTooDistantInd = abs(tracker.pointsDistance([xEndA yEndA], [initX initY])) < MAX_DISPLACEMENT_LINK;
+		% considered = xStartBInd & notTooDistantInd;
 
 		numLinks = sum(considered);
 		if numLinks > 0
 			I(numLinkHypothesis:numLinkHypothesis+numLinks-1) = repmat(yEndA, numLinks, 1);
-			J(numLinkHypothesis:numLinkHypothesis+numLinks-1) = initializationY(considered);
+			J(numLinkHypothesis:numLinkHypothesis+numLinks-1) = initY(considered);
 		end
 
 		numLinkHypothesis = numLinkHypothesis + numLinks;
