@@ -31,7 +31,7 @@ trainDetector = false;
 trainTracker  = false;
 
 testDetector  = false;
-testTracker   = true;
+testTracker   = false;
 
 showTracks    = true;
 

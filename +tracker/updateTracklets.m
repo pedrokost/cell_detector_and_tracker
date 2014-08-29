@@ -43,7 +43,7 @@ function tracks = updateTracklets(tracklets, Hopt, hypTypes)
 	while anyTrackletsInQueue()
 		for i=1:numel(A)
 			if isAmapped()
-				fprintf('A (%d) is mapped\n', A(i))
+				% fprintf('A (%d) is mapped\n', A(i))
 				addBtoAsLocation()
 			else
 				% fprintf('A (%d) is NOT mapped\n', A(i))
@@ -81,7 +81,7 @@ function tracks = updateTracklets(tracklets, Hopt, hypTypes)
 
 
 	%-------------------------------------------------Create the tracks matrix
-	[(1:numel(mapIdx))' mapIdx]
+	% [(1:numel(mapIdx))' mapIdx]
 
 	% Used the mapping indices matrix to create the tracks matrix
 	tracks = zeros(numel(HinitIdx), numFrames);

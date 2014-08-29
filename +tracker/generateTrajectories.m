@@ -1,7 +1,7 @@
 function tracklets = generateTrajectories(storeID, params)
 	% Given a set of cell detections returns a matrix of long trajectories
 
-	doPrintHypothesisTable = false;
+	doPrintHypothesisTable = true;
 
 	if params.saveTrajectoryGenerationInterimResults
 		fprintf('Deleting any old interim tracklet files\n')
@@ -32,7 +32,7 @@ function tracklets = generateTrajectories(storeID, params)
 	tracklets = tracker.generateTracklets(storeID, struct('withAnnotations', false, 'modelFile', robustClassifierParams.outputFileModel));
 
 	% TODO: I should keep all of this
-	% tracklets = tracker.filterTrackletsByLength(tracklets, 2);
+	tracklets = tracker.filterTrackletsByLength(tracklets, 2);
 
 	fprintf('\tGenerated %d robust tracklets\n', size(tracklets, 1))
 	
@@ -90,9 +90,9 @@ function tracklets = generateTrajectories(storeID, params)
 
 		if params.verbose && doPrintHypothesisTable
 			tracker.hypothesisPrint(M, Liks, Iopt, 'table');
+			% pauseIt()
 		end
-		tracker.hypothesisPrint(M, Liks, Iopt, 'short')
-		pauseIt()
+		% tracker.hypothesisPrint(M, Liks, Iopt, 'short')
 		if params.verbose; fprintf('	Updating tracklets...\n'); end
 
 

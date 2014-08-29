@@ -96,7 +96,7 @@ function [M, hypTypes] = generateHypothesisMatrix(tracklets, options)
 
 	linkHypothesis = getLinkHypothesis(tracklets, initY, initX, termY, termX, maxGap, MAX_DISPLACEMENT_LINK);
 	numLinkHypothesis = full(sum(sum(linkHypothesis)));
-	fprintf('\tThere are %d link hypohtesis.\n', numLinkHypothesis)
+	fprintf('\tThere are %d link hypothesis.\n', numLinkHypothesis)
 
 	numHypothesis = numLinkHypothesis + 3 * numTracklets; % init, term, fp
 
@@ -183,8 +183,10 @@ function H = getLinkHypothesis(tracklets, initY, initX, termY, termX, maxGap, MA
 	J = zeros(numTracklets*optimisticEstimateOfLinksPerTracklets, 1);
 
 	numLinkHypothesis = 1;
+	totEliminatedImpossible = 0;
+	totEliminatedFar = 0;
 	for i=1:numTracklets
-		if mod(i, 50) == 0
+		if mod(i, 100) == 0
 			fprintf('\tGenerating link hypothesis. Progress: %3.0f%%.\n', 100 * i / numTracklets)
 		end
 		% For each tracklet end, find the number of tracklet starting in the next
@@ -194,27 +196,31 @@ function H = getLinkHypothesis(tracklets, initY, initX, termY, termX, maxGap, MA
 		yEndA = termY(i);
 
 		xStartBInd = (initX >= xEndA) & (initX <= xEndA + maxGap);
-		considered = xStartBInd;
-		% TODO: THis should be sped up with a small cache
-		% TODO: easy: first filder by distance, then by this... otherwise I evaluate
-		% all possible tracklets combos!!!
-		% endALoc = int16(DSOUT.getDots(matFileIndices(xEndA), tracklets(yEndA, xEndA)));
-		% startBLocs = zeros(numel(initX), 2, 'int16');
-		% for f=1:numel(initX)
-		% 	startBLocs(f, :)=DSOUT.getDots(matFileIndices(initX(f)), tracklets(initY(f), initX(f)));
-		% end
-		% notTooDistantInd = abs(tracker.pointsDistance(endALoc, startBLocs)) < MAX_DISPLACEMENT_LINK;
-		% considered = xStartBInd & notTooDistantInd;
+		totEliminatedImpossible = totEliminatedImpossible + sum(xStartBInd==0);
+		initY_tmp = initY(xStartBInd);
+		initX_tmp = initX(xStartBInd);
 
-		numLinks = sum(considered);
+		% TODO: THis should be sped up with a small cache
+		endALoc = int16(DSOUT.getDots(matFileIndices(xEndA), tracklets(yEndA, xEndA)));
+		startBLocs = zeros(numel(initX_tmp), 2, 'int16');
+		for f=1:numel(initX_tmp)
+			startBLocs(f, :)=DSOUT.getDots(matFileIndices(initX_tmp(f)), tracklets(initY_tmp(f), initX_tmp(f)));
+		end
+		notTooDistantInd = abs(tracker.pointsDistance(endALoc, startBLocs)) < MAX_DISPLACEMENT_LINK;
+		totEliminatedFar = totEliminatedFar + sum(notTooDistantInd == 0);
+		initY_tmp = initY_tmp(notTooDistantInd);
+
+		numLinks = numel(initY_tmp);
 		if numLinks > 0
 			I(numLinkHypothesis:numLinkHypothesis+numLinks-1) = repmat(yEndA, numLinks, 1);
-			J(numLinkHypothesis:numLinkHypothesis+numLinks-1) = initY(considered);
+			J(numLinkHypothesis:numLinkHypothesis+numLinks-1) = initY_tmp;
 		end
 
 		numLinkHypothesis = numLinkHypothesis + numLinks;
 
 	end
+	fprintf('\tEliminated %d impossible linking candidates.\n', totEliminatedImpossible);
+	fprintf('\tEliminated %d distant linking candidates.\n', totEliminatedFar);
 
 	I = I(1:numLinkHypothesis-1);
 	J = J(1:numLinkHypothesis-1);
