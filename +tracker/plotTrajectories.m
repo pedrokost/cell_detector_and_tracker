@@ -3,7 +3,7 @@ function plotTrajectories(dataset, dataParams)
 
 	doPlotAnnotations = false;
 	doPlotMappedDetections = true;
-	doPlotRobust = false;
+	doPlotRobust = true;
 	doPlotGeneratedTrajectories = true;
 
 	%----------------------------------Load parameters and generate data store	
@@ -23,7 +23,7 @@ function plotTrajectories(dataset, dataParams)
 			trackletFile = sprintf('%s_annotations.mat', dataParams.trajectoriesOutputFile);
 			load(trackletFile)
 			tracker.trackletViewer(tracklets, 'in', struct('showLabels',false, 'minLength', 0));
-			% ax = axis(f1);
+			ax = axis(f1);
 			title(sprintf('Annotations', dataset));	
 		end
 		if doPlotMappedDetections
@@ -32,7 +32,11 @@ function plotTrajectories(dataset, dataParams)
 			trackletFile = sprintf('%s_mappeddetections.mat', dataParams.trajectoriesOutputFile);
 			load(trackletFile);
 			tracker.trackletViewer(tracklets, 'out', struct('showLabels',false, 'minLength', 0));
-			% axis(f2, ax);
+			if doPlotAnnotations
+				axis(f2, ax);
+			else
+				ax = axis(f2);
+			end
 			title(sprintf('Annotations mapped to detections', dataset));
 		end
 		if doPlotRobust
@@ -40,9 +44,13 @@ function plotTrajectories(dataset, dataParams)
 			curSubPlot = curSubPlot + 1;
 			trackletFile = sprintf('%s0.mat', dataParams.trajectoriesOutputFile);
 			load(trackletFile);
-			tracker.trackletViewer(tracklets, 'out', struct('showLabels',true, 'minLength', 4));
-			title(sprintf('Robust tracklets', dataset));	
-			% axis(f3, ax);
+			tracker.trackletViewer(tracklets, 'out', struct('showLabels',false, 'minLength', 2));
+			title(sprintf('Robust tracklets', dataset));
+			if doPlotAnnotations || doPlotMappedDetections
+				axis(f3, ax);
+			else
+				ax = axis(f3);
+			end
 		end
 		if doPlotGeneratedTrajectories
 			f4 = subplot(1,numSubPlots,curSubPlot); % Trajectories
@@ -55,8 +63,8 @@ function plotTrajectories(dataset, dataParams)
 		trackletFile = sprintf('%s_final.mat', dataParams.trajectoriesOutputFile);
 		load(trackletFile);
 		tracker.trackletViewer(tracklets, 'out', struct('showLabels',false, 'minLength', 0));
-		if exist('ax', 'var')
-			% axis(f4, ax)
+		if doPlotAnnotations || doPlotMappedDetections || doPlotRobust
+			axis(f4, ax);
 		end
 		title(sprintf('Generated trajectories', dataset));	
 	end

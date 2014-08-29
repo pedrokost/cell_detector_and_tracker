@@ -25,13 +25,13 @@ clear all;
 %                                                                Configuration
 %============================================================================%
 
-datasetIDs    = [4];     % Look into dataFolders.m
+datasetIDs    = [2];     % Look into dataFolders.m
 
 trainDetector = false;
-trainTracker  = false;
+trainTracker  = true;
 
 testDetector  = false;
-testTracker   = false;
+testTracker   = true;
 
 showTracks    = true;
 
