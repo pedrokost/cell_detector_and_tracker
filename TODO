@@ -3,13 +3,12 @@ Today:
 		✔	T83) Identify ways to reduce the number of hypothesis that need to be computed @done (14-08-29 15:44)
 		✔	It seems I am not linking the correct tracklets... I mean not condirecting all the actualy linking candidates... research why @done (14-08-29 15:44)
 		✔	Fix the bug in updateTracklets when there is a wait queue @done (14-08-29 18:13)
-		☐	Figure out what to do with too short tracklets... now I just delete them all... but some would be very useful
 
 Evaluation (1 week work):
 	Detection:
 		☐	18) Low priority: Compare detections with annotations and improve annotations
 		☐	20) Low priority: find better feature descriptor and rerun all experiments
-
+		☐	24) Each evaluation run should save the results somewhere, so I can quickly an easily revieve them all at once
 	Tracking:
 		☐	22) Test using leave-one-out since the number of trajectories is low
 				☐	In evaluateDataset I need to:
@@ -28,6 +27,8 @@ Evaluation (1 week work):
 		☐	10) Low priority: Accuracy of tracker trained on combined dataset
 		☐	11) Accuracy of tracker if frames are skipped: what is the max number of frames that can be skipped while still obtaining good enough tracks
 		☐	13) Show example of all bad cases (linking too much, 3 tracklets middle skipped, ...)
+		☐	23) Figure out what to do with too short tracklets... now I just delete them all... but some would be very useful...maybe just delete those thare are far apart from anything?
+		☐	25) One of the datasets has very bad annotations... training went bad therefore (4). Possibly best to annotated something more... theree are some good trajectories
 
 Writing thesis (1 weeks work):
 

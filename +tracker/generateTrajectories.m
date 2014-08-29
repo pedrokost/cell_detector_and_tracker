@@ -1,7 +1,7 @@
 function tracklets = generateTrajectories(storeID, params)
 	% Given a set of cell detections returns a matrix of long trajectories
 
-	doPrintHypothesisTable = true;
+	doPrintHypothesisTable = false;
 
 	if params.saveTrajectoryGenerationInterimResults
 		fprintf('Deleting any old interim tracklet files\n')
