@@ -53,8 +53,13 @@ function [M, hypTypes] = generateHypothesisMatrix(tracklets, options)
 	% with increasing maxGap, which results from the fact that merged tracks
 	% can have discontinuities, thus tracks could link to themselves in the future
 	% or a discontinued track could link to a third track twice. It is fixed here below:
+
+	% tracklets(1:5, 1:15)
+	% Itracklets(1:5, 1:15)
 	[initY, initX] = find(Itracklets==1); % Initializations
 	[termY, termX] = find(Itracklets==-1); % Terminations
+	termX = termX - 1;  % correction required since convolution detects the
+	% term frame one frame later 
 
 	% Take only the first initialization and last termination of each tracklet
 	[initY, idx] = unique(initY);
@@ -158,15 +163,16 @@ function H = getLinkHypothesis(tracklets, initY, initX, termY, termX, maxGap, MA
 	% GETLINKHYPOTHESIS return a sparse matrix of dimensions nTracklets x nTracklets with 1 indicating tracks that can be linked
 	% Inputs:
 	% 	tracklets = the indices tracklets matrix
-	% 	initY = y coordinates of all tracklets beginnings/heads
-	% 	initX = x coordinates of all tracklets beginnings/heads
-	% 	termY = y coordinates of all tracklet ends/tails
-	% 	termX = x coordinates of all tracklet ends/tails
+	% 	initY = tracklets ID (row in tracklets) of all tracklets beginnings/heads
+	% 	initX = frame number of all tracklets beginnings/heads
+	% 	termY = tracklets ID (row in tracklets) of all tracklet ends/tails
+	% 	termX = frame number of all tracklet ends/tails
 	% 	maxGap = the maximum number of frames ahead to look for poss possible linking tracklets
 	% Outputs:
 	% 	H = a sparse row matrix contaitning for each tracklet the indices of possible continuing tracklets.
 
 	global DSOUT;
+	matFileIndices = DSOUT.getMatfileIndices();
 
 	numTracklets = numel(initX);
 
@@ -188,6 +194,8 @@ function H = getLinkHypothesis(tracklets, initY, initX, termY, termX, maxGap, MA
 		% FIXME: intiX and initY I think are frame nubmers, not actual positions!!!
 		considered = xStartBInd;
 
+		% xEndA
+		endALoc = DSOUT.getDots(matFileIndices(xEndA), tracklets(yEndA, xEndA));
 		% notTooDistantInd = abs(tracker.pointsDistance([xEndA yEndA], [initX initY])) < MAX_DISPLACEMENT_LINK;
 		% considered = xStartBInd & notTooDistantInd;
 
