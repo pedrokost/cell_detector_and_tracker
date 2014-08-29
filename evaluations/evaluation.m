@@ -18,7 +18,7 @@ addpath('dependencies/distinguishable_colors');
 %--------------------------------------------------------------------Configure
 doPlot = true;
 doProf = false;
-datasets = [2];
+datasets = [2 3 4 5];
 mutliPlot = true;
 
 %-------------------------------------------------------------Begin evaluation

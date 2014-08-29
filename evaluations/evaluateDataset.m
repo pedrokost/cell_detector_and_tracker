@@ -86,6 +86,13 @@ function [avgMetricsAnn, avgMetricsDet, avgMetricsMax, metricsAnn, metricsDet, m
 	avgMetricsAnn = averageMetrics(metricsAnn);
 	avgMetricsDet = averageMetrics(metricsDet);
 	avgMetricsMax = averageMetrics(metricsMax);
+	avgMetricsAnn.Time = time;
+	avgMetricsAnn.Kinit   = params.Kinit; 
+	avgMetricsAnn.Kterm   = params.Kterm; 
+	avgMetricsAnn.Kfp     = params.Kfp; 
+	avgMetricsAnn.Klink   = params.Klink; 
+	avgMetricsAnn.MaxGaps = params.maxGaps; 
+	% avgMetricsAnn.Params = cell2mat(struct2cell(params))';
 	avgMetricsAnn.Dataset = sprintf('Dataset %d', dataset);
 	avgMetricsDet.Dataset = sprintf('Dataset %d', dataset);
 	avgMetricsMax.Dataset = sprintf('Dataset %d', dataset);

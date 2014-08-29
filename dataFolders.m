@@ -138,5 +138,17 @@ folders.outFolder  =  outFolder;
 folders.imageDimensions = imageDims;
 folders.numAnnotatedFrames = numAnnotatedFrames;
 folders.numAnnotatedTrajectories = numAnnotatedTrajectories;
+if exist('Kinit', 'var')
+    folders.Kinit = Kinit;
+end
+if exist('Kterm', 'var')
+    folders.Kterm = Kterm;
+end
+if exist('Kfp', 'var')
+    folders.Kfp   = Kfp;
+end
+if exist('Klink', 'var')
+    folders.Klink = Klink;
+end
 
 end

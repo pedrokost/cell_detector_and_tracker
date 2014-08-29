@@ -21,8 +21,9 @@ maxGaps = [9]; % for the linker
 
 Kinit = 1;
 Kterm = 1;
-Kfp = 1;
+Kfp   = 1;
 Klink = 1;
+
 % Elimate hypothesis that are below thes log-likelihoods
 minPlink = log(0.51);
 % minPinit = log(0.1);
@@ -59,10 +60,6 @@ verbose = true;
 params.maxGaps  =  maxGaps;
 params.linkerClassifierParams = linkerClassifierParams;
 params.robustClassifierParams = robustClassifierParams;
-params.Kinit = Kinit;
-params.Kterm = Kterm;
-params.Kfp = Kfp;
-params.Klink = Klink;
 params.saveTrajectoryGenerationInterimResults = saveTrajectoryGenerationInterimResults;
 params.trajectoriesOutputFile = trajectoriesOutputFile;
 params.verbose = verbose;
@@ -72,4 +69,16 @@ params.minPlink = minPlink;
 % params.minPfp   = minPfp;
 params.plotProgress = plotProgress;
 
+if ~isfield(params, 'Kinit')
+    params.Kinit = Kinit;
+end
+if ~isfield(params, 'Kterm')
+    params.Kterm = Kterm;
+end
+if ~isfield(params, 'Kfp')
+    params.Kfp   = Kfp;
+end
+if ~isfield(params, 'Klink')
+    params.Klink = Klink;
+end
 end
