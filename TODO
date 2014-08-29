@@ -1,22 +1,22 @@
-MAKE SMALL COMMITS ALL THE TIME:
 Evaluation (1 week work):
 	Detection:
 		☐	18) Low priority: Compare detections with annotations and improve annotations
 		☐	20) Low priority: find better feature descriptor and rerun all experiments
-		☐	12) Show example of detector detecting 2 cells as 1 due to the nonoverlap constraint
 
 	Tracking:
 		✔	19) Run detector train and test on all data @done (14-08-28 10:28)
-		☐	21) Switch git branch
-		☐	5) Annotated seriesm170_13cropped with long links
+		✔	21) Switch git branch @done (14-08-28 11:10)
+		✔	5) Annotated seriesm170_13cropped with long links @done (14-08-28 12:33)
 		☐	6) Implement other tracking quality metrics (reqs: T82)
 		Track evaluation metrics:
-			☐	1) MOTA: Multiple Object Tracking Accuracy, calculated from the number of false alarms, missed detections, and identity switches;
-			☐	2) FGTIM: Fraction of Ground Truth Instances Missed; and
-			☐	3) FAPF: False Alarm Per Frame.
-			☐	8) ID switches (IDS): the number of times two trajectories switch their ID
+			☐	21) Target effectiveness
+			☐	22) Track purity
+			☐	1) Low priority: MOTA: Multiple Object Tracking Accuracy, calculated from the number of false alarms, missed detections, and identity switches;
+			☐	2) Low priority: FGTIM: Fraction of Ground Truth Instances Missed; and
+			☐	3) Low priority: FAPF: False Alarm Per Frame.
+			☐	8) Low priority: ID switches (IDS): the number of times two trajectories switch their ID
 		☐	9) Accuracy of tracker trained on single dataset
-		☐	10) Accuracy of tracker trained on combined dataset
+		☐	10) Low priority: Accuracy of tracker trained on combined dataset
 		☐	11) Accuracy of tracker if frames are skipped: what is the max number of frames that can be skipped while still obtaining good enough tracks
 		☐	13) Show example of all bad cases (linking too much, 3 tracklets middle skipped, ...)
 
@@ -39,6 +39,7 @@ Writing thesis (1 weeks work):
  	Conclusion:
 	Evaluation:
 		☐	20) Write the whole evaluation chapter
+		☐	12) Show example of detector detecting 2 cells as 1 due to the nonoverlap constraint
 	General:
 		☐	5) Review past best dissertations for section and writing style inspiration
 		☐	26) Review bibliography and see if it needs any fixes

@@ -25,12 +25,16 @@ function tracklets2 = trackletsToPosition(tracklets, store, interpolate)
 	idx = store.getMatfileIndices();
 
 	[numTracklets, numFrames] = size(tracklets);
+	%keyboard
 	tracklets2 = zeros(numTracklets, numFrames, 2, 'uint16');
 
 	for i=1:numFrames
 		dots = store.getDots(idx(i));
+        % dots
+        % tracklets(:, i)
 		tracklets2(:, i, :) = tracker.getCellTrackletsFrame(dots, tracklets(:, i)); 
 	end
+
 
 	if interpolate
 		tracklets2 = tracker.interpolateTracklets(tracklets2);

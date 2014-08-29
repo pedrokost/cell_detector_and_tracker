@@ -3,7 +3,9 @@ function tracklet2D = interpolateTracklet(tracklet2D)
 
 	lenTracklet = size(tracklet2D, 1);
 
-	if lenTracklet > 1
+	actualTrackletLen = numel(any(find(tracklet2D), 2));
+
+	if lenTracklet > 1 && actualTrackletLen > 1
 		[tracklet2D, nonzeroIdx] = tracker.eliminateZeroRows(tracklet2D);
 
 		if any(nonzeroIdx == 0)

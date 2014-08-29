@@ -1,5 +1,11 @@
 function [avgMetricsAnn, avgMetricsDet, avgMetricsMax, metricsAnn, metricsDet, metricsMax] = evaluateDataset(dataset, doPlot)
 
+	%------------------------------------------------------------Configuration
+
+	doPlotAnnotations = false;
+	doPlotMappedDetections = false;
+	doPlotTrajectories = false;
+
 	%--------------------------------------------------------------Load parameters
 	params = tracker.loadDatasetInfo(dataset);
 	numLongestTracklets = params.numAnnotatedTrajectories;
@@ -24,7 +30,7 @@ function [avgMetricsAnn, avgMetricsDet, avgMetricsMax, metricsAnn, metricsDet, m
 	trackletsAnn = trackletsAnn(sortIdx, :);
 	trackletsAnn = trackletsAnn(1:numLongestTracklets, :);
 
-	if doPlot
+	if doPlot && doPlotAnnotations
 		handleAnn = tracker.trackletViewer(trackletsAnn, 'in', struct('preferredColor', colors(1, :), 'lineWidth', 2, 'showLabels', true));
 	end
 
@@ -33,19 +39,20 @@ function [avgMetricsAnn, avgMetricsDet, avgMetricsMax, metricsAnn, metricsDet, m
 	% Map it onto the detections, which can only return 1 tracklet
 	trackletsDet = tracker.convertAnnotationToDetectionIdx(trackletsAnn);
 
-	if doPlot
+	if doPlot && doPlotMappedDetections
 		hold on;
 		handleDet = tracker.trackletViewer(trackletsDet, 'out', struct('preferredColor', colors(2, :), 'lineStyle', '.-', 'lineWidth', 4));
 	end
 
-	%--------------------------------------------------------Subsection header
+	%--------------------------------------------------------Plot trajectories
 	filename = sprintf('%s_final.mat', params.trajectoriesOutputFile);
 	load(filename);
 
 	trackletsGen = tracklets;
 	trackletsGenMulti = findTrajectoriesOverlappingMappedDetections(trackletsDet, trackletsGen);
 
-	if doPlot
+	if doPlot && doPlotTrajectories
+		hold on;
 		for t = 1:numLongestTracklets
 			h = tracker.trackletViewer(trackletsGenMulti{t}, 'out', struct('preferredColor', colors(3, :), 'lineStyle', '.-', 'lineWidth', 2));
 			if t == 1; handleGen = h; end;
@@ -61,6 +68,7 @@ function [avgMetricsAnn, avgMetricsDet, avgMetricsMax, metricsAnn, metricsDet, m
 	trackletsDet2D = tracker.trackletsToPosition(trackletsDet, 'out', true);
 
 	for t=1:numLongestTracklets
+		trackletsGenMulti{t}
 		trackletsGenMulti{t} = tracker.trackletsToPosition(trackletsGenMulti{t}, 'out', true);
 	end
 

@@ -24,13 +24,13 @@
 %                                                                Configuration
 %============================================================================%
 
-datasetIDs    = [1,3,4];     % Look into dataFolders.m
+datasetIDs    = [5];     % Look into dataFolders.m
 
-trainDetector = true;
-trainTracker  = false;
+trainDetector = false;
+trainTracker  = true;
 
-testDetector  = true;
-testTracker   = false;
+testDetector  = false;
+testTracker   = true;
 
 showTracks    = false;
 
@@ -59,39 +59,34 @@ fprintf(title);
 
 overrides = struct('testAll', true, 'trainSplit', 1, 'features', [1 1 0 1 1 1 0]);
 ctrlParams = detector.ctrlParams(overrides);
-dataParams = detector.loadDatasetInfo(dataset, ctrlParams);
 
-if trainDetector
-	for dataset=datasetIDs
+
+
+for dataset=datasetIDs
+	dataParams = detector.loadDatasetInfo(dataset, ctrlParams);
+
+	if trainDetector
 		fsectionf('Training detector on dataset %d', dataset);
 		detector.trainDetector(dataset,ctrlParams, dataParams);
 	end
-end
-
-if testDetector
-	for dataset=datasetIDs
+	if testDetector
 		fsectionf('Detecting cells in dataset %d', dataset);
 		detector.detectCells(dataset,ctrlParams, dataParams);
 	end
 end
 
-if trainTracker
-	for dataset=datasetIDs
+for dataset=datasetIDs
+	dataParams = tracker.loadDatasetInfo(dataset);
+	if trainTracker
 		fsectionf('Training tracker on dataset %d', dataset);
-		tracker.trainTracker(dataset,ctrlParams, dataParams);
+		tracker.trainTracker(dataset, dataParams);
 	end
-end
-
-if testTracker
-	for dataset=datasetIDs
+	if testTracker
 		fsectionf('Tracking cells in dataset %d', dataset);
-		tracker.trackCells(dataset,ctrlParams, dataParams);
+		tracker.trackCells(dataset, dataParams);
 	end
-end
-
-if showTracks
-	for dataset=datasetIDs
+	if showTracks
 		fsectionf('Plotting trajectories from dataset %d', dataset)
-		tracker.plotTrajectories(dataset,ctrlParams, dataParams);
+		tracker.plotTrajectories(dataset, dataParams);
 	end
 end

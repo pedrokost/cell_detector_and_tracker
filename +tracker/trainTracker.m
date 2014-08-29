@@ -1,4 +1,4 @@
-function trainTracker(dataset)
+function trainTracker(dataset, dataParams)
 	% Trains the cell tracker classifiers (robust and linker) on the given dataset
 
 	%------------------------------------------------------------Configuration
@@ -9,20 +9,18 @@ function trainTracker(dataset)
 	% addpath('somelightspeed');
 
 	%-Features and control parameters-%
-	params = tracker.loadDatasetInfo(dataset);
 	
 	global DSIN DSOUT;
-	DSIN = tracker.DataStore(params.linkFolder, false);
-	DSOUT = tracker.DataStore(params.outFolder, false);
+	DSIN = tracker.DataStore(dataParams.linkFolder, false);
+	DSOUT = tracker.DataStore(dataParams.outFolder, false);
 
 	%---------------------------------------------------------Train the models
 
-	% TODO: make sure these models are learned on the correct datasets
 	if doTrainRobustTrackerModel
-		tracker.trainRobustTrackerModel(params);
+		tracker.trainRobustTrackerModel(dataParams);
 	end
 
 	if doTrainLinkerTrackerModel
-		tracker.trainLinkerTrackerModel(params);
+		tracker.trainLinkerTrackerModel(dataParams);
 	end
 end

@@ -50,8 +50,12 @@ function features = computeTrackletMatchFeaturesForPair(trackletA, trackletB, I,
 	if featParams.addCellDescriptors
 		desA = DSOUT.getDescriptors(fileA, cellIdxA);
 		desB = DSOUT.getDescriptors(fileB, cellIdxB);
-		features(idx:(idx+featParams.descriptorSize-1)) = tracker.euclideanDistance(desA, desB);
+		% size(desA)
+		dst = tracker.euclideanDistance(desA, desB);
+		features(idx:(idx+featParams.descriptorSize-1)) = dst;
 		idx = idx + featParams.descriptorSize;
+		% features(idx:idx) = sum(dst);  % FIXME: Don't do this... disable features in detector instead
+		% idx = idx + 1;
 	end
 
 	%------------------------Features that compare tracklets position in space
