@@ -8,8 +8,16 @@ Evaluation (1 week work):
 		✔	21) Switch git branch @done (14-08-28 11:10)
 		✔	5) Annotated seriesm170_13cropped with long links @done (14-08-28 12:33)
 		☐	6) Implement other tracking quality metrics (reqs: T82)
+		☐	22) Test using leave-one-out since the number of trajectories is low
+				☐	In evaluateDataset I need to:
+						☐	for each the long annotated trjectories
+						☐	each time eliminate from a training dataset one of the trajectories
+						☐	train a model on the rest
+						☐	test the model on the whole dataset
+						☐	Return metrics only on the unused trajectory
+						☐	average the results
 		Track evaluation metrics:
-			☐	21) Target effectiveness
+			✔	21) Target effectiveness @done (14-08-29 02:51)
 			☐	22) Track purity
 			☐	1) Low priority: MOTA: Multiple Object Tracking Accuracy, calculated from the number of false alarms, missed detections, and identity switches;
 			☐	2) Low priority: FGTIM: Fraction of Ground Truth Instances Missed; and

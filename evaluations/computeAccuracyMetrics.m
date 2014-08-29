@@ -15,7 +15,9 @@ function metricsMulti = computeAccuracyMetrics(target, trajectories);
 	for t = 1:numTracklets
 		metrics = struct;
 
-		targetMap = max(target(t, :, :), [], 3) > 0;
+		curTarget = target(t, :, :);
+		curTarget2D = permute(curTarget, [2 3 1]);
+		targetMap = max(curTarget, [], 3) > 0;
 		targetMapIdx = find(targetMap);
 		trajectorySegments = trajectories{t};
 		trajectoriesMap = max(max(trajectorySegments, [], 1), [], 3) > 0;
@@ -56,15 +58,20 @@ function metricsMulti = computeAccuracyMetrics(target, trajectories);
 		% 1687-5281-2008-246309.pdf
 
 		%-------------------------------------------------Target effectiveness
-		% To compute target effectiveness, we first assign each tar-
-		% get (human annotated) to a track (computer-generated) that
-		% contains the most observations from that ground-truth. Then
-		% target effectiveness is computed as the number of the assigned
-		% track observations over the total number of frames of the tar-
-		% get. It indicates how many frames of targets are followed by
-		% computer-generated tracks.
+		% select the track with the most observations from the ground truth
+		obsCount = observationsCount(trajectorySegments);
+		[~, maxObsCountIdx] = max(obsCount);
+		bestSegment2D = permute(trajectorySegments(maxObsCountIdx, :, :), [2 3 1]);
 
-		% check page 124 of the thesis of autoamatic tracking.
+		% count number of correctly assigned ground observations
+		cntCorrectlyAssigned = 0;
+		for i=1:numel(targetMapIdx)
+			isCorrectlyAssigned = abs(tracker.pointsDistance(curTarget2D(i, :), bestSegment2D(i, :))) < OUTLIER_DISTANCE;
+			cntCorrectlyAssigned = cntCorrectlyAssigned + isCorrectlyAssigned;
+		end
+		% divide it by totaal number of frames of ground truth
+		metrics.TargetEffectiveness = cntCorrectlyAssigned / numel(targetMapIdx);
+
 		%---------------------------------------------------------Track purity
 		% Similarly, we define track purity
 		% as how well tracks are followed by targets.
@@ -105,4 +112,12 @@ function metricsMulti = computeAccuracyMetrics(target, trajectories);
 		metricsMulti{t} = metrics;
 	end
 
+	function cnt = observationsCount(tracklets)
+		[numTracklets, numFrames] = size(tracklets);
+		trackletsMap = max(tracklets, [], 3) > 0;
+		cnt = zeros(numTracklets, 1);
+		for i=1:numTracklets
+			cnt(i) = numel(find(trackletsMap(i, :)));
+		end
+	end
 end

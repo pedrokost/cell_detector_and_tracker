@@ -2,9 +2,9 @@ function [avgMetricsAnn, avgMetricsDet, avgMetricsMax, metricsAnn, metricsDet, m
 
 	%------------------------------------------------------------Configuration
 
-	doPlotAnnotations = false;
-	doPlotMappedDetections = false;
-	doPlotTrajectories = false;
+	doPlotAnnotations = true;
+	doPlotMappedDetections = true;
+	doPlotTrajectories = true;
 
 	%--------------------------------------------------------------Load parameters
 	params = tracker.loadDatasetInfo(dataset);
@@ -26,7 +26,7 @@ function [avgMetricsAnn, avgMetricsDet, avgMetricsMax, metricsAnn, metricsDet, m
 	% Chose a few long tracklet of the annotations
 	trackletsAnn = tracklets;
 	lengths = trackletsLengths(tracklets);
-	[lengths, sortIdx] = sort(lengths, 'descend');
+	[~, sortIdx] = sort(lengths, 'descend');
 	trackletsAnn = trackletsAnn(sortIdx, :);
 	trackletsAnn = trackletsAnn(1:numLongestTracklets, :);
 
@@ -68,7 +68,6 @@ function [avgMetricsAnn, avgMetricsDet, avgMetricsMax, metricsAnn, metricsDet, m
 	trackletsDet2D = tracker.trackletsToPosition(trackletsDet, 'out', true);
 
 	for t=1:numLongestTracklets
-		trackletsGenMulti{t}
 		trackletsGenMulti{t} = tracker.trackletsToPosition(trackletsGenMulti{t}, 'out', true);
 	end
 

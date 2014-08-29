@@ -32,7 +32,7 @@ trainTracker  = true;
 testDetector  = false;
 testTracker   = true;
 
-showTracks    = false;
+showTracks    = true;
 
 % If you are not satisfied with the results of the tracker, you can use the
 % `tweak` tool to adjust the trajectories.
