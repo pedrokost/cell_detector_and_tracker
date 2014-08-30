@@ -28,7 +28,7 @@ switch datasetID
         linkFolder = fullfile(rootLinkFolder, 'series30green_fortrajectories');
         outFolder = fullfile(rootOutFolder, 'series30green');
         numAnnotatedFrames = 66;
-        numAnnotatedTrajectories = 2;
+        numAnnotatedTrajectories = 1;  % since 1 is fully undedetect
 
         % THE problem with this dataset is the sudden change of contrast when it
         % switches from frame 17 to 18. At that point all the background starts
@@ -108,6 +108,12 @@ switch datasetID
         imageDims = [277 277];
         numAnnotatedFrames = 67;
         numAnnotatedTrajectories = 2;
+    case 15
+        dotFolder = fullfile(rootDotFolder, 'combineddataset_1_2_3_4_5_fortrajectories');
+        outFolder = fullfile(rootOutFolder, 'combineddataset_1_2_3_4_5_fortrajectories');
+        linkFolder = fullfile(rootDotFolder, 'combineddataset_1_2_3_4_5_fortrajectories');
+        numAnnotatedFrames = 310;
+        numAnnotatedTrajectories = 22;
 
 end
 

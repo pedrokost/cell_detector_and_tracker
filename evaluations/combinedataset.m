@@ -5,14 +5,14 @@ clear all
 
 %----------------------------------------------------------------Configuration
 
-doDetectionOrTracking = 'det';  % one of{'det' 'track'}
+doDetectionOrTracking = 'track';  % one of{'det' 'track'}
 
-doTrainingOrTestingDataset = 'test';  % one of {'test', 'train'} % creates a large dataset combined of several smaller ones
+doTrainingOrTestingDataset = 'train';  % one of {'test', 'train'} % creates a large dataset combined of several smaller ones
 % on the combined model is trained, us this to generate several small datasets such that the combined model can be tested on each original dataset separately.
 
 allDatasets = 1:5;  % Only the original ones. Don't touch
 
-datasets = [2,4,5]; % Datasets to combine
+datasets = [1,2,3,4,5]; % Datasets to combine
 
 fileInitNum = 1;
 filePrefix = 'im';
@@ -35,8 +35,8 @@ elseif strcmp(doTrainingOrTestingDataset, 'test')
 	folders = createCombinedFolderNames(doDetectionOrTracking, doTrainingOrTestingDataset, allDatasets, combinedDatasetBaseName, singledDatasetBaseName);
 end
 
-createCombinedDatasetFolders(doDetectionOrTracking, doTrainingOrTestingDataset, folders);
 
+createCombinedDatasetFolders(doDetectionOrTracking, doTrainingOrTestingDataset, folders);
 
 matfilenames = sprintf('%s*.mat', filePrefix);
 pgmfilenames = sprintf('%s*.pgm', filePrefix);
@@ -104,19 +104,64 @@ if strcmp(doDetectionOrTracking , 'det')
 	end
 
 else
-	error('Not yet implemented')
-
 	% requiredFiles = {...
 	% 	'robustClassifierModel.mat'...
 	% 	'testLinkerClassifierANN.m'...
 	% };
-
 
 	% for i=1:numel(requiredFiles)
 	% 	if ~exist(fullfile(folders.outFolder, requiredFiles{i}))
 	% 		error('You must first run the tracker on the combined folder!')
 	% 	end
 	% end
+
+	folders
+	% cd('evaluations'); return
+
+	if strcmp(doTrainingOrTestingDataset, 'train')
+
+		% Copy annotations to link folder
+		startNum = fileInitNum;
+		for i=1:numel(datasets)
+			fprintf('Copying link files from dataset %d\n', datasets(i));
+			fldr = dataFolders(datasets(i));
+
+
+			% Copy annotation from link to link folder
+			sourceFiles = dir(fullfile(fldr.linkFolder, matfilenames));
+			endNum = startNum + numel(sourceFiles);
+			destFiles = prepareFileNames(filePrefix, numDigits, 'mat', startNum, endNum-1);
+			copyDataFilesFromTo(fldr.linkFolder, folders.linkFolder, sourceFiles, destFiles);
+
+			sourceFiles = dir(fullfile(fldr.linkFolder, pgmfilenames));
+			destFiles = prepareFileNames(filePrefix, numDigits, 'pgm', startNum, endNum-1);
+			copyDataFilesFromTo(fldr.linkFolder, folders.linkFolder, sourceFiles, destFiles);
+
+			startNum = endNum;
+		end
+
+		% TODO: copy detections to out folder
+		startNum = fileInitNum;
+		for i=1:numel(datasets)
+			fprintf('Copying out files from dataset %d\n', datasets(i));
+			fldr = dataFolders(datasets(i));
+
+
+			% Copy annotation from link to link folder
+			sourceFiles = dir(fullfile(fldr.outFolder, matfilenames));
+			endNum = startNum + numel(sourceFiles);
+			destFiles = prepareFileNames(filePrefix, numDigits, 'mat', startNum, endNum-1);
+			copyDataFilesFromTo(fldr.outFolder, folders.outFolder, sourceFiles, destFiles);
+
+			startNum = endNum;
+		end
+
+		fprintf('Num images in combined folder: %d\n', endNum-1);
+
+	else
+		error('Not necessary, since I test with leave one out')
+	end
+
 end
 
 fprintf('Total numAnnotatedFrames in new folder: %d\n', folders.numAnnotatedFrames)

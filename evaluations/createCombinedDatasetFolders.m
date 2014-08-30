@@ -32,9 +32,18 @@ function createCombinedDatasetFolders(doDetectionOrTracking, doTrainingOrTesting
 			end
 		end
 	else
-		error('Not yet implemented')
-
-		
+		if exist(folders.dotFolder, 'dir')
+			rmdir(folders.dotFolder, 's');
+			fprintf('Deleted old folder %s.\n', folders.dotFolder)
+		end
+		if exist(folders.outFolder, 'dir')
+			rmdir(folders.outFolder, 's');
+			fprintf('Deleted old folder %s.\n', folders.outFolder)
+		end
+		mkdir(folders.dotFolder);
+		fprintf('Created new folder %s.\n', folders.dotFolder)
+		mkdir(folders.outFolder);
+		fprintf('Created new folder %s.\n', folders.outFolder)
 	end
 
 

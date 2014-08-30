@@ -27,7 +27,7 @@ function prepareFeatureMatrixForLinkerMatcher(outputFile, params, leaveoneout)
 	tracklets = tracker.generateTracklets('in', struct('withAnnotations', true));
 
 	% Only use the correctly annoated frames for training: trim the matrix
-	% NOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO
+	% NOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO, never do this
 	% tracklets = tracklets(:, 1:params.numAnnotatedFrames);
 	% size(tracklets)
 
@@ -282,6 +282,13 @@ function [trackletA, trackletB, discard] = getUsefulTrackletsPair(trackletA, tra
 
 	idxA = find(trackletA ~= 0);
 	idxB = find(trackletB ~= 0);
+
+	if any([isempty(idxA) isempty(idxB)])
+		trackletA = [];
+		trackletB = [];
+		discard = true;
+		return
+	end
 
 	% Cases:
 

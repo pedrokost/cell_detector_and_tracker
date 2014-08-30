@@ -10,7 +10,7 @@ This script assumes all the detections have already been performed!!
 
 
 %--------------------------------------------------------------------Configure
-datasets = [2];
+datasets = [4:5];
 doPlot = false;
 runEvaluations = true; % Trains, Tests, computes metrics
 showResults = true; % Only aggregates the results

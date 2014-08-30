@@ -1,23 +1,14 @@
 Today:
-		✔	T90) Filter the number of link hypothesis in advance. @done (14-08-29 11:41)
-		✔	T83) Identify ways to reduce the number of hypothesis that need to be computed @done (14-08-29 15:44)
-		✔	It seems I am not linking the correct tracklets... I mean not condirecting all the actualy linking candidates... research why @done (14-08-29 15:44)
-		✔	Fix the bug in updateTracklets when there is a wait queue @done (14-08-29 18:13)
 
 Evaluation (1 week work):
 	Detection:
 		☐	18) Low priority: Compare detections with annotations and improve annotations
 		☐	20) Low priority: find better feature descriptor and rerun all experiments
-		☐	24) Each evaluation run should save the results somewhere, so I can quickly an easily revieve them all at once
+		✔	24) Each evaluation run should save the results somewhere, so I can quickly an easily revieve them all at once @done (14-08-30 11:23)
+		☐	25) Crombine dataset for tracking and test if it works
+		✔	26) FIXME: Linker clasifier is trained on only the first annotated frames, not all trajectories @done (14-08-30 12:26)
 	Tracking:
-		☐	22) Test using leave-one-out since the number of trajectories is low
-				☐	In evaluateDataset I need to:
-						☐	for each the long annotated trjectories
-						☐	each time eliminate from a training dataset one of the trajectories
-						☐	train a model on the rest
-						☐	test the model on the whole dataset
-						☐	Return metrics only on the unused trajectory
-						☐	average the results
+		✔	22) Test using leave-one-out since the number of trajectories is low @done (14-08-30 11:23)
 		Track evaluation metrics:
 			☐	1) Low priority: MOTA: Multiple Object Tracking Accuracy, calculated from the number of false alarms, missed detections, and identity switches;
 			☐	2) Low priority: FGTIM: Fraction of Ground Truth Instances Missed; and
@@ -47,6 +38,7 @@ Writing thesis (1 weeks work):
 		☐	24) Problem of many short tracklets: too many link hypothesis to compute and condider... get slow... how we solve it.
 		☐	25) Write that the method only cares about extracting longer trajectories... the shorter ones are often marked as false positives
  	Conclusion:
+ 		☐	26) Future work: how to use the shortest tracklets (of length 1)
 	Evaluation:
 		☐	20) Write the whole evaluation chapter
 		☐	12) Show example of detector detecting 2 cells as 1 due to the nonoverlap constraint
@@ -142,6 +134,10 @@ Data flow process:
 	☐ linker : IN: dots + robust matches, OUT: dots + links
 ＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿
 Archive:
+	✔	Fix the bug in updateTracklets when there is a wait queue @done (14-08-29 18:13) @project(Today)
+	✔	T83) Identify ways to reduce the number of hypothesis that need to be computed @done (14-08-29 15:44) @project(Today)
+	✔	It seems I am not linking the correct tracklets... I mean not condirecting all the actualy linking candidates... research why @done (14-08-29 15:44) @project(Today)
+	✔	T90) Filter the number of link hypothesis in advance. @done (14-08-29 11:41) @project(Today)
 	✔	22) Track purity @done (14-08-29 10:58) @project(Evaluation (1 week work) / Tracking / Track evaluation metrics)
 	✔	6) Implement other tracking quality metrics (reqs: T82) @done (14-08-29 10:56) @project(Evaluation (1 week work) / Tracking)
 	✔	21) Target effectiveness @done (14-08-29 02:51) @project(Evaluation (1 week work) / Tracking / Track evaluation metrics)

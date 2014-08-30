@@ -34,6 +34,13 @@ function folders = createCombinedFolderNames(doDetectionOrTracking, doTrainingOr
 		end
 
 	else
-		error('Not yet implemented')
+		% Create the combined dot folder
+		folderName = sprintf('%s%s_fortrajectories', baseNameCombined, num2str(datasets, '_%d'));
+		fullDotFolderName = fullfile(folders.rootDotFolder, folderName);
+		fullOutFolderName = fullfile(folders.rootOutFolder, folderName);
+
+		folders.dotFolder = fullDotFolderName;
+		folders.outFolder = fullOutFolderName;
+		folders.linkFolder = fullDotFolderName;
 	end
 end
