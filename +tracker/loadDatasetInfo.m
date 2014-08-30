@@ -17,18 +17,15 @@ function params = loadDatasetInfo(dataset)
 %Defaults
 plotProgress = true; % Shows a plot of annotation, mapped detection, robust tracklets, and trajectories together
 
-maxGaps = [9]; % for the linker
+maxGaps = [9]; % for the linker. Size of gaps to learn to close. Can have multivalue [1, 5, 9]
 
 Kinit = 1;
 Kterm = 1;
 Kfp   = 1;
 Klink = 1;
-
-% Elimate hypothesis that are below thes log-likelihoods
+discardSingleTracklets = true; % When creating trajectories, do not take into acount short tracklets... faster... worse
+% Elimate hypothesis that are below these log-likelihoods:
 minPlink = log(0.51);
-% minPinit = log(0.1);
-% minPterm = log(0.1);
-% minPfp = log(0.1);
 
 params = dataFolders(dataset);
 % disp(params)
@@ -67,6 +64,7 @@ params.minPlink = minPlink;
 % params.minPinit = minPinit;
 % params.minPterm = minPterm;
 % params.minPfp   = minPfp;
+params.discardSingleTracklets = discardSingleTracklets;
 params.plotProgress = plotProgress;
 
 if ~isfield(params, 'Kinit')

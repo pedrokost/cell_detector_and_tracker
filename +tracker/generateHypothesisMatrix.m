@@ -185,9 +185,10 @@ function H = getLinkHypothesis(tracklets, initY, initX, termY, termX, maxGap, MA
 	numLinkHypothesis = 1;
 	totEliminatedImpossible = 0;
 	totEliminatedFar = 0;
+	fprintf('\tGenerating link hypothesis...')
 	for i=1:numTracklets
 		if mod(i, 100) == 0
-			fprintf('\tGenerating link hypothesis. Progress: %3.0f%%.\n', 100 * i / numTracklets)
+			fprintf('%3.0f%%...', 100 * i / numTracklets)
 		end
 		% For each tracklet end, find the number of tracklet starting in the next
 		% maxGap frames
@@ -219,6 +220,7 @@ function H = getLinkHypothesis(tracklets, initY, initX, termY, termX, maxGap, MA
 		numLinkHypothesis = numLinkHypothesis + numLinks;
 
 	end
+	fprintf('\n');
 	fprintf('\tEliminated %d impossible linking candidates.\n', totEliminatedImpossible);
 	fprintf('\tEliminated %d distant linking candidates.\n', totEliminatedFar);
 
