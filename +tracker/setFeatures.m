@@ -15,7 +15,7 @@ params.addDirectionTheta  = 0;   % angle between the direction of 2 tracklets
 params.addDirectionVariances = 0;  % variance of direction over last N frames
 params.addMeanDisplacement = 0;  % mean displacement between frames (same as velocity per frame)
 params.addStdDisplacement = 0;  % std of displacement between frames
-params.addDistanceFromEdge = 0; % Distance from the closest image edge for each tracklet
+params.addDistanceFromEdge = 0; % Distance from the closest image edge for each tracklet. DO NOT USE FOR COMBINED DATASET
 params.addGaussianBroadeningEstimate = 1; % How much the tracklet is within the broadened gaussian from the original tracklet 
 
 params.descriptorSize = CELL_DESCRIPTOR_SIZE;

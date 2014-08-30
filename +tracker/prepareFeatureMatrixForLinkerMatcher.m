@@ -27,7 +27,9 @@ function prepareFeatureMatrixForLinkerMatcher(outputFile, params, leaveoneout)
 	tracklets = tracker.generateTracklets('in', struct('withAnnotations', true));
 
 	% Only use the correctly annoated frames for training: trim the matrix
-	tracklets = tracklets(:, 1:params.numAnnotatedFrames);
+	% NOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO
+	% tracklets = tracklets(:, 1:params.numAnnotatedFrames);
+	% size(tracklets)
 
 	annotationIndices = DSOUT.getMatfileIndices();
 

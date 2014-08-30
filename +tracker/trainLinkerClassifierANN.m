@@ -61,7 +61,7 @@ function trainLinkerClassifierANN(dataFile, options)
   % valPerformance = perform(net,valTargets,y)
   testPerformance = perform(net,testTargets,y);
 
-  fprintf('\tPerformance: %f,\n\tTrain Performance: %f,\n\tTest performance: %f.\n', performance, trainPerformance, testPerformance);
+  fprintf('\tPerformance (MSE): %f,\n\tTrain Performance (MSE): %f,\n\tTest performance (MSE): %f.\n', performance, trainPerformance, testPerformance);
 
   % View the Network
   % view(net)
