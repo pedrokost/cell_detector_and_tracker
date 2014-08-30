@@ -1,4 +1,4 @@
-function prepareFeatureMatrixForLinkerMatcher(outputFile, params)
+function prepareFeatureMatrixForLinkerMatcher(outputFile, params, leaveoneout)
 	%{
 		This script prepares a matrix containing pairs of cell descriptors and a third objective column indicating if they are the same (that is if the cells are DIRECTLY or UNDIRECTLY (through several links) linked)
 
@@ -9,6 +9,10 @@ function prepareFeatureMatrixForLinkerMatcher(outputFile, params)
 	doProfile = false;
 	doPlot = false;
 	trainWithAllCombos = false;
+
+	if nargin < 3
+		leaveoneout = 0;
+	end
 
 	if doProfile
 		profile on % -memory 
@@ -28,6 +32,16 @@ function prepareFeatureMatrixForLinkerMatcher(outputFile, params)
 	annotationIndices = DSOUT.getMatfileIndices();
 
 	tracklets = tracker.filterTrackletsByLength(tracklets, classifierParams.MIN_TRACKLET_LENGTH);
+
+	if leaveoneout > 0
+		% Elimintae longest tracklet
+		lengths = trackletsLengths(tracklets);
+		[~, sortIdx] = sort(lengths, 'descend');
+		tracklets = tracklets(sortIdx, :);
+		tracklets(leaveoneout, :) = []; 
+		fprintf('\tSkipped %d-th longest tracklet.\n', leaveoneout);
+	end
+
 	
 	if doPlot; clf; end
 	% trackletViewer(tracklets, 'in');

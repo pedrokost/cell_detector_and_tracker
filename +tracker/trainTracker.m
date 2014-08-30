@@ -1,4 +1,4 @@
-function trainTracker(dataset, dataParams)
+function trainTracker(dataset, dataParams, leaveoneout)
 	% Trains the cell tracker classifiers (robust and linker) on the given dataset
 
 	%------------------------------------------------------------Configuration
@@ -16,11 +16,15 @@ function trainTracker(dataset, dataParams)
 
 	%---------------------------------------------------------Train the models
 
+	if nargin < 3
+		leaveoneout = 0;
+	end
+
 	if doTrainRobustTrackerModel
-		tracker.trainRobustTrackerModel(dataParams);
+		tracker.trainRobustTrackerModel(dataParams, leaveoneout);
 	end
 
 	if doTrainLinkerTrackerModel
-		tracker.trainLinkerTrackerModel(dataParams);
+		tracker.trainLinkerTrackerModel(dataParams, leaveoneout);
 	end
 end

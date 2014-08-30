@@ -2,6 +2,7 @@ function trainMatcherRobustClassifierNB(dataFile, modelFile)
 
 	load(dataFile);
 
+	fprintf('Training robust classifier.\n')
 
 	x = X(:, 1:end-1);
 	t = X(:, end);
@@ -24,7 +25,7 @@ function trainMatcherRobustClassifierNB(dataFile, modelFile)
 
 	Y = tracker.testMatcherRobustClassifierNB(X(:, 1:end-1), NB, idx, minimum, maximum);
 
-	fprintf('Confusion matrix for robust classifier NB:\n\n');
+	fprintf('\tConfusion matrix for robust classifier NB:\n\n');
 	cMat1 = confusionmat(t, double(Y>0.9));
 	disp(cMat1)
 end

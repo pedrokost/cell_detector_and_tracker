@@ -1,4 +1,4 @@
-function trainLinkerTrackerModel(options)
+function trainLinkerTrackerModel(options, leaveoneout)
 	% Generates a training matrix and trains the robust tracklet model for
 	% generating robust tracklets
 	% Input:
@@ -9,14 +9,18 @@ function trainLinkerTrackerModel(options)
 	% 		outputFileModel = where to store the learned model
 	% Output: /
 
+	if nargin < 2
+		leaveoneout = 0;
+	end
+
 	linkerOptions = options.linkerClassifierParams;
 
 	dataFile = linkerOptions.outputFileMatrix;
 	% modelFile = options.outputFileModel;
 
-	tracker.prepareFeatureMatrixForLinkerMatcher(dataFile, options)
+	tracker.prepareFeatureMatrixForLinkerMatcher(dataFile, options, leaveoneout)
 
-	fprintf('Training model for linking tracklets\n')
+	fprintf('Training linker classifier\n')
 	
 	switch linkerOptions.algorithm
 		case 'ANN'

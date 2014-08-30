@@ -1,4 +1,4 @@
-function trainRobustTrackerModel(options)
+function trainRobustTrackerModel(options, leaveoneout)
 	% Generates a training matrix and trains the robust tracklet model for
 	% generating robust tracklets
 	% Input:
@@ -9,12 +9,15 @@ function trainRobustTrackerModel(options)
 	% 		outputFileModel = where to store the learned model
 	% Output: /
 
+	if nargin < 1
+		leaveoneout = 0;
+	end
 
 	classifierOpts = options.robustClassifierParams;
 
 	classifierOpts.trajectoriesOutputFile = options.trajectoriesOutputFile;
 	
-	tracker.prepareFeatureMatrixForRobustMatcher(classifierOpts);
+	tracker.prepareFeatureMatrixForRobustMatcher(classifierOpts, leaveoneout);
 
 	dataFile = classifierOpts.outputFileMatrix;
 	modelFile = classifierOpts.outputFileModel;

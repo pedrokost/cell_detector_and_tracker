@@ -51,15 +51,17 @@ function trainLinkerClassifierANN(dataFile, options)
   tind = vec2ind(Y);
   yind = vec2ind(y);
   percentErrors = sum(tind ~= yind)/numel(tind);
-  performance = perform(net,Y,y)
+  performance = perform(net,Y,y);
 
   % Recalculate Training, Validation and Test Performance
   trainTargets = Y .* tr.trainMask{1};
   valTargets = Y  .* tr.valMask{1};
   testTargets = Y  .* tr.testMask{1};
-  trainPerformance = perform(net,trainTargets,y)
+  trainPerformance = perform(net,trainTargets,y);
   % valPerformance = perform(net,valTargets,y)
-  testPerformance = perform(net,testTargets,y)
+  testPerformance = perform(net,testTargets,y);
+
+  fprintf('\tPerformance: %f,\n\tTrain Performance: %f,\n\tTest performance: %f.\n', performance, trainPerformance, testPerformance);
 
   % View the Network
   % view(net)

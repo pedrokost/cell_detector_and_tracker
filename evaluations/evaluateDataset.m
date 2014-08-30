@@ -1,4 +1,4 @@
-function [avgMetricsAnn, avgMetricsDet, avgMetricsMax, metricsAnn, metricsDet, metricsMax] = evaluateDataset(dataset, doPlot)
+function [avgMetricsAnn, avgMetricsDet, avgMetricsMax, metricsAnn, metricsDet, metricsMax] = evaluateDataset(dataset, doPlot, leaveoneout)
 
 	%------------------------------------------------------------Configuration
 
@@ -6,6 +6,9 @@ function [avgMetricsAnn, avgMetricsDet, avgMetricsMax, metricsAnn, metricsDet, m
 	doPlotMappedDetections = true;
 	doPlotTrajectories = true;
 
+	if nargin < 3
+		leaveoneout = 0;
+	end
 	%--------------------------------------------------------------Load parameters
 	params = tracker.loadDatasetInfo(dataset);
 	numLongestTracklets = params.numAnnotatedTrajectories;
@@ -28,7 +31,12 @@ function [avgMetricsAnn, avgMetricsDet, avgMetricsMax, metricsAnn, metricsDet, m
 	lengths = trackletsLengths(tracklets);
 	[~, sortIdx] = sort(lengths, 'descend');
 	trackletsAnn = trackletsAnn(sortIdx, :);
-	trackletsAnn = trackletsAnn(1:numLongestTracklets, :);
+	if leaveoneout > 0
+		trackletsAnn = trackletsAnn(leaveoneout, :);
+		numLongestTracklets = 1;
+	else
+		trackletsAnn = trackletsAnn(1:numLongestTracklets, :);
+	end
 
 	if doPlot && doPlotAnnotations
 		handleAnn = tracker.trackletViewer(trackletsAnn, 'in', struct('preferredColor', colors(1, :), 'lineWidth', 2, 'showLabels', true));
@@ -82,6 +90,11 @@ function [avgMetricsAnn, avgMetricsDet, avgMetricsMax, metricsAnn, metricsDet, m
 	end
 	metricsMax = computeAccuracyMetrics(trackletsAnn2D, trackletsGenMulti);
 
+	if leaveoneout > 0
+		metricsAnn{1}.Tracklet = leaveoneout;
+		metricsDet{1}.Tracklet = leaveoneout;
+		metricsMax{1}.Tracklet = leaveoneout;
+	end
 	%------------------------------------------------------Average the metrics
 	avgMetricsAnn = averageMetrics(metricsAnn);
 	avgMetricsDet = averageMetrics(metricsDet);

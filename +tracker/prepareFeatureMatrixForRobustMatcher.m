@@ -1,4 +1,4 @@
-function prepareFeatureMatrixForRobustMatcher(options)
+function prepareFeatureMatrixForRobustMatcher(options, leaveoneout)
 	%{
 		This script prepares a matrix containing pairs of cell descriptors and a third objective column indicating if they are the same (that is if the cells are DIRECTLY linked)
 
@@ -7,6 +7,10 @@ function prepareFeatureMatrixForRobustMatcher(options)
 		The objective column is obtained from the user annotations of links in the dataset. It is important for the purpose of learning a good matcher that the annotations are as complete possible. 
 	%}
 
+	if nargin < 2
+		leaveoneout = 0;
+	end
+
 	global DSOUT;
 
 	doPlot = false;
@@ -14,6 +18,15 @@ function prepareFeatureMatrixForRobustMatcher(options)
 	fprintf('Preparing data for training robust classifier.\n')
 
 	tracklets = tracker.generateTracklets('in', struct('withAnnotations', true));
+
+	if leaveoneout > 0
+		% Elimintae longest tracklet
+		lengths = trackletsLengths(tracklets);
+		[~, sortIdx] = sort(lengths, 'descend');
+		tracklets = tracklets(sortIdx, :);
+		tracklets(leaveoneout, :) = []; 
+		fprintf('\tSkipped %d-th longest tracklet.\n', leaveoneout);
+	end
 
 	trackletFile = sprintf('%s_annotations.mat', options.trajectoriesOutputFile);
 	save(trackletFile, 'tracklets');
@@ -110,7 +123,7 @@ function prepareFeatureMatrixForRobustMatcher(options)
 		subplot(1,2,2); tracker.trackletViewer(tracklets, 'out', struct('minLength', 0, 'showLabels', false));
 	end
 
-	fprintf('Done preparing robust matcher data based on %d links.\n', cntPos);
+	fprintf('\tDone preparing robust matcher data based on %d links.\n', cntPos);
 	% options.outputFileMatrix
 	save(options.outputFileMatrix, 'X');
 
