@@ -62,7 +62,7 @@ switch datasetID
         linkFolder = fullfile(rootDotFolder, 'seriesm170_13cropped_fortrajectories');
         imageDims = [277 277];
         numAnnotatedFrames = 67;
-        numAnnotatedTrajectories = 2;
+        numAnnotatedTrajectories = 3;
     case 7 %KidneyRed
         dotFolder = fullfile(rootDotFolder, 'dumy');
         outFolder = fullfile(rootOutFolder, 'dumy');
