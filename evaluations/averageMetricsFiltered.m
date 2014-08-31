@@ -9,14 +9,17 @@ function [avgMetrics, metricValues] = averageMetricsFiltered(metrics)
 
 	metricFields = fieldnames(metrics{1});
 
-	dontAverageFields = {'Dataset' 'Kinit' 'Kterm' 'Kfp' 'Klink' 'Tracklet'};
+	dontAverageFields = {'Dataset' 'Kinit' 'Kterm' 'Kfp' 'Klink' 'Tracklet' 'SampleSize' 'MaxGaps'};
 
 	metricValues = zeros(numel(metricFields), 1);
+	stdValues = zeros(numel(metricFields), 1);
 
 	for i=1:numel(metricFields)
 		if ~ismember(metricFields{i}, dontAverageFields)
 			metricValues(i) = mean(cellfun(@(x) x.(metricFields{i}), metrics));
+			stdValues(i) = std(cellfun(@(x) x.(metricFields{i}), metrics));
 			avgMetrics.(metricFields{i}) = metricValues(i);
+			avgMetrics.(sprintf('%sStd', metricFields{i})) = stdValues(i);
 		end
 	end
 

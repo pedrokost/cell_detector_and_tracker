@@ -70,7 +70,7 @@ function metricsMulti = computeAccuracyMetrics(target, trajectories);
 			cntCorrectlyAssigned = cntCorrectlyAssigned + isCorrectlyAssigned;
 		end
 		% divide it by totaal number of frames of ground truth
-		metrics.TargetEffectiveness = cntCorrectlyAssigned / numel(targetMapIdx);
+		metrics.TargetEffectiveness = 100 * cntCorrectlyAssigned / numel(targetMapIdx);
 
 		%---------------------------------------------------------Track purity
 		% Similarly, we define track purity
@@ -81,7 +81,7 @@ function metricsMulti = computeAccuracyMetrics(target, trajectories);
 			isCorrectlyAssigned = isMatch(curTarget2D(bestSegment2DIdx(i), :), bestSegment2D(bestSegment2DIdx(i), :));
 			cntCorrectlyAssigned = cntCorrectlyAssigned + isCorrectlyAssigned;
 		end
-		metrics.TrackPurity = cntCorrectlyAssigned / numel(bestSegment2DIdx);
+		metrics.TrackPurity = 100 * cntCorrectlyAssigned / numel(bestSegment2DIdx);
 
 		%---------------------------------Early termination of trajectory (ET)
 		% Then number of frames the trajectory finished early

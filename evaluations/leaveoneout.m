@@ -10,10 +10,11 @@ This script assumes all the detections have already been performed!!
 
 
 %--------------------------------------------------------------------Configure
-datasets = [4:5];
+datasets = [15];
 doPlot = false;
-runEvaluations = true; % Trains, Tests, computes metrics
-showResults = true; % Only aggregates the results
+runEvaluations = false; % Trains, Tests, computes metrics
+showResults = true;    % Only aggregates the results
+briefResults = true; % Just important or all
 
 numDataset = numel(datasets);
 
@@ -84,6 +85,25 @@ metricsOverview.Kinit = [];
 metricsOverview.Kterm = [];
 metricsOverview.Kfp = [];
 metricsOverview.Klink = [];
+if briefResults
+	metricsOverview.EarlyTermination = [];
+	metricsOverview.EarlyTerminationStd  = [];
+	metricsOverview.EarlyInitialization = [];
+	metricsOverview.EarlyInitializationStd = [];
+	metricsOverview.LateTermination = [];
+	metricsOverview.LateTerminationStd = [];
+	metricsOverview.LateInitialization = [];
+	metricsOverview.LateInitializationStd = [];
+	metricsOverview.Time = [];
+	metricsOverview.TimeStd = [];
+	metricsOverview.SampleSize = [];
+	metricsOverview.MaxGaps = [];
+	metricsOverview.Fragmentation = [];
+	metricsOverview.FragmentationStd = [];
+	% metricsOverview.TargetEffectivenessStd = [];
+	% metricsOverview.TrackPurityStd = [];
+end
+
 fprintf('Average metrics for each dataset:\n\n')
 disp(metricsOverview)
 
