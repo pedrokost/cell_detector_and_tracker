@@ -28,7 +28,7 @@ clear all;
 datasetIDs    = [2];     % Look into dataFolders.m
 
 trainDetector = false;   % DO NEVER RUN ON 15
-trainTracker  = false;   
+trainTracker  = true;   
 
 testDetector  = false;  % DO NEVER RUN ON 15
 testTracker   = true;

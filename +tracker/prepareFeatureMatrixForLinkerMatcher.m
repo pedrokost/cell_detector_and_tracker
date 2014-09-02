@@ -234,12 +234,16 @@ function prepareFeatureMatrixForLinkerMatcher(outputFile, params, leaveoneout)
 
 	tracklets2 = tracker.trackletsToPosition(tracklets, 'out');
 
-	fprintf('	Preparing large matrix with training data for linker.\n')
+	fprintf('	Preparing large matrix with training data for linker...')
 
 	I = convertIToContainTheCellIndices(tracklets, I);
 	I = tracker.addActualFileIndices(I);
 
 	for i=1:n
+		if mod(i, 100) == 0
+			fprintf('%.1f%%...', i / n);
+		end
+
 		% [trackletA, frameA, fileA, cellIndexA, trackletB, frameB, fileB cellIndexB]
 
 		trackletAPos = tracklets(I(i, 1),  :);
@@ -255,6 +259,7 @@ function prepareFeatureMatrixForLinkerMatcher(outputFile, params, leaveoneout)
 
 		X(i, :) = features;
 	end
+	fprintf('\n');
 
 	save(outputFile, 'X', 'Y')
 

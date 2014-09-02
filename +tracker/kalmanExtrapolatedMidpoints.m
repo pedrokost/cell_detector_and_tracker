@@ -3,26 +3,38 @@ function [endTrackA, startTrackB] = kalmanExtrapolatedMidpoints(trackA, trackB, 
 	% and returns that midpoint for each tracklet
 
 	MIN_NUM_OBSERVATIONS = 3;
-
-	% frameA
-	% frameB
-	% trackA
-	% trackB
-
-	endTrackA = [0 0];
-	startTrackB = [0 0];
-
+	doPlot = false;
 	numFramesA = size(trackA, 1);
 	numFramesB = size(trackB, 1);
-	extrapolateA = 5;
-	extrapolateB = 5;
-	% start by simple extrapolating each for 5 frames, and plot results
 
-	InitialLocationA = trackA(end, :);
-	InitialLocationB = trackA(1, :);
+	% if both tracklts at least 5 frames long, extrapolated both equally
+	framediff = (frameB - frameA);
+	if numFramesA >= MIN_NUM_OBSERVATIONS && numFramesB >= MIN_NUM_OBSERVATIONS
+		extrapolateA = floor(framediff / 2);
+		extrapolateB = ceil(framediff / 2);
+	elseif numFramesA >= MIN_NUM_OBSERVATIONS
+		extrapolateA = frameB - frameA;
+		extrapolateB = 0;
+	elseif numFramesB >= MIN_NUM_OBSERVATIONS
+		extrapolateB = frameB - frameA;
+		extrapolateA = 0;
+	else
+		extrapolateA = 0;
+		extrapolateB = 0;
+	end
 
-	kalmanFilterA = configureKalmanFilter('ConstantVelocity',InitialLocationA,[6 7],[5 2],10);
-	kalmanFilterB = configureKalmanFilter('ConstantVelocity',InitialLocationB,[6 7],[5 2],10);
+	InitialLocationA = trackA(1, :);
+	InitialLocationB = trackB(end, :);
+
+	if doPlot
+		figure(1); clf; hold on; grid on; view([90, 30, 30]);
+		scatter3(InitialLocationA(1), InitialLocationA(2), frameA-numFramesA+2, 'rx');
+		scatter3(InitialLocationB(1), InitialLocationB(2), frameB + numFramesB, 'bx');
+	end
+	
+	InitialEstimateError = [1 1];
+	MotionNoise = [1 1];
+	MeasurementNoise = 1;
 
 	% kalmanFilterA.StateTransitionModel
 	% kalmanFilterA.MeasurementModel
@@ -32,39 +44,47 @@ function [endTrackA, startTrackB] = kalmanExtrapolatedMidpoints(trackA, trackB, 
 	% kalmanFilterA.ProcessNoise
 	% kalmanFilterA.MeasurementNoise
 
-
-	figure(1); clf; hold on;
-	for i=1:numFramesA
-		[z_pred, x_pred, P_pred] = predict(kalmanFilterA);
-		plot(z_pred(1), z_pred(2), 'ro');
-		if ~all(trackA(i, :) == [0 0])
-			plot(trackA(i, 1), trackA(i, 2), 'r+');
-			correct(kalmanFilterA, trackA(i, :));
+	
+	if extrapolateA > 0
+		kalmanFilterA = configureKalmanFilter('ConstantVelocity',InitialLocationA,InitialEstimateError,MotionNoise, MeasurementNoise);
+		for i=1:numFramesA
+			[z_pred, x_pred, P_pred] = predict(kalmanFilterA);
+			if ~all(trackA(i, :) == [0 0])
+				if doPlot
+					scatter3(trackA(i, 1), trackA(i, 2), frameA+i-framediff, 'r+');
+				end
+				correct(kalmanFilterA, trackA(i, :));
+			end
 		end
-	end
-	for i=1:5
-		[endTrackA] = predict(kalmanFilterA);
-		plot(endTrackA(1), endTrackA(2), 'ro');
-	end
-
-	for i=numFramesB:-1:1
-		[z_pred, x_pred, P_pred] = predict(kalmanFilterB);
-		plot(z_pred(1), z_pred(2), 'bo');
-		if ~all(trackB(i, :) == [0 0])
-			plot(trackB(i, 1), trackB(i, 2), 'b+');
-			correct(kalmanFilterB, trackB(i, :));
+		for i=(frameA+1):(frameA+extrapolateA)
+			[endTrackA] = predict(kalmanFilterA);
+			if doPlot
+				scatter3(endTrackA(1), endTrackA(2), i+1, 'ro');
+			end
 		end
-	end
-	for i=1:5
-		[startTrackB] = predict(kalmanFilterB);
-		plot(startTrackB(1), startTrackB(2), 'bo'); hold on;
+	else
+		endTrackA = InitialLocationA;
 	end
 
+	if extrapolateB > 0
+		kalmanFilterB = configureKalmanFilter('ConstantVelocity',InitialLocationB,InitialEstimateError,MotionNoise, MeasurementNoise);
 
-
-	% if both tracklts at least 5 frames long, extrapolated both equally
-
-	% If one tracklet less <= than 2 frames, extapolate only the longer
-
-	% If both <= 2 frames, simply compute the basic euclidean distance
+		for i=numFramesB:-1:1
+			[z_pred, x_pred, P_pred] = predict(kalmanFilterB);
+			if ~all(trackB(i, :) == [0 0])
+				if doPlot
+					scatter3(trackB(i, 1), trackB(i, 2), frameB+i, 'b+');
+				end
+				correct(kalmanFilterB, trackB(i, :));
+			end
+		end
+		for i=(frameB+extrapolateB-1):-1:(frameB)
+			[startTrackB] = predict(kalmanFilterB);
+			if doPlot
+				scatter3(startTrackB(1), startTrackB(2), i-1, 'bo'); hold on;
+			end
+		end
+	else
+		startTrackB = InitialLocationB;
+	end
 end

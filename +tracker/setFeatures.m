@@ -26,7 +26,7 @@ params.numCellsForDirectionVariances = 3;  % put al very large number for all (e
 params.numCellsForMeanAndStdDisplacement = 10;  % put al very large number for all (eg 9999)
 params.numCellsForGaussianBroadeningVelocityEstimation = 10;  % Indicate thes number of cell of the tracklet are used to estimate the sigma and velocity, as well as the number of cell in the candidate tracklet we evaluate.
 params.maxClosingGap = 20;  % affect gaussian broadening idea. Negatively affects performance.
-params.kalmanMaxObservations = 20; % Since linear Kalman, don't bother with to much history
+params.kalmanMaxObservations = 5; % Since linear Kalman, don't bother with to much history
 
 if nargout > 1
 	numFeatures = params.addCellDescriptors * params.descriptorSize ...
