@@ -4,7 +4,7 @@ function avgMetrics = combineMetrics(avgMetricsAnn, avgMetricsDet, avgMetricsMax
 
 	flds = fieldnames(avgMetricsAnn);
 
-	dontMergeFields = {'Dataset' 'SampleSize' 'Time' 'Kinit' 'Kterm' 'Kfp' 'Klink' 'MaxGaps' 'Tracklet' 'TimeStd' 'MaxGapsStd'};
+	dontMergeFields = {'Dataset' 'SampleSize' 'Time' 'Kinit' 'Kterm' 'Kfp' 'Klink' 'MaxGaps' 'Tracklet' 'TimeStd' 'MaxGapsStd' 'MaxGaps'};
 
 	for i=1:numel(flds)
 		if ~ismember(flds{i}, dontMergeFields)

@@ -10,9 +10,9 @@ This script assumes all the detections have already been performed!!
 
 
 %--------------------------------------------------------------------Configure
-datasets = [15];
+datasets = [2];
 doPlot = false;
-runEvaluations = false; % Trains, Tests, computes metrics
+runEvaluations = true; % Trains, Tests, computes metrics
 showResults = true;    % Only aggregates the results
 briefResults = true; % Just important or all
 
@@ -71,8 +71,10 @@ for d=1:numDataset
 		avgMetrics = combineMetrics(avgMetricsAnn, avgMetricsDet, avgMetricsMax);
 		if isempty(metricsOverview)
 			metricsOverview = struct2table(avgMetrics);
+			metricsOverview.MaxGaps = [];
 		else
 			tab = struct2table(avgMetrics);
+			tab.MaxGaps = [];
 			metricsOverview = union(metricsOverview, tab);
 		end
 	end
@@ -97,7 +99,6 @@ if briefResults
 	metricsOverview.Time = [];
 	metricsOverview.TimeStd = [];
 	metricsOverview.SampleSize = [];
-	metricsOverview.MaxGaps = [];
 	metricsOverview.Fragmentation = [];
 	metricsOverview.FragmentationStd = [];
 	% metricsOverview.TargetEffectivenessStd = [];

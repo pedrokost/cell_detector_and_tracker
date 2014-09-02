@@ -2,10 +2,10 @@ Today:
 
 Evaluation (1 week work):
 	Detection:
-		☐	18) Low priority: Compare detections with annotations and improve annotations
+		✔	18) Low priority: Compare detections with annotations and improve annotations @done (14-09-02 14:05)
 		☐	20) Low priority: find better feature descriptor and rerun all experiments
 		✔	24) Each evaluation run should save the results somewhere, so I can quickly an easily revieve them all at once @done (14-08-30 11:23)
-		☐	25) Crombine dataset for tracking and test if it works
+		✔	25) Crombine dataset for tracking and test if it works @done (14-09-02 14:05)
 		✔	26) FIXME: Linker clasifier is trained on only the first annotated frames, not all trajectories @done (14-08-30 12:26)
 	Tracking:
 		✔	22) Test using leave-one-out since the number of trajectories is low @done (14-08-30 11:23)
@@ -14,12 +14,11 @@ Evaluation (1 week work):
 			☐	2) Low priority: FGTIM: Fraction of Ground Truth Instances Missed; and
 			☐	3) Low priority: FAPF: False Alarm Per Frame.
 			☐	8) Low priority: ID switches (IDS): the number of times two trajectories switch their ID
-		☐	9) Accuracy of tracker trained on single dataset
-		☐	10) Low priority: Accuracy of tracker trained on combined dataset
+		✔	9) Accuracy of tracker trained on single dataset @done (14-09-02 14:05)
+		✔	10) Low priority: Accuracy of tracker trained on combined dataset @done (14-09-02 14:05)
 		☐	11) Accuracy of tracker if frames are skipped: what is the max number of frames that can be skipped while still obtaining good enough tracks
 		☐	13) Show example of all bad cases (linking too much, 3 tracklets middle skipped, ...)
 		☐	23) Figure out what to do with too short tracklets... now I just delete them all... but some would be very useful...maybe just delete those thare are far apart from anything?
-		☐	25) One of the datasets has very bad annotations... training went bad therefore (4). Possibly best to annotated something more... theree are some good trajectories
 
 Writing thesis (1 weeks work):
 
@@ -42,7 +41,9 @@ Writing thesis (1 weeks work):
 	Evaluation:
 		☐	20) Write the whole evaluation chapter
 		☐	12) Show example of detector detecting 2 cells as 1 due to the nonoverlap constraint
+		☐	In the combine tracking, add a comment that unfortunately we are not only testing different modalities, but very different images... some datasets have very short robust tracklets, while other longer ones... sometimes it is required to close longer gaps, which can only be configured for each dataset individually, not for the combined one.
 	General:
+		☐	27) Write down what Ben told me in the last feedback email (how do recall vs precision affect tracker)
 		☐	5) Review past best dissertations for section and writing style inspiration
 		☐	26) Review bibliography and see if it needs any fixes
 

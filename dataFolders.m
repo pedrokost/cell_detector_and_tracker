@@ -41,28 +41,34 @@ switch datasetID
         outFolder = fullfile(rootOutFolder, 'series30red');
         linkFolder = fullfile(rootDotFolder, 'series30red_fortrajectories');
         numAnnotatedFrames = 66;
-        numAnnotatedTrajectories = 8;
+        numAnnotatedTrajectories = 14;
     case 3 %LungGreen
         dotFolder = fullfile(rootDotFolder, 'series13greencropped');
         outFolder = fullfile(rootOutFolder, 'series13greencropped');
         linkFolder = fullfile(rootLinkFolder, 'series13greencropped_fortrajectories');
         imageDims = [251 251];
         numAnnotatedFrames = 58;
-        numAnnotatedTrajectories = 2;
+        numAnnotatedTrajectories = 7;
     case 4 %LungGreen
         dotFolder = fullfile(rootDotFolder, 'series14croppedcleaned');
         outFolder = fullfile(rootOutFolder, 'series14croppedcleaned');
         linkFolder = fullfile(rootLinkFolder, 'series14croppedcleaned_fortrajectories');
         imageDims = [199 199];
         numAnnotatedFrames = 53;
-        numAnnotatedTrajectories = 8;
+        numAnnotatedTrajectories = 5;
+        minPlink = log(0.70);
     case 5 %KidneyRed
         dotFolder = fullfile(rootDotFolder, 'seriesm170_13cropped');
         outFolder = fullfile(rootOutFolder, 'seriesm170_13cropped');
         linkFolder = fullfile(rootDotFolder, 'seriesm170_13cropped_fortrajectories');
         imageDims = [277 277];
         numAnnotatedFrames = 67;
-        numAnnotatedTrajectories = 3;
+        numAnnotatedTrajectories = 7;
+        maxGaps = [9 20];
+        Kinit = 3;
+        Kterm = 3;
+        Kfp   = 1;
+        Klink = 1;
     case 7 %KidneyRed
         dotFolder = fullfile(rootDotFolder, 'dumy');
         outFolder = fullfile(rootOutFolder, 'dumy');
@@ -113,7 +119,26 @@ switch datasetID
         outFolder = fullfile(rootOutFolder, 'combineddataset_1_2_3_4_5_fortrajectories');
         linkFolder = fullfile(rootDotFolder, 'combineddataset_1_2_3_4_5_fortrajectories');
         numAnnotatedFrames = 310;
+        numAnnotatedTrajectories = 34;
+    case 16
+        dotFolder = fullfile(rootDotFolder, 'combineddataset_1_2_3_fortrajectories');
+        outFolder = fullfile(rootOutFolder, 'combineddataset_1_2_3_fortrajectories');
+        linkFolder = fullfile(rootDotFolder, 'combineddataset_1_2_3_fortrajectories');
+        numAnnotatedFrames = 190;
         numAnnotatedTrajectories = 22;
+    case 17
+        dotFolder = fullfile(rootDotFolder, 'combineddataset_1_2_3_5_fortrajectories');
+        outFolder = fullfile(rootOutFolder, 'combineddataset_1_2_3_5_fortrajectories');
+        linkFolder = fullfile(rootDotFolder, 'combineddataset_1_2_3_5_fortrajectories');
+        numAnnotatedFrames = 257;
+        numAnnotatedTrajectories = 29;
+    case 18
+        dotFolder = fullfile(rootDotFolder, 'combineddataset_1_2_fortrajectories');
+        outFolder = fullfile(rootOutFolder, 'combineddataset_1_2_fortrajectories');
+        linkFolder = fullfile(rootDotFolder, 'combineddataset_1_2_fortrajectories');
+        numAnnotatedFrames = 132;
+        numAnnotatedTrajectories = 9;
+
 
 end
 
@@ -155,6 +180,12 @@ if exist('Kfp', 'var')
 end
 if exist('Klink', 'var')
     folders.Klink = Klink;
+end
+if exist('maxGaps', 'var')
+    folders.maxGaps = maxGaps;
+end
+if exist('minPlink', 'var')
+    folders.minPlink = minPlink;
 end
 
 end

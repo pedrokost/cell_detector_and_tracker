@@ -33,9 +33,9 @@ params = dataFolders(dataset);
 % Parameters for training the classifier for joining tracklets
 linkerClassifierParams = struct(...
     'MIN_TRACKLET_LENGTH', 10,...
-    'MIN_TRACKLET_SEPARATION', 10,... %  min distance between head tail of 2 tracklets to be considered as negative examples
-    'MAX_TRAINING_DISPLACEMENT', 30, ... % Positive examples: only add 2 tracklets if their displacement is less than this
-    'MAX_DISPLACEMENT_LINK', 50, ... % do not consider link hypothesis where the tracklets are more than this amount apart. It's just to reduce the number of hypothesis.
+    'MIN_TRACKLET_SEPARATION', 20,... %  min distance between head tail of 2 tracklets to be considered as negative examples
+    'MAX_TRAINING_DISPLACEMENT', 20, ... % Positive examples: only add 2 tracklets parts if their displacement is less than this
+    'MAX_DISPLACEMENT_LINK', 20, ... % do not consider link hypothesis where the tracklets are more than this amount apart. It's just to reduce the number of hypothesis.
     'MAX_GAP', max(horzcat(5, maxGaps)),...
     'outputFileMatrix', fullfile(params.outFolder, 'linkerClassifierModelMatrix.mat'),...
     'outputFileModel', fullfile(params.outFolder, 'linkerClassifierModel.m'),...
@@ -54,16 +54,11 @@ saveTrajectoryGenerationInterimResults = true;
 trajectoriesOutputFile = fullfile(params.outFolder, 'tracklets');
 verbose = true;
 
-params.maxGaps  =  maxGaps;
 params.linkerClassifierParams = linkerClassifierParams;
 params.robustClassifierParams = robustClassifierParams;
 params.saveTrajectoryGenerationInterimResults = saveTrajectoryGenerationInterimResults;
 params.trajectoriesOutputFile = trajectoriesOutputFile;
 params.verbose = verbose;
-params.minPlink = minPlink;
-% params.minPinit = minPinit;
-% params.minPterm = minPterm;
-% params.minPfp   = minPfp;
 params.discardSingleTracklets = discardSingleTracklets;
 params.plotProgress = plotProgress;
 
@@ -79,4 +74,11 @@ end
 if ~isfield(params, 'Klink')
     params.Klink = Klink;
 end
+if ~isfield(params, 'maxGaps')
+    params.maxGaps = maxGaps;
+end
+if ~isfield(params, 'minPlink')
+    params.minPlink = minPlink;
+end
+
 end
