@@ -3,7 +3,7 @@ function [endTrackA, startTrackB] = kalmanExtrapolatedMidpoints(trackA, trackB, 
 	% and returns that midpoint for each tracklet
 
 	MIN_NUM_OBSERVATIONS = 3;
-	doPlot = true;
+	doPlot = false;
 	numFramesA = size(trackA, 1);
 	numFramesB = size(trackB, 1);
 

@@ -18,6 +18,7 @@ function mainHandle = trackletViewer(tracklets, folderData, options)
 	preferredColor = -1;  % an rgb triplet [r g b]
 	lineStyle = '.-';
 	lineWidth = 1;
+	colorWrtLength = true;
 	%------------------------------------------------------------------Options
 	if nargin < 3; options = struct; end
 
@@ -58,6 +59,14 @@ function mainHandle = trackletViewer(tracklets, folderData, options)
 		colors = hsv(numTracklets);
 		colors = colors(randperm(numTracklets), :);
 	end
+
+	% Sort the tracklets by length to partially preserve coloring
+	if colorWrtLength
+		lens = trackletsLengths(tracklets);
+		[~, lengthI] = sort(lens);
+		tracklets = tracklets(lengthI, :);
+	end
+
 
 	tracklets2 = tracker.trackletsToPosition(tracklets, folderData);
 

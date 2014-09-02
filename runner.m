@@ -25,15 +25,16 @@ clear all;
 %                                                                Configuration
 %============================================================================%
 
-datasetIDs    = [2];     % Look into dataFolders.m
+datasetIDs    = [2:5];     % Look into dataFolders.m
 
 trainDetector = false;   % DO NEVER RUN ON 15
-trainTracker  = true;   
+trainTracker  = false;   
 
 testDetector  = false;  % DO NEVER RUN ON 15
-testTracker   = true;
+testTracker   = false;
 
 showTracks    = true;
+askForSaveFigure = false;
 
 % If you are not satisfied with the results of the tracker, you can use the
 % `tweak` tool to adjust the trajectories.
@@ -91,5 +92,14 @@ for dataset=datasetIDs
 	if showTracks
 		fsectionf('Plotting trajectories from dataset %d', dataset)
 		tracker.plotTrajectories(dataset, dataParams);
+
+		if askForSaveFigure
+			addpath(fullfile('dependencies', 'export_fig'));
+			fprintf('Press any key to save plot\n')
+			pause
+			file = sprintf('../writing/thesis/images/fig_results_tracker_dataset_%d', dataset);
+			export_fig(sprintf('%s.eps', file), '-eps', '-transparent', '-painters')
+			% export_fig(sprintf('%s.png', file), '-eps', '-transparent', '-painters')
+		end
 	end
 end

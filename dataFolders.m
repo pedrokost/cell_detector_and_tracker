@@ -142,7 +142,7 @@ switch datasetID
         dotFolder = fullfile(rootDotFolder, 'combineddataset_2_3_5_fortrajectories');
         outFolder = fullfile(rootOutFolder, 'combineddataset_2_3_5_fortrajectories');
         linkFolder = fullfile(rootDotFolder, 'combineddataset_2_3_5_fortrajectories');
-        numAnnotatedFrames = 286;
+        numAnnotatedFrames = 191;
         numAnnotatedTrajectories = 27;
 
 

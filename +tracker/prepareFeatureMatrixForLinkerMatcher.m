@@ -241,7 +241,7 @@ function prepareFeatureMatrixForLinkerMatcher(outputFile, params, leaveoneout)
 
 	for i=1:n
 		if mod(i, 100) == 0
-			fprintf('%.1f%%...', i / n);
+			fprintf('%.1f%%...', 100 * i / n);
 		end
 
 		% [trackletA, frameA, fileA, cellIndexA, trackletB, frameB, fileB cellIndexB]
