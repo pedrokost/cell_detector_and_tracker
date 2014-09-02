@@ -16,6 +16,7 @@ Evaluation (1 week work):
 			☐	8) Low priority: ID switches (IDS): the number of times two trajectories switch their ID
 		✔	9) Accuracy of tracker trained on single dataset @done (14-09-02 14:05)
 		✔	10) Low priority: Accuracy of tracker trained on combined dataset @done (14-09-02 14:05)
+		☐	27) Run combined dataset BCE, to see if its really A that causing trouble.
 		☐	11) Accuracy of tracker if frames are skipped: what is the max number of frames that can be skipped while still obtaining good enough tracks
 		☐	13) Show example of all bad cases (linking too much, 3 tracklets middle skipped, ...)
 		☐	23) Figure out what to do with too short tracklets... now I just delete them all... but some would be very useful...maybe just delete those thare are far apart from anything?

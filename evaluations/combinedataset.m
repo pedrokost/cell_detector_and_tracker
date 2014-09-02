@@ -12,7 +12,7 @@ doTrainingOrTestingDataset = 'train';  % one of {'test', 'train'} % creates a la
 
 allDatasets = 1:5;  % Only the original ones. Don't touch
 
-datasets = [1,2]; % Datasets to combine
+datasets = [2,3,5]; % Datasets to combine
 
 fileInitNum = 1;
 filePrefix = 'im';
