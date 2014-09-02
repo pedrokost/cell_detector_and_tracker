@@ -273,6 +273,16 @@ function features = computeTrackletMatchFeaturesForPair(trackletA, trackletB, I,
 		end
 	end
 
+	if featParams.addKalmanExtrapolationDifference
+		trackA = tracker.getTail(trackletA2D, featParams.kalmanMaxObservations);
+		trackB = tracker.getHead(trackletB2D, featParams.kalmanMaxObservations);
+
+		[endTrackA, startTrackB] = tracker.kalmanExtrapolatedMidpoints(trackA, trackB, frameA, frameB);
+		euc_distance = tracker.pointsDistance(endTrackA, startTrackB);
+
+		features(idx:idx) = euc_distance;
+		idx = idx + 1;
+	end
 
 	if any(isnan(features))
 		fprintf('There are NaN feature, why dont you fix it?\n');

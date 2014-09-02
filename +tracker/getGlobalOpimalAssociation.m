@@ -10,10 +10,10 @@ function I = getGlobalOpimalAssociation(H, P)
 	P = max(P, -1000);
 
 	% For matlab >= 2014a
-	% options = optimoptions('intlinprog', 'Display', 'off');
-	% I = intlinprog(-P, 1:numVars, [],[], H', ones(numVars, 1), zeros(numRows,1), ones(numRows, 1), options);
+	options = optimoptions('intlinprog', 'Display', 'off');
+	I = intlinprog(-P, 1:numVars, [],[], H', ones(numVars, 1), zeros(numRows,1), ones(numRows, 1), options);
 	
 	% For matlab less than 2014a
-	options = optimoptions('bintprog', 'Display', 'off');
-	I = bintprog(-P, [],[], H', ones(numVars, 1), zeros(numRows,1), options);
+	% options = optimoptions('bintprog', 'Display', 'off');
+	% I = bintprog(-P, [],[], H', ones(numVars, 1), zeros(numRows,1), options);
 end
