@@ -18,8 +18,8 @@ trackB =[
    22 22
 ]
 
-trackA = trackA + randn(size(trackA, 1), 2);
-trackB = trackB + randn(size(trackB, 1), 2);
+trackA = trackA ;%+ randn(size(trackA, 1), 2);
+trackB = trackB ;%+ randn(size(trackB, 1), 2);
 addpath(fullfile('dependencies', 'matlab'))
 tracker.kalmanExtrapolatedMidpoints(trackA, trackB, frameA, frameB);
 
