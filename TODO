@@ -43,6 +43,7 @@ Writing thesis (1 weeks work):
 		☐	20) Write the whole evaluation chapter
 		☐	12) Show example of detector detecting 2 cells as 1 due to the nonoverlap constraint
 		☐	In the combine tracking, add a comment that unfortunately we are not only testing different modalities, but very different images... some datasets have very short robust tracklets, while other longer ones... sometimes it is required to close longer gaps, which can only be configured for each dataset individually, not for the combined one.
+		☐	Make a notice that most of the data was tranied on mostly linear example, the number of moving cells was relatively small
 	General:
 		☐	27) Write down what Ben told me in the last feedback email (how do recall vs precision affect tracker)
 		☐	5) Review past best dissertations for section and writing style inspiration

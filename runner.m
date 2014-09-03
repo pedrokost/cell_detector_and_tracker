@@ -25,7 +25,7 @@ clear all;
 %                                                                Configuration
 %============================================================================%
 
-datasetIDs    = [2:5];     % Look into dataFolders.m
+datasetIDs    = [5];     % Look into dataFolders.m
 
 trainDetector = false;   % DO NEVER RUN ON 15
 trainTracker  = false;   
@@ -34,7 +34,7 @@ testDetector  = false;  % DO NEVER RUN ON 15
 testTracker   = false;
 
 showTracks    = true;
-askForSaveFigure = false;
+askForSaveFigure = true;
 
 % If you are not satisfied with the results of the tracker, you can use the
 % `tweak` tool to adjust the trajectories.

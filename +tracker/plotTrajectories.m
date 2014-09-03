@@ -1,7 +1,7 @@
 function plotTrajectories(dataset, dataParams)
 	% Plots the final generated trajectories
 
-	doPlotAnnotations = true;
+	doPlotAnnotations = false;
 	doPlotMappedDetections = false;
 	doPlotRobust = true;
 	doPlotGeneratedTrajectories = true;

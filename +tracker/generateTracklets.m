@@ -1,8 +1,8 @@
-function tracklets = generateTracklets(folderData, options)
+function tracklets = generateTracklets(storeID, options)
 % GENERATETRACKLETS generates robust tracklets based on data found in the provided folder.
 
 % Inputs:
-% 	- folderData = folder containing im*.mat files which contain a 
+% 	- storeID = folder containing im*.mat files which contain a 
 %		feature vector and location of each cell. One file per image.
 % 		If false, it will use the match function to find matches
 % 	- options = a struct containing options
@@ -17,10 +17,10 @@ function tracklets = generateTracklets(folderData, options)
 	withAnnotations = false;
 	numericFormat = 'single';
 
-	if strcmp(folderData, 'in');
+	if strcmp(storeID, 'in');
 		global DSIN;
 		store = DSIN;
-	elseif strcmp(folderData, 'out')
+	elseif strcmp(storeID, 'out')
 		global DSOUT;
 		store = DSOUT;
 	end
@@ -38,7 +38,7 @@ function tracklets = generateTracklets(folderData, options)
 	frameNumbers = store.getMatfileIndices();
 
 	if numel(frameNumbers) == 0
-		error('There is no im*.mat file in folder: "%s"\n', folderData);
+		error('There is no im*.mat file in folder: "%s"\n', storeID);
 	end
 
 	firstFrame = frameNumbers(1);

@@ -1,4 +1,4 @@
-function lengths = trackletsLengths(tracklets)
+function lengths = trackletsLengths(tracklets, actual)
 	% TRACKLETSLENGTHS: returns a vector containing for each tracklets its
 	% total lengths
 
@@ -6,6 +6,11 @@ function lengths = trackletsLengths(tracklets)
 	lengths = zeros(numTracklets, 1);
 
 	for i=1:numTracklets
-		lengths(i) = numel(find(tracklets(i, :)));
+		if nargin < 1
+			idx = find(tracklets(i, :));
+			lengths(i) = idx(end) - idx(1);
+		else
+			lengths(i) = numel(find(tracklets(i, :)));
+		end
 	end
 end
