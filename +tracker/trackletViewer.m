@@ -62,7 +62,7 @@ function mainHandle = trackletViewer(tracklets, folderData, options)
 
 	% Sort the tracklets by length to partially preserve coloring
 	if colorWrtLength
-		lens = trackletsLengths(tracklets);
+		lens = tracker.trackletsLengths(tracklets);
 		[~, lengthI] = sort(lens);
 		tracklets = tracklets(lengthI, :);
 	end

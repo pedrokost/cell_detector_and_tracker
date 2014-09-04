@@ -29,7 +29,7 @@ function detectorPerfMetrics = detectCells(dataset, ctrlParams, dataParams)
 	end
 	%-------------------------------------------------------Load data and model
 
-	inspectResults = 0; %1: Shows detected cells. 
+	inspectResults = 2; %1: Shows detected cells. 
 	isSequence = 0;
 	%2:A view on the results: MSERs found and selected
 

@@ -25,7 +25,7 @@ clear all;
 %                                                                Configuration
 %============================================================================%
 
-datasetIDs    = [5];     % Look into dataFolders.m
+datasetIDs    = [2];     % Look into dataFolders.m
 
 trainDetector = false;   % DO NEVER RUN ON 15
 trainTracker  = false;   
@@ -97,7 +97,7 @@ for dataset=datasetIDs
 			addpath(fullfile('dependencies', 'export_fig'));
 			fprintf('Press any key to save plot\n')
 			pause
-			file = sprintf('../writing/thesis/images/fig_results_tracker_dataset_%d', dataset);
+			file = sprintf('../writing/thesis/images/fig_tracking_robust_%d', dataset);
 			export_fig(sprintf('%s.eps', file), '-eps', '-transparent', '-painters')
 			% export_fig(sprintf('%s.png', file), '-eps', '-transparent', '-painters')
 		end

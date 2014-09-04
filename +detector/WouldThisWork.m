@@ -29,10 +29,12 @@ end
 
 addpath('dependencies')
 addpath('dependencies/matlab')
+addpath('dependencies/export_fig')
 
 %Load an Image
-imgFull = imread('../data/series30green/im003.pgm');
-
+imgFull = imread('../data/series30red/im003.pgm');
+figure(1);
+subplot(1,2,1); imshow(imgFull); title('Original image')
 %Smooth the image
 img = imgFull;
 % img = uint8(vl_imsmooth(double(imgFull),1));
@@ -72,8 +74,8 @@ ell = ell([2 1 5 4 3],:);
 
 %Get the boundaries and plot
 boundary = zeros(size(img), 'uint8');
-figure(1);
-subplot(1,2,1), imshow(imgFull); 
+
+subplot(1,2,2), imshow(imgFull); 
 title('Ellipses fitted to MSERs');
 for k = 1:size(r,1)
     sel = vl_erfill(img,r(k)) ;
@@ -93,9 +95,15 @@ G(boundary == 255) = 255;
 B(boundary == 255) = 0;
 
 img = cat(3,R,G,B);
-subplot(1,2,2),imshow(img);
-title('Boundaries');
+% subplot(1,2,2),imshow(img);
+% title('Boundaries');
 
 % profile off;
 
 % profile viewer
+
+
+fprintf('Press any key to save plot\n')
+pause
+file = '../writing/thesis/images/fig_detector_mser';
+export_fig(sprintf('%s.png', file), '-painters', '-transparent')

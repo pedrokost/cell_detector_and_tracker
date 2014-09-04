@@ -18,7 +18,7 @@ addpath('dependencies/distinguishable_colors');
 %--------------------------------------------------------------------Configure
 doPlot = true;
 doProf = false;
-datasets = [4];
+datasets = [2];
 mutliPlot = true;
 
 %-------------------------------------------------------------Begin evaluation
@@ -50,11 +50,11 @@ for i=1:numDataset
 	end
 
 
-	% addpath(fullfile('dependencies', 'export_fig'));
-	% fprintf('Press any key to save plot\n')
-	% pause
-	% file = sprintf('../writing/thesis/images/fig_results_tracking_analysis_%d', datasets(i));
-	% export_fig(sprintf('%s.eps', file), '-eps', '-transparent', '-painters')
+	addpath(fullfile('dependencies', 'export_fig'));
+	fprintf('Press any key to save plot\n')
+	pause
+	file = sprintf('../writing/thesis/images/fig_tracking_robust_%d', datasets(i));
+	export_fig(sprintf('%s.eps', file), '-eps', '-transparent', '-painters')
 
 end
 

@@ -4,7 +4,7 @@ function plotTrajectories(dataset, dataParams)
 	doPlotAnnotations = false;
 	doPlotMappedDetections = false;
 	doPlotRobust = true;
-	doPlotGeneratedTrajectories = true;
+	doPlotGeneratedTrajectories = false;
 
 	%----------------------------------Load parameters and generate data store	
 	global DSIN DSOUT;

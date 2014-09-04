@@ -15,8 +15,8 @@
 
 % -------------------------------------------------------------------Configure
 
-datasets = 4:5;  %Identifier of the training/testing data as set in loadDatasetInfo
-train = 1;%---->Do train
+datasets = 2;  %Identifier of the training/testing data as set in loadDatasetInfo
+train = 0;%---->Do train
 test = 1;%----->Do test
 
 rng(1234);
