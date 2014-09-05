@@ -27,14 +27,14 @@ clear all;
 
 datasetIDs    = [2];     % Look into dataFolders.m
 
-trainDetector = false;   % DO NEVER RUN ON 15
-trainTracker  = false;   
+trainDetector = true;   
+trainTracker  = true;   
 
-testDetector  = false;  % DO NEVER RUN ON 15
-testTracker   = false;
+testDetector  = true;  
+testTracker   = true;
 
 showTracks    = true;
-askForSaveFigure = true;
+askForSaveFigure = false;
 
 % If you are not satisfied with the results of the tracker, you can use the
 % `tweak` tool to adjust the trajectories.
