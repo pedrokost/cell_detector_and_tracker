@@ -11,39 +11,15 @@ Evaluation (1 week work):
 			☐	8) Low priority: ID switches (IDS): the number of times two trajectories switch their ID
 		☐	11) Accuracy of tracker if frames are skipped: what is the max number of frames that can be skipped while still obtaining good enough tracks
 		☐	13) Show example of all bad cases (linking too much, 3 tracklets middle skipped, ...)
-		☐	23) Figure out what to do with too short tracklets... now I just delete them all... but some would be very useful...maybe just delete those thare are far apart from anything?
 
-Writing thesis (1 weeks work):
-
-	Introduction:
-	Detection:
-	Related work:
-	Data and annotation:
-	Tracking:
- 	Conclusion:
-	Evaluation:
-		☐	12) Show example of detector detecting 2 cells as 1 due to the nonoverlap constraint
-	General:
-		✔	27) Write down what Ben told me in the last feedback email (how do recall vs precision affect tracker) @done (14-09-04 17:11)
-		✔	30) Create missing illustrations @done (14-09-04 23:40)
-		✔	31) Review any missing todos @done (14-09-04 23:40)
-		☐	35) User guides
-		✔	36) Proofread evaluation chapter @done (14-09-04 23:40)
-		☐	37) Check the detector feature list to be a different from original paper
-		☐	38) Appendix text is half wrong
-
-
-Cell tracker (1 week work minimum - 3 weeks maximum):
+Cell tracker (3 weeks of work):
 
 	Linker classifier:
 		☐	89) Make sure I never call pointsDistance with uint numbers, make them int
 		☐	86) getUsefulTrackletsPair when both tracklets same length, makes one tracklet of length 0
-		☐	71) Identify features that are slow to compute for linker, and see if they can be sped up
 		☐	84) Identify a way to use loadDatasetFeatures to merge datasets without copying data
-		☐	25) Train ANN and NB with much more data, possibly of all different datasets combined (reqs T82, T84)
 		☐	34) Solve the unbalanced learning sets problem
 		☐	33) Best feature subset analysis
-		☐	83) Identify ways to reduce the number of hypothesis that need to be computed
 		☐	41) Linker could rely on 'average/median' descriptor for matching, instead of just the tail or head. First remove outliers, them compute average or median (if neeeded just of a few frames)
 		☐	81) Linker score: When linking tracklets, add them a score of the product of link probabilities... the MAP score... to see how confident is the tracker of each connection at then end
 		☐	48) Learn a linker model for each of the possible closing gaps, because otherwise I connect gaps prematurelys
@@ -52,13 +28,9 @@ Cell tracker (1 week work minimum - 3 weeks maximum):
 		☐	85) Tweak tool
 		☐	87) Do I need somelightspeed?
 		☐	89) Linker could first list very robust long trackltes without using thracklets of length < 1, and in a second run include them, so as to fill in some gaps. This would reduce the number of hypothesis we aim to compute. The first run could set PFP = 0 so we don't loose tracklets of length 2 before we try linking them to other tracklets
-		☐	90) Filter the number of link hypothesis in advance.
 
 	Linker features:
 		☐	58) Unknown values in feature computation: Make then NaN, and then replace with the mean/median value, or first try learning with only rows without NaNs.
-		☐	70) Make sure all features work
-		☐	43) Distance of interpolated tracklets to midpoint
-		☐	45) (extendend) Kalman filter to predict direction
 		☐	79) Add the created angle between the tracklets (rate of change)
 		☐	61) Direction momentum. if it went straight to one direction, it unlikely to change (so some kind of comparison between momentum and the actual change: tendency to change - change)
 		☐	42) Overlapp area of broadened gaussians
@@ -82,10 +54,10 @@ Cell detector (0 time left):
 	☐ New features to try:
 		☐ Histeq + Laplacian(0.2) creates empty places in maximums, noise everywhere else
 		☐ use the builtin canny edge detector, with params 0.6+
-		☐	Contrast + Log 3 creates empties indised cell, dinstinct border, rest hight noise
+		☐	 Contrast + Log 3 creates empties indised cell, dinstinct border, rest hight noise
 	☐	Make it clear in the headers of the files which belong to Arteta, which have some of my changes, which are completely mine
 
-Cell annotator (0 time left):
+Cell annotator (1 day left):
 	☐	2) Copy anotations over
 	☐	3) Copy links over
 	☐	5) New tab/window that displays the tracklets in 3d
@@ -96,15 +68,15 @@ Cell annotator (0 time left):
 	☐	12) Show dots should only toggle annotation dots
 	☐	13) Add a button show generated tracks to complement show links
 
-Biological statistics (SKIPPED):
+Biological statistics (3 days of work):
 	☐	Discover (find in prev papers) stats that might be of interest
 	☐	Write a function that computes these stats
 
-Final GUI (SKIPPED):
+Final GUI (3 days of work):
 	☐	plan design/workflow on paper
 	☐	Ask Leo if we also need the option to train a new model
 
-Cell stabilizer (SKIPPED):
+Cell stabilizer (5 days of work):
 	☐	1) Read how to easily do image stabilization in matlab (instaed of SIFT, RANSAC, homography, etc, which might take too long)
 	☐	2) Eliminate all detected cells from the images and extract sifts of the remaining regions (or extract sifts everywhere, elimintae those close to the detected cells)
 	☐	3) Given the number of SIFTs detected, or their distribution (eg only bottom part of image), it may be possible to detect bad frames. Just analyse. (reqs: S2)
@@ -120,6 +92,21 @@ Data flow process:
 	☐ linker : IN: dots + robust matches, OUT: dots + links
 ＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿
 Archive:
+	✔	23) Figure out what to do with too short tracklets... now I just delete them all... but some would be very useful...maybe just delete those thare are far apart from anything? @done (14-09-05 02:11) @project(Evaluation (1 week work) / Tracking)
+	✔	71) Identify features that are slow to compute for linker, and see if they can be sped up @done (14-09-05 02:08) @project(Cell tracker (3 weeks of work) / Linker classifier)
+	✔	25) Train ANN and NB with much more data, possibly of all different datasets combined (reqs T82, T84) @done (14-09-05 02:08) @project(Cell tracker (3 weeks of work) / Linker classifier)
+	✔	83) Identify ways to reduce the number of hypothesis that need to be computed @done (14-09-05 02:08) @project(Cell tracker (3 weeks of work) / Linker classifier)
+	✔	90) Filter the number of link hypothesis in advance. @done (14-09-05 02:09) @project(Cell tracker (3 weeks of work) / Linker classifier)
+	✔	70) Make sure all features work @done (14-09-05 02:09) @project(Cell tracker (3 weeks of work) / Linker features)
+	✔	43) Distance of interpolated tracklets to midpoint @done (14-09-05 02:09) @project(Cell tracker (3 weeks of work) / Linker features)
+	✔	45) (extendend) Kalman filter to predict direction @done (14-09-05 02:09) @project(Cell tracker (3 weeks of work) / Linker features)
+	✔	27) Write down what Ben told me in the last feedback email (how do recall vs precision affect tracker) @done (14-09-04 17:11) @project(Writing thesis (1 weeks work) / General)
+	✔	30) Create missing illustrations @done (14-09-04 23:40) @project(Writing thesis (1 weeks work) / General)
+	✔	31) Review any missing todos @done (14-09-04 23:40) @project(Writing thesis (1 weeks work) / General)
+	✔	35) User guides @done (14-09-05 02:07) @project(Writing thesis (1 weeks work) / General)
+	✔	36) Proofread evaluation chapter @done (14-09-04 23:40) @project(Writing thesis (1 weeks work) / General)
+	✔	37) Check the detector feature list to be a different from original paper @done (14-09-05 02:07) @project(Writing thesis (1 weeks work) / General)
+	✔	38) Appendix text is half wrong @done (14-09-05 02:07) @project(Writing thesis (1 weeks work) / General)
 	✔	32) Try to batch correct the misspelled words @done (14-09-04 17:05) @project(Writing thesis (1 weeks work) / General)
 	✔	maximum-a-posteriori @done (14-09-04 16:56) @project(Writing thesis (1 weeks work) / General)
 	✔	hypothesis singular, hypotheses plural @done (14-09-04 17:02) @project(Writing thesis (1 weeks work) / General)
