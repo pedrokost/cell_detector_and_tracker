@@ -1,14 +1,3 @@
-OpenSource:
-	✔	1) Publish cell tracker @done (14-09-07 10:41)
-	✔	2) Publish cell annotator @done (14-09-07 10:41)
-	✔	3) Publish thesis @done (14-09-07 10:41)
-	☐	4) Add licence to cell tracker
-	☐	5) Add licence to thesis
-	☐	6) Add licence to cell annotator
-	☐	7) Add readme to cell tracker
-	☐	8) Add readme to cell annotator
-	☐	9) Add readme to thesis
-
 Evaluation (2 days work left):
 
 	General:
@@ -72,17 +61,6 @@ Cell detector (1 day of work):
 		☐	 Contrast + Log 3 creates empties indised cell, dinstinct border, rest hight noise
 	☐	Make it clear in the headers of the files which belong to Arteta, which have some of my changes, which are completely mine
 
-Cell annotator (2 days of work):
-	☐	2) Copy anotations over
-	☐	3) Copy links over
-	☐	5) New tab/window that displays the tracklets in 3d
-	☐	6) Elimintate uncessary filters
-	☐	7) Colormap: change marker colors for best visibility
-	☐	8) Help window
-	☐	11) Menu bar for basic tools (load dets...)
-	☐	12) Show dots should only toggle annotation dots
-	☐	13) Add a button show generated tracks to complement show links
-
 Biological statistics (3 days of work):
 	☐	Discover (find in prev papers) stats that might be of interest
 	☐	Write a function that computes these stats
@@ -108,53 +86,61 @@ Data flow process:
 	☐ tracker: IN: dots + Match features, OUT: tracklets matrix
 ＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿
 Archive:
+	✔	7) Add readme to cell tracker @done (14-09-07 12:02) @project(OpenSource)
+	✔	9) Add readme to thesis @done (14-09-07 11:55) @project(OpenSource)
+	✔	8) Add readme to cell annotator @done (14-09-07 11:55) @project(OpenSource)
+	✔	6) Add licence to cell annotator @done (14-09-07 10:49) @project(OpenSource)
+	✔	5) Add licence to thesis @done (14-09-07 10:48) @project(OpenSource)
+	✔	4) Add licence to cell tracker @done (14-09-07 10:42) @project(OpenSource)
+	✔	3) Publish thesis @done (14-09-07 10:41) @project(OpenSource)
+	✔	2) Publish cell annotator @done (14-09-07 10:41) @project(OpenSource)
+	✔	1) Publish cell tracker @done (14-09-07 10:41) @project(OpenSource)
 	✔	23) Figure out what to do with too short tracklets... now I just delete them all... but some would be very useful...maybe just delete those thare are far apart from anything? @done (14-09-05 02:11) @project(Evaluation (1 week work) / Tracking)
-	✔	71) Identify features that are slow to compute for linker, and see if they can be sped up @done (14-09-05 02:08) @project(Cell tracker (3 weeks of work) / Linker classifier)
-	✔	25) Train ANN and NB with much more data, possibly of all different datasets combined (reqs T82, T84) @done (14-09-05 02:08) @project(Cell tracker (3 weeks of work) / Linker classifier)
-	✔	83) Identify ways to reduce the number of hypothesis that need to be computed @done (14-09-05 02:08) @project(Cell tracker (3 weeks of work) / Linker classifier)
 	✔	90) Filter the number of link hypothesis in advance. @done (14-09-05 02:09) @project(Cell tracker (3 weeks of work) / Linker classifier)
 	✔	70) Make sure all features work @done (14-09-05 02:09) @project(Cell tracker (3 weeks of work) / Linker features)
-	✔	43) Distance of interpolated tracklets to midpoint @done (14-09-05 02:09) @project(Cell tracker (3 weeks of work) / Linker features)
 	✔	45) (extendend) Kalman filter to predict direction @done (14-09-05 02:09) @project(Cell tracker (3 weeks of work) / Linker features)
-	✔	27) Write down what Ben told me in the last feedback email (how do recall vs precision affect tracker) @done (14-09-04 17:11) @project(Writing thesis (1 weeks work) / General)
-	✔	30) Create missing illustrations @done (14-09-04 23:40) @project(Writing thesis (1 weeks work) / General)
-	✔	31) Review any missing todos @done (14-09-04 23:40) @project(Writing thesis (1 weeks work) / General)
+	✔	43) Distance of interpolated tracklets to midpoint @done (14-09-05 02:09) @project(Cell tracker (3 weeks of work) / Linker features)
+	✔	83) Identify ways to reduce the number of hypothesis that need to be computed @done (14-09-05 02:08) @project(Cell tracker (3 weeks of work) / Linker classifier)
+	✔	71) Identify features that are slow to compute for linker, and see if they can be sped up @done (14-09-05 02:08) @project(Cell tracker (3 weeks of work) / Linker classifier)
+	✔	25) Train ANN and NB with much more data, possibly of all different datasets combined (reqs T82, T84) @done (14-09-05 02:08) @project(Cell tracker (3 weeks of work) / Linker classifier)
+	✔	38) Appendix text is half wrong @done (14-09-05 02:07) @project(Writing thesis (1 weeks work) / General)
+	✔	37) Check the detector feature list to be a different from original paper @done (14-09-05 02:07) @project(Writing thesis (1 weeks work) / General)
 	✔	35) User guides @done (14-09-05 02:07) @project(Writing thesis (1 weeks work) / General)
 	✔	36) Proofread evaluation chapter @done (14-09-04 23:40) @project(Writing thesis (1 weeks work) / General)
-	✔	37) Check the detector feature list to be a different from original paper @done (14-09-05 02:07) @project(Writing thesis (1 weeks work) / General)
-	✔	38) Appendix text is half wrong @done (14-09-05 02:07) @project(Writing thesis (1 weeks work) / General)
+	✔	31) Review any missing todos @done (14-09-04 23:40) @project(Writing thesis (1 weeks work) / General)
+	✔	30) Create missing illustrations @done (14-09-04 23:40) @project(Writing thesis (1 weeks work) / General)
+	✔	27) Write down what Ben told me in the last feedback email (how do recall vs precision affect tracker) @done (14-09-04 17:11) @project(Writing thesis (1 weeks work) / General)
 	✔	32) Try to batch correct the misspelled words @done (14-09-04 17:05) @project(Writing thesis (1 weeks work) / General)
-	✔	maximum-a-posteriori @done (14-09-04 16:56) @project(Writing thesis (1 weeks work) / General)
-	✔	hypothesis singular, hypotheses plural @done (14-09-04 17:02) @project(Writing thesis (1 weeks work) / General)
 	✔	reliable detected -> reliably @done (14-09-04 17:02) @project(Writing thesis (1 weeks work) / General)
-	✔	27) Run combined dataset BCE, to see if its really A that causing trouble. @done (13-09-04 10:54) @project(Evaluation (1 week work) / Tracking)
-	✔	16) vl_mser requires linking to their paper. make sure you do. @done (14-09-04 11:35) @project(Writing thesis (1 weeks work) / Introduction)
-	✔	13) linker classifier feautres add new feautres @done (14-09-04 11:55) @project(Writing thesis (1 weeks work) / Related work)
-	✔	15) Explain the difficulties of computing spatio-temporal featres for tracklets of length 1... and that this causes them to be useless in fact @done (14-09-04 12:37) @project(Writing thesis (1 weeks work) / Related work)
-	✔	17) Write that scalaing parameters are applied after the computation of the probs. Need to update the formuals in the report @done (14-09-04 12:42) @project(Writing thesis (1 weeks work) / Related work)
-	✔	18) Write about the problem of defining the probabilities. Eg for pinit we assume independence of any other aciton, but in reality, the value depends on the previous tracklets, so its value would change if another tracklet would be chosen. THIS IS AN IMPORTANT ASSUMPTION I NEED TO WRITE DOWN. @done (14-09-04 12:52) @project(Writing thesis (1 weeks work) / Related work)
-	✔	19) Write about the pruning of linking likelihoods to only link higly likely tracklets @done (14-09-04 12:52) @project(Writing thesis (1 weeks work) / Related work)
-	✔	23) Write about the fact that in some cases a tracklet is composed of separate dots. The trackler might be able to link them, but sometimes will decide that some of the dots in the path are false positive, so linking the tracklets with larger gaps than necessary... and less perfect. For this reason, a postprocessing step might be able to check the the large closed gaps, and see if there were tracklets (maybe harder to see) that could be defined to belong to the track. @done (14-09-04 12:52) @project(Writing thesis (1 weeks work) / Related work)
-	✔	24) Problem of many short tracklets: too many link hypothesis to compute and condider... get slow... how we solve it. @done (14-09-04 12:53) @project(Writing thesis (1 weeks work) / Related work)
-	✔	25) Write that the method only cares about extracting longer trajectories... the shorter ones are often marked as false positives @done (14-09-04 12:53) @project(Writing thesis (1 weeks work) / Related work)
+	✔	hypothesis singular, hypotheses plural @done (14-09-04 17:02) @project(Writing thesis (1 weeks work) / General)
+	✔	maximum-a-posteriori @done (14-09-04 16:56) @project(Writing thesis (1 weeks work) / General)
+	✔	29) Reread conclusion @done (14-09-04 16:49) @project(Writing thesis (1 weeks work) / General)
+	✔	28) Reread introduction @done (14-09-04 16:27) @project(Writing thesis (1 weeks work) / General)
+	✔	26) Review bibliography and see if it needs any fixes @done (14-09-04 16:04) @project(Writing thesis (1 weeks work) / General)
+	✔	5) Review past best dissertations for section and writing style inspiration @done (14-09-04 15:13) @project(Writing thesis (1 weeks work) / General)
+	✔	Make sure to explain which features were used in the evaluation of the system for detector and tracker @done (14-09-04 15:12) @project(Writing thesis (1 weeks work) / Evaluation)
+	✔	Make a notice that most of the data was tranied on mostly linear example, the number of moving cells was relatively small @done (14-09-04 15:11) @project(Writing thesis (1 weeks work) / Evaluation)
+	✔	In the combine tracking, add a comment that unfortunately we are not only testing different modalities, but very different images... some datasets have very short robust tracklets, while other longer ones... sometimes it is required to close longer gaps, which can only be configured for each dataset individually, not for the combined one. @done (14-09-04 15:04) @project(Writing thesis (1 weeks work) / Evaluation)
 	✔	26) Future work: how to use the shortest tracklets (of length 1) @done (14-09-04 14:55) @project(Writing thesis (1 weeks work) / Related work / Conclusion)
 	✔	20) Write the whole evaluation chapter @done (14-09-04 12:54) @project(Writing thesis (1 weeks work) / Evaluation)
-	✔	In the combine tracking, add a comment that unfortunately we are not only testing different modalities, but very different images... some datasets have very short robust tracklets, while other longer ones... sometimes it is required to close longer gaps, which can only be configured for each dataset individually, not for the combined one. @done (14-09-04 15:04) @project(Writing thesis (1 weeks work) / Evaluation)
-	✔	Make a notice that most of the data was tranied on mostly linear example, the number of moving cells was relatively small @done (14-09-04 15:11) @project(Writing thesis (1 weeks work) / Evaluation)
-	✔	Make sure to explain which features were used in the evaluation of the system for detector and tracker @done (14-09-04 15:12) @project(Writing thesis (1 weeks work) / Evaluation)
-	✔	5) Review past best dissertations for section and writing style inspiration @done (14-09-04 15:13) @project(Writing thesis (1 weeks work) / General)
-	✔	26) Review bibliography and see if it needs any fixes @done (14-09-04 16:04) @project(Writing thesis (1 weeks work) / General)
-	✔	28) Reread introduction @done (14-09-04 16:27) @project(Writing thesis (1 weeks work) / General)
-	✔	29) Reread conclusion @done (14-09-04 16:49) @project(Writing thesis (1 weeks work) / General)
-	✔	33) Fix typos @done (14-09-04 10:31) @project(Writing thesis (1 weeks work) / General)
+	✔	25) Write that the method only cares about extracting longer trajectories... the shorter ones are often marked as false positives @done (14-09-04 12:53) @project(Writing thesis (1 weeks work) / Related work)
+	✔	24) Problem of many short tracklets: too many link hypothesis to compute and condider... get slow... how we solve it. @done (14-09-04 12:53) @project(Writing thesis (1 weeks work) / Related work)
+	✔	23) Write about the fact that in some cases a tracklet is composed of separate dots. The trackler might be able to link them, but sometimes will decide that some of the dots in the path are false positive, so linking the tracklets with larger gaps than necessary... and less perfect. For this reason, a postprocessing step might be able to check the the large closed gaps, and see if there were tracklets (maybe harder to see) that could be defined to belong to the track. @done (14-09-04 12:52) @project(Writing thesis (1 weeks work) / Related work)
+	✔	19) Write about the pruning of linking likelihoods to only link higly likely tracklets @done (14-09-04 12:52) @project(Writing thesis (1 weeks work) / Related work)
+	✔	18) Write about the problem of defining the probabilities. Eg for pinit we assume independence of any other aciton, but in reality, the value depends on the previous tracklets, so its value would change if another tracklet would be chosen. THIS IS AN IMPORTANT ASSUMPTION I NEED TO WRITE DOWN. @done (14-09-04 12:52) @project(Writing thesis (1 weeks work) / Related work)
+	✔	17) Write that scalaing parameters are applied after the computation of the probs. Need to update the formuals in the report @done (14-09-04 12:42) @project(Writing thesis (1 weeks work) / Related work)
+	✔	15) Explain the difficulties of computing spatio-temporal featres for tracklets of length 1... and that this causes them to be useless in fact @done (14-09-04 12:37) @project(Writing thesis (1 weeks work) / Related work)
+	✔	13) linker classifier feautres add new feautres @done (14-09-04 11:55) @project(Writing thesis (1 weeks work) / Related work)
+	✔	16) vl_mser requires linking to their paper. make sure you do. @done (14-09-04 11:35) @project(Writing thesis (1 weeks work) / Introduction)
 	✔	34) Ask Ben how he would like to be titled... Dr. or just Ben Glocker @done (14-09-04 10:54) @project(Writing thesis (1 weeks work) / General)
-	✔	18) Low priority: Compare detections with annotations and improve annotations @done (14-09-02 14:05) @project(Evaluation (1 week work))
-	✔	24) Each evaluation run should save the results somewhere, so I can quickly an easily revieve them all at once @done (14-08-30 11:23) @project(Evaluation (1 week work))
-	✔	25) Crombine dataset for tracking and test if it works @done (14-09-02 14:05) @project(Evaluation (1 week work))
-	✔	26) FIXME: Linker clasifier is trained on only the first annotated frames, not all trajectories @done (14-08-30 12:26) @project(Evaluation (1 week work))
-	✔	22) Test using leave-one-out since the number of trajectories is low @done (14-08-30 11:23) @project(Evaluation (1 week work) / Tracking)
+	✔	33) Fix typos @done (14-09-04 10:31) @project(Writing thesis (1 weeks work) / General)
 	✔	9) Accuracy of tracker trained on single dataset @done (14-09-02 14:05) @project(Evaluation (1 week work) / Tracking)
+	✔	25) Crombine dataset for tracking and test if it works @done (14-09-02 14:05) @project(Evaluation (1 week work))
+	✔	18) Low priority: Compare detections with annotations and improve annotations @done (14-09-02 14:05) @project(Evaluation (1 week work))
 	✔	10) Low priority: Accuracy of tracker trained on combined dataset @done (14-09-02 14:05) @project(Evaluation (1 week work) / Tracking)
+	✔	26) FIXME: Linker clasifier is trained on only the first annotated frames, not all trajectories @done (14-08-30 12:26) @project(Evaluation (1 week work))
+	✔	24) Each evaluation run should save the results somewhere, so I can quickly an easily revieve them all at once @done (14-08-30 11:23) @project(Evaluation (1 week work))
+	✔	22) Test using leave-one-out since the number of trajectories is low @done (14-08-30 11:23) @project(Evaluation (1 week work) / Tracking)
 	✔	Fix the bug in updateTracklets when there is a wait queue @done (14-08-29 18:13) @project(Today)
 	✔	T83) Identify ways to reduce the number of hypothesis that need to be computed @done (14-08-29 15:44) @project(Today)
 	✔	It seems I am not linking the correct tracklets... I mean not condirecting all the actualy linking candidates... research why @done (14-08-29 15:44) @project(Today)
@@ -406,4 +392,5 @@ Archive:
  ✔ Test arteta code in given samples to learn how to use it @done (14-05-11 19:03)
  ✔ email paper author for code @done (14-05-06 10:45)
  ✔ email Dr Leo for exaplanation of TIFF @done (14-05-06 10:45)
+	✔	27) Run combined dataset BCE, to see if its really A that causing trouble. @done (13-09-04 10:54) @project(Evaluation (1 week work) / Tracking)
  ✔ Install dependencies for Arteta code @done (10-05-11 19:03)

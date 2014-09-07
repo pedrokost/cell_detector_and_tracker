@@ -1,13 +1,6 @@
 *.avi
 *.sublime-*
 *~
-cell_tracking_papers/code/arteta12_tests/CellDetect_v1.0/*/out*
-data/lung*OUT
-data/kidney*OUT
-data/*OUT/tracklets*.mat
-data/*/feats_*.mat
-README.html
-!data/README.html
 thesis/*.log
 thesis/*.aux
 thesis/*.bbl
@@ -17,6 +10,6 @@ thesis/*.out
 thesis/*.synctex.gz
 thesis/*.toc
 thesis/*.tdo
-thesis/imageslowres
+README.html
 .dropbox
 .dropbox.attr

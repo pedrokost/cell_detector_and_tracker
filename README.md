@@ -1,16 +1,25 @@
-Automatic Cell Tracking and Categorisation for Microscopic Image Analysis
+Automatic Cell Detector and Tracker
 =============
 
-To contribute to homeostasis, protective immunity and pathology, leukocytes (white blood cells) have to be able to move between organs and within tissues. Recent advances in fluorescent reporter technology and light microscopy have provided better images than ever before of the location and behaviour of leukocytes in complex 3D environments and also within different tissues in intact living organisms. However, a significant bottleneck in converting these images into interpretable data is their reliable analysis. Fluorescently labelled cells must be tracked through time-lapse image-series data of varying contrast. Often the most effective way to do this is labour intensively and manually, however, this seriously limits the number of cells that we are able to analyse (and thus the conclusions that may be drawn). It would already be a major advance to be able to reliably automatically identify and track cells over time in sometimes noisy complex images. Adding the ability to categorise and filter the cells based on “behaviour” e.g. shape, intensity, velocity would allow us to ask and answer new mechanistic questions.
+An automatic cell detection and tracking method that works well even on low quality images (obscured cells, blurred frames, etc) and different types of cells and microscopic imaging techniques.
 
-The goal of this individual project is to develop methods for cell tracking and categorisation. The implementation will be done in Matlab
+Requires to train the models using dot-annotations (for detection module) and link-annotations (for tracking module).
 
-This is a joint project with Dr. Leo Carlin from the Leukocyte Biology Section at the National Heart and Lung Institute (NHLI).
+## Usage:
 
-Supervisor: Benjamin Glocker
+Refer to `runner.m`.
 
-Rough paper notes are available [in this Google Document](https://docs.google.com/document/d/1KqB5j8V7w5Uy5E0Us5tTD5N76Y7J6eYJCwInA0OH_uA/edit?usp=sharing)
+Brief instruccions are provided in the Appendix of the [project report](https://github.com/pedrokost/cell_tracking_msc_report).
 
-Progress thesis is available [in this WriteLatex document](https://www.writelatex.com/1069176jbdjmg)
+## TODO
 
-Progress of analysing Arteta's code is available [in this Google Document](https://docs.google.com/document/d/1nTW8_QWZoDeh8RpXsDSVcWdKAtrsMsJbyx2A9oYlwvQ/edit?usp=sharing)
+Please refere to the [TODO file](TODO) for a list of possible improvements. 
+
+## Pull requests
+
+Good pull requests—patches, improvements, new features—are a fantastic help. They should remain focused in scope and avoid containing unrelated commits.
+
+## Related repositories
+
+* [MSc dissertation](https://github.com/pedrokost/cell_tracking_msc_report)
+* [Image Sequence Annotation Tool](https://github.com/pedrokost/cell_annotator)
