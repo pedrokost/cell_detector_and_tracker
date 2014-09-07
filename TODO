@@ -1,9 +1,24 @@
-Today:
+OpenSource:
+	✔	1) Publish cell tracker @done (14-09-07 10:41)
+	✔	2) Publish cell annotator @done (14-09-07 10:41)
+	✔	3) Publish thesis @done (14-09-07 10:41)
+	☐	4) Add licence to cell tracker
+	☐	5) Add licence to thesis
+	☐	6) Add licence to cell annotator
+	☐	7) Add readme to cell tracker
+	☐	8) Add readme to cell annotator
+	☐	9) Add readme to thesis
 
-Evaluation (1 week work):
+Evaluation (2 days work left):
+
+	General:
+		☐	21) Organize the evaluation folder into a package
+
 	Detection:
 		☐	20) Low priority: find better feature descriptor and rerun all experiments
+
 	Tracking:
+
 		Track evaluation metrics:
 			☐	1) Low priority: MOTA: Multiple Object Tracking Accuracy, calculated from the number of false alarms, missed detections, and identity switches;
 			☐	2) Low priority: FGTIM: Fraction of Ground Truth Instances Missed; and
@@ -12,7 +27,7 @@ Evaluation (1 week work):
 		☐	11) Accuracy of tracker if frames are skipped: what is the max number of frames that can be skipped while still obtaining good enough tracks
 		☐	13) Show example of all bad cases (linking too much, 3 tracklets middle skipped, ...)
 
-Cell tracker (3 weeks of work):
+Cell tracker (2-3 weeks of work):
 
 	Linker classifier:
 		☐	89) Make sure I never call pointsDistance with uint numbers, make them int
@@ -49,7 +64,7 @@ Cell tracker (3 weeks of work):
 		☐	53) Robust classifier: To prevent unsafe robust tracklet, do not link them if there is a similiar strong link to another tracklet (define another threshold)
 		☐	91) Try training with only a subset of the features... in order to generate longer robust tracklets
 
-Cell detector (0 time left):
+Cell detector (1 day of work):
 	☐ Read Pylon stuff
 	☐ New features to try:
 		☐ Histeq + Laplacian(0.2) creates empty places in maximums, noise everywhere else
@@ -57,7 +72,7 @@ Cell detector (0 time left):
 		☐	 Contrast + Log 3 creates empties indised cell, dinstinct border, rest hight noise
 	☐	Make it clear in the headers of the files which belong to Arteta, which have some of my changes, which are completely mine
 
-Cell annotator (1 day left):
+Cell annotator (2 days of work):
 	☐	2) Copy anotations over
 	☐	3) Copy links over
 	☐	5) New tab/window that displays the tracklets in 3d
@@ -72,9 +87,11 @@ Biological statistics (3 days of work):
 	☐	Discover (find in prev papers) stats that might be of interest
 	☐	Write a function that computes these stats
 
-Final GUI (3 days of work):
-	☐	plan design/workflow on paper
-	☐	Ask Leo if we also need the option to train a new model
+Final GUI (5 days of work):
+	☐	1) plan design/workflow on paper
+	☐	2) Ask Leo if we also need the option to train a new model
+	☐	3) Build basic GUI for testing
+	☐	4) Plan and implement more complete GUI including training
 
 Cell stabilizer (5 days of work):
 	☐	1) Read how to easily do image stabilization in matlab (instaed of SIFT, RANSAC, homography, etc, which might take too long)
@@ -88,8 +105,7 @@ Data flow process:
 	☐ annotator: IN: any, OUT: dots + links # I have lost Match features
 	☐ detector train: IN: dots + [links], OUT: dots
 	☐ detector test : IN: images, OUT: dots + MatchFeatures
-	☐ tracker: IN: dots + Match features, OUT: robust tracklets
-	☐ linker : IN: dots + robust matches, OUT: dots + links
+	☐ tracker: IN: dots + Match features, OUT: tracklets matrix
 ＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿
 Archive:
 	✔	23) Figure out what to do with too short tracklets... now I just delete them all... but some would be very useful...maybe just delete those thare are far apart from anything? @done (14-09-05 02:11) @project(Evaluation (1 week work) / Tracking)
