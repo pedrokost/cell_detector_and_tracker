@@ -7,7 +7,7 @@
 
 % Note: the results of the model evaluation are not normalized, so it is not possible to compare directly model genreated with a different number of extruded tracks.
 
-addpath('lightspeed')
+% addpath('lightspeed')
 addpath('export_fig')
 
 clear all 
