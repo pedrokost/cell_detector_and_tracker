@@ -1,6 +1,6 @@
 #!/bin/bash
 
-INSTALL_EKFUKF=true
+# INSTALL_EKFUKF=false # This is not needed
 
 MATLAB_PATH_DIR=~/Documents/MATLAB/
 MATLAB_LIBS_DIR=~/src/
@@ -26,15 +26,15 @@ else
 	cp $startup_file ${startup_file}.backup # Make a backup
 fi
 
-if [[ $INSTALL_EKFUKF = true ]]; then
-	echo "Installing EKF/UKF Toolkit for Matlab"
-	url=http://becs.aalto.fi/en/research/bayes/ekfukf/ekfukf_1_3.zip
-	[ -e ekfukf_1_3.zip ] || wget --no-verbose $url
-	unzip -q ekfukf_1_3.zip -dekfukf
-	rm -r ${MATLAB_LIBS_DIR}ekfukf
+# if [[ $INSTALL_EKFUKF = true ]]; then
+# 	echo "Installing EKF/UKF Toolkit for Matlab"
+# 	url=http://becs.aalto.fi/en/research/bayes/ekfukf/ekfukf_1_3.zip
+# 	[ -e ekfukf_1_3.zip ] || wget --no-verbose $url
+# 	unzip -q ekfukf_1_3.zip -dekfukf
+# 	rm -r ${MATLAB_LIBS_DIR}ekfukf
 	
-	mv -f ekfukf/ekfukf $MATLAB_LIBS_DIR
-	rm ekfukf_1_3.zip
+# 	mv -f ekfukf/ekfukf $MATLAB_LIBS_DIR
+# 	rm ekfukf_1_3.zip
 
-	add_once "addpath('~/src/ekfukf')" $startup_file
-fi
+# 	add_once "addpath('~/src/ekfukf')" $startup_file
+# fi

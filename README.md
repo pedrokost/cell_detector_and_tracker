@@ -5,6 +5,15 @@ An automatic cell detection and tracking method that works well even on low qual
 
 Requires to train the models using dot-annotations (for detection module) and link-annotations (for tracking module).
 
+## Setup instructions
+
+	git clone https://github.com/pedrokost/cell_detector_and_tracker.git
+	cd cell_detector_and_tracker/+detector/setup
+	# Make the setup script executable
+	chmod +x setup.sh
+	# Execute the script
+	./setup.sh
+
 ## Usage:
 
 Refer to `runner.m`.

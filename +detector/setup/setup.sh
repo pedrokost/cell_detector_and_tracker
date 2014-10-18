@@ -3,8 +3,23 @@ INSTALL_VL_FEAT=false
 INSTALL_SVM_STRUCT=false
 INSTALL_PYLON_INFERENCE=true
 
-MATLAB_PATH_DIR=~/Documents/MATLAB/
-MATLAB_LIBS_DIR=~/src/
+# MATLAB_PATH_DIR=~/Documents/MATLAB/
+# MATLAB_LIBS_DIR=~/src/
+
+read -p "Directory in  matlab path [~/Documents/MATLAB/]: " MATLAB_PATH_DIR
+MATLAB_PATH_DIR=${MATLAB_PATH_DIR:-'~/Documents/MATLAB/'}
+
+read -p "Directory to dependencies (i.e. VLFeat) [~/src/]: " MATLAB_LIBS_DIR
+MATLAB_LIBS_DIR=${MATLAB_LIBS_DIR:-'~/src/'}
+
+echo
+echo "The script with download the required libraries"
+echo "and place them in the directory ${MATLAB_PATH_DIR}."
+echo
+echo "It will also create/update a file called startup.m"
+echo "in the directory ${MATLAB_LIBS_DIR}"
+echo "to initialize the Pylon code on startup of MATLAB."
+echo
 
 add_once () {
 	# Appends the string ($1) to file $2 if it is not already included in the file
