@@ -30,9 +30,40 @@ Remember to execute the setup script again after the correct version of gcc is s
 
 ## Usage:
 
-Refer to `runner.m`.
+First, in `dataFolders.m` configure the image directories. Simply, add a block of code like this at the bottom of the `switch` statement:
 
-Brief instruccions are provided in the Appendix of the [project report](https://github.com/pedrokost/cell_tracking_msc_report).
+```matlab
+case 20  % dataset ID: augment previous integer by 1
+    % This is the directory with the dot annotated images
+    dotFolder = fullfile('..', 'data', 'sample');
+    % This will be the output directory, where the results are saved
+    outFolder = fullfile('..', 'dataout', 'sample');
+    % This is the directory with the link annotated images
+    % (can *sometimes* be equal to dotFolder)
+    linkFolder = fullfile('..', 'data', 'sample');
+    % The number of manually annotated frames (dot annotation)
+    numAnnotatedFrames = 50;
+    % The number of annotated trajectories (link annotations)
+    numAnnotatedTrajectories = 5;
+```
+
+Second, in `runner.m` set and configure the following variables:
+
+```matlab
+datasetIDs    = [20];     % The dataset ID as set in dataFolders.m
+
+% Training the detector and tracker
+trainDetector = true;     
+trainTracker  = true;   
+
+% Evaluating a trained detector and tracker
+testDetector  = true;  
+testTracker   = true;
+
+showTracks    = true;    % Display a plot of the tracks
+```
+
+Finally, run `runner.m`.
 
 ## TODO
 

@@ -6,11 +6,11 @@ INSTALL_PYLON_INFERENCE=true
 # MATLAB_PATH_DIR=~/Documents/MATLAB/
 # MATLAB_LIBS_DIR=~/src/
 
-read -p "Directory in  matlab path [~/Documents/MATLAB/]: " MATLAB_PATH_DIR
-MATLAB_PATH_DIR=${MATLAB_PATH_DIR:-'~/Documents/MATLAB/'}
+read -p "Directory in  matlab path [~/Documents/MATLAB]: " MATLAB_PATH_DIR
+MATLAB_PATH_DIR=${MATLAB_PATH_DIR:-~/Documents/MATLAB}
 
-read -p "Directory to dependencies (i.e. VLFeat) [~/src/]: " MATLAB_LIBS_DIR
-MATLAB_LIBS_DIR=${MATLAB_LIBS_DIR:-'~/src/'}
+read -p "Directory to dependencies (i.e. VLFeat) [~/src]: " MATLAB_LIBS_DIR
+MATLAB_LIBS_DIR=${MATLAB_LIBS_DIR:-~/src}
 
 echo
 echo "The script with download the required libraries"
@@ -29,14 +29,14 @@ add_once () {
 
 	if grep -q "$1" "$2"; then  
 		# echo exist 
-		echo "$2 is already in $1." 
+		echo "$1 is already in $2." 
 	else  
 	   echo $1 >> "$2"    
 	fi
 }
 
 # Setup startup.m file
-startup_file=${MATLAB_PATH_DIR}startup.m
+startup_file=${MATLAB_PATH_DIR}/startup.m
 if [[ ! -e $startup_file ]]; then
 	[ -d $MATLAB_PATH_DIR ] || mkdir -p  $MATLAB_PATH_DIR
 	touch $startup_file
@@ -52,8 +52,9 @@ if [[ $INSTALL_VL_FEAT = true ]]; then
 	url=http://www.vlfeat.org/download/vlfeat-0.9.18-bin.tar.gz
 	[ -e vlfeat-0.9.18-bin.tar.gz ] || wget --no-verbose $url
 	tar -zxvf vlfeat-0.9.18-bin.tar.gz
-	mkdir -p ~/src/vlfeat
-	rm -rf ~/src/vlfeat/*
+	mkdir -p ${MATLAB_LIBS_DIR}/vlfeat
+	rm -rf ${MATLAB_LIBS_DIR}/vlfeat/*
+	mkdir -p ${MATLAB_LIBS_DIR}/vlfeat
 	mv vlfeat-0.9.18/* ${MATLAB_LIBS_DIR}/vlfeat
 	rm -r vlfeat-0.9.18
 	[ -e vlfeat-0.9.18-bin.tar.gz ] && rm vlfeat-0.9.18-bin.tar.gz
@@ -86,7 +87,7 @@ if [[ $INSTALL_PYLON_INFERENCE = true ]]; then
 	url=http://www.robots.ox.ac.uk/~vilem/PylonCode.zip
 	[ -e PylonCode.zip ] || wget --no-verbose $url
 	unzip -q PylonCode.zip -dPylonCode
-	rm -r ${MATLAB_LIBS_DIR}PylonCode
+	rm -r ${MATLAB_LIBS_DIR}/PylonCode
 	
 
 	echo "Installing QPBO"
