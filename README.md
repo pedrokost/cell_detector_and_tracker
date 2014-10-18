@@ -28,6 +28,22 @@ Please refere to the [TODO file](TODO) for a list of possible improvements.
 
 Good pull requests—patches, improvements, new features—are a fantastic help. They should remain focused in scope and avoid containing unrelated commits.
 
+## Dependencies
+
+This project relies on the following libraries:
+
+* [VL_feat](http://www.vlfeat.org/)
+* [SVM_struct_matlab](http://www.vlfeat.org/~vedaldi/code/svm-struct-matlab.html)
+* [Inference code for Pylon models](http://www.robots.ox.ac.uk/~vilem/), which depends on the [QPBO from Vladimir Kolmogorov](http://pub.ist.ac.at/~vnk/software.html).
+
+These dependencies can be downloaded and installed using an automated script, as described above, in the Setup instructions.
+
+The projects was developed and tested on MATLAB R2014a, but I think it should work fine on R2013b as well. It won't work on versions prior or equal to R2013a, because of changes in the Neural Network Toolbox. 
+
+## Acknowledgements
+
+The original code from the cell detector module was developed by [C. Arteta, V. Lempitsky, J. A. Noble and A. Zisserman](http://www.robots.ox.ac.uk/~vgg/research/cell_detection/). Although some performance and structural improvements were required to use their code for this project, their code was of great help.
+
 ## Related repositories
 
 * [MSc dissertation](https://github.com/pedrokost/cell_tracking_msc_report)
