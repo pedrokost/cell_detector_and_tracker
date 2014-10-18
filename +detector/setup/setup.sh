@@ -21,6 +21,8 @@ echo "in the directory ${MATLAB_LIBS_DIR}"
 echo "to initialize the Pylon code on startup of MATLAB."
 echo
 
+read -p "Press [Enter] to start setup..."
+
 add_once () {
 	# Appends the string ($1) to file $2 if it is not already included in the file
 	echo "$1 $2"
@@ -41,6 +43,9 @@ if [[ ! -e $startup_file ]]; then
 else
 	cp $startup_file ${startup_file}.backup # Make a backup
 fi
+
+# If needed create the libs directory
+[-d $MATLAB_LIBS_DIR ] || mkdir -p $MATLAB_LIBS_DIR
 
 if [[ $INSTALL_VL_FEAT = true ]]; then
 	echo "Installing VL_FEAT"

@@ -14,6 +14,20 @@ Requires to train the models using dot-annotations (for detection module) and li
 	# Execute the script
 	./setup.sh
 
+## Troubleshooting
+
+When compiling the `SVM_struct_matlab` code, you might get a warning like this:
+
+	Warning: You are using gcc version '4.8.2'. The version of gcc is not supported. The version currently supported with MEX is '4.7.x'.
+
+In this case Google for a solution. It should be as simple as downloading gcc 4.7:
+	
+	sudo apt-get install gcc-4.7 g++-4.7
+
+and [setting it as default](http://askubuntu.com/questions/26498/choose-gcc-and-g-version).
+
+Remember to execute the setup script again after the correct version of gcc is set.
+
 ## Usage:
 
 Refer to `runner.m`.
