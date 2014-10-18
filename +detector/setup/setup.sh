@@ -45,7 +45,7 @@ else
 fi
 
 # If needed create the libs directory
-[-d $MATLAB_LIBS_DIR ] || mkdir -p $MATLAB_LIBS_DIR
+[ -d $MATLAB_LIBS_DIR ] || mkdir -p $MATLAB_LIBS_DIR
 
 if [[ $INSTALL_VL_FEAT = true ]]; then
 	echo "Installing VL_FEAT"
