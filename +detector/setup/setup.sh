@@ -26,9 +26,9 @@ add_once () {
 	echo "$1 $2"
 
 	if grep -q "$1" "$2"; then  
-		# echo exist  
+		# echo exist 
+		echo "$2 is already in $1." 
 	else  
-	   # echo doesNOTexist  
 	   echo $1 >> "$2"    
 	fi
 }
