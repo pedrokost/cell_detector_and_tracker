@@ -1,6 +1,6 @@
 #!/bin/bash
-INSTALL_VL_FEAT=false
-INSTALL_SVM_STRUCT=false
+INSTALL_VL_FEAT=true
+INSTALL_SVM_STRUCT=true
 INSTALL_PYLON_INFERENCE=true
 
 # MATLAB_PATH_DIR=~/Documents/MATLAB/
@@ -26,9 +26,9 @@ add_once () {
 	echo "$1 $2"
 
 	if grep -q "$1" "$2"; then  
-		echo exist  
+		# echo exist  
 	else  
-	   echo doesNOTexist  
+	   # echo doesNOTexist  
 	   echo $1 >> "$2"    
 	fi
 }
