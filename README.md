@@ -7,12 +7,23 @@ Requires to train the models using dot-annotations (for detection module) and li
 
 ## Setup instructions
 
-	git clone https://github.com/pedrokost/cell_detector_and_tracker.git
-	cd cell_detector_and_tracker/+detector/setup
-	# Make the setup script executable
-	chmod +x setup.sh
-	# Execute the script
-	./setup.sh
+In the command prompt/terminal:
+
+```bash
+> git clone https://github.com/pedrokost/cell_detector_and_tracker.git
+> cd cell_detector_and_tracker/+detector/setup
+# Make the setup script executable
+> chmod +x setup.sh
+# Execute the script... (it may take awhile)
+> ./setup.sh
+```
+
+Then, run MATLAB, and execute the following
+
+```matlab
+cd ~/src/PylonCode   % Location of Pylon and QPBO dependencies
+pylonSetup           % Will generate the mex files
+```
 
 ## Troubleshooting
 
@@ -83,7 +94,7 @@ This project relies on the following libraries:
 
 These dependencies can be downloaded and installed using an automated script, as described above, in the Setup instructions.
 
-The projects was developed and tested on MATLAB R2014a, but I think it should work fine on R2013b as well. It won't work on versions prior or equal to R2013a, because of changes in the Neural Network Toolbox. 
+The projects was developed and tested on MATLAB R2014a on Ubuntu 14.04, but I think it should work fine on R2013b as well. It won't work on versions prior or equal to R2013a, because of changes in the Neural Network Toolbox.
 
 ## Acknowledgements
 
