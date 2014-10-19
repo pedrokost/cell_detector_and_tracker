@@ -6,6 +6,8 @@ INSTALL_PYLON_INFERENCE=true
 # MATLAB_PATH_DIR=~/Documents/MATLAB/
 # MATLAB_LIBS_DIR=~/src/
 
+TOOD: verify the installation and do a test run
+
 read -p "Directory in  matlab path [~/Documents/MATLAB]: " MATLAB_PATH_DIR
 MATLAB_PATH_DIR=${MATLAB_PATH_DIR:-~/Documents/MATLAB}
 
@@ -52,8 +54,7 @@ if [[ $INSTALL_VL_FEAT = true ]]; then
 	url=http://www.vlfeat.org/download/vlfeat-0.9.18-bin.tar.gz
 	[ -e vlfeat-0.9.18-bin.tar.gz ] || wget --no-verbose $url
 	tar -zxvf vlfeat-0.9.18-bin.tar.gz
-	mkdir -p ${MATLAB_LIBS_DIR}/vlfeat
-	rm -rf ${MATLAB_LIBS_DIR}/vlfeat/*
+	rm -rf ${MATLAB_LIBS_DIR}/vlfeat
 	mkdir -p ${MATLAB_LIBS_DIR}/vlfeat
 	mv vlfeat-0.9.18/* ${MATLAB_LIBS_DIR}/vlfeat
 	rm -r vlfeat-0.9.18
